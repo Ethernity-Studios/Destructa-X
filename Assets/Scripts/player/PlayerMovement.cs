@@ -1,5 +1,5 @@
-using UnityEngine;
 using Mirror;
+using UnityEngine;
 using UnityEngine.UI;
 
 public class PlayerMovement : NetworkBehaviour
@@ -15,18 +15,18 @@ public class PlayerMovement : NetworkBehaviour
     public LayerMask groundMask;
 
     public Vector3 velocity;
-    bool isGrounded;
 
     public float MouseSens = 400f;
-    GameObject Camyr;
-    float xRotation = 0f;
 
     [SerializeField] Material playerMat;
-
-    [SyncVar(hook = nameof(SendText))]
-    int value;
+    GameObject Camyr;
+    bool isGrounded;
 
     Text text;
+
+    [SyncVar(hook = nameof(SendText))] int value;
+
+    float xRotation = 0f;
 
     void Start()
     {
@@ -47,6 +47,7 @@ public class PlayerMovement : NetworkBehaviour
         {
             IncreaseNumber();
         }
+
         if (Input.GetKeyDown(KeyCode.R))
         {
             controller.enabled = false;
@@ -54,6 +55,18 @@ public class PlayerMovement : NetworkBehaviour
             controller.enabled = true;
         }
     }
+
+    void LateUpdate()
+    {
+        if (!isLocalPlayer) return;
+        float Mousex = Input.GetAxis("Mouse X") * MouseSens * Time.deltaTime;
+        float MouseY = Input.GetAxis("Mouse Y") * MouseSens * Time.deltaTime;
+        xRotation -= MouseY;
+        xRotation = Mathf.Clamp(xRotation, -90f, 90f);
+        Camyr.transform.localRotation = Quaternion.Euler(xRotation, 0f, 0f);
+        transform.Rotate(Vector3.up * Mousex);
+    }
+
     void IncreaseNumber()
     {
         value++;
@@ -71,6 +84,7 @@ public class PlayerMovement : NetworkBehaviour
         {
             velocity.y = -2f;
         }
+
         float x = Input.GetAxis("Horizontal");
         float z = Input.GetAxis("Vertical");
         Vector3 move = transform.right * x + transform.forward * z;
@@ -83,10 +97,12 @@ public class PlayerMovement : NetworkBehaviour
         {
             speed = 8f;
         }
+
         if (Input.GetKeyUp(KeyCode.LeftShift))
         {
             speed = 8f;
         }
+
         if (Input.GetButton("Jump") && isGrounded)
         {
             velocity.y = Mathf.Sqrt(jumpH * -2f * gravity);
@@ -95,15 +111,4 @@ public class PlayerMovement : NetworkBehaviour
         velocity.y += gravity * Time.deltaTime;
         controller.Move(velocity * Time.deltaTime);
     }
-    void LateUpdate()
-    {
-        if (!isLocalPlayer) return;
-        float Mousex = Input.GetAxis("Mouse X") * MouseSens * Time.deltaTime;
-        float MouseY = Input.GetAxis("Mouse Y") * MouseSens * Time.deltaTime;
-        xRotation -= MouseY;
-        xRotation = Mathf.Clamp(xRotation, -90f, 90f);
-        Camyr.transform.localRotation = Quaternion.Euler(xRotation, 0f, 0f);
-        transform.Rotate(Vector3.up * Mousex);
-    }
-
 }

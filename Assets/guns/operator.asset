@@ -1,0 +1,48 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2797a7e7978d4fa3bf4d76869be850f0, type: 3}
+  m_Name: operator
+  m_EditorClassIdentifier: 
+  Name: operator
+  MagazineSize: 5
+  MaxAmmo: 10
+  ReloadTime: 1
+  LMB:
+    FireType: 5
+    FireMode: 1
+    FireDelay: 1
+    AmmoLoss: 1
+    LegDamage: 50
+    BodyDamage: 100
+    HeadDamage: 150
+    DamageDrop: 1
+    Recoil: 1
+    Bloom: 1
+  RMB:
+    Type: 0
+    Scope:
+      Magnification: 4
+      ScopeType: 0
+      MoveSpeedModifier: 1
+      BloomModifier: 1
+      RecoilModifier: 1
+    Fire:
+      FireType: 0
+      FireMode: 0
+      FireDelay: 0
+      AmmoLoss: 0
+      LegDamage: 0
+      BodyDamage: 0
+      HeadDamage: 0
+      DamageDrop: 0
+      Recoil: 0
+      Bloom: 0
