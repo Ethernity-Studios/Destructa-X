@@ -37,4 +37,8 @@ public class NicknameManager : MonoBehaviour
         PlayerPrefs.SetString(DefaultNickname,Nickname);
     }
 
+    public string GetNickName()
+    {
+        return Nickname;
+    }
 }
