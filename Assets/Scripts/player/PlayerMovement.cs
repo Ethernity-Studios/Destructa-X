@@ -1,8 +1,6 @@
-using Mirror;
 using UnityEngine;
-using UnityEngine.UI;
 
-public class PlayerMovement : NetworkBehaviour
+public class PlayerMovement : MonoBehaviour
 {
     public CharacterController controller;
     public float speed = 8f;
@@ -22,17 +20,11 @@ public class PlayerMovement : NetworkBehaviour
     GameObject Camyr;
     bool isGrounded;
 
-    Text text;
-
-    [SyncVar(hook = nameof(SendText))] int value;
 
     float xRotation = 0f;
 
     void Start()
     {
-        text = FindObjectOfType<Text>();
-        text.text = value.ToString();
-        if (!isLocalPlayer) return;
         Camyr = Camera.main.gameObject;
         Camyr.gameObject.transform.parent = this.transform;
         Camyr.transform.position = new Vector3(transform.position.x, transform.position.y + .6f, transform.position.z);
@@ -41,12 +33,7 @@ public class PlayerMovement : NetworkBehaviour
 
     void Update()
     {
-        if (!isLocalPlayer) return;
         Move();
-        if (Input.GetKeyDown(KeyCode.I))
-        {
-            IncreaseNumber();
-        }
 
         if (Input.GetKeyDown(KeyCode.R))
         {
@@ -58,7 +45,6 @@ public class PlayerMovement : NetworkBehaviour
 
     void LateUpdate()
     {
-        if (!isLocalPlayer) return;
         float Mousex = Input.GetAxis("Mouse X") * MouseSens * Time.deltaTime;
         float MouseY = Input.GetAxis("Mouse Y") * MouseSens * Time.deltaTime;
         xRotation -= MouseY;
@@ -67,46 +53,23 @@ public class PlayerMovement : NetworkBehaviour
         transform.Rotate(Vector3.up * Mousex);
     }
 
-    void IncreaseNumber()
-    {
-        value++;
-    }
-
-    void SendText(int _, int newC)
-    {
-        text.text = newC.ToString();
-    }
-
-    void Move()
+    private void Move()
     {
         isGrounded = Physics.CheckSphere(GCheck.position, groundDist, groundMask);
-        if (isGrounded && velocity.y < 0)
-        {
-            velocity.y = -2f;
-        }
+        if (isGrounded && velocity.y < 0) velocity.y = -2f;
 
-        float x = Input.GetAxis("Horizontal");
-        float z = Input.GetAxis("Vertical");
-        Vector3 move = transform.right * x + transform.forward * z;
+        var x = Input.GetAxis("Horizontal");
+        var z = Input.GetAxis("Vertical");
+        var move = transform.right * x + transform.forward * z;
         controller.Move(move * speed * Time.deltaTime);
         if (Input.GetKey(KeyCode.LeftShift))
-        {
             speed = running;
-        }
         else
-        {
             speed = 8f;
-        }
 
-        if (Input.GetKeyUp(KeyCode.LeftShift))
-        {
-            speed = 8f;
-        }
+        if (Input.GetKeyUp(KeyCode.LeftShift)) speed = 8f;
 
-        if (Input.GetButton("Jump") && isGrounded)
-        {
-            velocity.y = Mathf.Sqrt(jumpH * -2f * gravity);
-        }
+        if (Input.GetButton("Jump") && isGrounded) velocity.y = Mathf.Sqrt(jumpH * -2f * gravity);
 
         velocity.y += gravity * Time.deltaTime;
         controller.Move(velocity * Time.deltaTime);

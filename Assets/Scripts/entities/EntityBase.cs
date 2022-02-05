@@ -2,12 +2,12 @@ using Mirror;
 
 public abstract class EntityBase : NetworkBehaviour
 {
-    public int Health;
-    public int MaxHealth;
+    public float Health;
+    public float MaxHealth;
     public bool Dead;
 
 
-    public abstract bool TakeDamage(int damage);
+    public abstract bool TakeDamage(float damage);
 
-    public abstract void Heal(int damage);
+    public abstract void Heal(float damage);
 }
