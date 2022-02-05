@@ -7,19 +7,25 @@ public class NetworkGamePlayerLobby : NetworkBehaviour
 
     public string PlayerName;
 
+    [SerializeField] GameObject NicknameUI;
+
     private void Start()
     {
-        if (PlayerPrefs.GetString("PlayerName") != DefaultPlayerName) GetPlayerName();
+        if (PlayerPrefs.HasKey("PlayerName"))
+        {
+            PlayerName = PlayerPrefs.GetString("PlayerName");
+        }
     }
 
     public void SetPlayerName(string name)
     {
         PlayerPrefs.SetString("PlayerName",name);
+        PlayerName = name;
     }
 
-    public string GetPlayerName()
+    public void ConfirmNickname()
     {
-        return PlayerPrefs.GetString("PlayerName");
+        if(PlayerName != null)
+        NicknameUI.SetActive(false);
     }
-
 }
