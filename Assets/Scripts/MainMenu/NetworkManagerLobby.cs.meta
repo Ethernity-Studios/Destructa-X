@@ -1,9 +1,5 @@
 fileFormatVersion: 2
-<<<<<<< HEAD:Assets/Scripts/MainMenu/NetworkManagerLobby.cs.meta
-guid: a0c233910c3cbf44eac4e006af80c106
-=======
-guid: e819167c41db579429f1951696fa9620
->>>>>>> a20459c2be3b7a14a346f19ae2d273891b38c2ed:Assets/Scripts/entities/EntityBase.cs.meta
+guid: a5fadb14afcbb9d4fbb4532882090c51
 MonoImporter:
   externalObjects: {}
   serializedVersion: 2

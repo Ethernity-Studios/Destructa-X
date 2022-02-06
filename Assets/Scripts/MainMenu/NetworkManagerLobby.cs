@@ -1,48 +1,35 @@
 using UnityEngine;
 using Mirror;
 using System;
-using System.Collections.Generic;
-using UnityEngine.SceneManagement;
 using System.Linq;
+using System.Collections.Generic;
+using UnityEngine.UI;
 
-public class NetworkManagerLobby : NetworkManager
+public class NetworkManagerLobby : NetworkRoomManager
 {
-    [SerializeField] NetworkPlayer roomPlayerPrefab;
-
-    [Scene] [SerializeField] string menuScene;
-    public override void OnStartServer()
-    {
-        base.OnStartServer();
-        spawnPrefabs = Resources.LoadAll<GameObject>("SpawnablePrefabs").ToList<GameObject>();
-    }
-
-    public override void OnStartClient()
-    {
-        var spawnablePrefabs = Resources.LoadAll<GameObject>("SpawnablePrefabs");
-
-        foreach (var prefab in spawnablePrefabs)
-        {
-            NetworkClient.RegisterPrefab(prefab);
-        }
-    }
+    List<RoomPlayer> roomPlayers = new();
+    [Scene] [SerializeField] string GameScene;
 
     public override void OnServerConnect(NetworkConnection conn)
     {
         base.OnServerConnect(conn);
-        if(numPlayers >= maxConnections)
-        {
-            conn.Disconnect();
-            return;
-        }
+
     }
 
-    public override void OnServerAddPlayer(NetworkConnection conn)
-    {
-        if (SceneManager.GetActiveScene().name == menuScene)
-        {
-            NetworkPlayer roomPlayerInstance = Instantiate(roomPlayerPrefab);
+    Button StartButton;
 
-            NetworkServer.AddPlayerForConnection(conn, roomPlayerPrefab.gameObject);
-        }
+    /*public override void OnRoomServerPlayersReady()
+    {
+        StartButton = FindObjectOfType<Button>();
+#if UNITY_SERVER
+            base.OnRoomServerPlayersReady();
+#else
+        StartButton.interactable = true;
+#endif
+    }*/
+
+    void StartGame()
+    {
+        ServerChangeScene(GameScene);
     }
 }
