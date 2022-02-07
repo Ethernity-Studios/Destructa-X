@@ -16,7 +16,6 @@ GameObject:
   - component: {fileID: 3697155342802577602}
   - component: {fileID: 2475809864135493570}
   - component: {fileID: 4074743734564941293}
-  - component: {fileID: 1225661937621763169}
   m_Layer: 0
   m_Name: Been
   m_TagString: Untagged
@@ -199,32 +198,6 @@ MonoBehaviour:
   showGizmos: 0
   showOverlay: 0
   overlayColor: {r: 0, g: 0, b: 0, a: 0.5}
---- !u!114 &1225661937621763169
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3697155342802577629}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5eba665a974c12049812fc2ab4e9698c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  syncMode: 0
-  syncInterval: 0.1
-  sens: 400
-  speed: 8
-  jumpf: 1
-  gravity: 0.1
-  camyr: {fileID: 0}
-  ground_t: {fileID: 0}
-  controller: {fileID: 0}
-  ground:
-    serializedVersion: 2
-    m_Bits: 0
-  onground: 0
-  velocity: {x: 0, y: 0, z: 0}
 --- !u!1 &3697155343411083146
 GameObject:
   m_ObjectHideFlags: 0
