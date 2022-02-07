@@ -1,6 +1,7 @@
 using UnityEngine;
+using Mirror;
 
-public class Test : MonoBehaviour
+public class Test : NetworkBehaviour
 {
     void Start()
     {
@@ -9,6 +10,11 @@ public class Test : MonoBehaviour
 
     void Update()
     {
-        
+
+    }
+
+    public override void OnStartAuthority()
+    {
+        base.OnStartAuthority();
     }
 }

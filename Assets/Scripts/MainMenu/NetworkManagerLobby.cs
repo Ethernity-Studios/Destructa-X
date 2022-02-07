@@ -9,10 +9,20 @@ public class NetworkManagerLobby : NetworkRoomManager
 {
     [Scene] [SerializeField] string GameScene;
 
-    public override void OnServerConnect(NetworkConnection conn)
+    public override void OnStartServer()
     {
-        base.OnServerConnect(conn);
+        spawnPrefabs = Resources.LoadAll<GameObject>("SpawnablePrefabs").ToList<GameObject>();
+        Debug.Log("OnStartServer");
+    }
 
+    public override void OnStartClient()
+    {
+        var spawnablePrefabs = Resources.LoadAll<GameObject>("SpawnablePrefabs");
+
+        foreach (var prefab in spawnablePrefabs)
+        {
+            NetworkClient.RegisterPrefab(prefab);
+        }
     }
 
     Button StartButton;
