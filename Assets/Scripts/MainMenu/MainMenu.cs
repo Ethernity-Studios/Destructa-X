@@ -8,8 +8,16 @@ public class MainMenu : MonoBehaviour
 
     [SerializeField] TMP_InputField NetworkAdressInputField;
 
+    public static string CustomNetworkAdress;
+
+    private void Start()
+    {
+        NetworkAdressInputField.text = "localhost";
+    }
+
     public void SetNetworkAdress(string adress)
     {
+        CustomNetworkAdress = adress;
         networkManagerLobby.networkAddress = adress;
     }
 
