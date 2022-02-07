@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1611397751789422344}
   - component: {fileID: 1834876232735247924}
-  - component: {fileID: 4214344169991628337}
+  - component: {fileID: 4579708202380503957}
   m_Layer: 0
   m_Name: NetworkRoomPlayer
   m_TagString: Untagged
@@ -48,9 +48,9 @@ MonoBehaviour:
   sceneId: 0
   serverOnly: 0
   visible: 0
-  m_AssetId: 
+  m_AssetId: dd00e944aa891ac4bbd27dda9229cf67
   hasSpawned: 0
---- !u!114 &4214344169991628337
+--- !u!114 &4579708202380503957
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -59,7 +59,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 8001105561336895331}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5c9cb70b5354e814c8e25f6ad5930fff, type: 3}
+  m_Script: {fileID: 11500000, guid: 79874ac94d5b1314788ecf0e86bd23fd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   syncMode: 0

@@ -7,7 +7,6 @@ using UnityEngine.UI;
 
 public class NetworkManagerLobby : NetworkRoomManager
 {
-    List<RoomPlayer> roomPlayers = new();
     [Scene] [SerializeField] string GameScene;
 
     public override void OnServerConnect(NetworkConnection conn)
@@ -32,4 +31,6 @@ public class NetworkManagerLobby : NetworkRoomManager
     {
         ServerChangeScene(GameScene);
     }
+
+
 }
