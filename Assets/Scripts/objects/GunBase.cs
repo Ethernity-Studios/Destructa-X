@@ -36,7 +36,7 @@ public class Fire
 
     public int AmmoLoss;
 
-    [Header("Damges")] public float LegDamage;
+    [Header("Damages")] public float LegDamage;
     public float BodyDamage;
     public float HeadDamage;
     public float DamageDrop;
