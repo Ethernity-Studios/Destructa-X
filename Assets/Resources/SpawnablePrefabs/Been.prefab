@@ -163,7 +163,7 @@ MonoBehaviour:
   sceneId: 0
   serverOnly: 0
   visible: 0
-  m_AssetId: b7e04da58dc98a946880bce6b44eaa7c
+  m_AssetId: e6bd83351ea8f9949b350b8073bb2020
   hasSpawned: 0
 --- !u!114 &4074743734564941293
 MonoBehaviour:
@@ -208,11 +208,23 @@ MonoBehaviour:
   m_GameObject: {fileID: 3697155342802577629}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e53d0299c1c44e4abd07f596e270cd53, type: 3}
+  m_Script: {fileID: 11500000, guid: 5eba665a974c12049812fc2ab4e9698c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   syncMode: 0
   syncInterval: 0.1
+  sens: 400
+  speed: 8
+  jumpf: 1
+  gravity: 0.1
+  camyr: {fileID: 0}
+  ground_t: {fileID: 0}
+  controller: {fileID: 0}
+  ground:
+    serializedVersion: 2
+    m_Bits: 0
+  onground: 0
+  velocity: {x: 0, y: 0, z: 0}
 --- !u!1 &3697155343411083146
 GameObject:
   m_ObjectHideFlags: 0
