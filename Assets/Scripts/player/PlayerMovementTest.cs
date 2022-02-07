@@ -1,35 +1,42 @@
+using Mirror;
 using UnityEngine;
 
-public class PlayerMovementTest : MonoBehaviour
+public class PlayerMovementTest : NetworkBehaviour
 {
     public float sens = 400f;
     public float speed = 8f;
     public float jumpf = 1f;
     public float gravity = 0.1f;
 
-    [SerializeField] private Transform camera_t;
+    [SerializeField] private Camera camyr;
     [SerializeField] private Transform ground_t;
     [SerializeField] private CharacterController controller;
     [SerializeField] private LayerMask ground;
     [SerializeField] private bool onground;
     [SerializeField] private Vector3 velocity;
 
-    private float cameray;
+    private float cameraY;
 
     private void Start()
     {
+        if (!isLocalPlayer) return;
+        camyr = Camera.main;
+        camyr.gameObject.transform.parent = transform;
+        camyr.transform.position = new Vector3(transform.position.x, transform.position.y + .6f, transform.position.z);
         Cursor.lockState = CursorLockMode.Locked;
         // Cursor.visible = false;
     }
 
     private void Update()
     {
+        if (!isLocalPlayer) return;
         move();
         jump();
     }
 
     private void LateUpdate()
     {
+        if (!isLocalPlayer) return;
         rotate();
     }
 
@@ -38,10 +45,10 @@ public class PlayerMovementTest : MonoBehaviour
         var mousex = Input.GetAxis("Mouse X") * sens * Time.deltaTime;
         var mousey = Input.GetAxis("Mouse Y") * sens * Time.deltaTime;
 
-        cameray -= mousey;
+        cameraY -= mousey;
 
-        cameray = Mathf.Clamp(cameray, -90f, 90f);
-        camera_t.localRotation = Quaternion.Euler(cameray, 0, 0);
+        cameraY = Mathf.Clamp(cameraY, -90f, 90f);
+        camyr.transform.localRotation = Quaternion.Euler(cameraY, 0, 0);
         transform.Rotate(Vector3.up * mousex);
     }
 
