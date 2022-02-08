@@ -26,12 +26,12 @@ public class LobbyMenuManager : NetworkBehaviour
         selectTeamUI.SetActive(false);
         agentSelectUI.SetActive(true);
 
-        if (teamIndex == 0)
+        if (teamIndex == 1)
         {
             BlueTeamSize++;
             BlueTeamCountBtnText.text = BlueTeamSize.ToString();
         }
-        else if (teamIndex == 1)
+        else if (teamIndex == 2)
         {
             RedTeamSize++;
             RedTeamCountBtnText.text = RedTeamSize.ToString();

@@ -3,18 +3,18 @@ using Mirror;
 
 public enum Team
 {
-    Blue, Red
+    Non,Blue, Red
 }
 
 public class LobbyPlayer : NetworkBehaviour
 {
-    public static string DisplayName;
+    public string DisplayName;
     public static Team SelectedTeam;
 
     private void Start()
     {
+        if (!isLocalPlayer) return;
         DisplayName = NicknameManager.DisplayName;
-
         Debug.Log(DisplayName + SelectedTeam);
     }
 }
