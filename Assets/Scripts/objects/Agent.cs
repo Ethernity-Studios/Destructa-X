@@ -2,7 +2,7 @@
 
 namespace objects
 {
-    [CreateAssetMenu(fileName = "FILENAME", menuName = "MENUNAME", order = 0)]
+    [CreateAssetMenu]
     public class Agent : ScriptableObject
     {
         public string Name;

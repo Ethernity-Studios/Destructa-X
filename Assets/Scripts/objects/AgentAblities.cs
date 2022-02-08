@@ -28,7 +28,7 @@ using UnityEngine;
     [Serializable]
     public class QAbility
     {
-        public int Cose;
+        public int Cost;
         public int Amount;
         public AbilityRefresh Refresh;
         public int RefreshValue;
@@ -38,7 +38,7 @@ using UnityEngine;
     [Serializable]
     public class EAbility
     {
-        public int Cose;
+        public int Cost;
         public int Amount;
         public AbilityRefresh Refresh;
         public int RefreshValue;
@@ -48,7 +48,7 @@ using UnityEngine;
     [Serializable]
     public class CAbility
     {
-        public int Cose;
+        public int Cost;
         public int Amount;
         public AbilityRefresh Refresh;
         public int RefreshValue;

@@ -1,0 +1,42 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7c225749602f46c3bb83a41df2f179bb, type: 3}
+  m_Name: Test
+  m_EditorClassIdentifier: 
+  Name: Test
+  Meta:
+    Object: {fileID: 0}
+    Icon: {fileID: 21300000, guid: f14362dcb3ac1354db3782c9c28f0536, type: 3}
+    AClass: 0
+  Ablities:
+    DefaultAbility: 0
+    QAbility:
+      Cost: 0
+      Amount: 0
+      Refresh: 0
+      RefreshValue: 0
+      Object: {fileID: 0}
+    EAbility:
+      Cost: 0
+      Amount: 0
+      Refresh: 0
+      RefreshValue: 0
+      Object: {fileID: 0}
+    CAbility:
+      Cost: 0
+      Amount: 0
+      Refresh: 0
+      RefreshValue: 0
+      Object: {fileID: 0}
+    XAbility:
+      Points: 0
+      Object: {fileID: 0}
