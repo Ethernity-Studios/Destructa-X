@@ -10,5 +10,6 @@ namespace objects
         public AgentMeta Meta;
 
         public AgentAblities Ablities;
+
     }
 }

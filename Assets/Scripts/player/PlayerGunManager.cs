@@ -51,7 +51,7 @@ public class PlayerGunManager : NetworkBehaviour
     // Debug.DrawRay(pos.position, pos.TransformDirection(Vector3.forward) * 10, Color.cyan);
     public BulletPath BulletPenetration(Transform pos, int maxpen = 5) // FIXME
     {
-        var dierection = pos.TransformDirection(Vector3.forward) * 10;
+        var direction = pos.TransformDirection(Vector3.forward) * 10;
 
         BulletImpact[] impacts = null;
         RaycastHit? hitus = null;
@@ -61,7 +61,7 @@ public class PlayerGunManager : NetworkBehaviour
 
         for (var i = 0; i <= maxpen; i++)
         {
-            var ray = new Ray(origin.position, dierection);
+            var ray = new Ray(origin.position, direction);
 
             if (Physics.Raycast(ray, out var hit) && hit.collider.GetComponent<EntityBase>())
             {
@@ -71,7 +71,7 @@ public class PlayerGunManager : NetworkBehaviour
             {
                 var pen = hit.collider.GetComponent<Penetration>();
 
-                if (coll.Raycast(new Ray(hit.transform.position + Vector3.one * 20, dierection * -1), out var hitb,
+                if (coll.Raycast(new Ray(hit.transform.position + Vector3.one * 20, direction * -1), out var hitb,
                         50.0f))
                 {
                     var len = (hitb.transform.position - hit.transform.position).magnitude;

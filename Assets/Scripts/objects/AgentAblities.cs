@@ -1,8 +1,6 @@
 ﻿using System;
 using UnityEngine;
 
-namespace objects
-{
     public enum DefaultAbility
     {
         Q,
@@ -63,4 +61,3 @@ namespace objects
         public int Points;
         public GameObject Object;
     }
-}

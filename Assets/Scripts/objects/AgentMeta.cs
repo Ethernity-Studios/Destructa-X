@@ -5,8 +5,10 @@ namespace objects
 {
     public enum AgentClass
     {
-        Sentine,
-        Duelist
+        Sentinel,
+        Duelis,
+        Initiator,
+        Controller
     }
 
     [Serializable]
