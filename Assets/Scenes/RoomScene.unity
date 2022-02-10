@@ -4709,10 +4709,10 @@ MonoBehaviour:
   syncInterval: 0.1
   selectTeamUI: {fileID: 1434751635}
   agentSelectUI: {fileID: 1757040940}
-  BlueTeamSize: 0
-  RedTeamSize: 0
   BlueTeamCountBtnText: {fileID: 1482192634}
   RedTeamCountBtnText: {fileID: 1731656046}
+  BlueTeamSize: 0
+  RedTeamSize: 0
 --- !u!114 &2125760479
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -1,20 +1,28 @@
 using UnityEngine;
 using Mirror;
-
-public enum Team
-{
-    Non,Blue, Red
-}
+using TMPro;
 
 public class LobbyPlayer : NetworkBehaviour
 {
     public string DisplayName;
-    public static Team SelectedTeam;
+    public Team SelectedTeam;
+
+    LobbyMenuManager lobbyMenuManager;
 
     private void Start()
     {
+        lobbyMenuManager = FindObjectOfType<LobbyMenuManager>();
         if (!isLocalPlayer) return;
         DisplayName = NicknameManager.DisplayName;
-        Debug.Log(DisplayName + SelectedTeam);
+        lobbyMenuManager.lobbyPlayers.Add(this);
     }
+
+    /*public override void OnStopClient()
+    {
+        lobbyMenuManager.lobbyPlayers.Remove(this);
+        if (SelectedTeam != Team.None)
+        lobbyMenuManager.LeaveTeam(SelectedTeam);
+        base.OnStopClient();
+    }*/
+
 }
