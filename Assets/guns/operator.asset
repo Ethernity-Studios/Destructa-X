@@ -16,6 +16,9 @@ MonoBehaviour:
   MagazineSize: 5
   MaxAmmo: 10
   ReloadTime: 1
+  Type: 0
+  GunModel: {fileID: 2739582046899967431, guid: 92b18b8702a650549925745bbe4e0b23, type: 3}
+  GunIcon: {fileID: 0}
   LMB:
     FireType: 5
     FireMode: 1

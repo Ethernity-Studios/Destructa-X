@@ -17,6 +17,7 @@ GameObject:
   - component: {fileID: 2475809864135493570}
   - component: {fileID: 4074743734564941293}
   - component: {fileID: -9075316998596830470}
+  - component: {fileID: 8262962435243930217}
   m_Layer: 0
   m_Name: Been
   m_TagString: Untagged
@@ -213,6 +214,25 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   syncMode: 0
   syncInterval: 0.1
+--- !u!114 &8262962435243930217
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3697155342802577629}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b165ebaf8752f3a41adad9d015aa2c44, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncMode: 0
+  syncInterval: 0.1
+  coll: {fileID: 0}
+  Knife: {fileID: 7931560418534694507, guid: f1d8f94a742923148b0f4274d0e957d0, type: 3}
+  CurrentWeapon: 1
+  CurrenRenderWeapon: {fileID: 0}
+  DefaultGun: {fileID: 11400000, guid: 475659704fd14a942aa9653f7630d183, type: 2}
 --- !u!1 &3697155343411083146
 GameObject:
   m_ObjectHideFlags: 0
