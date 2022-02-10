@@ -4,17 +4,29 @@ using material;
 using Mirror;
 using UnityEngine;
 
+public enum CurrentWeapon
+{
+    Primary,
+    Secondary,
+    Knife
+}
+
 public class PlayerGunManager : NetworkBehaviour
 {
     public Collider coll;
 
     public Gun Primary;
     public Gun Secondary;
+    public GameObject Knife;
+
+    public CurrentWeapon CurrentWeapon;
     private Camera camyr;
 
     private void Start()
     {
         if (!isLocalPlayer) return;
+
+        CurrentWeapon = CurrentWeapon.Secondary;
 
         camyr = Camera.main;
         coll = GetComponent<Collider>();
@@ -37,6 +49,49 @@ public class PlayerGunManager : NetworkBehaviour
         // todo
     }
 
+    private void ChnageWeapon()
+    {
+        if (Input.GetKeyDown(KeyCode.Alpha1) && Primary)
+        {
+            CurrentWeapon = CurrentWeapon.Primary;
+            RenderWeapon();
+        }
+        else if (Input.GetKeyDown(KeyCode.Alpha2) && Secondary)
+        {
+            CurrentWeapon = CurrentWeapon.Secondary;
+            RenderWeapon();
+        }
+        else if (Input.GetKeyDown(KeyCode.Alpha3))
+        {
+            CurrentWeapon = CurrentWeapon.Knife;
+            RenderWeapon();
+        }
+    }
+
+
+    private void RenderWeapon()
+    {
+        switch (CurrentWeapon)
+        {
+            case CurrentWeapon.Primary:
+            {
+                var cur = Primary;
+                Instantiate(cur);
+                break;
+            }
+            case CurrentWeapon.Secondary:
+            {
+                var cur = Secondary;
+                Instantiate(cur);
+                break;
+            }
+            case CurrentWeapon.Knife:
+            {
+                Instantiate(Knife);
+                break;
+            }
+        }
+    }
 
     public void control()
     {
@@ -97,6 +152,11 @@ public class PlayerGunManager : NetworkBehaviour
         }
 
         return new BulletPath {Impacts = impacts, hit = hitus, DamageModifier = damagemod};
+    }
+
+    public void Refresh()
+    {
+        // TODO replanish ammo after respawn
     }
 
 

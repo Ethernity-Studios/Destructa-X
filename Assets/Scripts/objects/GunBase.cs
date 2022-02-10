@@ -70,3 +70,9 @@ public class Scope
     public float BloomModifier;
     public float RecoilModifier;
 }
+
+public enum GunType
+{
+    Primary,
+    Secondary
+}
