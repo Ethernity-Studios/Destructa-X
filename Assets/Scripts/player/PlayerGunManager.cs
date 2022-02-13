@@ -51,7 +51,7 @@ public class PlayerGunManager : NetworkBehaviour
 
         control();
         ChnageWeapon();
-        DropWeapon();
+        HandleDropWeapon();
     }
 
     public void OnCollisionEnter(Collision collision)
@@ -88,6 +88,10 @@ public class PlayerGunManager : NetworkBehaviour
         }
 
         Destroy(collision.collider.transform);
+    }
+
+    public void HandlePickup()
+    {
     }
 
     public void Shoot()
@@ -217,55 +221,60 @@ public class PlayerGunManager : NetworkBehaviour
         // TODO
     }
 
-    public void DropWeapon()
+    public void HandleDropWeapon()
     {
-        if (Input.GetKeyDown(KeyCode.G))
-            switch (CurrentWeapon)
+        if (Input.GetKeyDown(KeyCode.G)) DropCurrentWeapon();
+    }
+
+
+    public void DropCurrentWeapon()
+    {
+        switch (CurrentWeapon)
+        {
+            case CurrentWeapon.Primary:
             {
-                case CurrentWeapon.Primary:
+                var model = Primary?.Gun.GunModel;
+                var obj = Instantiate(model, transform.position, Quaternion.identity);
+                //var bodyr = obj.AddComponent<Rigidbody>();
+                obj.AddComponent<GunScript>().Init(Primary.Value);
+                Primary = null;
+                //bodyr.AddForce(transform.position.normalized*2*Time.deltaTime);
+                if (Secondary != null)
                 {
-                    var model = Primary?.Gun.GunModel;
-                    var obj = Instantiate(model, transform.position, Quaternion.identity);
-                    //var bodyr = obj.AddComponent<Rigidbody>();
-                    obj.AddComponent<GunScript>().Init(Primary.Value);
-                    Primary = null;
-                    //bodyr.AddForce(transform.position.normalized*2*Time.deltaTime);
-                    if (Secondary != null)
-                    {
-                        CurrentWeapon = CurrentWeapon.Secondary;
-                        RenderWeapon();
-                    }
-                    else
-                    {
-                        CurrentWeapon = CurrentWeapon.Knife;
-                        RenderWeapon();
-                    }
-
-                    break;
+                    CurrentWeapon = CurrentWeapon.Secondary;
+                    RenderWeapon();
                 }
-                case CurrentWeapon.Secondary:
+                else
                 {
-                    var model = Secondary?.Gun.GunModel;
-                    var obj = Instantiate(model, transform.position, Quaternion.identity);
-                    //obj.AddComponent<Rigidbody>();
-                    obj.AddComponent<GunScript>().Init(Secondary.Value);
-                    Secondary = null;
-                    //obj.GetComponent<Rigidbody>().AddForce(transform.position.normalized*2*Time.deltaTime);
-
-                    if (Primary != null)
-                    {
-                        CurrentWeapon = CurrentWeapon.Secondary;
-                        RenderWeapon();
-                    }
-                    else
-                    {
-                        CurrentWeapon = CurrentWeapon.Knife;
-                        RenderWeapon();
-                    }
-
-                    break;
+                    CurrentWeapon = CurrentWeapon.Knife;
+                    RenderWeapon();
                 }
+
+                break;
             }
+            case CurrentWeapon.Secondary:
+            {
+                var model = Secondary?.Gun.GunModel;
+                var obj = Instantiate(model, transform.position, Quaternion.identity);
+                //obj.AddComponent<Rigidbody>();
+                obj.AddComponent<GunScript>().Init(Secondary.Value);
+                Secondary = null;
+                //obj.GetComponent<Rigidbody>().AddForce(transform.position.normalized*2*Time.deltaTime);
+
+                if (Primary != null)
+                {
+                    CurrentWeapon = CurrentWeapon.Secondary;
+                    RenderWeapon();
+                }
+                else
+                {
+                    CurrentWeapon = CurrentWeapon.Knife;
+                    RenderWeapon();
+                }
+
+                break;
+            }
+        }
     }
 
 
