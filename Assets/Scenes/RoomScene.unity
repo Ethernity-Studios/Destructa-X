@@ -2890,6 +2890,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   syncMode: 0
   syncInterval: 0.1
+  lastSyncTime: 0
+  <netIdentity>k__BackingField: {fileID: 0}
+  <ComponentIndex>k__BackingField: 0
+  <syncVarDirtyBits>k__BackingField: 0
+  syncObjectDirtyBits: 0
+  syncVarHookGuard: 0
 --- !u!4 &1416370631
 Transform:
   m_ObjectHideFlags: 0
@@ -4713,6 +4719,7 @@ MonoBehaviour:
   RedTeamCountBtnText: {fileID: 1731656046}
   BlueTeamSize: 0
   RedTeamSize: 0
+  lobbyPlayers: []
 --- !u!114 &2125760479
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -3,7 +3,7 @@ using TMPro;
 
 public class MainMenu : MonoBehaviour
 {
-    [SerializeField]NetworkManagerLobby networkManagerLobby;
+    [SerializeField] NetworkManagerRoom networkManagerLobby;
     [SerializeField] GameObject MainMenuUI;
 
     [SerializeField] TMP_InputField NetworkAdressInputField;

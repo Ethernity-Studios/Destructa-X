@@ -10,7 +10,7 @@ public enum Team
 
 public class LobbyMenuManager : NetworkBehaviour
 {
-    [SerializeField] GameObject selectTeamUI;
+    /*[SerializeField] GameObject selectTeamUI;
     [SerializeField] GameObject agentSelectUI;
 
 
@@ -26,7 +26,7 @@ public class LobbyMenuManager : NetworkBehaviour
     public List<LobbyPlayer> lobbyPlayers = new();
     LobbyPlayer localPlayer;
 
-    public void JoinTeam(int teamIndex)
+    /*public void JoinTeam(int teamIndex)
     {
         selectTeamUI.SetActive(false);
         agentSelectUI.SetActive(true);
@@ -45,17 +45,17 @@ public class LobbyMenuManager : NetworkBehaviour
             CmdUpdateTeamSize(0, 1);
         }
 
-    }
-    public void LeaveTeam(Team team)
+    }*/
+    /*public void LeaveTeam(Team team)
     {
         if(localPlayer.SelectedTeam == Team.Blue)
         {
-            CmdUpdateTeamSize(-1,0);
+            BlueTeamSize--;
             localPlayer.SelectedTeam = Team.None;
         }
         else if(localPlayer.SelectedTeam == Team.Red)
         {
-            CmdUpdateTeamSize(0, -1);
+            RedTeamSize--;
             localPlayer.SelectedTeam = Team.None;
         }
     }
@@ -71,6 +71,7 @@ public class LobbyMenuManager : NetworkBehaviour
     [Command(requiresAuthority = false)]
     public void CmdUpdateTeamSizeUI(int _, int newValue)
     {
+        Debug.Log("Old value" + _ + "new value" + newValue);
         RpcUpdateTeamSize();
     }
 
@@ -79,6 +80,6 @@ public class LobbyMenuManager : NetworkBehaviour
     {
         BlueTeamCountBtnText.text = BlueTeamSize.ToString();
         RedTeamCountBtnText.text = RedTeamSize.ToString();
-    }
+    }*/
 
 }

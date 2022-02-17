@@ -2,27 +2,35 @@ using UnityEngine;
 using Mirror;
 using TMPro;
 
-public class LobbyPlayer : NetworkBehaviour
+public class LobbyPlayer : NetworkRoomPlayer
 {
-    public string DisplayName;
-    public Team SelectedTeam;
-
-    LobbyMenuManager lobbyMenuManager;
-
-    private void Start()
+    NetworkManagerRoom room;
+    NetworkManagerRoom Room
     {
-        lobbyMenuManager = FindObjectOfType<LobbyMenuManager>();
-        if (!isLocalPlayer) return;
-        DisplayName = NicknameManager.DisplayName;
-        lobbyMenuManager.lobbyPlayers.Add(this);
+        get
+        {
+            if (room != null) { return room; }
+            return room = NetworkManager.singleton as NetworkManagerRoom;
+        }
+    }
+    [SyncVar]
+    string PlayerName;
+    [SyncVar]
+    Team PlayerTeam;
+
+    public override void OnStartClient()
+    {
+        base.OnStartClient();
     }
 
-    /*public override void OnStopClient()
+    public override void OnStopClient()
     {
-        lobbyMenuManager.lobbyPlayers.Remove(this);
-        if (SelectedTeam != Team.None)
-        lobbyMenuManager.LeaveTeam(SelectedTeam);
-        base.OnStopClient();
-    }*/
+
+    }
+
+    void UpdateUI()
+    {
+
+    }
 
 }
