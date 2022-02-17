@@ -1,8 +1,16 @@
 using System.Linq;
+using gun;
 using JetBrains.Annotations;
 using material;
 using Mirror;
 using UnityEngine;
+
+public struct GunInstance
+{
+    public Gun Gun;
+    public int Ammo;
+    public int Magazine;
+}
 
 public enum CurrentWeapon
 {
@@ -14,19 +22,24 @@ public enum CurrentWeapon
 public class PlayerGunManager : NetworkBehaviour
 {
     public Collider coll;
-
-    public Gun Primary;
-    public Gun Secondary;
     public GameObject Knife;
 
     public CurrentWeapon CurrentWeapon;
+    public GameObject CurrenRenderWeapon;
+    public Gun DefaultGun;
+
     private Camera camyr;
+
+    public GunInstance? Primary;
+    public GunInstance? Secondary;
 
     private void Start()
     {
         if (!isLocalPlayer) return;
 
         CurrentWeapon = CurrentWeapon.Secondary;
+        Secondary = new GunInstance {Gun = DefaultGun, Ammo = DefaultGun.MaxAmmo, Magazine = DefaultGun.MagazineSize};
+        CurrenRenderWeapon = Instantiate(DefaultGun.GunModel, transform.position, Quaternion.identity, transform);
 
         camyr = Camera.main;
         coll = GetComponent<Collider>();
@@ -37,6 +50,48 @@ public class PlayerGunManager : NetworkBehaviour
         if (!isLocalPlayer) return;
 
         control();
+        ChnageWeapon();
+        HandleDropWeapon();
+    }
+
+    public void OnCollisionEnter(Collision collision)
+    {
+        Debug.Log("AMOGUS");
+        GunScript? gun = null;
+        collision.collider.TryGetComponent(out gun);
+
+        if (gun == null) return;
+        switch (gun.Gun.Gun.Type)
+        {
+            case GunType.Primary:
+            {
+                if (Primary != null)
+                {
+                    Primary = gun.Gun;
+                    CurrentWeapon = CurrentWeapon.Primary;
+                    RenderWeapon();
+                }
+
+                break;
+            }
+            case GunType.Secondary:
+            {
+                if (Secondary != null)
+                {
+                    Secondary = gun.Gun;
+                    CurrentWeapon = CurrentWeapon.Primary;
+                    RenderWeapon();
+                }
+
+                break;
+            }
+        }
+
+        Destroy(collision.collider.transform);
+    }
+
+    public void HandlePickup()
+    {
     }
 
     public void Shoot()
@@ -51,12 +106,12 @@ public class PlayerGunManager : NetworkBehaviour
 
     private void ChnageWeapon()
     {
-        if (Input.GetKeyDown(KeyCode.Alpha1) && Primary)
+        if (Input.GetKeyDown(KeyCode.Alpha1) && Primary != null)
         {
             CurrentWeapon = CurrentWeapon.Primary;
             RenderWeapon();
         }
-        else if (Input.GetKeyDown(KeyCode.Alpha2) && Secondary)
+        else if (Input.GetKeyDown(KeyCode.Alpha2) && Secondary != null)
         {
             CurrentWeapon = CurrentWeapon.Secondary;
             RenderWeapon();
@@ -71,23 +126,25 @@ public class PlayerGunManager : NetworkBehaviour
 
     private void RenderWeapon()
     {
+        Destroy(CurrenRenderWeapon);
+
         switch (CurrentWeapon)
         {
             case CurrentWeapon.Primary:
             {
                 var cur = Primary;
-                Instantiate(cur);
+                CurrenRenderWeapon = Instantiate(cur?.Gun.GunModel, transform.position, Quaternion.identity, transform);
                 break;
             }
             case CurrentWeapon.Secondary:
             {
                 var cur = Secondary;
-                Instantiate(cur);
+                CurrenRenderWeapon = Instantiate(cur?.Gun.GunModel, transform.position, Quaternion.identity, transform);
                 break;
             }
             case CurrentWeapon.Knife:
             {
-                Instantiate(Knife);
+                CurrenRenderWeapon = Instantiate(Knife, transform.position, Quaternion.identity, transform);
                 break;
             }
         }
@@ -157,6 +214,67 @@ public class PlayerGunManager : NetworkBehaviour
     public void Refresh()
     {
         // TODO replanish ammo after respawn
+    }
+
+    public void PickupWeapon()
+    {
+        // TODO
+    }
+
+    public void HandleDropWeapon()
+    {
+        if (Input.GetKeyDown(KeyCode.G)) DropCurrentWeapon();
+    }
+
+
+    public void DropCurrentWeapon()
+    {
+        switch (CurrentWeapon)
+        {
+            case CurrentWeapon.Primary:
+            {
+                var model = Primary?.Gun.GunModel;
+                var obj = Instantiate(model, transform.position, Quaternion.identity);
+                //var bodyr = obj.AddComponent<Rigidbody>();
+                obj.AddComponent<GunScript>().Init(Primary.Value);
+                Primary = null;
+                //bodyr.AddForce(transform.position.normalized*2*Time.deltaTime);
+                if (Secondary != null)
+                {
+                    CurrentWeapon = CurrentWeapon.Secondary;
+                    RenderWeapon();
+                }
+                else
+                {
+                    CurrentWeapon = CurrentWeapon.Knife;
+                    RenderWeapon();
+                }
+
+                break;
+            }
+            case CurrentWeapon.Secondary:
+            {
+                var model = Secondary?.Gun.GunModel;
+                var obj = Instantiate(model, transform.position, Quaternion.identity);
+                //obj.AddComponent<Rigidbody>();
+                obj.AddComponent<GunScript>().Init(Secondary.Value);
+                Secondary = null;
+                //obj.GetComponent<Rigidbody>().AddForce(transform.position.normalized*2*Time.deltaTime);
+
+                if (Primary != null)
+                {
+                    CurrentWeapon = CurrentWeapon.Secondary;
+                    RenderWeapon();
+                }
+                else
+                {
+                    CurrentWeapon = CurrentWeapon.Knife;
+                    RenderWeapon();
+                }
+
+                break;
+            }
+        }
     }
 
 

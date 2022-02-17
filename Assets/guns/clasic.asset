@@ -10,42 +10,42 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 2797a7e7978d4fa3bf4d76869be850f0, type: 3}
-  m_Name: Operator
+  m_Name: clasic
   m_EditorClassIdentifier: 
-  Name: operator
-  MagazineSize: 5
-  MaxAmmo: 10
+  Name: clasic
+  MagazineSize: 15
+  MaxAmmo: 30
   ReloadTime: 1
-  Type: 0
-  GunModel: {fileID: 2739582046899967431, guid: 92b18b8702a650549925745bbe4e0b23, type: 3}
+  Type: 1
+  GunModel: {fileID: 2630420225552749300, guid: d38bfe476b35eee4ab32fa6455344408, type: 3}
   GunIcon: {fileID: 0}
   LMB:
     FireType: 5
     FireMode: 1
-    FireDelay: 1
+    FireDelay: 0.1
     AmmoLoss: 1
     LegDamage: 50
-    BodyDamage: 100
-    HeadDamage: 150
-    DamageDrop: 1
+    BodyDamage: 50
+    HeadDamage: 50
+    DamageDrop: 50
     Recoil: 1
     Bloom: 1
   RMB:
-    Type: 0
+    Type: 2
     Scope:
-      Magnification: 4
+      Magnification: 0
       ScopeType: 0
-      MoveSpeedModifier: 1
-      BloomModifier: 1
-      RecoilModifier: 1
+      MoveSpeedModifier: 0
+      BloomModifier: 0
+      RecoilModifier: 0
     Fire:
-      FireType: 0
-      FireMode: 0
-      FireDelay: 0
-      AmmoLoss: 0
-      LegDamage: 0
-      BodyDamage: 0
-      HeadDamage: 0
-      DamageDrop: 0
-      Recoil: 0
-      Bloom: 0
+      FireType: 3
+      FireMode: 1
+      FireDelay: 1
+      AmmoLoss: 3
+      LegDamage: 50
+      BodyDamage: 50
+      HeadDamage: 50
+      DamageDrop: 50
+      Recoil: 1
+      Bloom: 1
