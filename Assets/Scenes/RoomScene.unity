@@ -947,8 +947,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 2125760478}
-        m_TargetAssemblyTypeName: LobbyMenuManager, Assembly-CSharp
+      - m_Target: {fileID: 2125760481}
+        m_TargetAssemblyTypeName: RoomManager, Assembly-CSharp
         m_MethodName: JoinTeam
         m_Mode: 3
         m_Arguments:
@@ -2888,14 +2888,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 138afb82689c9af498a087826f3e8a6a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  syncMode: 0
-  syncInterval: 0.1
-  lastSyncTime: 0
-  <netIdentity>k__BackingField: {fileID: 0}
-  <ComponentIndex>k__BackingField: 0
-  <syncVarDirtyBits>k__BackingField: 0
-  syncObjectDirtyBits: 0
-  syncVarHookGuard: 0
 --- !u!4 &1416370631
 Transform:
   m_ObjectHideFlags: 0
@@ -4385,8 +4377,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 2125760478}
-        m_TargetAssemblyTypeName: LobbyMenuManager, Assembly-CSharp
+      - m_Target: {fileID: 2125760481}
+        m_TargetAssemblyTypeName: RoomManager, Assembly-CSharp
         m_MethodName: JoinTeam
         m_Mode: 3
         m_Arguments:
@@ -4691,7 +4683,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2125760480}
   - component: {fileID: 2125760479}
-  - component: {fileID: 2125760478}
+  - component: {fileID: 2125760481}
   m_Layer: 0
   m_Name: LobbyMenuManager
   m_TagString: Untagged
@@ -4699,27 +4691,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &2125760478
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2125760477}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 494a4b53462580243b91507f41565c08, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  syncMode: 0
-  syncInterval: 0.1
-  selectTeamUI: {fileID: 1434751635}
-  agentSelectUI: {fileID: 1757040940}
-  BlueTeamCountBtnText: {fileID: 1482192634}
-  RedTeamCountBtnText: {fileID: 1731656046}
-  BlueTeamSize: 0
-  RedTeamSize: 0
-  lobbyPlayers: []
 --- !u!114 &2125760479
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4752,6 +4723,26 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2125760481
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2125760477}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 17842b1a5fc2e4e4390c72d0b13bc745, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncMode: 0
+  syncInterval: 0.1
+  BlueTeamSize: 0
+  RedTeamSize: 0
+  TeamSelectUI: {fileID: 1434751635}
+  AgentSelectUI: {fileID: 1757040940}
+  BlueTeamSizeText: {fileID: 1482192634}
+  RedTeamSizeText: {fileID: 1731656046}
 --- !u!1 &2138225429
 GameObject:
   m_ObjectHideFlags: 0
