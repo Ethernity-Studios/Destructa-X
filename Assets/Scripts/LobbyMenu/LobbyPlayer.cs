@@ -4,6 +4,7 @@ using UnityEngine;
 public class LobbyPlayer : NetworkRoomPlayer
 {
     RoomManager roomManager;
+    AgentManager agentManager;
 
     NetworkManagerRoom room;
     NetworkManagerRoom Room
@@ -18,11 +19,16 @@ public class LobbyPlayer : NetworkRoomPlayer
     public string PlayerName;
     [SyncVar]
     public Team PlayerTeam;
+    [SyncVar]
+    public Agent PlayerPreselectedAgent;
+    [SyncVar]
+    public Agent PlayerSelectedAgent;
 
     public override void OnStartClient()
     {
         if (!isLocalPlayer) return;
         roomManager = FindObjectOfType<RoomManager>();
+        agentManager = FindObjectOfType<AgentManager>();
 
         CmdSetNickname(NicknameManager.DisplayName);
 
@@ -57,6 +63,8 @@ public class LobbyPlayer : NetworkRoomPlayer
         base.OnClientExitRoom();
     }
 
+    #region Command synchronization
+
     [Command]
     public void CmdJoinTeam(Team team)
     {
@@ -69,4 +77,16 @@ public class LobbyPlayer : NetworkRoomPlayer
         PlayerName = name;
     }
 
+    [Command]
+    public void CmdPreselectAgent(Agent agent)
+    {
+        PlayerPreselectedAgent = agent;
+    }
+
+    [Command]
+    public void CmdSelectAgent(Agent agent)
+    {
+        PlayerSelectedAgent = agent;
+    }
+    #endregion
 }

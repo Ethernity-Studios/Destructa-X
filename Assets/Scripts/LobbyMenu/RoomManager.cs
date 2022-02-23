@@ -1,6 +1,7 @@
 using UnityEngine;
 using Mirror;
 using TMPro;
+using UnityEngine.UI;
 
 public enum Team
 {
@@ -30,6 +31,10 @@ public class RoomManager : NetworkBehaviour
     [SerializeField]TMP_Text BlueTeamSizeText;
     [SerializeField]TMP_Text RedTeamSizeText;
 
+    [SerializeField] GameObject PreselectedAgentGO;
+    [SerializeField] Image PreselectedAgentImg;
+
+    #region TeamManagement
     public void JoinTeam(int teamIndex)
     {
         foreach (var player in Room.roomSlots)
@@ -77,4 +82,19 @@ public class RoomManager : NetworkBehaviour
         BlueTeamSizeText.text = BlueTeamSize.ToString();
         RedTeamSizeText.text = RedTeamSize.ToString();
     }
+    #endregion
+
+    #region AgentManagement
+
+    public void PreselectAgent(string agent)
+    {
+
+    }
+
+    public void SelectAgent(string agent)
+    {
+
+    }
+
+    #endregion
 }
