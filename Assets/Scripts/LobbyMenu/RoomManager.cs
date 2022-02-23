@@ -39,14 +39,18 @@ public class RoomManager : NetworkBehaviour
                 LobbyPlayer localPlayer = player.GetComponent<LobbyPlayer>();
                 if (teamIndex == 1 && BlueTeamSize <5)
                 {
-                    localPlayer.PlayerTeam = Team.Blue;
+                    localPlayer.CmdJoinTeam(Team.Blue);
                     CmdUpdateTeamSize(1,0);
+                    foreach (var playerr in Room.roomSlots)
+                    {
+                        if (playerr.isLocalPlayer) playerr.GetComponent<LobbyPlayer>().PlayerTeam = Team.Blue;
+                    }
                     TeamSelectUI.SetActive(false);
                     AgentSelectUI.SetActive(true);
                 }
                 else if (teamIndex == 2 &&RedTeamSize <5) 
                 {
-                    localPlayer.PlayerTeam = Team.Red;
+                    localPlayer.CmdJoinTeam(Team.Red);
                     CmdUpdateTeamSize(0, 1);
                     TeamSelectUI.SetActive(false);
                     AgentSelectUI.SetActive(true);

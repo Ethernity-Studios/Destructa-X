@@ -24,9 +24,7 @@ public class LobbyPlayer : NetworkRoomPlayer
         if (!isLocalPlayer) return;
         roomManager = FindObjectOfType<RoomManager>();
 
-        PlayerName = NicknameManager.DisplayName;
-
-        UpdateLocalPlayerInfo();
+        CmdSetNickname(NicknameManager.DisplayName);
 
         base.OnStartClient();
     }
@@ -59,27 +57,16 @@ public class LobbyPlayer : NetworkRoomPlayer
         base.OnClientExitRoom();
     }
 
-    public void UpdateLocalPlayerInfo()
+    [Command]
+    public void CmdJoinTeam(Team team)
     {
-        if (!hasAuthority)
-        {
-            foreach (var player in Room.roomSlots)
-            {
-                if (player.hasAuthority)
-                {
-                    player.GetComponent<LobbyPlayer>().UpdateLocalPlayerInfo();
-                    break;
-                }
-            }
-            return;
-        }
-
-
+        PlayerTeam = team;
     }
 
-    void UpdateUI()
+    [Command]
+    public void CmdSetNickname(string name)
     {
-
+        PlayerName = name;
     }
 
 }
