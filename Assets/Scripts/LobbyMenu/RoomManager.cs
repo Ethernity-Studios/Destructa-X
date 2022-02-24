@@ -25,11 +25,17 @@ public class RoomManager : NetworkBehaviour
         }
     }
 
-    [SerializeField]GameObject TeamSelectUI;
-    [SerializeField]GameObject AgentSelectUI;
+    [SerializeField] GameObject TeamSelectUI;
+    [SerializeField] GameObject AgentSelectUI;
 
-    [SerializeField]TMP_Text BlueTeamSizeText;
-    [SerializeField]TMP_Text RedTeamSizeText;
+    [SerializeField] GameObject BlueTeamPrefab;
+    [SerializeField] GameObject RedTeamPrefab;
+
+    [SerializeField] Transform BlueTeamHolder;
+    [SerializeField] Transform RedTeamHolder;
+
+    [SerializeField] TMP_Text BlueTeamSizeText;
+    [SerializeField] TMP_Text RedTeamSizeText;
 
     [SerializeField] GameObject PreselectedAgentGO;
     [SerializeField] Image PreselectedAgentImg;
@@ -46,10 +52,7 @@ public class RoomManager : NetworkBehaviour
                 {
                     localPlayer.CmdJoinTeam(Team.Blue);
                     CmdUpdateTeamSize(1,0);
-                    foreach (var playerr in Room.roomSlots)
-                    {
-                        if (playerr.isLocalPlayer) playerr.GetComponent<LobbyPlayer>().PlayerTeam = Team.Blue;
-                    }
+                    CmdInstantiatePlayerTeamUI(Team.Blue, localPlayer);
                     TeamSelectUI.SetActive(false);
                     AgentSelectUI.SetActive(true);
                 }
@@ -57,10 +60,28 @@ public class RoomManager : NetworkBehaviour
                 {
                     localPlayer.CmdJoinTeam(Team.Red);
                     CmdUpdateTeamSize(0, 1);
+                    CmdInstantiatePlayerTeamUI(Team.Red, localPlayer);
                     TeamSelectUI.SetActive(false);
                     AgentSelectUI.SetActive(true);
                 } 
             }
+        }
+    }
+
+    [Command(requiresAuthority = false)]
+    public void CmdInstantiatePlayerTeamUI(Team team, LobbyPlayer localPlayer)
+    {
+        if (team == Team.Blue)
+        {
+            GameObject PlayerTeamUI = Instantiate(BlueTeamPrefab, BlueTeamHolder);
+            PlayerTeamUI.transform.GetChild(0).GetComponent<TMP_Text>().text = localPlayer.PlayerName;
+            NetworkServer.Spawn(PlayerTeamUI);
+        }
+        else if (team == Team.Red)
+        {
+            GameObject PlayerTeamUI = Instantiate(RedTeamPrefab, RedTeamHolder);
+            PlayerTeamUI.transform.GetChild(0).GetComponent<TMP_Text>().text = localPlayer.PlayerName;
+            NetworkServer.Spawn(PlayerTeamUI);
         }
     }
 

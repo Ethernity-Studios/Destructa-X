@@ -19,4 +19,23 @@ public class NetworkManagerRoom : NetworkRoomManager
         base.OnRoomServerDisconnect(conn);
     }*/
 
+    public override void OnStartServer() => spawnPrefabs = Resources.LoadAll<GameObject>("SpawnablePrefabs").ToList();
+
+    public override void OnStartClient()
+    {
+        var spawnablePrefabs = Resources.LoadAll<GameObject>("SpawnablePrefabs");
+
+        foreach (var prefab in spawnablePrefabs)
+        {
+            NetworkClient.RegisterPrefab(prefab);
+        }
+
+        base.OnStartClient();
+    }
+
+    public override void OnRoomServerConnect(NetworkConnection conn)
+    {
+        NetworkServer.SetClientReady(conn);
+        base.OnRoomServerConnect(conn);
+    }
 }
