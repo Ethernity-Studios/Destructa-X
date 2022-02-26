@@ -205,7 +205,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 5185681}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 2125760481}
+        m_TargetAssemblyTypeName: RoomManager, Assembly-CSharp
+        m_MethodName: PreselectAgent
+        m_Mode: 5
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: Breach
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &5185681
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -402,7 +414,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 46153021}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 2125760481}
+        m_TargetAssemblyTypeName: RoomManager, Assembly-CSharp
+        m_MethodName: PreselectAgent
+        m_Mode: 5
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: Sova
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &46153021
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -523,7 +547,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 56700394}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 2125760481}
+        m_TargetAssemblyTypeName: RoomManager, Assembly-CSharp
+        m_MethodName: PreselectAgent
+        m_Mode: 5
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: Omen
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &56700394
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -828,6 +864,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 063578533d22d5f419397499c673e5fd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  agent: 0
 --- !u!4 &247968855
 Transform:
   m_ObjectHideFlags: 0
@@ -1303,7 +1340,7 @@ MonoBehaviour:
     m_PressedTrigger: Pressed
     m_SelectedTrigger: Selected
     m_DisabledTrigger: Disabled
-  m_Interactable: 1
+  m_Interactable: 0
   m_TargetGraphic: {fileID: 424255062}
   m_OnClick:
     m_PersistentCalls:
@@ -1428,7 +1465,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 446782287}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 2125760481}
+        m_TargetAssemblyTypeName: RoomManager, Assembly-CSharp
+        m_MethodName: PreselectAgent
+        m_Mode: 5
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: Sage
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &446782287
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1702,7 +1751,7 @@ MonoBehaviour:
     m_PressedTrigger: Pressed
     m_SelectedTrigger: Selected
     m_DisabledTrigger: Disabled
-  m_Interactable: 1
+  m_Interactable: 0
   m_TargetGraphic: {fileID: 614580872}
   m_OnClick:
     m_PersistentCalls:
@@ -1962,7 +2011,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 677339664}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 2125760481}
+        m_TargetAssemblyTypeName: RoomManager, Assembly-CSharp
+        m_MethodName: PreselectAgent
+        m_Mode: 5
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: Skye
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &677339664
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2083,7 +2144,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 710447302}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 2125760481}
+        m_TargetAssemblyTypeName: RoomManager, Assembly-CSharp
+        m_MethodName: PreselectAgent
+        m_Mode: 5
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: Chamber
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &710447302
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2204,7 +2277,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 742755715}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 2125760481}
+        m_TargetAssemblyTypeName: RoomManager, Assembly-CSharp
+        m_MethodName: PreselectAgent
+        m_Mode: 5
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: Neon
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &742755715
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2401,7 +2486,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 853449831}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 2125760481}
+        m_TargetAssemblyTypeName: RoomManager, Assembly-CSharp
+        m_MethodName: PreselectAgent
+        m_Mode: 5
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: Killjoy
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &853449831
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2522,7 +2619,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 964196555}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 2125760481}
+        m_TargetAssemblyTypeName: RoomManager, Assembly-CSharp
+        m_MethodName: PreselectAgent
+        m_Mode: 5
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: Reyna
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &964196555
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2643,7 +2752,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 970242189}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 2125760481}
+        m_TargetAssemblyTypeName: RoomManager, Assembly-CSharp
+        m_MethodName: PreselectAgent
+        m_Mode: 5
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: Brimstone
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &970242189
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2764,7 +2885,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 978500403}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 2125760481}
+        m_TargetAssemblyTypeName: RoomManager, Assembly-CSharp
+        m_MethodName: PreselectAgent
+        m_Mode: 5
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: Raze
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &978500403
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3176,7 +3309,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1434751636
 RectTransform:
   m_ObjectHideFlags: 0
@@ -3283,7 +3416,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1471060637}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 2125760481}
+        m_TargetAssemblyTypeName: RoomManager, Assembly-CSharp
+        m_MethodName: PreselectAgent
+        m_Mode: 5
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: Viper
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1471060637
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3676,7 +3821,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1598922813}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 2125760481}
+        m_TargetAssemblyTypeName: RoomManager, Assembly-CSharp
+        m_MethodName: PreselectAgent
+        m_Mode: 5
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: Yoru
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1598922813
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3797,7 +3954,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1720627763}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 2125760481}
+        m_TargetAssemblyTypeName: RoomManager, Assembly-CSharp
+        m_MethodName: PreselectAgent
+        m_Mode: 5
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: Kayo
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1720627763
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4093,7 +4262,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1775171968}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 2125760481}
+        m_TargetAssemblyTypeName: RoomManager, Assembly-CSharp
+        m_MethodName: PreselectAgent
+        m_Mode: 5
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: Phoenix
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1775171968
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4254,7 +4435,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1812641046}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 2125760481}
+        m_TargetAssemblyTypeName: RoomManager, Assembly-CSharp
+        m_MethodName: PreselectAgent
+        m_Mode: 5
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: Jett
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1812641046
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4375,7 +4568,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1814240418}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 2125760481}
+        m_TargetAssemblyTypeName: RoomManager, Assembly-CSharp
+        m_MethodName: PreselectAgent
+        m_Mode: 5
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: Cypher
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1814240418
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4499,14 +4704,14 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 2125760481}
         m_TargetAssemblyTypeName: RoomManager, Assembly-CSharp
-        m_MethodName: SelectAgent
+        m_MethodName: PreselectAgent
         m_Mode: 5
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
-          m_StringArgument: 
+          m_StringArgument: Astra
           m_BoolArgument: 0
         m_CallState: 2
 --- !u!114 &1962677247

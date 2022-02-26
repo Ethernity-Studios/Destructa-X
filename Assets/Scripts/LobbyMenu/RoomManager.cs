@@ -40,6 +40,8 @@ public class RoomManager : NetworkBehaviour
     [SerializeField] GameObject PreselectedAgentGO;
     [SerializeField] Image PreselectedAgentImg;
 
+    AgentManager agentManager;
+
     #region TeamManagement
     public void JoinTeam(int teamIndex)
     {
@@ -88,12 +90,21 @@ public class RoomManager : NetworkBehaviour
 
     #region AgentManagement
 
-    public void PreselectAgent(string agent)
+    public void PreselectAgent(string agentName)
     {
-
+        agentManager = FindObjectOfType<AgentManager>();
+        foreach (var player in Room.roomSlots)
+        {
+            if (player.isLocalPlayer)
+            {
+                LobbyPlayer localPlayer = player.GetComponent<LobbyPlayer>();
+                localPlayer.CmdPreselectAgent(agentManager.PickAgent(agentName));
+            }
+        }
+        
     }
 
-    public void SelectAgent(string agent)
+    public void SelectAgent(string agentName)
     {
 
     }

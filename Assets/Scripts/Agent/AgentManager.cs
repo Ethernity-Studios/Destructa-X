@@ -1,6 +1,5 @@
 using UnityEngine;
 using System.Collections.Generic;
-using objects;
 using System;
 
 public enum Agent {None, Astra, Breach, Brimstone, Chamber, Cypher, Jett, Kayo, Killjoy, Neon, Omen,
@@ -8,15 +7,20 @@ Phoenix, Raze, Reyna, Sage, Skye, Sova, Viper, Yoru}
 
 public class AgentManager : MonoBehaviour
 {
+    Dictionary<string, Agent> agents = new();
+    public Agent agent;
     public void Start()
     {
         DontDestroyOnLoad(gameObject);
+
+        foreach (Agent item in (Agent[])Enum.GetValues(typeof(Agent)))
+        {
+            agents.Add(item.ToString(),item);
+        }
     }
 
-    Dictionary<string, Agent> Agents = new Dictionary<string, Agent>();
-
-    public Agent PickAgent(string agent)
+    public Agent PickAgent(string agentName)
     {
-        return Agent.Astra;
+        return agents.GetValueOrDefault(agentName);
     }
 }

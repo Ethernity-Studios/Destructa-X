@@ -292,8 +292,6 @@ MonoBehaviour:
   PlayerTeam: 0
   PlayerPreselectedAgent: 0
   PlayerSelectedAgent: 0
-  BlueTeamPrefab: {fileID: 4041176860999992303, guid: b046dceb3e86c9d43af3d24a7d3d692a, type: 3}
-  RedTeamPrefab: {fileID: 5879861139374117535, guid: 5fe3fbcc6a2eb634fb0a456ec9272718, type: 3}
 --- !u!222 &1414632123350180693
 CanvasRenderer:
   m_ObjectHideFlags: 0
