@@ -1,5 +1,7 @@
 using Mirror;
+using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class LobbyPlayer : NetworkRoomPlayer
 {
@@ -24,6 +26,9 @@ public class LobbyPlayer : NetworkRoomPlayer
     [SyncVar]
     public Agent PlayerSelectedAgent;
 
+    Transform BlueTeamHolder;
+    Transform RedTeamHolder;
+
     public override void OnStartClient()
     {
         if (!isLocalPlayer) return;
@@ -33,6 +38,40 @@ public class LobbyPlayer : NetworkRoomPlayer
         CmdSetNickname(NicknameManager.DisplayName);
 
         base.OnStartClient();
+    }
+
+    public override void OnClientEnterRoom()
+    {
+        BlueTeamHolder = GameObject.Find("BlueTeam").transform;
+        RedTeamHolder = GameObject.Find("RedTeam").transform;
+        foreach (var player in Room.roomSlots)
+        {
+            Debug.Log("Tak to je mrdka");
+            Debug.Log(player.index);
+            LobbyPlayer localPlayer = player.GetComponent<LobbyPlayer>();
+            Team localPlayerTeam = localPlayer.PlayerTeam;
+            string localPlayerName = localPlayer.PlayerName;
+            Debug.Log("Local PLAYER TEAM:" + localPlayer.PlayerTeam);
+            switch (localPlayerTeam)
+            {
+                case Team.None:
+                    break;
+                case Team.Blue:
+                    localPlayer.transform.SetParent(BlueTeamHolder);
+                    localPlayer.GetComponent<Image>().color = new Color(0f / 255f, 203f / 255f, 255f / 255f, 1f);
+                    localPlayer.GetComponent<RectTransform>().localScale = Vector3.one;
+                    localPlayer.transform.GetChild(0).GetComponent<TMP_Text>().text =  localPlayer.PlayerName;
+                    break;
+                case Team.Red:
+                    localPlayer.transform.SetParent(RedTeamHolder);
+                    localPlayer.GetComponent<Image>().color = new Color(195f / 255f, 63f / 255f, 63f / 255f, 1f);
+                    localPlayer.GetComponent<RectTransform>().localScale = Vector3.one;
+                    localPlayer.transform.GetChild(0).GetComponent<TMP_Text>().text = localPlayer.PlayerName;
+                    break;
+            }
+
+        }
+        base.OnClientEnterRoom();
     }
 
     public override void OnClientExitRoom()
@@ -69,6 +108,26 @@ public class LobbyPlayer : NetworkRoomPlayer
     public void CmdJoinTeam(Team team)
     {
         PlayerTeam = team;
+        RpcSetTeamUI(team);
+    }
+
+    [ClientRpc]
+    public void RpcSetTeamUI(Team team)
+    {
+        BlueTeamHolder = GameObject.Find("BlueTeam").transform;
+        RedTeamHolder = GameObject.Find("RedTeam").transform;
+        if (team == Team.Blue)
+        {
+            transform.SetParent(BlueTeamHolder);
+            GetComponent<Image>().color = new Color(0f / 255f, 203f / 255f, 255f / 255f, 1f);
+        }
+        else if (team == Team.Red)
+        {
+            transform.SetParent(RedTeamHolder);
+            GetComponent<Image>().color = new Color(195f / 255f, 63f / 255f, 63f / 255f, 1f);
+        }
+        GetComponent<RectTransform>().localScale = Vector3.one;
+        transform.GetChild(0).GetComponent<TMP_Text>().text = PlayerName;
     }
 
     [Command]
@@ -88,5 +147,6 @@ public class LobbyPlayer : NetworkRoomPlayer
     {
         PlayerSelectedAgent = agent;
     }
+
     #endregion
 }
