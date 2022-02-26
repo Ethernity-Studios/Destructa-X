@@ -292,6 +292,7 @@ MonoBehaviour:
   PlayerTeam: 0
   PlayerPreselectedAgent: 0
   PlayerSelectedAgent: 0
+  AgentIcon: {fileID: 7993364766788818930}
 --- !u!222 &1414632123350180693
 CanvasRenderer:
   m_ObjectHideFlags: 0

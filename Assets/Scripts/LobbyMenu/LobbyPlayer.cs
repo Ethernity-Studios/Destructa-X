@@ -22,9 +22,10 @@ public class LobbyPlayer : NetworkRoomPlayer
     [SyncVar]
     public Team PlayerTeam;
     [SyncVar]
-    public Agent PlayerPreselectedAgent;
+    public Agent PlayerPreselectedAgent = Agent.None;
     [SyncVar]
-    public Agent PlayerSelectedAgent;
+    public Agent PlayerSelectedAgent = Agent.None;
+    public Image AgentIcon;
 
     Transform BlueTeamHolder;
     Transform RedTeamHolder;
@@ -32,6 +33,8 @@ public class LobbyPlayer : NetworkRoomPlayer
     public override void OnStartClient()
     {
         if (!isLocalPlayer) return;
+        PlayerPreselectedAgent = Agent.None;
+        PlayerSelectedAgent = Agent.None;
         roomManager = FindObjectOfType<RoomManager>();
         agentManager = FindObjectOfType<AgentManager>();
 
@@ -44,14 +47,12 @@ public class LobbyPlayer : NetworkRoomPlayer
     {
         BlueTeamHolder = GameObject.Find("BlueTeam").transform;
         RedTeamHolder = GameObject.Find("RedTeam").transform;
+        agentManager = FindObjectOfType<AgentManager>();
         foreach (var player in Room.roomSlots)
         {
-            Debug.Log("Tak to je mrdka");
-            Debug.Log(player.index);
             LobbyPlayer localPlayer = player.GetComponent<LobbyPlayer>();
             Team localPlayerTeam = localPlayer.PlayerTeam;
             string localPlayerName = localPlayer.PlayerName;
-            Debug.Log("Local PLAYER TEAM:" + localPlayer.PlayerTeam);
             switch (localPlayerTeam)
             {
                 case Team.None:
@@ -59,17 +60,33 @@ public class LobbyPlayer : NetworkRoomPlayer
                 case Team.Blue:
                     localPlayer.transform.SetParent(BlueTeamHolder);
                     localPlayer.GetComponent<Image>().color = new Color(0f / 255f, 203f / 255f, 255f / 255f, 1f);
-                    localPlayer.GetComponent<RectTransform>().localScale = Vector3.one;
-                    localPlayer.transform.GetChild(0).GetComponent<TMP_Text>().text =  localPlayer.PlayerName;
+
                     break;
                 case Team.Red:
                     localPlayer.transform.SetParent(RedTeamHolder);
                     localPlayer.GetComponent<Image>().color = new Color(195f / 255f, 63f / 255f, 63f / 255f, 1f);
-                    localPlayer.GetComponent<RectTransform>().localScale = Vector3.one;
-                    localPlayer.transform.GetChild(0).GetComponent<TMP_Text>().text = localPlayer.PlayerName;
                     break;
             }
-
+            localPlayer.GetComponent<RectTransform>().localScale = Vector3.one;
+            localPlayer.transform.GetChild(0).GetComponent<TMP_Text>().text = localPlayer.PlayerName;
+            Image localPlayerImage = localPlayer.transform.GetChild(1).GetComponent<Image>();
+            if(localPlayer.PlayerSelectedAgent == Agent.None)
+            {
+                localPlayerImage.sprite = null;
+                if(localPlayer.PlayerPreselectedAgent == Agent.None)
+                {
+                    localPlayerImage.sprite = null;
+                }
+                else
+                {
+                    localPlayerImage.sprite = agentManager.GetAgentMeta(localPlayer.PlayerPreselectedAgent).Meta.Icon;
+                }
+            }
+            else
+            {
+                localPlayerImage.sprite = agentManager.GetAgentMeta(localPlayer.PlayerSelectedAgent).Meta.Icon;
+            }
+            
         }
         base.OnClientEnterRoom();
     }
@@ -102,7 +119,7 @@ public class LobbyPlayer : NetworkRoomPlayer
         base.OnClientExitRoom();
     }
 
-    #region Command synchronization
+    #region Command Sync
 
     [Command]
     public void CmdJoinTeam(Team team)
@@ -110,6 +127,31 @@ public class LobbyPlayer : NetworkRoomPlayer
         PlayerTeam = team;
         RpcSetTeamUI(team);
     }
+
+    [Command]
+    public void CmdSetNickname(string name)
+    {
+        PlayerName = name;
+    }
+
+    [Command]
+    public void CmdPreselectAgent(Agent agent)
+    {
+        PlayerPreselectedAgent = agent;
+        RpcPreselectAgent(agent);
+    }
+
+    [Command]
+    public void CmdSelectAgent(Agent agent)
+    {
+        PlayerSelectedAgent = agent;
+        PlayerPreselectedAgent = Agent.None;
+        RpcSelectAgent(agent);
+    }
+
+    #endregion
+
+    #region Rpc Sync
 
     [ClientRpc]
     public void RpcSetTeamUI(Team team)
@@ -130,22 +172,17 @@ public class LobbyPlayer : NetworkRoomPlayer
         transform.GetChild(0).GetComponent<TMP_Text>().text = PlayerName;
     }
 
-    [Command]
-    public void CmdSetNickname(string name)
+    [ClientRpc]
+    public void RpcPreselectAgent(Agent agent)
     {
-        PlayerName = name;
+        agentManager = FindObjectOfType<AgentManager>();
+        AgentIcon.sprite = agentManager.GetAgentMeta(agent).Meta.Icon;
     }
 
-    [Command]
-    public void CmdPreselectAgent(Agent agent)
+    [ClientRpc]
+    public void RpcSelectAgent(Agent agent)
     {
-        PlayerPreselectedAgent = agent;
-    }
-
-    [Command]
-    public void CmdSelectAgent(Agent agent)
-    {
-        PlayerSelectedAgent = agent;
+        AgentIcon.color = Color.white;
     }
 
     #endregion

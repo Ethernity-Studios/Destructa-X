@@ -40,6 +40,8 @@ public class RoomManager : NetworkBehaviour
     [SerializeField] GameObject PreselectedAgentGO;
     [SerializeField] Image PreselectedAgentImg;
 
+    [SerializeField] Button[] agentButtons;
+
     AgentManager agentManager;
 
     #region TeamManagement
@@ -98,15 +100,30 @@ public class RoomManager : NetworkBehaviour
             if (player.isLocalPlayer)
             {
                 LobbyPlayer localPlayer = player.GetComponent<LobbyPlayer>();
-                localPlayer.CmdPreselectAgent(agentManager.PickAgent(agentName));
+                localPlayer.CmdPreselectAgent(agentManager.GetAgentByName(agentName));
+                PreselectedAgentImg.sprite = agentManager.GetAgentMeta(agentManager.GetAgentByName(agentName)).Meta.Icon;
             }
-        }
-        
+        } 
     }
 
-    public void SelectAgent(string agentName)
+    public void SelectAgent()
     {
-
+        agentManager = FindObjectOfType<AgentManager>();
+        foreach (var player in Room.roomSlots)
+        {
+            if (player.isLocalPlayer)
+            {
+                LobbyPlayer localPlayer = player.GetComponent<LobbyPlayer>();
+                if(localPlayer.PlayerPreselectedAgent != Agent.None)
+                {
+                    localPlayer.CmdSelectAgent(localPlayer.PlayerPreselectedAgent);
+                    foreach (var agentBtn in agentButtons)
+                    {
+                        agentBtn.interactable = false;
+                    }
+                }
+            }
+        }
     }
 
     #endregion

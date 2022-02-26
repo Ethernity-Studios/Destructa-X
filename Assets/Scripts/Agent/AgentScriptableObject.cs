@@ -3,13 +3,12 @@
 namespace objects
 {
     [CreateAssetMenu]
-    public class Agent : ScriptableObject
+    public class AgentScriptableObject : ScriptableObject
     {
         public string Name;
 
         public AgentMeta Meta;
 
         public AgentAblities Ablities;
-
     }
 }

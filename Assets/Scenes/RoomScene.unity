@@ -136,7 +136,7 @@ GameObject:
   - component: {fileID: 5185681}
   - component: {fileID: 5185680}
   m_Layer: 5
-  m_Name: Agent (1)
+  m_Name: Breach
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -345,7 +345,7 @@ GameObject:
   - component: {fileID: 46153021}
   - component: {fileID: 46153020}
   m_Layer: 5
-  m_Name: Agent (15)
+  m_Name: Sova
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -478,7 +478,7 @@ GameObject:
   - component: {fileID: 56700394}
   - component: {fileID: 56700393}
   m_Layer: 5
-  m_Name: Agent (9)
+  m_Name: Omen
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -864,7 +864,26 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 063578533d22d5f419397499c673e5fd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  agent: 0
+  agentScriptableObjects:
+  - {fileID: 11400000, guid: e5574cf5b8823ef4892b67e689bd6ea3, type: 2}
+  - {fileID: 11400000, guid: 35cf4028814128447b91b0c643d8c720, type: 2}
+  - {fileID: 11400000, guid: 076dd2d6e25652a42a7acaff184b45a2, type: 2}
+  - {fileID: 11400000, guid: 6cbb368b949da2d43a9077ea10eb0d08, type: 2}
+  - {fileID: 11400000, guid: 437f41f8b3d456d4ca78137cc23f60ca, type: 2}
+  - {fileID: 11400000, guid: d5ec8e43984acfd46ae98149ee236381, type: 2}
+  - {fileID: 11400000, guid: e1e78961cdb309f4a883296ac16199a9, type: 2}
+  - {fileID: 11400000, guid: 67a16e113ab84ed4a8241c4bc9d5cfec, type: 2}
+  - {fileID: 11400000, guid: e003007b8b22bc440bdd77fec052cedb, type: 2}
+  - {fileID: 11400000, guid: 75cf6a42e5fe43b409ee00066254c93b, type: 2}
+  - {fileID: 11400000, guid: 1a4665e8dc3abfa42a72a126978fd58e, type: 2}
+  - {fileID: 11400000, guid: e4823ce1b3794e54592159cb176a3100, type: 2}
+  - {fileID: 11400000, guid: 3b9d168aded46cf458c90ebe96620851, type: 2}
+  - {fileID: 11400000, guid: ae78bedb7e751c5449ee7668b74e29cd, type: 2}
+  - {fileID: 11400000, guid: 7ffd2d133f340044d91ee40d8d09433e, type: 2}
+  - {fileID: 11400000, guid: 47d78f1c6b1db4c41a4a4d803e32690c, type: 2}
+  - {fileID: 11400000, guid: 261eebfd8fc57cb47a1e7611d74f8e8c, type: 2}
+  - {fileID: 11400000, guid: d002aae1a4ab1eb458f88f0208b2f8dd, type: 2}
+  - {fileID: 11400000, guid: 2026754269334cc448212be086b39d25, type: 2}
 --- !u!4 &247968855
 Transform:
   m_ObjectHideFlags: 0
@@ -1152,7 +1171,6 @@ GameObject:
   - component: {fileID: 417007453}
   - component: {fileID: 417007456}
   - component: {fileID: 417007455}
-  - component: {fileID: 417007454}
   m_Layer: 5
   m_Name: PreselectedAgent
   m_TagString: Untagged
@@ -1180,50 +1198,6 @@ RectTransform:
   m_AnchoredPosition: {x: 49.999977, y: -49.999985}
   m_SizeDelta: {x: 150, y: 150}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &417007454
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 417007452}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_Navigation:
-    m_Mode: 3
-    m_WrapAround: 0
-    m_SelectOnUp: {fileID: 0}
-    m_SelectOnDown: {fileID: 0}
-    m_SelectOnLeft: {fileID: 0}
-    m_SelectOnRight: {fileID: 0}
-  m_Transition: 1
-  m_Colors:
-    m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
-    m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
-    m_PressedColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 1}
-    m_SelectedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
-    m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
-    m_ColorMultiplier: 1
-    m_FadeDuration: 0.1
-  m_SpriteState:
-    m_HighlightedSprite: {fileID: 0}
-    m_PressedSprite: {fileID: 0}
-    m_SelectedSprite: {fileID: 0}
-    m_DisabledSprite: {fileID: 0}
-  m_AnimationTriggers:
-    m_NormalTrigger: Normal
-    m_HighlightedTrigger: Highlighted
-    m_PressedTrigger: Pressed
-    m_SelectedTrigger: Selected
-    m_DisabledTrigger: Disabled
-  m_Interactable: 1
-  m_TargetGraphic: {fileID: 417007455}
-  m_OnClick:
-    m_PersistentCalls:
-      m_Calls: []
 --- !u!114 &417007455
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1396,7 +1370,7 @@ GameObject:
   - component: {fileID: 446782287}
   - component: {fileID: 446782286}
   m_Layer: 5
-  m_Name: Agent (13)
+  m_Name: Sage
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1942,7 +1916,7 @@ GameObject:
   - component: {fileID: 677339664}
   - component: {fileID: 677339663}
   m_Layer: 5
-  m_Name: Agent (14)
+  m_Name: Skye
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2075,7 +2049,7 @@ GameObject:
   - component: {fileID: 710447302}
   - component: {fileID: 710447301}
   m_Layer: 5
-  m_Name: Agent (3)
+  m_Name: Chamber
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2208,7 +2182,7 @@ GameObject:
   - component: {fileID: 742755715}
   - component: {fileID: 742755714}
   m_Layer: 5
-  m_Name: Agent (8)
+  m_Name: Neon
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2417,7 +2391,7 @@ GameObject:
   - component: {fileID: 853449831}
   - component: {fileID: 853449830}
   m_Layer: 5
-  m_Name: Agent (7)
+  m_Name: Killjoy
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2550,7 +2524,7 @@ GameObject:
   - component: {fileID: 964196555}
   - component: {fileID: 964196554}
   m_Layer: 5
-  m_Name: Agent (12)
+  m_Name: Reyna
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2683,7 +2657,7 @@ GameObject:
   - component: {fileID: 970242189}
   - component: {fileID: 970242188}
   m_Layer: 5
-  m_Name: Agent (2)
+  m_Name: Brimstone
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2816,7 +2790,7 @@ GameObject:
   - component: {fileID: 978500403}
   - component: {fileID: 978500402}
   m_Layer: 5
-  m_Name: Agent (11)
+  m_Name: Raze
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3309,7 +3283,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &1434751636
 RectTransform:
   m_ObjectHideFlags: 0
@@ -3347,7 +3321,7 @@ GameObject:
   - component: {fileID: 1471060637}
   - component: {fileID: 1471060636}
   m_Layer: 5
-  m_Name: Agent (16)
+  m_Name: Viper
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3752,7 +3726,7 @@ GameObject:
   - component: {fileID: 1598922813}
   - component: {fileID: 1598922812}
   m_Layer: 5
-  m_Name: Agent (17)
+  m_Name: Yoru
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3885,7 +3859,7 @@ GameObject:
   - component: {fileID: 1720627763}
   - component: {fileID: 1720627762}
   m_Layer: 5
-  m_Name: Agent (6)
+  m_Name: Kayo
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4193,7 +4167,7 @@ GameObject:
   - component: {fileID: 1775171968}
   - component: {fileID: 1775171967}
   m_Layer: 5
-  m_Name: Agent (10)
+  m_Name: Phoenix
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4366,7 +4340,7 @@ GameObject:
   - component: {fileID: 1812641046}
   - component: {fileID: 1812641045}
   m_Layer: 5
-  m_Name: Agent (5)
+  m_Name: Jett
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4499,7 +4473,7 @@ GameObject:
   - component: {fileID: 1814240418}
   - component: {fileID: 1814240417}
   m_Layer: 5
-  m_Name: Agent (4)
+  m_Name: Cypher
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4632,7 +4606,7 @@ GameObject:
   - component: {fileID: 1962677247}
   - component: {fileID: 1962677246}
   m_Layer: 5
-  m_Name: Agent
+  m_Name: Astra
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -5209,6 +5183,27 @@ MonoBehaviour:
   RedTeamSizeText: {fileID: 1731656046}
   PreselectedAgentGO: {fileID: 417007452}
   PreselectedAgentImg: {fileID: 417007455}
+  agentButtons:
+  - {fileID: 1962677246}
+  - {fileID: 5185680}
+  - {fileID: 970242188}
+  - {fileID: 710447301}
+  - {fileID: 1814240417}
+  - {fileID: 1812641045}
+  - {fileID: 1720627762}
+  - {fileID: 853449830}
+  - {fileID: 742755714}
+  - {fileID: 56700393}
+  - {fileID: 1775171967}
+  - {fileID: 978500402}
+  - {fileID: 964196554}
+  - {fileID: 446782286}
+  - {fileID: 677339663}
+  - {fileID: 46153020}
+  - {fileID: 1471060636}
+  - {fileID: 1598922812}
+  - {fileID: 614580871}
+  - {fileID: 424255061}
 --- !u!1 &2138225429
 GameObject:
   m_ObjectHideFlags: 0
@@ -5292,7 +5287,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 2138225432}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 2125760481}
+        m_TargetAssemblyTypeName: RoomManager, Assembly-CSharp
+        m_MethodName: SelectAgent
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &2138225432
 MonoBehaviour:
   m_ObjectHideFlags: 0
