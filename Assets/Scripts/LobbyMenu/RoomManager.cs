@@ -2,6 +2,9 @@ using UnityEngine;
 using Mirror;
 using TMPro;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
+using objects;
+using System.Collections.Generic;
 
 public enum Team
 {
@@ -43,6 +46,56 @@ public class RoomManager : NetworkBehaviour
     public Button[] agentButtons;
 
     AgentManager agentManager;
+
+    [SerializeField] GameObject mapSelect;
+    [SerializeField] TMP_Dropdown mapDropdown;
+    [SerializeField] TMP_Text mapText;
+
+    [SerializeField] Image backgroundImage;
+
+    [SyncVar]
+    public string SelectedMap;
+
+    public Map[] map;
+    Dictionary<string, Map> maps = new();
+
+    private void Start()
+    {
+        mapText.text = SelectedMap;
+        if (isServer)
+        {
+            mapSelect.SetActive(true);
+        }
+
+        foreach (var item in map)
+        {
+            maps.Add(item.MapName, item); 
+        }
+    }
+
+    public Map GetMapMeta(string map)
+    {
+        return maps.GetValueOrDefault(map);
+    }
+
+    public void SelectMap()
+    {
+        SelectedMap = mapDropdown.options[mapDropdown.value].text;
+        mapText.text = SelectedMap;
+        RpcSelectMap(SelectedMap);
+    }
+
+    private void Update()
+    {
+        mapText.text = SelectedMap;
+        backgroundImage.sprite = GetMapMeta(SelectedMap).LobbyMapBackground;
+    }
+
+    [ClientRpc]
+    public void RpcSelectMap(string map)
+    {
+        mapText.text = map;
+    }
 
     #region TeamManagement
     public void JoinTeam(int teamIndex)
@@ -102,6 +155,7 @@ public class RoomManager : NetworkBehaviour
                 LobbyPlayer localPlayer = player.GetComponent<LobbyPlayer>();
                 localPlayer.CmdPreselectAgent(agentManager.GetAgentByName(agentName));
                 PreselectedAgentImg.sprite = agentManager.GetAgentMeta(agentManager.GetAgentByName(agentName)).Meta.Icon;
+                PreselectedAgentImg.color = Color.white;
             }
         } 
     }

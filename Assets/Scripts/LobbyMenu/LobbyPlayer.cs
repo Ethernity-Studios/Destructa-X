@@ -26,6 +26,8 @@ public class LobbyPlayer : NetworkRoomPlayer
     [SyncVar]
     public Agent PlayerSelectedAgent = Agent.None;
 
+    public bool IsLeader;
+
     public Image AgentIcon;
     public TMP_Text agentText;
 
@@ -47,11 +49,11 @@ public class LobbyPlayer : NetworkRoomPlayer
         BlueTeamHolder = GameObject.Find("BlueTeam").transform;
         RedTeamHolder = GameObject.Find("RedTeam").transform;
         agentManager = FindObjectOfType<AgentManager>();
+
         foreach (var player in Room.roomSlots)
         {
             LobbyPlayer localPlayer = player.GetComponent<LobbyPlayer>();
             Team localPlayerTeam = localPlayer.PlayerTeam;
-            string localPlayerName = localPlayer.PlayerName;
             switch (localPlayerTeam)
             {
                 case Team.None:
@@ -87,7 +89,6 @@ public class LobbyPlayer : NetworkRoomPlayer
                 localPlayerImage.color = Color.white;
                 localPlayer.transform.GetChild(2).GetComponent<TMP_Text>().text = agentManager.GetAgentMeta(localPlayer.PlayerSelectedAgent).Name;
             }
-            
         }
         base.OnClientEnterRoom();
     }

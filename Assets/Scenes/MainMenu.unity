@@ -2261,6 +2261,9 @@ MonoBehaviour:
   _allPlayersReady: 0
   roomSlots: []
   clientIndex: 0
+  maps:
+  - {fileID: 11400000, guid: 30f9970de49282845966c84a90fd658c, type: 2}
+  - {fileID: 11400000, guid: 070598ed05103de4194bb07203f01458, type: 2}
 --- !u!4 &1284530662
 Transform:
   m_ObjectHideFlags: 0

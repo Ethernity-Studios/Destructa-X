@@ -10,16 +10,14 @@ public class NetworkManagerRoom : NetworkRoomManager
 {
     RoomManager roomManager;
 
-    /*public override void OnRoomServerDisconnect(NetworkConnection conn)
-    {
-        LobbyPlayer player = conn.identity.GetComponent<LobbyPlayer>();
-        if (player.PlayerTeam == Team.Blue) roomManager.BlueTeamSize--;
-        else if (player.PlayerTeam == Team.Red) roomManager.RedTeamSize--;
-        roomManager.RpcUpdateTeamSizeUI();
-        base.OnRoomServerDisconnect(conn);
-    }*/
+
 
     public override void OnStartServer() => spawnPrefabs = Resources.LoadAll<GameObject>("SpawnablePrefabs").ToList();
+
+    public override void OnRoomStartServer()
+    {
+        base.OnRoomStartServer();
+    }
 
     public override void OnStartClient()
     {
@@ -38,4 +36,5 @@ public class NetworkManagerRoom : NetworkRoomManager
         NetworkServer.SetClientReady(conn);
         base.OnRoomServerConnect(conn);
     }
+
 }
