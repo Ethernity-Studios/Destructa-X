@@ -865,6 +865,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   agentScriptableObjects:
+  - {fileID: 11400000, guid: 2026754269334cc448212be086b39d25, type: 2}
   - {fileID: 11400000, guid: e5574cf5b8823ef4892b67e689bd6ea3, type: 2}
   - {fileID: 11400000, guid: 35cf4028814128447b91b0c643d8c720, type: 2}
   - {fileID: 11400000, guid: 076dd2d6e25652a42a7acaff184b45a2, type: 2}
@@ -883,7 +884,6 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 47d78f1c6b1db4c41a4a4d803e32690c, type: 2}
   - {fileID: 11400000, guid: 261eebfd8fc57cb47a1e7611d74f8e8c, type: 2}
   - {fileID: 11400000, guid: d002aae1a4ab1eb458f88f0208b2f8dd, type: 2}
-  - {fileID: 11400000, guid: 2026754269334cc448212be086b39d25, type: 2}
 --- !u!4 &247968855
 Transform:
   m_ObjectHideFlags: 0

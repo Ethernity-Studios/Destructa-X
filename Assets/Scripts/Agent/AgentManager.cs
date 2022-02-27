@@ -5,8 +5,8 @@ using UnityEngine;
 
 public enum Agent
 {
-    Astra, Breach, Brimstone, Chamber, Cypher, Jett, Kayo, Killjoy, Neon, Omen,
-    Phoenix, Raze, Reyna, Sage, Skye, Sova, Viper, Yoru, None
+    None, Astra, Breach, Brimstone, Chamber, Cypher, Jett, Kayo, Killjoy, Neon, Omen,
+    Phoenix, Raze, Reyna, Sage, Skye, Sova, Viper, Yoru
 }
 
 public class AgentManager : MonoBehaviour

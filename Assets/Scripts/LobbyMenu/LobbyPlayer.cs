@@ -25,7 +25,9 @@ public class LobbyPlayer : NetworkRoomPlayer
     public Agent PlayerPreselectedAgent = Agent.None;
     [SyncVar]
     public Agent PlayerSelectedAgent = Agent.None;
+
     public Image AgentIcon;
+    public TMP_Text agentText;
 
     Transform BlueTeamHolder;
     Transform RedTeamHolder;
@@ -35,9 +37,6 @@ public class LobbyPlayer : NetworkRoomPlayer
         if (!isLocalPlayer) return;
         PlayerPreselectedAgent = Agent.None;
         PlayerSelectedAgent = Agent.None;
-        roomManager = FindObjectOfType<RoomManager>();
-        agentManager = FindObjectOfType<AgentManager>();
-
         CmdSetNickname(NicknameManager.DisplayName);
 
         base.OnStartClient();
@@ -85,6 +84,8 @@ public class LobbyPlayer : NetworkRoomPlayer
             else
             {
                 localPlayerImage.sprite = agentManager.GetAgentMeta(localPlayer.PlayerSelectedAgent).Meta.Icon;
+                localPlayerImage.color = Color.white;
+                localPlayer.transform.GetChild(2).GetComponent<TMP_Text>().text = agentManager.GetAgentMeta(localPlayer.PlayerSelectedAgent).Name;
             }
             
         }
@@ -183,6 +184,7 @@ public class LobbyPlayer : NetworkRoomPlayer
     public void RpcSelectAgent(Agent agent)
     {
         AgentIcon.color = Color.white;
+        agentText.text = agentManager.GetAgentMeta(agent).Name;
     }
 
     #endregion

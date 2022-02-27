@@ -40,7 +40,7 @@ public class RoomManager : NetworkBehaviour
     [SerializeField] GameObject PreselectedAgentGO;
     [SerializeField] Image PreselectedAgentImg;
 
-    [SerializeField] Button[] agentButtons;
+    public Button[] agentButtons;
 
     AgentManager agentManager;
 
@@ -117,6 +117,7 @@ public class RoomManager : NetworkBehaviour
                 if(localPlayer.PlayerPreselectedAgent != Agent.None)
                 {
                     localPlayer.CmdSelectAgent(localPlayer.PlayerPreselectedAgent);
+                    localPlayer.transform.GetChild(2).GetComponent<TMP_Text>().text = agentManager.GetAgentMeta(localPlayer.PlayerSelectedAgent).Name;
                     foreach (var agentBtn in agentButtons)
                     {
                         agentBtn.interactable = false;
