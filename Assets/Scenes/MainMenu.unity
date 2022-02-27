@@ -2254,16 +2254,14 @@ MonoBehaviour:
   playerSpawnMethod: 1
   spawnPrefabs: []
   showRoomGUI: 1
-  minPlayers: 1
+  minPlayers: 2
   roomPlayerPrefab: {fileID: 4058906597211304046, guid: dd00e944aa891ac4bbd27dda9229cf67, type: 3}
   RoomScene: Assets/Scenes/RoomScene.unity
-  GameplayScene: Assets/Scenes/TestScene.unity
+  GameplayScene: 
   _allPlayersReady: 0
   roomSlots: []
   clientIndex: 0
-  maps:
-  - {fileID: 11400000, guid: 30f9970de49282845966c84a90fd658c, type: 2}
-  - {fileID: 11400000, guid: 070598ed05103de4194bb07203f01458, type: 2}
+  SelectedMap: 
 --- !u!4 &1284530662
 Transform:
   m_ObjectHideFlags: 0

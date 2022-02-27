@@ -5,6 +5,7 @@ using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using objects;
 using System.Collections.Generic;
+using System.Collections;
 
 public enum Team
 {
@@ -59,6 +60,8 @@ public class RoomManager : NetworkBehaviour
     public Map[] map;
     Dictionary<string, Map> maps = new();
 
+    [SerializeField] TMP_Text countdownText;
+
     private void Start()
     {
         mapText.text = SelectedMap;
@@ -73,6 +76,31 @@ public class RoomManager : NetworkBehaviour
         }
     }
 
+    [ClientRpc]
+    public void RpcCountdown(int time)
+    {
+        StartCoroutine(Countdown(time));
+    }
+
+    public IEnumerator Countdown(int time)
+    {
+        countdownText.gameObject.SetActive(true);
+        for (int i = time; i >= 0; i--)
+        {
+            countdownText.text = "Starting in " + i;
+            yield return new WaitForSeconds(1);
+        }
+        Room.SelectedMap = SelectedMap;
+        Room.StartGame(SelectedMap);
+    }
+
+    private void Update()
+    {
+        mapText.text = SelectedMap;
+        backgroundImage.sprite = GetMapMeta(SelectedMap).LobbyMapBackground;
+    }
+
+    #region MapManagement
     public Map GetMapMeta(string map)
     {
         return maps.GetValueOrDefault(map);
@@ -85,17 +113,13 @@ public class RoomManager : NetworkBehaviour
         RpcSelectMap(SelectedMap);
     }
 
-    private void Update()
-    {
-        mapText.text = SelectedMap;
-        backgroundImage.sprite = GetMapMeta(SelectedMap).LobbyMapBackground;
-    }
-
     [ClientRpc]
     public void RpcSelectMap(string map)
     {
         mapText.text = map;
     }
+
+    #endregion
 
     #region TeamManagement
     public void JoinTeam(int teamIndex)

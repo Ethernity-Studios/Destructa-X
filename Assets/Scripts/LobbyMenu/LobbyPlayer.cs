@@ -2,6 +2,7 @@ using Mirror;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class LobbyPlayer : NetworkRoomPlayer
 {
@@ -25,8 +26,6 @@ public class LobbyPlayer : NetworkRoomPlayer
     public Agent PlayerPreselectedAgent = Agent.None;
     [SyncVar]
     public Agent PlayerSelectedAgent = Agent.None;
-
-    public bool IsLeader;
 
     public Image AgentIcon;
     public TMP_Text agentText;
@@ -96,28 +95,30 @@ public class LobbyPlayer : NetworkRoomPlayer
     public override void OnClientExitRoom()
     {
         roomManager = FindObjectOfType<RoomManager>();
-        int tempB = 0, tempR = 0;
-        foreach (var player in Room.roomSlots)
+        if(SceneManager.GetActiveScene().name == "RoomScene")
         {
-            if (player.isLocalPlayer)
+            int tempB = 0, tempR = 0;
+            foreach (var player in Room.roomSlots)
             {
-                LobbyPlayer localPlayer = player.GetComponent<LobbyPlayer>();
-                switch (localPlayer.PlayerTeam)
+                if (player.isLocalPlayer)
                 {
-                    case Team.None:
-                        break;
-                    case Team.Blue:
-                        tempB++;
-                        break;
-                    case Team.Red:
-                        tempR++;
-                        break;
+                    LobbyPlayer localPlayer = player.GetComponent<LobbyPlayer>();
+                    switch (localPlayer.PlayerTeam)
+                    {
+                        case Team.None:
+                            break;
+                        case Team.Blue:
+                            tempB++;
+                            break;
+                        case Team.Red:
+                            tempR++;
+                            break;
+                    }
+                    roomManager.BlueTeamSize = tempB;
+                    roomManager.RedTeamSize = tempR;
                 }
-                roomManager.BlueTeamSize = tempB;
-                roomManager.RedTeamSize = tempR;
             }
         }
-
         base.OnClientExitRoom();
     }
 
@@ -146,10 +147,12 @@ public class LobbyPlayer : NetworkRoomPlayer
     [Command]
     public void CmdSelectAgent(Agent agent)
     {
+        CmdChangeReadyState(true);
         PlayerSelectedAgent = agent;
         PlayerPreselectedAgent = Agent.None;
         RpcSelectAgent(agent);
     }
+
 
     #endregion
 
