@@ -10,28 +10,28 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 2797a7e7978d4fa3bf4d76869be850f0, type: 3}
-  m_Name: clasic
+  m_Name: Frenzy
   m_EditorClassIdentifier: 
-  Name: clasic
-  MagazineSize: 15
-  MaxAmmo: 30
-  ReloadTime: 1
-  Type: 1
-  GunModel: {fileID: 2630420225552749300, guid: d38bfe476b35eee4ab32fa6455344408, type: 3}
+  Name: 
+  MagazineSize: 0
+  MaxAmmo: 0
+  ReloadTime: 0
+  Type: 0
+  GunModel: {fileID: 0}
   GunIcon: {fileID: 0}
   LMB:
-    FireType: 5
-    FireMode: 1
-    FireDelay: 0.1
-    AmmoLoss: 1
-    LegDamage: 50
-    BodyDamage: 50
-    HeadDamage: 50
-    DamageDrop: 50
-    Recoil: 1
-    Bloom: 1
+    FireType: 0
+    FireMode: 0
+    FireDelay: 0
+    AmmoLoss: 0
+    LegDamage: 0
+    BodyDamage: 0
+    HeadDamage: 0
+    DamageDrop: 0
+    Recoil: 0
+    Bloom: 0
   RMB:
-    Type: 2
+    Type: 0
     Scope:
       Magnification: 0
       ScopeType: 0
@@ -39,13 +39,13 @@ MonoBehaviour:
       BloomModifier: 0
       RecoilModifier: 0
     Fire:
-      FireType: 3
-      FireMode: 1
-      FireDelay: 1
-      AmmoLoss: 3
-      LegDamage: 50
-      BodyDamage: 50
-      HeadDamage: 50
-      DamageDrop: 50
-      Recoil: 1
-      Bloom: 1
+      FireType: 0
+      FireMode: 0
+      FireDelay: 0
+      AmmoLoss: 0
+      LegDamage: 0
+      BodyDamage: 0
+      HeadDamage: 0
+      DamageDrop: 0
+      Recoil: 0
+      Bloom: 0
