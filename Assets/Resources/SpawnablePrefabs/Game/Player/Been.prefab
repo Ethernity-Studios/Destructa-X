@@ -120,8 +120,8 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0.1
   sens: 400
-  speed: 8
-  jumpf: 100
+  speed: 6
+  jumpf: 250
   gravity: 0.1
   camyr: {fileID: 0}
   ground_t: {fileID: 3697155343411083147}

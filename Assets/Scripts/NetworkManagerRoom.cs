@@ -14,6 +14,8 @@ public class NetworkManagerRoom : NetworkRoomManager
 
     public override void OnStartServer() => spawnPrefabs = Resources.LoadAll<GameObject>("SpawnablePrefabs").ToList();
 
+    public List<LobbyPlayer> Players = new();
+
     public override void OnRoomStartServer()
     {
         base.OnRoomStartServer();
@@ -41,7 +43,12 @@ public class NetworkManagerRoom : NetworkRoomManager
     {
         roomManager = FindObjectOfType<RoomManager>();
         Debug.Log("Players ready!");
-        roomManager.RpcCountdown(5);
+        roomManager.RpcCountdown(1);
+
+        foreach (var item in roomSlots)
+        {
+            Players.Add(item.GetComponent<LobbyPlayer>());
+        }
     }
 
     public void StartGame(string mapName)
@@ -49,4 +56,9 @@ public class NetworkManagerRoom : NetworkRoomManager
         ServerChangeScene(mapName);
     }
 
+    public override void OnClientSceneChanged()
+    {
+        Debug.Log(SceneManager.GetActiveScene().name + " Name SCene Dawx");
+        base.OnClientSceneChanged();
+    }
 }
