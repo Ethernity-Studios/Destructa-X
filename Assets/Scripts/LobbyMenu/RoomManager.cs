@@ -62,6 +62,9 @@ public class RoomManager : NetworkBehaviour
 
     [SerializeField] TMP_Text countdownText;
 
+    public static Agent PAgent;
+    public static Team PTeam;
+
     private void Start()
     {
         mapText.text = SelectedMap;
@@ -132,12 +135,14 @@ public class RoomManager : NetworkBehaviour
                 if (teamIndex == 1 && BlueTeamSize <5)
                 {
                     localPlayer.CmdJoinTeam(Team.Blue);
+                    PTeam = Team.Blue;
                     CmdUpdateTeamSize(1,0);
                     TeamSelectUI.SetActive(false);
                     AgentSelectUI.SetActive(true);
                 }
                 else if (teamIndex == 2 &&RedTeamSize <5) 
                 {
+                    PTeam = Team.Red;
                     localPlayer.CmdJoinTeam(Team.Red);
                     CmdUpdateTeamSize(0, 1);
                     TeamSelectUI.SetActive(false);
@@ -194,6 +199,7 @@ public class RoomManager : NetworkBehaviour
                 LobbyPlayer localPlayer = player.GetComponent<LobbyPlayer>();
                 if(localPlayer.PlayerPreselectedAgent != Agent.None)
                 {
+                    PAgent = localPlayer.PlayerPreselectedAgent;
                     localPlayer.CmdSelectAgent(localPlayer.PlayerPreselectedAgent);
                     localPlayer.transform.GetChild(2).GetComponent<TMP_Text>().text = agentManager.GetAgentMeta(localPlayer.PlayerSelectedAgent).Name;
                     foreach (var agentBtn in agentButtons)

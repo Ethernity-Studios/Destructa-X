@@ -95,13 +95,11 @@ public class LobbyPlayer : NetworkRoomPlayer
     public override void OnClientExitRoom()
     {
         roomManager = FindObjectOfType<RoomManager>();
-        if(SceneManager.GetActiveScene().name == "RoomScene")
+        if(SceneManager.GetActiveScene().name == "RoomScene" && isServer)
         {
             int tempB = 0, tempR = 0;
             foreach (var player in Room.roomSlots)
             {
-                if (player.isLocalPlayer)
-                {
                     LobbyPlayer localPlayer = player.GetComponent<LobbyPlayer>();
                     switch (localPlayer.PlayerTeam)
                     {
@@ -116,8 +114,8 @@ public class LobbyPlayer : NetworkRoomPlayer
                     }
                     roomManager.BlueTeamSize = tempB;
                     roomManager.RedTeamSize = tempR;
-                }
             }
+            Debug.Log(tempB + " W " +tempR);
         }
         base.OnClientExitRoom();
     }

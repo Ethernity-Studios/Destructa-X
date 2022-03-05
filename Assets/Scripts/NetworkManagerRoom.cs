@@ -42,7 +42,6 @@ public class NetworkManagerRoom : NetworkRoomManager
     public override void OnRoomServerPlayersReady()
     {
         roomManager = FindObjectOfType<RoomManager>();
-        Debug.Log("Players ready!");
         roomManager.RpcCountdown(1);
 
         foreach (var item in roomSlots)
@@ -58,7 +57,6 @@ public class NetworkManagerRoom : NetworkRoomManager
 
     public override void OnClientSceneChanged()
     {
-        Debug.Log(SceneManager.GetActiveScene().name + " Name SCene Dawx");
         base.OnClientSceneChanged();
     }
 }

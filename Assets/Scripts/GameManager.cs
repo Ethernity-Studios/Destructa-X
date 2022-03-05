@@ -13,5 +13,8 @@ public enum GameState
 
 public class GameManager : MonoBehaviour
 {
-
+    private void Start()
+    {
+        Debug.Log("Name " + NicknameManager.DisplayName + " Team " + RoomManager.PTeam + " Agent " + RoomManager.PAgent);
+    }
 }
