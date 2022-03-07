@@ -18,7 +18,6 @@ public enum CurrentWeapon
     Secondary,
     Knife
 }
-
 public class PlayerGunManager : NetworkBehaviour
 {
     public Collider coll;
@@ -56,7 +55,6 @@ public class PlayerGunManager : NetworkBehaviour
 
     public void OnCollisionEnter(Collision collision)
     {
-        Debug.Log("AMOGUS");
         GunScript? gun = null;
         collision.collider.TryGetComponent(out gun);
 

@@ -32,9 +32,6 @@ public class RoomManager : NetworkBehaviour
     [SerializeField] GameObject TeamSelectUI;
     [SerializeField] GameObject AgentSelectUI;
 
-    [SerializeField] GameObject BlueTeamPrefab;
-    [SerializeField] GameObject RedTeamPrefab;
-
     [SerializeField] Transform BlueTeamHolder;
     [SerializeField] Transform RedTeamHolder;
 

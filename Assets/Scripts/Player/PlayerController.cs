@@ -1,8 +1,18 @@
 using Mirror;
 using UnityEngine;
+using System;
+using System.Collections.Generic;
+using System.Collections;
 
-public class PlayerMovementTest : NetworkBehaviour
+public class PlayerController : NetworkBehaviour
 {
+    [SyncVar]
+    public string PlayerName;
+    [SyncVar]
+    public Team PlayerTeam;
+    [SyncVar]
+    public Agent PlayerAgent;
+
     public float sens = 400f;
     public float speed = 8f;
     public float jumpf = 1f;
@@ -16,15 +26,46 @@ public class PlayerMovementTest : NetworkBehaviour
     [SerializeField] private Vector3 velocity;
 
     private float cameraY;
+    GameManager gameManager;
 
     private void Start()
     {
         if (!isLocalPlayer) return;
+        gameManager = FindObjectOfType<GameManager>();
+        
         camyr = Camera.main;
         camyr.gameObject.transform.parent = transform;
         camyr.transform.position = new Vector3(transform.position.x, transform.position.y + .6f, transform.position.z);
         Cursor.lockState = CursorLockMode.Locked;
         // Cursor.visible = false;
+    }
+
+    public override void OnStartClient()
+    {
+        Debug.Log("Name " + NicknameManager.DisplayName + " Team " + RoomManager.PTeam + " Agent " + RoomManager.PAgent);
+        StartCoroutine(Test());
+        base.OnStartClient();
+    }
+
+    IEnumerator Test()
+    {
+        yield return new WaitForSeconds(1);
+        SetPlayerInfo();
+    }
+
+    [Command(requiresAuthority = false)]
+    void SetPlayerInfo()
+    {
+        gameManager = FindObjectOfType<GameManager>();
+        gameManager.Players.Add(this);
+        Testt();
+    }
+    [ClientRpc]
+    void Testt()
+    {
+        PlayerName = NicknameManager.DisplayName;
+        PlayerTeam = RoomManager.PTeam;
+        PlayerAgent = RoomManager.PAgent;
     }
 
     private void Update()
@@ -48,6 +89,7 @@ public class PlayerMovementTest : NetworkBehaviour
         cameraY -= mousey;
 
         cameraY = Mathf.Clamp(cameraY, -90f, 90f);
+        if(camyr != null)
         camyr.transform.localRotation = Quaternion.Euler(cameraY, 0, 0);
         transform.Rotate(Vector3.up * mousex);
     }

@@ -95,7 +95,7 @@ public class LobbyPlayer : NetworkRoomPlayer
     public override void OnClientExitRoom()
     {
         roomManager = FindObjectOfType<RoomManager>();
-        if(SceneManager.GetActiveScene().name == "RoomScene" && isServer)
+        if(SceneManager.GetActiveScene().name == "RoomScene" && isServer &&roomManager != null)
         {
             int tempB = 0, tempR = 0;
             foreach (var player in Room.roomSlots)

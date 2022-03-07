@@ -11,10 +11,12 @@ public enum GameState
     StartGame, PreRound, Round, PostRound, EndGame
 }
 
-public class GameManager : MonoBehaviour
+public class GameManager : NetworkBehaviour
 {
+    public readonly SyncList<PlayerController> Players = new();
+
     private void Start()
     {
-        Debug.Log("Name " + NicknameManager.DisplayName + " Team " + RoomManager.PTeam + " Agent " + RoomManager.PAgent);
+
     }
 }
