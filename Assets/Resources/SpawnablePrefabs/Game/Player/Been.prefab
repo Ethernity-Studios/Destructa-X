@@ -9,6 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3697155342802577607}
+  - component: {fileID: -8314574119224481613}
   - component: {fileID: 3697155342802577606}
   - component: {fileID: 3697155342802577601}
   - component: {fileID: 3697155342802577600}
@@ -16,7 +17,6 @@ GameObject:
   - component: {fileID: 3697155342802577602}
   - component: {fileID: 2475809864135493570}
   - component: {fileID: 4074743734564941293}
-  - component: {fileID: -9075316998596830470}
   - component: {fileID: 8262962435243930217}
   - component: {fileID: 6409349818771626725}
   m_Layer: 7
@@ -42,6 +42,18 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &-8314574119224481613
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3697155342802577629}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 158853029be87b34582e1a8c192c7134, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!33 &3697155342802577606
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -204,20 +216,6 @@ MonoBehaviour:
   showGizmos: 0
   showOverlay: 0
   overlayColor: {r: 0, g: 0, b: 0, a: 0.5}
---- !u!114 &-9075316998596830470
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3697155342802577629}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f901f97d0f444fc6b447725c55c6402d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  syncMode: 0
-  syncInterval: 0.1
 --- !u!114 &8262962435243930217
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -42,15 +42,11 @@ public class PlayerController : NetworkBehaviour
 
     public override void OnStartClient()
     {
+        if (!isLocalPlayer) return;
         Debug.Log("Name " + NicknameManager.DisplayName + " Team " + RoomManager.PTeam + " Agent " + RoomManager.PAgent);
-        StartCoroutine(Test());
+        Debug.Log(isLocalPlayer + " is local player yes :D");
+        //Invoke("SetPlayerInfo", 1f);
         base.OnStartClient();
-    }
-
-    IEnumerator Test()
-    {
-        yield return new WaitForSeconds(1);
-        SetPlayerInfo();
     }
 
     [Command(requiresAuthority = false)]
@@ -58,15 +54,15 @@ public class PlayerController : NetworkBehaviour
     {
         gameManager = FindObjectOfType<GameManager>();
         gameManager.Players.Add(this);
-        Testt();
-    }
-    [ClientRpc]
-    void Testt()
-    {
+
         PlayerName = NicknameManager.DisplayName;
-        PlayerTeam = RoomManager.PTeam;
-        PlayerAgent = RoomManager.PAgent;
+
+        //PlayerName = NicknameManager.DisplayName;
+        //PlayerTeam = RoomManager.PTeam;
+        //PlayerAgent = RoomManager.PAgent;
     }
+
+
 
     private void Update()
     {
