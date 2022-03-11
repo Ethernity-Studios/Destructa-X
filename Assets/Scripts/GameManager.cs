@@ -13,7 +13,7 @@ public enum GameState
 
 public class GameManager : NetworkBehaviour
 {
-    public readonly SyncList<PlayerController> Players = new();
+    //public readonly SyncList<PlayerController> Players = new();
 
     private void Start()
     {

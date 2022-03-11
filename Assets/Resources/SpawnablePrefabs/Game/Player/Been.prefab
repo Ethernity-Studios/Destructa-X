@@ -54,6 +54,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 158853029be87b34582e1a8c192c7134, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  syncMode: 0
+  syncInterval: 0.1
+  PlayerName: 
+  PlayerTeam: 0
+  PlayerAgent: 0
+  PlayerMoney: 0
+  PlayerKills: 0
+  PlayerDeaths: 0
+  PlayerAssists: 0
 --- !u!33 &3697155342802577606
 MeshFilter:
   m_ObjectHideFlags: 0

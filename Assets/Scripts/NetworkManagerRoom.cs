@@ -14,7 +14,7 @@ public class NetworkManagerRoom : NetworkRoomManager
 
     public override void OnStartServer() => spawnPrefabs = Resources.LoadAll<GameObject>("SpawnablePrefabs").ToList();
 
-    List<PlayerController> Players = new();
+    //List<PlayerController> Players = new();
 
     public override void OnRoomStartServer()
     {

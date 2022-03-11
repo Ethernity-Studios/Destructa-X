@@ -1,7 +1,7 @@
 using UnityEngine;
 using Mirror;
 
-public class Player : NetworkBehaviour
+public class PlayerManager : NetworkBehaviour
 {
     [SyncVar]
     public string PlayerName;
@@ -11,13 +11,16 @@ public class Player : NetworkBehaviour
     public Agent PlayerAgent;
 
     [SyncVar]
-    public int PlayerMoney;
+    public int PlayerMoney = 800;
     [SyncVar]
     public int PlayerKills;
     [SyncVar]
     public int PlayerDeaths;
     [SyncVar]
     public int PlayerAssists;
+
+    [SyncVar]
+    public bool IsDeath = false;
 
     public override void OnStartLocalPlayer()
     {

@@ -1,77 +1,95 @@
 using UnityEngine;
+using Mirror;
 
-public class PlayerMovement : MonoBehaviour
+public class PlayerMovement : NetworkBehaviour
 {
-    public CharacterController controller;
-    public float speed = 8f;
-    public float running = 15f;
-    public float gravity = -30f;
+    public float MouseSens = 2f;
+    float xRotation = 0f;
+    Transform cameraTransform;
+
+
+    CharacterController characterController;
+
+    public float RunSpeed = 7f;
+    public float WalkSpeed = 1f;
     public float jumpH = 2f;
 
-    public Transform GCheck;
-    public float groundDist = 0.4f;
-    public LayerMask groundMask;
+    float gravityMultiplier = -30f;
 
-    public Vector3 velocity;
+    [SerializeField]Transform groundCheck;
+    [SerializeField]float groundDistance = 0.4f;
+    [SerializeField]LayerMask groundMask;
 
-    public float MouseSens = 400f;
-
-    [SerializeField] Material playerMat;
-    GameObject Camyr;
+    Vector3 velocity;
     bool isGrounded;
-
-
-    float xRotation = 0f;
 
     void Start()
     {
-        Camyr = Camera.main.gameObject;
-        Camyr.gameObject.transform.parent = this.transform;
-        Camyr.transform.position = new Vector3(transform.position.x, transform.position.y + .6f, transform.position.z);
+        if (!isLocalPlayer) return;
+        cameraTransform = Camera.main.transform;
+        cameraTransform.SetParent(transform);
+        cameraTransform.position = new Vector3(transform.position.x,transform.position.y + .6f, transform.position.z);
         Cursor.lockState = CursorLockMode.Locked;
+        characterController = FindObjectOfType<CharacterController>();
     }
 
-    void Update()
+    private void Update()
     {
-        Move();
-
-        if (Input.GetKeyDown(KeyCode.R))
-        {
-            controller.enabled = false;
-            transform.position = Vector3.zero;
-            controller.enabled = true;
-        }
+        if (!isLocalPlayer) return;
+        movePlayer();
+        jump();
     }
 
     void LateUpdate()
     {
-        float Mousex = Input.GetAxis("Mouse X") * MouseSens * Time.deltaTime;
-        float MouseY = Input.GetAxis("Mouse Y") * MouseSens * Time.deltaTime;
-        xRotation -= MouseY;
-        xRotation = Mathf.Clamp(xRotation, -90f, 90f);
-        Camyr.transform.localRotation = Quaternion.Euler(xRotation, 0f, 0f);
-        transform.Rotate(Vector3.up * Mousex);
+        if (!isLocalPlayer) return;
+        rotateCamera();
     }
 
-    private void Move()
+    void rotateCamera()
     {
-        isGrounded = Physics.CheckSphere(GCheck.position, groundDist, groundMask);
-        if (isGrounded && velocity.y < 0) velocity.y = -2f;
-
-        var x = Input.GetAxis("Horizontal");
-        var z = Input.GetAxis("Vertical");
-        var move = transform.right * x + transform.forward * z;
-        controller.Move(move * speed * Time.deltaTime);
-        if (Input.GetKey(KeyCode.LeftShift))
-            speed = running;
-        else
-            speed = 8f;
-
-        if (Input.GetKeyUp(KeyCode.LeftShift)) speed = 8f;
-
-        if (Input.GetButton("Jump") && isGrounded) velocity.y = Mathf.Sqrt(jumpH * -2f * gravity);
-
-        velocity.y += gravity * Time.deltaTime;
-        controller.Move(velocity * Time.deltaTime);
+        float mouseX = Input.GetAxis("Mouse X") * MouseSens*100 * Time.fixedDeltaTime;
+        float mouseY = Input.GetAxis("Mouse Y") * MouseSens*100 * Time.fixedDeltaTime;
+        xRotation -= mouseY;
+        xRotation = Mathf.Clamp(xRotation, -90f, 90f);
+        cameraTransform.localRotation = Quaternion.Euler(xRotation, 0f, 0f);
+        transform.Rotate(Vector3.up * mouseX);
     }
+
+    void movePlayer()
+    {
+        float speed = 7;
+        float x = Input.GetAxis("Horizontal");
+        float z = Input.GetAxis("Vertical");
+        Vector3 move = transform.right * x + transform.forward * z;
+
+        if (Input.GetKey(KeyCode.LeftShift))
+        {
+            speed = WalkSpeed;
+        }
+        else if(Input.GetKeyUp(KeyCode.LeftShift))
+        {
+            speed = RunSpeed;
+        }
+
+        characterController.Move(move * speed * Time.deltaTime);
+    }
+
+    void jump()
+    {
+        isGrounded = Physics.CheckSphere(groundCheck.position, groundDistance, groundMask);
+        if (isGrounded && velocity.y < 0)
+        {
+            velocity.y = -2f;
+        }
+        if (Input.GetButtonDown("Jump") && isGrounded)
+        {
+            velocity.y = Mathf.Sqrt(jumpH * -2f * gravityMultiplier);
+        }
+
+        velocity.y += gravityMultiplier * Time.deltaTime;
+        characterController.Move(velocity * Time.deltaTime);
+    }
+
+
 }
