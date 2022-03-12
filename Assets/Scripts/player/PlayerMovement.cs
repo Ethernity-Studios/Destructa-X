@@ -1,5 +1,11 @@
 using UnityEngine;
 using Mirror;
+using System;
+
+public enum PlayerState
+{
+    Idle, Walk, Run, Crouch, Jump
+}
 
 public class PlayerMovement : NetworkBehaviour
 {
@@ -12,7 +18,7 @@ public class PlayerMovement : NetworkBehaviour
 
     public float RunSpeed = 7f;
     public float WalkSpeed = 1f;
-    public float jumpH = 2f;
+    public float JumpForce = 1.3f;
 
     float gravityMultiplier = -30f;
 
@@ -23,9 +29,12 @@ public class PlayerMovement : NetworkBehaviour
     Vector3 velocity;
     bool isGrounded;
 
+    PlayerState playerState;
+
     void Start()
     {
         if (!isLocalPlayer) return;
+        playerState = PlayerState.Idle;
         cameraTransform = Camera.main.transform;
         cameraTransform.SetParent(transform);
         cameraTransform.position = new Vector3(transform.position.x,transform.position.y + .6f, transform.position.z);
@@ -38,6 +47,7 @@ public class PlayerMovement : NetworkBehaviour
         if (!isLocalPlayer) return;
         movePlayer();
         jump();
+        crouch();
     }
 
     void LateUpdate()
@@ -84,12 +94,19 @@ public class PlayerMovement : NetworkBehaviour
         }
         if (Input.GetButtonDown("Jump") && isGrounded)
         {
-            velocity.y = Mathf.Sqrt(jumpH * -2f * gravityMultiplier);
+            velocity.y = Mathf.Sqrt(JumpForce * -2f * gravityMultiplier);
         }
-
+        
         velocity.y += gravityMultiplier * Time.deltaTime;
         characterController.Move(velocity * Time.deltaTime);
     }
 
+    void crouch()
+    {
+        if (Input.GetKeyDown(KeyCode.LeftControl) && playerState != PlayerState.Jump)
+        {
+            
+        }
+    }
 
 }
