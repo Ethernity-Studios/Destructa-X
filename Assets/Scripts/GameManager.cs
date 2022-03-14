@@ -15,6 +15,8 @@ public class GameManager : NetworkBehaviour
 {
     public int Round = 0;
 
+    public int RoundsPerHalf = 13;
+
     public int StartGameLenght; //40s
     public int EndgameLenght; //10s
 
@@ -26,11 +28,13 @@ public class GameManager : NetworkBehaviour
     public int BombDefuseTime;
     public int BombDetonationTime;
 
+    [SyncVar]
+    GameState gameState;
     //public readonly SyncList<PlayerController> Players = new();
 
     private void Start()
     {
-
+        gameState = GameState.StartGame;
     }
 
     #region RoundManagement

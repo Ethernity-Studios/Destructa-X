@@ -52,7 +52,7 @@ public class PlayerGunManager : NetworkBehaviour
         ChnageWeapon();
         HandleDropWeapon();
     }
-
+#nullable enable
     public void OnCollisionEnter(Collision collision)
     {
         GunScript? gun = null;
@@ -87,7 +87,7 @@ public class PlayerGunManager : NetworkBehaviour
 
         Destroy(collision.collider.transform);
     }
-
+#nullable disable
     public void HandlePickup()
     {
     }

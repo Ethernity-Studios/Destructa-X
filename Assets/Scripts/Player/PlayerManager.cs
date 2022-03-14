@@ -47,6 +47,11 @@ public class PlayerManager : NetworkBehaviour
     public void SwitchPlayerAgent(Agent agent)
     {
         PlayerAgent = agent;
-
+    }
+    
+    [Command]
+    public void AddMoney(int Money)
+    {
+        PlayerMoney = Money;
     }
 }
