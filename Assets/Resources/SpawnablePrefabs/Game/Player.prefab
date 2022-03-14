@@ -110,7 +110,7 @@ MonoBehaviour:
   MouseSens: 2
   RunSpeed: 7
   WalkSpeed: 4
-  jumpH: 2
+  JumpForce: 1.3
   groundCheck: {fileID: 3500326584062213490}
   groundDistance: 0.4
   groundMask:
@@ -129,7 +129,7 @@ CharacterController:
   serializedVersion: 2
   m_Height: 2
   m_Radius: 0.5
-  m_SlopeLimit: 45
+  m_SlopeLimit: 30
   m_StepOffset: 0.3
   m_SkinWidth: 0.08
   m_MinMoveDistance: 0.001

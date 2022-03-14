@@ -13,12 +13,14 @@ public enum GameState
 
 public class GameManager : NetworkBehaviour
 {
-    public int StartGameLenght; //40s
-    public int EndgameLenght;
+    public int Round = 0;
 
-    public int PreRoundLenght;
-    public int RoundLenght;
-    public int PostRoundlenght;
+    public int StartGameLenght; //40s
+    public int EndgameLenght; //10s
+
+    public int PreRoundLenght; //30s
+    public int RoundLenght; //1m 40s
+    public int PostRoundlenght; //5s
 
     public int BombPlantTime;
     public int BombDefuseTime;

@@ -36,4 +36,17 @@ public class PlayerManager : NetworkBehaviour
         PlayerTeam = team;
         PlayerAgent = agent;
     }
+
+    [Command]
+    public void SwitchPlayerTeam(Team team)
+    {
+        PlayerTeam = team;
+    }
+
+    [Command]
+    public void SwitchPlayerAgent(Agent agent)
+    {
+        PlayerAgent = agent;
+
+    }
 }
