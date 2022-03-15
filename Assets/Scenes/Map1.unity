@@ -4162,14 +4162,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   syncMode: 0
   syncInterval: 0.1
+  Round: 0
+  RoundsPerHalf: 13
   StartGameLenght: 0
   EndgameLenght: 0
   PreRoundLenght: 0
-  RoundLenght: 0
+  RoundLenght: 10
   PostRoundlenght: 0
   BombPlantTime: 0
   BombDefuseTime: 0
   BombDetonationTime: 0
+  GameTime: 0
+  roundTimer: {fileID: 0}
 --- !u!4 &814328177
 Transform:
   m_ObjectHideFlags: 0
