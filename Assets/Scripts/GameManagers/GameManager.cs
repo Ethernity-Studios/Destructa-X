@@ -1,10 +1,7 @@
-using UnityEngine;
-using System;
-using System.Collections.Generic;
 using Mirror;
+using System;
 using TMPro;
-using System.IO;
-using objects;
+using UnityEngine;
 
 public enum GameState
 {
@@ -34,40 +31,55 @@ public class GameManager : NetworkBehaviour
     public float GameTime;
 
     [SyncVar]
-    GameState gameState;
+    public GameState gameState;
 
     [SerializeField]
     TMP_Text roundTimer;
 
-    bool canChangeTime;
-
     private void Start()
     {
+        GameTime = 20;
+
+        if (!isServer) return;
         CmdStartRound(GameState.StartGame);
     }
 
     private void Update()
     {
-        if (canChangeTime)
-        {
-            CmdDecreaseGameTime(4);
-        }
+        updateRoundTimer();
+
+        if (!isServer) return;
+        CmdDecreaseGameTime();
+    }
+
+    void updateRoundTimer()
+    {
+        var sec = Convert.ToInt32(GameTime % 60).ToString("00");
+        var min = (Mathf.Floor(GameTime / 60) % 60).ToString("00");
+        roundTimer.text = min + ":" + sec;
+        if (GameTime <= 0) roundTimer.text = "00:00";
     }
 
     #region RoundManagement
 
-    [Command]
+    [Command(requiresAuthority = false)]
     public void CmdStartRound(GameState gameState)
     {
         Round++;
         this.gameState = gameState;
     }
 
-    [Command]
-    void CmdDecreaseGameTime(float time)
-    {//gametime 10 time 15
-        if(time < GameTime)
-        GameTime -= Time.deltaTime;
+    [Command(requiresAuthority = false)]
+    void CmdDecreaseGameTime()
+    {
+        if (GameTime > 0)
+            GameTime -= Time.deltaTime;
+    }
+
+    [Command(requiresAuthority = false)]
+    void CmdAddGameTime(float time)
+    {
+        GameTime = time;
     }
 
     #endregion

@@ -4240,8 +4240,8 @@ MonoBehaviour:
   BombHalfDefuseTime: 5
   BombDefuseTime: 0
   BombDetonationTime: 0
-  GameTime: 0
-  roundTimer: {fileID: 0}
+  GameTime: 20
+  roundTimer: {fileID: 1280828156}
 --- !u!4 &814328177
 Transform:
   m_ObjectHideFlags: 0
