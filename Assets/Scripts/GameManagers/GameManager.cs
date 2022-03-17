@@ -33,9 +33,11 @@ public class GameManager : NetworkBehaviour
     [SyncVar]
     public GameState gameState;
 
-    [SerializeField]
-    TMP_Text roundTimer;
+    [SerializeField] TMP_Text roundTimer;
 
+    public Transform BlueAgents, RedAgents;
+
+    public SyncList<PlayerManager> Players = new();
     private void Start()
     {
         GameTime = 20;
@@ -80,6 +82,12 @@ public class GameManager : NetworkBehaviour
     void CmdAddGameTime(float time)
     {
         GameTime = time;
+    }
+
+    [Command(requiresAuthority = false)]
+    public void ChangeGameState(GameState gameState)
+    {
+        this.gameState = gameState;
     }
 
     #endregion

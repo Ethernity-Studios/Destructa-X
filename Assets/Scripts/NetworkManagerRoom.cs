@@ -58,4 +58,5 @@ public class NetworkManagerRoom : NetworkRoomManager
         }
         base.OnClientSceneChanged();
     }
+
 }
