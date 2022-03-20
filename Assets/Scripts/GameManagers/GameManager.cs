@@ -35,7 +35,7 @@ public class GameManager : NetworkBehaviour
 
     [SerializeField] TMP_Text roundTimer;
 
-    public Transform BlueAgents, RedAgents;
+    public Transform BlueUIAgents, RedUIAgents;
 
     readonly public SyncList<PlayerManager> Players = new();
     private void Start()

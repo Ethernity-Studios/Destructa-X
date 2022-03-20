@@ -1,7 +1,6 @@
 using Mirror;
 using UnityEngine;
 using UnityEngine.UI;
-using System;
 
 public class PlayerManager : NetworkBehaviour
 {
@@ -28,20 +27,34 @@ public class PlayerManager : NetworkBehaviour
 
     GameManager gameManager;
     AgentManager agentManager;
+
     public void Start()
     {
-
+        if (isLocalPlayer) CmdSetPlayerInfo(NicknameManager.DisplayName, RoomManager.PTeam, RoomManager.PAgent);
+        Invoke("SpawnUIAgent", .1f);
     }
 
-    public override void OnStartLocalPlayer()
+    void SpawnUIAgent()
     {
-        if (!isLocalPlayer) return;
-        SetPlayerInfo(NicknameManager.DisplayName, RoomManager.PTeam, RoomManager.PAgent);
-        base.OnStartLocalPlayer();
+        gameManager = FindObjectOfType<GameManager>();
+        agentManager = FindObjectOfType<AgentManager>();
+        GameObject UIAgent = Instantiate(this.UIAgent);
+        UIAgent.name = PlayerName;
+        UIAgent.transform.GetChild(0).GetComponent<Image>().sprite = agentManager.GetAgentMeta(PlayerAgent).Meta.Icon;
+        switch (PlayerTeam)
+        {
+            case Team.Blue:
+                UIAgent.transform.SetParent(gameManager.BlueUIAgents);
+                break;
+            case Team.Red:
+                UIAgent.transform.SetParent(gameManager.RedUIAgents);
+                break;
+        }
+        UIAgent.GetComponent<RectTransform>().localScale = Vector3.one;
     }
 
     [Command]
-    public void SetPlayerInfo(string name, Team team, Agent agent)
+    public void CmdSetPlayerInfo(string name, Team team, Agent agent)
     {
         PlayerName = name;
         PlayerTeam = team;
@@ -49,19 +62,19 @@ public class PlayerManager : NetworkBehaviour
     }
 
     [Command]
-    public void SwitchPlayerTeam(Team team)
+    public void CmdSwitchPlayerTeam(Team team)
     {
         PlayerTeam = team;
     }
 
     [Command]
-    public void SwitchPlayerAgent(Agent agent)
+    public void CmdSwitchPlayerAgent(Agent agent)
     {
         PlayerAgent = agent;
     }
 
     [Command]
-    public void AddMoney(int Money)
+    public void CmdAddMoney(int Money)
     {
         PlayerMoney = Money;
     }

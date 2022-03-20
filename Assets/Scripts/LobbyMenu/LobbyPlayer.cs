@@ -1,8 +1,8 @@
 using Mirror;
 using TMPro;
 using UnityEngine;
-using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class LobbyPlayer : NetworkRoomPlayer
 {
@@ -70,10 +70,10 @@ public class LobbyPlayer : NetworkRoomPlayer
             localPlayer.GetComponent<RectTransform>().localScale = Vector3.one;
             localPlayer.transform.GetChild(0).GetComponent<TMP_Text>().text = localPlayer.PlayerName;
             Image localPlayerImage = localPlayer.transform.GetChild(1).GetComponent<Image>();
-            if(localPlayer.PlayerSelectedAgent == Agent.None)
+            if (localPlayer.PlayerSelectedAgent == Agent.None)
             {
                 localPlayerImage.sprite = null;
-                if(localPlayer.PlayerPreselectedAgent == Agent.None)
+                if (localPlayer.PlayerPreselectedAgent == Agent.None)
                 {
                     localPlayerImage.sprite = null;
                 }
@@ -95,27 +95,27 @@ public class LobbyPlayer : NetworkRoomPlayer
     public override void OnClientExitRoom()
     {
         roomManager = FindObjectOfType<RoomManager>();
-        if(SceneManager.GetActiveScene().name == "RoomScene" && isServer &&roomManager != null)
+        if (SceneManager.GetActiveScene().name == "RoomScene" && isServer && roomManager != null)
         {
             int tempB = 0, tempR = 0;
             foreach (var player in Room.roomSlots)
             {
-                    LobbyPlayer localPlayer = player.GetComponent<LobbyPlayer>();
-                    switch (localPlayer.PlayerTeam)
-                    {
-                        case Team.None:
-                            break;
-                        case Team.Blue:
-                            tempB++;
-                            break;
-                        case Team.Red:
-                            tempR++;
-                            break;
-                    }
-                    roomManager.BlueTeamSize = tempB;
-                    roomManager.RedTeamSize = tempR;
+                LobbyPlayer localPlayer = player.GetComponent<LobbyPlayer>();
+                switch (localPlayer.PlayerTeam)
+                {
+                    case Team.None:
+                        break;
+                    case Team.Blue:
+                        tempB++;
+                        break;
+                    case Team.Red:
+                        tempR++;
+                        break;
+                }
+                roomManager.BlueTeamSize = tempB;
+                roomManager.RedTeamSize = tempR;
             }
-            Debug.Log(tempB + " W " +tempR);
+            Debug.Log(tempB + " W " + tempR);
         }
         base.OnClientExitRoom();
     }

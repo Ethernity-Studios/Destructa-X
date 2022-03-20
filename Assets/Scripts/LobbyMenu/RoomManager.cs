@@ -1,11 +1,9 @@
-using UnityEngine;
 using Mirror;
-using TMPro;
-using UnityEngine.UI;
-using UnityEngine.SceneManagement;
-using objects;
-using System.Collections.Generic;
 using System.Collections;
+using System.Collections.Generic;
+using TMPro;
+using UnityEngine;
+using UnityEngine.UI;
 
 public enum Team
 {
@@ -72,7 +70,7 @@ public class RoomManager : NetworkBehaviour
 
         foreach (var item in map)
         {
-            maps.Add(item.MapName, item); 
+            maps.Add(item.MapName, item);
         }
     }
 
@@ -129,22 +127,22 @@ public class RoomManager : NetworkBehaviour
             if (player.isLocalPlayer)
             {
                 LobbyPlayer localPlayer = player.GetComponent<LobbyPlayer>();
-                if (teamIndex == 1 && BlueTeamSize <5)
+                if (teamIndex == 1 && BlueTeamSize < 5)
                 {
                     localPlayer.CmdJoinTeam(Team.Blue);
                     PTeam = Team.Blue;
-                    CmdUpdateTeamSize(1,0);
+                    CmdUpdateTeamSize(1, 0);
                     TeamSelectUI.SetActive(false);
                     AgentSelectUI.SetActive(true);
                 }
-                else if (teamIndex == 2 &&RedTeamSize <5) 
+                else if (teamIndex == 2 && RedTeamSize < 5)
                 {
                     PTeam = Team.Red;
                     localPlayer.CmdJoinTeam(Team.Red);
                     CmdUpdateTeamSize(0, 1);
                     TeamSelectUI.SetActive(false);
                     AgentSelectUI.SetActive(true);
-                } 
+                }
             }
         }
     }
@@ -183,7 +181,7 @@ public class RoomManager : NetworkBehaviour
                 PreselectedAgentImg.sprite = agentManager.GetAgentMeta(agentManager.GetAgentByName(agentName)).Meta.Icon;
                 PreselectedAgentImg.color = Color.white;
             }
-        } 
+        }
     }
 
     public void SelectAgent()
@@ -194,7 +192,7 @@ public class RoomManager : NetworkBehaviour
             if (player.isLocalPlayer)
             {
                 LobbyPlayer localPlayer = player.GetComponent<LobbyPlayer>();
-                if(localPlayer.PlayerPreselectedAgent != Agent.None)
+                if (localPlayer.PlayerPreselectedAgent != Agent.None)
                 {
                     PAgent = localPlayer.PlayerPreselectedAgent;
                     localPlayer.CmdSelectAgent(localPlayer.PlayerPreselectedAgent);

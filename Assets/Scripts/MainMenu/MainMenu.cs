@@ -32,4 +32,9 @@ public class MainMenu : MonoBehaviour
         if (string.IsNullOrEmpty(NetworkAdressInputField.text)) return;
         networkManagerLobby.StartClient();
     }
+
+    public void Vassa(string name)
+    {
+
+    }
 }

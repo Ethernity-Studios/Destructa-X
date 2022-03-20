@@ -950,7 +950,7 @@ Mesh:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: pb_Mesh23722
+  m_Name: pb_Mesh53460
   serializedVersion: 10
   m_SubMeshes:
   - serializedVersion: 2
@@ -3925,8 +3925,8 @@ MonoBehaviour:
   GameTime: 20
   gameState: 0
   roundTimer: {fileID: 1280828156}
-  BlueAgents: {fileID: 1414175276}
-  RedAgents: {fileID: 1539574436}
+  BlueUIAgents: {fileID: 1414175276}
+  RedUIAgents: {fileID: 1539574436}
 --- !u!4 &814328177
 Transform:
   m_ObjectHideFlags: 0
