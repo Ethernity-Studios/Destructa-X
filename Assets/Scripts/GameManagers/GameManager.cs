@@ -50,12 +50,13 @@ public class GameManager : NetworkBehaviour
     {
         updateRoundTimer();
 
-        if (!isServer) return;
-        CmdDecreaseGameTime();
+        if (GameTime > 0) GameTime -= Time.deltaTime;
     }
 
     void updateRoundTimer()
     {
+
+
         var sec = Convert.ToInt32(GameTime % 60).ToString("00");
         var min = (Mathf.Floor(GameTime / 60) % 60).ToString("00");
         roundTimer.text = min + ":" + sec;
@@ -69,13 +70,6 @@ public class GameManager : NetworkBehaviour
     {
         Round++;
         this.gameState = gameState;
-    }
-
-    [Command(requiresAuthority = false)]
-    void CmdDecreaseGameTime()
-    {
-        if (GameTime > 0)
-            GameTime -= Time.deltaTime;
     }
 
     [Command(requiresAuthority = false)]
