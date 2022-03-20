@@ -42,6 +42,7 @@ GameObject:
   - component: {fileID: 3500326584878805172}
   - component: {fileID: 3500326584878805177}
   - component: {fileID: 3500326584878805178}
+  - component: {fileID: -4012904085559630751}
   - component: {fileID: 6305681695822952301}
   - component: {fileID: 3500326584878805173}
   - component: {fileID: 3500326584878805174}
@@ -117,6 +118,20 @@ MonoBehaviour:
   groundMask:
     serializedVersion: 2
     m_Bits: 8
+--- !u!114 &-4012904085559630751
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3500326584878805168}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8c0983a90dbf5f84893d1b0ff3254fa5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncMode: 0
+  syncInterval: 0.1
 --- !u!143 &6305681695822952301
 CharacterController:
   m_ObjectHideFlags: 0
@@ -237,7 +252,7 @@ MonoBehaviour:
   syncScale: 1
   interpolatePosition: 1
   interpolateRotation: 1
-  interpolateScale: 0
+  interpolateScale: 1
   bufferTimeMultiplier: 1
   bufferSizeLimit: 64
   catchupThreshold: 4
@@ -249,4 +264,4 @@ MonoBehaviour:
   scaleSensitivity: 0.01
   showGizmos: 0
   showOverlay: 0
-  overlayColor: {r: 1, g: 0, b: 0, a: 0.5}
+  overlayColor: {r: 1, g: 1, b: 1, a: 0.5}
