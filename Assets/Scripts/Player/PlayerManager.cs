@@ -30,29 +30,13 @@ public class PlayerManager : NetworkBehaviour
     AgentManager agentManager;
     public void Start()
     {
-        test();
-    }
 
-    [Command(requiresAuthority = false)]
-    void test()
-    {
-        testt();
-    }
-    [ClientRpc]
-    void testt()
-    {
-        agentManager = FindObjectOfType<AgentManager>();
-        gameManager = FindObjectOfType<GameManager>();
-        UIAgent.transform.SetParent(gameManager.BlueAgents);
-        UIAgent.GetComponent<RectTransform>().localScale = Vector3.one;
-        UIAgent.transform.GetChild(0).GetComponent<Image>().sprite = agentManager.GetAgentMeta(PlayerAgent).Meta.Icon;
     }
 
     public override void OnStartLocalPlayer()
     {
         if (!isLocalPlayer) return;
         SetPlayerInfo(NicknameManager.DisplayName, RoomManager.PTeam, RoomManager.PAgent);
-        //test(PlayerAgent);
         base.OnStartLocalPlayer();
     }
 

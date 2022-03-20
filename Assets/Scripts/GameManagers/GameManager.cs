@@ -37,7 +37,7 @@ public class GameManager : NetworkBehaviour
 
     public Transform BlueAgents, RedAgents;
 
-    public SyncList<PlayerManager> Players = new();
+    readonly public SyncList<PlayerManager> Players = new();
     private void Start()
     {
         GameTime = 20;
@@ -55,8 +55,6 @@ public class GameManager : NetworkBehaviour
 
     void updateRoundTimer()
     {
-
-
         var sec = Convert.ToInt32(GameTime % 60).ToString("00");
         var min = (Mathf.Floor(GameTime / 60) % 60).ToString("00");
         roundTimer.text = min + ":" + sec;
@@ -73,7 +71,7 @@ public class GameManager : NetworkBehaviour
     }
 
     [Command(requiresAuthority = false)]
-    void CmdAddGameTime(float time)
+    public void CmdAddGameTime(float time)
     {
         GameTime = time;
     }
