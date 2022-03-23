@@ -65,21 +65,20 @@ public class PlayerPlantManager : NetworkBehaviour
             gameManager.PlantProgressSlider.value = 0;
             gameManager.PlantProgressSlider.gameObject.SetActive(false);
     }
-
+    GameObject bomb;
     void finishPlanting()
     {
         Debug.Log("finished planting!");
         stopPlanting();
-        GameObject bomb = Instantiate(bombPrefab,GameObject.Find("World").transform);
-        bomb.transform.position = new Vector3(transform.position.x, transform.position.y - bombPlantOffset,transform.position.z);
-        bomb.transform.rotation = transform.rotation;
-        NetworkServer.Spawn(bomb);
-        //CmdInstantiateBomb(bomb);
+        CmdInstantiateBomb();
     }
 
     [Command]
-    void CmdInstantiateBomb(GameObject bomb)
+    void CmdInstantiateBomb()
     {
+        bomb = Instantiate(bombPrefab, GameObject.Find("World").transform);
+        bomb.transform.position = new Vector3(transform.position.x, transform.position.y - bombPlantOffset, transform.position.z);
+        bomb.transform.rotation = transform.rotation;
         NetworkServer.Spawn(bomb);
     }
 
