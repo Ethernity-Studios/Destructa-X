@@ -4,7 +4,7 @@ using System;
 
 public enum PlayerState
 {
-    Idle, Walk, Run, Crouch, Jump
+    Idle, Walk, Run, Crouch, Jump, Planting, Dead
 }
 
 public class PlayerMovement : NetworkBehaviour
@@ -29,12 +29,12 @@ public class PlayerMovement : NetworkBehaviour
     Vector3 velocity;
     bool isGrounded;
 
-    PlayerState playerState;
-
+    PlayerManager playerManager;
     void Start()
     {
         if (!isLocalPlayer) return;
-        playerState = PlayerState.Idle;
+        playerManager = GetComponent<PlayerManager>();
+        playerManager.PlayerState = PlayerState.Idle;
         cameraTransform = Camera.main.transform;
         cameraTransform.SetParent(transform);
         cameraTransform.position = new Vector3(transform.position.x,transform.position.y + .6f, transform.position.z);
@@ -45,6 +45,7 @@ public class PlayerMovement : NetworkBehaviour
     private void Update()
     {
         if (!isLocalPlayer) return;
+        if (playerManager.PlayerState == PlayerState.Dead) return;
         movePlayer();
         jump();
         crouch();
@@ -68,6 +69,7 @@ public class PlayerMovement : NetworkBehaviour
 
     void movePlayer()
     {
+        if (playerManager.PlayerState == PlayerState.Planting) return;
         float speed = 7;
         float x = Input.GetAxis("Horizontal");
         float z = Input.GetAxis("Vertical");
@@ -103,7 +105,7 @@ public class PlayerMovement : NetworkBehaviour
 
     void crouch()
     {
-        if (Input.GetKeyDown(KeyCode.LeftControl) && playerState != PlayerState.Jump)
+        if (Input.GetKeyDown(KeyCode.LeftControl) && playerManager.PlayerState != PlayerState.Jump)
         {
             
         }

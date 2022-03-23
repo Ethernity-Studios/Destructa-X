@@ -46,6 +46,7 @@ GameObject:
   - component: {fileID: 6305681695822952301}
   - component: {fileID: 3500326584878805173}
   - component: {fileID: 3500326584878805174}
+  - component: {fileID: 8058010168577326733}
   - component: {fileID: 3500326584878805175}
   - component: {fileID: 3500326584878805179}
   - component: {fileID: 342818098472151384}
@@ -95,6 +96,7 @@ MonoBehaviour:
   PlayerAssists: 0
   IsDeath: 0
   UIAgent: {fileID: 6857847130121847309, guid: bb195f3f46f5b824097ff8cb2ed6b2d1, type: 3}
+  PlayerState: 0
 --- !u!114 &3500326584878805178
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -132,6 +134,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   syncMode: 0
   syncInterval: 0.1
+  isInPlantableArea: 0
+  bombPrefab: {fileID: 2536634434620783955, guid: fb7c4534d6e00f34e9795d56e2cf49b4, type: 3}
+  bombPlantOffset: 1
+  timeLeft: 0
 --- !u!143 &6305681695822952301
 CharacterController:
   m_ObjectHideFlags: 0
@@ -200,6 +206,19 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!65 &8058010168577326733
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3500326584878805168}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 1, y: 0.3033306, z: 1}
+  m_Center: {x: 0, y: -0.84833467, z: 0}
 --- !u!136 &3500326584878805175
 CapsuleCollider:
   m_ObjectHideFlags: 0

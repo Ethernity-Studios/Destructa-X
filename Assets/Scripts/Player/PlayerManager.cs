@@ -28,6 +28,12 @@ public class PlayerManager : NetworkBehaviour
     GameManager gameManager;
     AgentManager agentManager;
 
+    public PlayerState PlayerState;
+    private void Awake()
+    {
+        if (!isLocalPlayer) return;
+        PlayerState = PlayerState.Idle;
+    }
     public void Start()
     {
         if (isLocalPlayer) CmdSetPlayerInfo(NicknameManager.DisplayName, RoomManager.PTeam, RoomManager.PAgent);

@@ -2,6 +2,7 @@ using Mirror;
 using System;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 public enum GameState
 {
@@ -38,6 +39,9 @@ public class GameManager : NetworkBehaviour
     public Transform BlueUIAgents, RedUIAgents;
 
     readonly public SyncList<PlayerManager> Players = new();
+
+    public Slider PlantProgressSlider;
+
     private void Start()
     {
         GameTime = 20;
