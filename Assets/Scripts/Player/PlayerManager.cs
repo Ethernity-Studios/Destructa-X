@@ -32,7 +32,9 @@ public class PlayerManager : NetworkBehaviour
     private void Awake()
     {
         if (!isLocalPlayer) return;
+        Invoke("CmdAddPlayer",.1f);
         PlayerState = PlayerState.Idle;
+        gameManager = FindObjectOfType<GameManager>();  
     }
     public void Start()
     {
@@ -57,6 +59,13 @@ public class PlayerManager : NetworkBehaviour
                 break;
         }
         UIAgent.GetComponent<RectTransform>().localScale = Vector3.one;
+    }
+
+    [Command]
+    public void CmdAddPlayer()
+    {
+        gameManager = FindObjectOfType<GameManager> ();
+        gameManager.Players.Add(this);
     }
 
     [Command]
