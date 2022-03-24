@@ -3,6 +3,7 @@ using System;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using System.Collections.Generic;
 
 public enum GameState
 {
@@ -44,6 +45,7 @@ public class GameManager : NetworkBehaviour
 
     private void Start()
     {
+        PlantProgressSlider.gameObject.SetActive(false);
         GameTime = 20;
 
         if (!isServer) return;

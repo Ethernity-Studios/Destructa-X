@@ -39,7 +39,7 @@ public class PlayerMovement : NetworkBehaviour
         cameraTransform.SetParent(transform);
         cameraTransform.position = new Vector3(transform.position.x,transform.position.y + .6f, transform.position.z);
         Cursor.lockState = CursorLockMode.Locked;
-        characterController = FindObjectOfType<CharacterController>();
+        characterController = GetComponent<CharacterController>();
     }
 
     private void Update()

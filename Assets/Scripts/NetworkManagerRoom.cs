@@ -2,6 +2,7 @@ using Mirror;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using System.Collections.Generic;
 
 public class NetworkManagerRoom : NetworkRoomManager
 {
@@ -10,8 +11,6 @@ public class NetworkManagerRoom : NetworkRoomManager
     public string SelectedMap;
 
     public override void OnStartServer() => spawnPrefabs = Resources.LoadAll<GameObject>("SpawnablePrefabs").ToList();
-
-    //List<PlayerController> Players = new();
 
     public override void OnRoomStartServer()
     {
@@ -47,13 +46,14 @@ public class NetworkManagerRoom : NetworkRoomManager
         ServerChangeScene(mapName);
     }
 
-    public override void OnClientSceneChanged()
+    [System.Obsolete]
+    public override void OnClientSceneChanged(NetworkConnection conn)
     {
         if (SceneManager.GetActiveScene().name.StartsWith("Map"))
         {
-
         }
         base.OnClientSceneChanged();
     }
+
 
 }

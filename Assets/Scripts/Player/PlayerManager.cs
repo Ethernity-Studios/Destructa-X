@@ -27,19 +27,30 @@ public class PlayerManager : NetworkBehaviour
 
     GameManager gameManager;
     AgentManager agentManager;
+    NetworkManagerRoom room;
 
     public PlayerState PlayerState;
     private void Awake()
     {
         if (!isLocalPlayer) return;
-        Invoke("CmdAddPlayer",.1f);
+
         PlayerState = PlayerState.Idle;
         gameManager = FindObjectOfType<GameManager>();  
+        room = FindObjectOfType<NetworkManagerRoom>();
     }
     public void Start()
     {
-        if (isLocalPlayer) CmdSetPlayerInfo(NicknameManager.DisplayName, RoomManager.PTeam, RoomManager.PAgent);
-        Invoke("SpawnUIAgent", .1f);
+        Invoke("SpawnUIAgent", .2f);
+        if (!isLocalPlayer) return;
+        CmdSetPlayerInfo(NicknameManager.DisplayName, RoomManager.PTeam, RoomManager.PAgent);
+
+    }
+
+    public override void OnStartLocalPlayer()
+    {
+        Invoke("CmdAddPlayer", .5f);
+        Debug.Log("on start local");
+        base.OnStartLocalPlayer();
     }
 
     void SpawnUIAgent()
@@ -64,7 +75,7 @@ public class PlayerManager : NetworkBehaviour
     [Command]
     public void CmdAddPlayer()
     {
-        gameManager = FindObjectOfType<GameManager> ();
+        gameManager = FindObjectOfType<GameManager>();
         gameManager.Players.Add(this);
     }
 

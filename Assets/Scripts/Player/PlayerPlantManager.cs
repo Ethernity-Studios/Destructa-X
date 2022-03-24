@@ -1,4 +1,5 @@
 using Mirror;
+using System;
 using UnityEngine;
 
 public class PlayerPlantManager : NetworkBehaviour
@@ -32,7 +33,6 @@ public class PlayerPlantManager : NetworkBehaviour
             {
                 if (timeLeft < gameManager.BombPlantTime)
                 {
-                    //Debug.Log("planting!");
                     CmdIncreaseTimeLeft();
                     CmdChangeSliderValue();
                 }
@@ -68,22 +68,29 @@ public class PlayerPlantManager : NetworkBehaviour
         gameManager.PlantProgressSlider.value = (timeLeft / gameManager.BombPlantTime) * 100;
     }
     [Command]
-    void CmdSlider()
+    void CmdSlider() 
     {
-        RpcSlider();
-    } 
-    [ClientRpc]
-    void RpcSlider()
-    {
-        gameManager.PlantProgressSlider.gameObject.SetActive(gameManager.PlantProgressSlider.gameObject.activeInHierarchy == true ? false : true);
-        /*if(gameManager.PlantProgressSlider.gameObject.activeInHierarchy)
+        foreach (var player in gameManager.Players)
         {
-            gameManager.PlantProgressSlider.gameObject.SetActive(false);
+            if(player.PlayerTeam == Team.Red)
+            {
+                GameObject plantProgressSlider = gameManager.PlantProgressSlider.gameObject;
+                if (plantProgressSlider.activeInHierarchy)
+                {
+                    RpcSlider((NetworkConnectionToClient)player.connectionToClient, false);
+                }
+                else
+                {
+                    RpcSlider((NetworkConnectionToClient)player.connectionToClient, true);
+                }
+            }
         }
-        else
-        {
-            gameManager.PlantProgressSlider.gameObject.SetActive(true);
-        }*/
+    } 
+
+    [TargetRpc]
+    void RpcSlider(NetworkConnection conn, bool enable)
+    {
+        gameManager.PlantProgressSlider.gameObject.SetActive(enable);
     }
     void startPlanting()
     {
@@ -92,10 +99,17 @@ public class PlayerPlantManager : NetworkBehaviour
             Debug.Log("started planting");
             CmdSetTimeLeft(0);
             playerManager.PlayerState = PlayerState.Planting;
-            CmdSlider();
-            //gameManager.PlantProgressSlider.gameObject.SetActive(true);
+            foreach (var player in gameManager.Players)
+            {
+                Debug.Log(player.connectionToClient + "cpn to client");
+                if (player.PlayerTeam == Team.Red)
+                {
+                    CmdSlider();
+                } 
+            }
         }
     }
+
     void stopPlanting()
     {
         Debug.Log("stopped planting");
@@ -103,8 +117,15 @@ public class PlayerPlantManager : NetworkBehaviour
         CmdSetTimeLeft(0);
         gameManager.PlantProgressSlider.value = 0;
         CmdChangeSliderValue();
-        CmdSlider();
-        //gameManager.PlantProgressSlider.gameObject.SetActive(false);
+        foreach (var player in gameManager.Players)
+        {
+            Debug.Log(player.connectionToClient + "cpn to client");
+            if (player.PlayerTeam == Team.Red) 
+            {
+                CmdSlider();
+            }
+
+        }
     }
     GameObject bomb;
     void finishPlanting()
