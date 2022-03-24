@@ -75,14 +75,15 @@ public class PlayerPlantManager : NetworkBehaviour
     [ClientRpc]
     void RpcSlider()
     {
-        if(gameManager.PlantProgressSlider.gameObject.activeInHierarchy)
+        gameManager.PlantProgressSlider.gameObject.SetActive(gameManager.PlantProgressSlider.gameObject.activeInHierarchy == true ? false : true);
+        /*if(gameManager.PlantProgressSlider.gameObject.activeInHierarchy)
         {
             gameManager.PlantProgressSlider.gameObject.SetActive(false);
         }
         else
         {
             gameManager.PlantProgressSlider.gameObject.SetActive(true);
-        }
+        }*/
     }
     void startPlanting()
     {
