@@ -49,7 +49,6 @@ public class PlayerManager : NetworkBehaviour
     public override void OnStartLocalPlayer()
     {
         Invoke("CmdAddPlayer", .5f);
-        Debug.Log("on start local");
         base.OnStartLocalPlayer();
     }
 

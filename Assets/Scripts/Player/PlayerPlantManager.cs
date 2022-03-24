@@ -101,7 +101,6 @@ public class PlayerPlantManager : NetworkBehaviour
             playerManager.PlayerState = PlayerState.Planting;
             foreach (var player in gameManager.Players)
             {
-                Debug.Log(player.connectionToClient + "cpn to client");
                 if (player.PlayerTeam == Team.Red)
                 {
                     CmdSlider();
