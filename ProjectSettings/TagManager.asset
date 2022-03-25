@@ -6,6 +6,8 @@ TagManager:
   tags:
   - Spawnpoint
   - PlantableArea
+  - Bomb
+  - Explosion
   layers:
   - Default
   - TransparentFX

@@ -4203,15 +4203,15 @@ MonoBehaviour:
   syncInterval: 0.1
   Round: 0
   RoundsPerHalf: 13
-  StartGameLenght: 0
-  EndgameLenght: 0
-  PreRoundLenght: 0
+  StartGameLenght: 5
+  EndgameLenght: 5
+  PreRoundLenght: 40
   RoundLenght: 10
-  PostRoundlenght: 0
+  PostRoundlenght: 5
   BombPlantTime: 5
   BombHalfDefuseTime: 5
-  BombDefuseTime: 0
-  BombDetonationTime: 0
+  BombDefuseTime: 10
+  BombDetonationTime: 15
   GameTime: 20
   gameState: 0
   roundTimer: {fileID: 1280828156}
@@ -5361,7 +5361,7 @@ Mesh:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: pb_Mesh38252
+  m_Name: pb_Mesh34756
   serializedVersion: 10
   m_SubMeshes:
   - serializedVersion: 2
@@ -7680,7 +7680,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1947129681}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 8.5, y: 0, z: -6.75}
+  m_LocalPosition: {x: 8.5, y: 0, z: -7}
   m_LocalScale: {x: 1, y: 3.5777, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []

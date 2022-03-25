@@ -77,7 +77,7 @@ public class GameManager : NetworkBehaviour
     }
 
     [Command(requiresAuthority = false)]
-    public void CmdAddGameTime(float time)
+    public void CmdSetGameTime(float time)
     {
         GameTime = time;
     }

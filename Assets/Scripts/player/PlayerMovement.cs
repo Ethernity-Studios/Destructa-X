@@ -2,10 +2,7 @@ using UnityEngine;
 using Mirror;
 using System;
 
-public enum PlayerState
-{
-    Idle, Walk, Run, Crouch, Jump, Planting, Dead
-}
+
 
 public class PlayerMovement : NetworkBehaviour
 {

@@ -2,6 +2,11 @@ using Mirror;
 using UnityEngine;
 using UnityEngine.UI;
 
+public enum PlayerState
+{
+    Idle, Walk, Run, Crouch, Jump, Planting, Defusing, Dead
+}
+
 public class PlayerManager : NetworkBehaviour
 {
     [SyncVar]

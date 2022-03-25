@@ -2,7 +2,7 @@ using Mirror;
 using System;
 using UnityEngine;
 
-public class PlayerPlantManager : NetworkBehaviour
+public class PlayerBombManager : NetworkBehaviour
 {
     public bool isInPlantableArea;
 
@@ -12,34 +12,44 @@ public class PlayerPlantManager : NetworkBehaviour
     [SerializeField] GameObject bombPrefab;
 
     [SerializeField] float bombPlantOffset;
+
+    BombManager bomb;
     private void Awake()
     {
+        bomb = FindObjectOfType<BombManager>();
         playerManager = GetComponent<PlayerManager>();
         gameManager = FindObjectOfType<GameManager>();
     }
     void Update()
     {
         if (!isLocalPlayer) return;
-        plant();
+        plantBomb();
+        defuseBomb();
     }
+
     [SyncVar]
-    public float timeLeft = 0;
-    void plant()
+    public float plantTimeLeft = 0;
+    [SyncVar]
+    public float defuseTimeLeft = 0;
+
+    #region Planting
+
+    void plantBomb()
     {
         if (isInPlantableArea)
         {
             if (playerManager.PlayerState != PlayerState.Planting) startPlanting();
             if (Input.GetKey(KeyCode.E) && playerManager.PlayerState == PlayerState.Planting)
             {
-                if (timeLeft < gameManager.BombPlantTime)
+                if (plantTimeLeft < gameManager.BombPlantTime)
                 {
-                    CmdIncreaseTimeLeft();
-                    CmdChangeSliderValue();
+                    CmdIncreasePlantTimeLeft();
+                    CmdChangePlantSliderValue();
                 }
             }
         }
 
-        if (playerManager.PlayerState == PlayerState.Planting && timeLeft >= gameManager.BombPlantTime)
+        if (playerManager.PlayerState == PlayerState.Planting && plantTimeLeft >= gameManager.BombPlantTime)
         {
             finishPlanting();
         }
@@ -49,26 +59,26 @@ public class PlayerPlantManager : NetworkBehaviour
         }
     }
     [Command]
-    void CmdIncreaseTimeLeft()
+    void CmdIncreasePlantTimeLeft()
     {
-        timeLeft += Time.deltaTime;
+        plantTimeLeft += Time.deltaTime;
     }
     [Command]
-    void CmdSetTimeLeft(float time)
+    void CmdSetPlantTimeLeft(float time)
     {
-        timeLeft = time;
+        plantTimeLeft = time;
     }
 
     [Command]
-    void CmdChangeSliderValue() => RpcChangeSliderValue();
+    void CmdChangePlantSliderValue() => RpcChangePlantSliderValue();
 
     [ClientRpc]
-    void RpcChangeSliderValue()
+    void RpcChangePlantSliderValue()
     {
-        gameManager.PlantProgressSlider.value = (timeLeft / gameManager.BombPlantTime) * 100;
+        gameManager.PlantProgressSlider.value = (plantTimeLeft / gameManager.BombPlantTime) * 100;
     }
     [Command]
-    void CmdSlider() 
+    void CmdPlantSlider() 
     {
         foreach (var player in gameManager.Players)
         {
@@ -77,18 +87,18 @@ public class PlayerPlantManager : NetworkBehaviour
                 GameObject plantProgressSlider = gameManager.PlantProgressSlider.gameObject;
                 if (plantProgressSlider.activeInHierarchy)
                 {
-                    RpcSlider((NetworkConnectionToClient)player.connectionToClient, false);
+                    RpcPlantSlider((NetworkConnectionToClient)player.connectionToClient, false);
                 }
                 else
                 {
-                    RpcSlider((NetworkConnectionToClient)player.connectionToClient, true);
+                    RpcPlantSlider((NetworkConnectionToClient)player.connectionToClient, true);
                 }
             }
         }
     } 
 
     [TargetRpc]
-    void RpcSlider(NetworkConnection conn, bool enable)
+    void RpcPlantSlider(NetworkConnection conn, bool enable)
     {
         gameManager.PlantProgressSlider.gameObject.SetActive(enable);
     }
@@ -97,13 +107,13 @@ public class PlayerPlantManager : NetworkBehaviour
         if (Input.GetKeyDown(KeyCode.E))
         {
             Debug.Log("started planting");
-            CmdSetTimeLeft(0);
+            CmdSetPlantTimeLeft(0);
             playerManager.PlayerState = PlayerState.Planting;
             foreach (var player in gameManager.Players)
             {
                 if (player.PlayerTeam == Team.Red)
                 {
-                    CmdSlider();
+                    CmdPlantSlider();
                 } 
             }
         }
@@ -113,36 +123,50 @@ public class PlayerPlantManager : NetworkBehaviour
     {
         Debug.Log("stopped planting");
         playerManager.PlayerState = PlayerState.Idle;
-        CmdSetTimeLeft(0);
+        CmdSetPlantTimeLeft(0);
         gameManager.PlantProgressSlider.value = 0;
-        CmdChangeSliderValue();
+        CmdChangePlantSliderValue();
         foreach (var player in gameManager.Players)
         {
             Debug.Log(player.connectionToClient + "cpn to client");
             if (player.PlayerTeam == Team.Red) 
             {
-                CmdSlider();
+                CmdPlantSlider();
             }
 
         }
     }
-    GameObject bomb;
+
     void finishPlanting()
     {
         Debug.Log("finished planting!");
-        gameManager.CmdAddGameTime(gameManager.BombDetonationTime);
+        gameManager.CmdSetGameTime(gameManager.BombDetonationTime);
         stopPlanting();
         CmdInstantiateBomb();
+
+        bomb = FindObjectOfType<BombManager>();
+        bomb.Invoke("CmdDetonateBomb", 2f);
     }
 
     [Command]
     void CmdInstantiateBomb()
     {
-        bomb = Instantiate(bombPrefab, GameObject.Find("World").transform);
+        GameObject bomb = Instantiate(bombPrefab, GameObject.Find("World").transform);
         bomb.transform.position = new Vector3(transform.position.x, transform.position.y - bombPlantOffset, transform.position.z);
         bomb.transform.rotation = transform.rotation;
         NetworkServer.Spawn(bomb);
     }
+
+    #endregion
+
+    #region Defusing
+
+    void defuseBomb()
+    {
+
+    }
+
+    #endregion
 
     private void OnTriggerEnter(Collider other)
     {
