@@ -13,10 +13,10 @@ public class PlayerBombManager : NetworkBehaviour
 
     [SerializeField] float bombPlantOffset;
 
-    BombManager bomb;
+    BombManager bomba;
     private void Awake()
     {
-        bomb = FindObjectOfType<BombManager>();
+        bomba = FindObjectOfType<BombManager>();
         playerManager = GetComponent<PlayerManager>();
         gameManager = FindObjectOfType<GameManager>();
     }
@@ -128,7 +128,6 @@ public class PlayerBombManager : NetworkBehaviour
         CmdChangePlantSliderValue();
         foreach (var player in gameManager.Players)
         {
-            Debug.Log(player.connectionToClient + "cpn to client");
             if (player.PlayerTeam == Team.Red) 
             {
                 CmdPlantSlider();
@@ -143,18 +142,23 @@ public class PlayerBombManager : NetworkBehaviour
         gameManager.CmdSetGameTime(gameManager.BombDetonationTime);
         stopPlanting();
         CmdInstantiateBomb();
-
-        bomb = FindObjectOfType<BombManager>();
-        bomb.Invoke("CmdDetonateBomb", 2f);
     }
 
     [Command]
     void CmdInstantiateBomb()
     {
-        GameObject bomb = Instantiate(bombPrefab, GameObject.Find("World").transform);
+        GameObject bomb = Instantiate(bombPrefab);
+        NetworkServer.Spawn(bomb);
+        RpcSetupBomb(bomb);
+    }
+    [ClientRpc]
+    void RpcSetupBomb(GameObject bomb)
+    {
+        bomb.transform.SetParent(GameObject.Find("World").transform);
         bomb.transform.position = new Vector3(transform.position.x, transform.position.y - bombPlantOffset, transform.position.z);
         bomb.transform.rotation = transform.rotation;
-        NetworkServer.Spawn(bomb);
+
+        bomb.GetComponent<BombManager>().Invoke("CmdDetonateBomb", 4f);
     }
 
     #endregion
