@@ -10,6 +10,11 @@ public enum GameState
     StartGame, PreRound, Round, PostRound, EndGame
 }
 
+public enum BombState
+{
+    NotPlanted, Planted, Exploded, Defused
+}
+
 public class GameManager : NetworkBehaviour
 {
     [SyncVar]
@@ -33,7 +38,9 @@ public class GameManager : NetworkBehaviour
     public float GameTime;
 
     [SyncVar]
-    public GameState gameState;
+    public GameState GameState;
+    [SyncVar]
+    public BombState BombState;
 
     [SerializeField] TMP_Text roundTimer;
 
@@ -42,14 +49,14 @@ public class GameManager : NetworkBehaviour
     readonly public SyncList<PlayerManager> Players = new();
 
     public Slider PlantProgressSlider;
-
     public Slider DefuseProgressSlider;
 
     private void Start()
     {
+        BombState = BombState.NotPlanted;
         PlantProgressSlider.gameObject.SetActive(false);
         DefuseProgressSlider.gameObject.SetActive(false);
-        GameTime = 20;
+        GameTime = StartGameLenght;
 
         if (!isServer) return;
         CmdStartRound(GameState.StartGame);
@@ -58,6 +65,7 @@ public class GameManager : NetworkBehaviour
     private void Update()
     {
         updateRoundTimer();
+        updateGameState();
 
         if (GameTime > 0) GameTime -= Time.deltaTime;
     }
@@ -70,26 +78,54 @@ public class GameManager : NetworkBehaviour
         if (GameTime <= 0) roundTimer.text = "00:00";
     }
 
+    void updateGameState()
+    {
+        if(BombState == BombState.Planted && GameTime <= 0)
+        {
+            BombManager bombManager = FindObjectOfType<BombManager>();
+            bombManager.CmdDetonateBomb();
+            CmdChangeBombState(BombState.Exploded);
+            CmdSetGameTime(PostRoundlenght);
+            CmdChangeGameState(GameState.PostRound);
+        } 
+        if(GameState == GameState.PostRound && GameTime <= 0)
+        {
+            //start new round :)
+        }
+        if(GameState == GameState.PreRound && GameTime <= 0)
+        {
+            CmdChangeGameState(GameState.Round);
+            CmdSetGameTime(RoundLenght);
+        }
+        if(GameState == GameState.Round && GameTime <= 0)
+        {
+            CmdChangeGameState(GameState.PostRound);
+            CmdSetGameTime(PostRoundlenght);
+        }
+        if(GameState == GameState.StartGame && GameTime <= 0)
+        {
+            CmdSetGameTime(RoundLenght);
+            CmdChangeGameState(GameState.Round);
+        }
+    }
+
     #region RoundManagement
 
     [Command(requiresAuthority = false)]
     public void CmdStartRound(GameState gameState)
     {
         Round++;
-        this.gameState = gameState;
+        this.GameState = gameState;
     }
 
     [Command(requiresAuthority = false)]
-    public void CmdSetGameTime(float time)
-    {
-        GameTime = time;
-    }
+    public void CmdSetGameTime(float time) => GameTime = time;
 
     [Command(requiresAuthority = false)]
-    public void ChangeGameState(GameState gameState)
-    {
-        this.gameState = gameState;
-    }
+    public void CmdChangeGameState(GameState gameState) => GameState = gameState;
+
+    [Command(requiresAuthority = false)]
+    public void CmdChangeBombState(BombState bombState) => BombState = bombState;
 
     #endregion
 }

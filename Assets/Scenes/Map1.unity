@@ -4470,15 +4470,16 @@ MonoBehaviour:
   RoundsPerHalf: 13
   StartGameLenght: 5
   EndgameLenght: 5
-  PreRoundLenght: 40
-  RoundLenght: 10
+  PreRoundLenght: 15
+  RoundLenght: 20
   PostRoundlenght: 5
   BombPlantTime: 5
   BombHalfDefuseTime: 5
   BombDefuseTime: 10
   BombDetonationTime: 15
-  GameTime: 20
-  gameState: 0
+  GameTime: 5
+  GameState: 0
+  BombState: 0
   roundTimer: {fileID: 1280828156}
   BlueUIAgents: {fileID: 1414175276}
   RedUIAgents: {fileID: 1539574436}

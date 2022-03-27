@@ -15,10 +15,8 @@ public class PlayerBombManager : NetworkBehaviour
 
     [SerializeField] float bombPlantOffset;
 
-    BombManager bomba;
     private void Awake()
     {
-        bomba = FindObjectOfType<BombManager>();
         playerManager = GetComponent<PlayerManager>();
         gameManager = FindObjectOfType<GameManager>();
     }
@@ -142,6 +140,7 @@ public class PlayerBombManager : NetworkBehaviour
     {
         Debug.Log("finished planting!");
         gameManager.CmdSetGameTime(gameManager.BombDetonationTime);
+        gameManager.CmdChangeBombState(BombState.Planted);
         stopPlanting();
         CmdInstantiateBomb();
     }
@@ -159,8 +158,6 @@ public class PlayerBombManager : NetworkBehaviour
         bomb.transform.SetParent(GameObject.Find("World").transform);
         bomb.transform.position = new Vector3(transform.position.x, transform.position.y - bombPlantOffset, transform.position.z);
         bomb.transform.rotation = transform.rotation;
-
-        bomb.GetComponent<BombManager>().Invoke("CmdDetonateBomb", 4f);
     }
 
     #endregion
@@ -248,7 +245,8 @@ public class PlayerBombManager : NetworkBehaviour
     void finishDefusing()
     {
         Debug.Log("finished defusing");
-        //gameManager.CmdSetGameTime(gameManager.BombDetonationTime);
+        gameManager.CmdChangeBombState(BombState.Defused);
+        gameManager.CmdSetGameTime(gameManager.PostRoundlenght);
         stopDefusing();
     }
 

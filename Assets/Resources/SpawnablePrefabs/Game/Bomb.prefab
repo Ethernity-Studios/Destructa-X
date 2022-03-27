@@ -52,8 +52,6 @@ MonoBehaviour:
   syncInterval: 0.1
   bombExplosion: {fileID: 4521657873317057313, guid: 33ae0eaf6489dd744a551ea0b3a95016, type: 3}
   detonating: 0
-  ExplosionSize: 120
-  IncreaseSize: 70
 --- !u!33 &6346402720207044370
 MeshFilter:
   m_ObjectHideFlags: 0
