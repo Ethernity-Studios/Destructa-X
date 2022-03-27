@@ -57,7 +57,6 @@ public class GameManager : NetworkBehaviour
         PlantProgressSlider.gameObject.SetActive(false);
         DefuseProgressSlider.gameObject.SetActive(false);
         GameTime = StartGameLenght;
-
         if (!isServer) return;
         CmdStartRound(GameState.StartGame);
     }

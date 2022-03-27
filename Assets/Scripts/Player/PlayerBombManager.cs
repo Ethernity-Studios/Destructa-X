@@ -247,6 +247,7 @@ public class PlayerBombManager : NetworkBehaviour
         Debug.Log("finished defusing");
         gameManager.CmdChangeBombState(BombState.Defused);
         gameManager.CmdSetGameTime(gameManager.PostRoundlenght);
+        gameManager.CmdChangeGameState(GameState.PostRound);
         stopDefusing();
     }
 
