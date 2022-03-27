@@ -285,21 +285,21 @@ public class PlayerBombManager : NetworkBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.gameObject.CompareTag("PlantableArea")) isInPlantableArea = true;
+        if (other.gameObject.CompareTag("PlantArea")) isInPlantableArea = true;
 
         if (other.gameObject.CompareTag("Bomb")) isInBombArea = true;
     }
 
     private void OnTriggerStay(Collider other)
     {
-        if (other.gameObject.CompareTag("PlantableArea")) isInPlantableArea = true;
+        if (other.gameObject.CompareTag("PlantArea")) isInPlantableArea = true;
 
         if (other.gameObject.CompareTag("Bomb")) isInBombArea = true;
     }
 
     private void OnTriggerExit(Collider other)
     {
-        if (other.gameObject.CompareTag("PlantableArea")) isInPlantableArea = false;
+        if (other.gameObject.CompareTag("PlantArea")) isInPlantableArea = false;
 
         if (other.gameObject.CompareTag("Bomb")) isInBombArea = false;
     }
