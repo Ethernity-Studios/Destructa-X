@@ -43,9 +43,12 @@ public class GameManager : NetworkBehaviour
 
     public Slider PlantProgressSlider;
 
+    public Slider DefuseProgressSlider;
+
     private void Start()
     {
         PlantProgressSlider.gameObject.SetActive(false);
+        DefuseProgressSlider.gameObject.SetActive(false);
         GameTime = 20;
 
         if (!isServer) return;

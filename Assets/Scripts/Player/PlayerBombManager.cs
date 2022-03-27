@@ -6,6 +6,8 @@ public class PlayerBombManager : NetworkBehaviour
 {
     public bool isInPlantableArea;
 
+    public bool isInBombArea;
+
     GameManager gameManager;
     PlayerManager playerManager;
 
@@ -23,8 +25,9 @@ public class PlayerBombManager : NetworkBehaviour
     void Update()
     {
         if (!isLocalPlayer) return;
-        plantBomb();
-        defuseBomb();
+
+        if (playerManager.PlayerTeam == Team.Red) plantBomb();
+        if (playerManager.PlayerTeam == Team.Blue) defuseBomb();
     }
 
     [SyncVar]
@@ -78,7 +81,7 @@ public class PlayerBombManager : NetworkBehaviour
         gameManager.PlantProgressSlider.value = (plantTimeLeft / gameManager.BombPlantTime) * 100;
     }
     [Command]
-    void CmdPlantSlider() 
+    void CmdPlantSlider(bool enable) 
     {
         foreach (var player in gameManager.Players)
         {
@@ -87,11 +90,11 @@ public class PlayerBombManager : NetworkBehaviour
                 GameObject plantProgressSlider = gameManager.PlantProgressSlider.gameObject;
                 if (plantProgressSlider.activeInHierarchy)
                 {
-                    RpcPlantSlider((NetworkConnectionToClient)player.connectionToClient, false);
+                    RpcPlantSlider((NetworkConnectionToClient)player.connectionToClient, enable);
                 }
                 else
                 {
-                    RpcPlantSlider((NetworkConnectionToClient)player.connectionToClient, true);
+                    RpcPlantSlider((NetworkConnectionToClient)player.connectionToClient, enable);
                 }
             }
         }
@@ -113,7 +116,7 @@ public class PlayerBombManager : NetworkBehaviour
             {
                 if (player.PlayerTeam == Team.Red)
                 {
-                    CmdPlantSlider();
+                    CmdPlantSlider(true);
                 } 
             }
         }
@@ -130,9 +133,8 @@ public class PlayerBombManager : NetworkBehaviour
         {
             if (player.PlayerTeam == Team.Red) 
             {
-                CmdPlantSlider();
+                CmdPlantSlider(false);
             }
-
         }
     }
 
@@ -167,7 +169,117 @@ public class PlayerBombManager : NetworkBehaviour
 
     void defuseBomb()
     {
+        if (isInBombArea && playerManager.PlayerTeam == Team.Blue)
+        {
+            if (playerManager.PlayerState != PlayerState.Defusing) startDefusing();
+            if (Input.GetKey(KeyCode.E) && playerManager.PlayerState == PlayerState.Defusing)
+            {
+                if (defuseTimeLeft < gameManager.BombDefuseTime)
+                {
+                    IncreaseDefuseTimeLeft();
+                    CmdChangeDefuseSliderValue();
+                }
+            }
+        }
 
+        if (playerManager.PlayerState == PlayerState.Defusing && defuseTimeLeft >= gameManager.BombDefuseTime)
+        {
+            finishDefusing();
+        }
+        else if (playerManager.PlayerState == PlayerState.Defusing && Input.GetKeyUp(KeyCode.E))
+        {
+            stopDefusing();
+        }
+    }
+
+    [Command]
+    void CmdChangeDefuseSliderValue() => RpcChangeDefuseSliderValue();
+
+    [ClientRpc]
+    void RpcChangeDefuseSliderValue()
+    {
+        gameManager.DefuseProgressSlider.value = (defuseTimeLeft / gameManager.BombDefuseTime) * 100;
+    }
+
+    void startDefusing()
+    {
+        if (Input.GetKeyDown(KeyCode.E))
+        {
+            Debug.Log("started defusing");
+            if (defuseTimeLeft >= gameManager.BombDefuseTime / 2) CmdSetDefuseTimeLeft(gameManager.BombDefuseTime / 2);
+            else CmdSetDefuseTimeLeft(0);
+
+            playerManager.PlayerState = PlayerState.Defusing;
+            foreach (var player in gameManager.Players)
+            {
+                if (player.PlayerTeam == Team.Blue)
+                {
+                    CmdDefuseSlider(true);
+                }
+            }
+        }
+    }
+
+    void stopDefusing()
+    {
+        Debug.Log("stopped defusing");
+        playerManager.PlayerState = PlayerState.Idle;
+        if (defuseTimeLeft >= gameManager.BombDefuseTime / 2)
+        {
+            CmdSetDefuseTimeLeft(gameManager.BombDefuseTime / 2);
+            gameManager.DefuseProgressSlider.value = 50;
+        }
+        else
+        {
+            CmdSetDefuseTimeLeft(0);
+            gameManager.DefuseProgressSlider.value = 0;
+        }
+
+        CmdChangeDefuseSliderValue();
+        foreach (var player in gameManager.Players)
+        {
+            if (player.PlayerTeam == Team.Blue)
+            {
+                CmdDefuseSlider(false);
+            }
+        }
+    }
+
+    void finishDefusing()
+    {
+        Debug.Log("finished defusing");
+        //gameManager.CmdSetGameTime(gameManager.BombDetonationTime);
+        stopDefusing();
+    }
+
+    [Command]
+    void CmdSetDefuseTimeLeft(float time)
+    {
+        defuseTimeLeft = time;
+    }
+
+    void IncreaseDefuseTimeLeft()
+    {
+        defuseTimeLeft += Time.deltaTime;
+    }
+
+    [Command]
+    void CmdDefuseSlider(bool enable)
+    {
+        foreach (var player in gameManager.Players)
+        {
+            if (player.PlayerTeam == Team.Blue)
+            {
+                RpcDefuseSlider((NetworkConnectionToClient)player.connectionToClient, enable);
+            }
+        }
+    }
+
+    [TargetRpc]
+    void RpcDefuseSlider(NetworkConnection conn, bool enable)
+    {
+        gameManager.DefuseProgressSlider.gameObject.SetActive(enable);
+        gameManager.DefuseProgressSlider.transform.parent.GetChild(1).gameObject.SetActive(enable);
     }
 
     #endregion
@@ -175,11 +287,22 @@ public class PlayerBombManager : NetworkBehaviour
     private void OnTriggerEnter(Collider other)
     {
         if (other.gameObject.CompareTag("PlantableArea")) isInPlantableArea = true;
+
+        if (other.gameObject.CompareTag("Bomb")) isInBombArea = true;
+    }
+
+    private void OnTriggerStay(Collider other)
+    {
+        if (other.gameObject.CompareTag("PlantableArea")) isInPlantableArea = true;
+
+        if (other.gameObject.CompareTag("Bomb")) isInBombArea = true;
     }
 
     private void OnTriggerExit(Collider other)
     {
         if (other.gameObject.CompareTag("PlantableArea")) isInPlantableArea = false;
+
+        if (other.gameObject.CompareTag("Bomb")) isInBombArea = false;
     }
 
 }
