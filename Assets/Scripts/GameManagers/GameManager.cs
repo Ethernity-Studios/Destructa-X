@@ -53,6 +53,8 @@ public class GameManager : NetworkBehaviour
 
     public GameObject ShopUI;
 
+    [SerializeField] Transform[] blueSpawnPositions, redSpawnPositions;
+
     private void Start()
     {
         ShopUI.SetActive(false);
