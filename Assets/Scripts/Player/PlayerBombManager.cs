@@ -60,15 +60,10 @@ public class PlayerBombManager : NetworkBehaviour
         }
     }
     [Command]
-    void CmdIncreasePlantTimeLeft()
-    {
-        plantTimeLeft += Time.deltaTime;
-    }
+    void CmdIncreasePlantTimeLeft() => plantTimeLeft += Time.deltaTime;
+
     [Command]
-    void CmdSetPlantTimeLeft(float time)
-    {
-        plantTimeLeft = time;
-    }
+    void CmdSetPlantTimeLeft(float time) => plantTimeLeft = time;
 
     [Command]
     void CmdChangePlantSliderValue() => RpcChangePlantSliderValue();
@@ -226,7 +221,7 @@ public class PlayerBombManager : NetworkBehaviour
             CmdSetDefuseTimeLeft(gameManager.BombDefuseTime / 2);
             gameManager.DefuseProgressSlider.value = 50;
         }
-        else
+        else if (defuseTimeLeft < gameManager.BombDefuseTime/2)
         {
             CmdSetDefuseTimeLeft(0);
             gameManager.DefuseProgressSlider.value = 0;
@@ -252,15 +247,10 @@ public class PlayerBombManager : NetworkBehaviour
     }
 
     [Command]
-    void CmdSetDefuseTimeLeft(float time)
-    {
-        defuseTimeLeft = time;
-    }
+    void CmdSetDefuseTimeLeft(float time) => defuseTimeLeft = time;
 
-    void IncreaseDefuseTimeLeft()
-    {
-        defuseTimeLeft += Time.deltaTime;
-    }
+    [Command]
+    void IncreaseDefuseTimeLeft() => defuseTimeLeft += Time.deltaTime;
 
     [Command]
     void CmdDefuseSlider(bool enable)

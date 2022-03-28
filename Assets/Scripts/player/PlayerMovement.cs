@@ -35,7 +35,6 @@ public class PlayerMovement : NetworkBehaviour
         cameraTransform = Camera.main.transform;
         cameraTransform.SetParent(transform);
         cameraTransform.position = new Vector3(transform.position.x,transform.position.y + .6f, transform.position.z);
-        Cursor.lockState = CursorLockMode.Locked;
         characterController = GetComponent<CharacterController>();
     }
 
@@ -56,6 +55,7 @@ public class PlayerMovement : NetworkBehaviour
 
     void rotateCamera()
     {
+        if (GetComponent<PlayerEconomyManager>().isShopOpen) return;
         float mouseX = Input.GetAxis("Mouse X") * MouseSens*100 * Time.fixedDeltaTime;
         float mouseY = Input.GetAxis("Mouse Y") * MouseSens*100 * Time.fixedDeltaTime;
         xRotation -= mouseY;

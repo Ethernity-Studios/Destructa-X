@@ -22,10 +22,10 @@ public class GameManager : NetworkBehaviour
 
     public int RoundsPerHalf = 13;
 
-    public float StartGameLenght = 5; //40s
+    public float StartGameLenght = 20; //40s
     public float EndgameLenght = 5; //10s
 
-    public float PreRoundLenght = 40; //30s
+    public float PreRoundLenght = 20; //30s
     public float RoundLenght = 10; //1m 40s
     public float PostRoundlenght = 5; //5s
 
@@ -51,8 +51,11 @@ public class GameManager : NetworkBehaviour
     public Slider PlantProgressSlider;
     public Slider DefuseProgressSlider;
 
+    public GameObject ShopUI;
+
     private void Start()
     {
+        ShopUI.SetActive(false);
         BombState = BombState.NotPlanted;
         PlantProgressSlider.gameObject.SetActive(false);
         DefuseProgressSlider.gameObject.SetActive(false);
@@ -93,6 +96,7 @@ public class GameManager : NetworkBehaviour
         }
         if(GameState == GameState.PreRound && GameTime <= 0)
         {
+            CloseLocalPlayerShopUI();
             CmdChangeGameState(GameState.Round);
             CmdSetGameTime(RoundLenght);
         }
@@ -103,8 +107,17 @@ public class GameManager : NetworkBehaviour
         }
         if(GameState == GameState.StartGame && GameTime <= 0)
         {
+            CloseLocalPlayerShopUI();
             CmdSetGameTime(RoundLenght);
             CmdChangeGameState(GameState.Round);
+        }
+    }
+
+    void CloseLocalPlayerShopUI()
+    {
+        foreach (var player in Players)
+        {
+            player.gameObject.GetComponent<PlayerEconomyManager>().CloseShopUI();
         }
     }
 

@@ -47,6 +47,7 @@ public class PlayerManager : NetworkBehaviour
     {
         Invoke("SpawnUIAgent", .2f);
         if (!isLocalPlayer) return;
+        Cursor.lockState = CursorLockMode.Locked;
         CmdSetPlayerInfo(NicknameManager.DisplayName, RoomManager.PTeam, RoomManager.PAgent);
 
     }
@@ -92,20 +93,11 @@ public class PlayerManager : NetworkBehaviour
     }
 
     [Command]
-    public void CmdSwitchPlayerTeam(Team team)
-    {
-        PlayerTeam = team;
-    }
+    public void CmdSwitchPlayerTeam(Team team) => PlayerTeam = team;
 
     [Command]
-    public void CmdSwitchPlayerAgent(Agent agent)
-    {
-        PlayerAgent = agent;
-    }
+    public void CmdSwitchPlayerAgent(Agent agent) => PlayerAgent = agent;
 
     [Command]
-    public void CmdAddMoney(int Money)
-    {
-        PlayerMoney = Money;
-    }
+    public void CmdAddMoney(int money) => PlayerMoney = money;
 }
