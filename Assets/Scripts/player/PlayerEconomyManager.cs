@@ -36,6 +36,7 @@ public class PlayerEconomyManager : NetworkBehaviour
 
     public void CloseShopUI()
     {
+        isShopOpen = false;
         Cursor.lockState = CursorLockMode.Locked;
         gameManager = FindObjectOfType<GameManager>();
         gameManager.ShopUI.SetActive(false);

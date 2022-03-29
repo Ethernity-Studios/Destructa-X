@@ -8927,7 +8927,7 @@ MonoBehaviour:
   EndgameLenght: 5
   PreRoundLenght: 20
   RoundLenght: 20
-  PostRoundlenght: 5
+  PostRoundlenght: 10
   BombPlantTime: 5
   BombHalfDefuseTime: 5
   BombDefuseTime: 10

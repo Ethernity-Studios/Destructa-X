@@ -32,6 +32,7 @@ public class PlayerManager : NetworkBehaviour
 
     GameManager gameManager;
     AgentManager agentManager;
+    CharacterController characterController;
     NetworkManagerRoom room;
 
     public PlayerState PlayerState;
@@ -45,7 +46,7 @@ public class PlayerManager : NetworkBehaviour
     }
     public void Start()
     {
-        Invoke("SpawnUIAgent", .2f);
+        Invoke("SpawnUIAgent", .3f);
         if (!isLocalPlayer) return;
         Cursor.lockState = CursorLockMode.Locked;
         CmdSetPlayerInfo(NicknameManager.DisplayName, RoomManager.PTeam, RoomManager.PAgent);
@@ -54,7 +55,7 @@ public class PlayerManager : NetworkBehaviour
 
     public override void OnStartLocalPlayer()
     {
-        Invoke("CmdAddPlayer", .5f);
+        Invoke("CmdAddPlayer", .1f);
         base.OnStartLocalPlayer();
     }
 
@@ -100,4 +101,13 @@ public class PlayerManager : NetworkBehaviour
 
     [Command]
     public void CmdAddMoney(int money) => PlayerMoney = money;
+
+    [ClientRpc]
+    public void RespawnPlayer(Vector3 position)
+    {
+        characterController = GetComponent<CharacterController>();
+        characterController.enabled = false;
+        transform.position = position;
+        characterController.enabled = true;
+    }
 }

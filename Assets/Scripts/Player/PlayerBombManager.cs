@@ -40,7 +40,7 @@ public class PlayerBombManager : NetworkBehaviour
         if (isInPlantableArea)
         {
             if (playerManager.PlayerState != PlayerState.Planting) startPlanting();
-            if (Input.GetKey(KeyCode.E) && playerManager.PlayerState == PlayerState.Planting)
+            if (Input.GetKey(KeyCode.F) && playerManager.PlayerState == PlayerState.Planting)
             {
                 if (plantTimeLeft < gameManager.BombPlantTime)
                 {
@@ -54,7 +54,7 @@ public class PlayerBombManager : NetworkBehaviour
         {
             finishPlanting();
         }
-        else if (playerManager.PlayerState == PlayerState.Planting && Input.GetKeyUp(KeyCode.E))
+        else if (playerManager.PlayerState == PlayerState.Planting && Input.GetKeyUp(KeyCode.F))
         {
             stopPlanting();
         }
@@ -100,7 +100,7 @@ public class PlayerBombManager : NetworkBehaviour
     }
     void startPlanting()
     {
-        if (Input.GetKeyDown(KeyCode.E))
+        if (Input.GetKeyDown(KeyCode.F))
         {
             Debug.Log("started planting");
             CmdSetPlantTimeLeft(0);
@@ -164,7 +164,7 @@ public class PlayerBombManager : NetworkBehaviour
         if (isInBombArea && playerManager.PlayerTeam == Team.Blue)
         {
             if (playerManager.PlayerState != PlayerState.Defusing) startDefusing();
-            if (Input.GetKey(KeyCode.E) && playerManager.PlayerState == PlayerState.Defusing)
+            if (Input.GetKey(KeyCode.F) && playerManager.PlayerState == PlayerState.Defusing)
             {
                 if (defuseTimeLeft < gameManager.BombDefuseTime)
                 {
@@ -178,7 +178,7 @@ public class PlayerBombManager : NetworkBehaviour
         {
             finishDefusing();
         }
-        else if (playerManager.PlayerState == PlayerState.Defusing && Input.GetKeyUp(KeyCode.E))
+        else if (playerManager.PlayerState == PlayerState.Defusing && Input.GetKeyUp(KeyCode.F))
         {
             stopDefusing();
         }
@@ -195,7 +195,7 @@ public class PlayerBombManager : NetworkBehaviour
 
     void startDefusing()
     {
-        if (Input.GetKeyDown(KeyCode.E))
+        if (Input.GetKeyDown(KeyCode.F))
         {
             Debug.Log("started defusing");
             if (defuseTimeLeft >= gameManager.BombDefuseTime / 2) CmdSetDefuseTimeLeft(gameManager.BombDefuseTime / 2);

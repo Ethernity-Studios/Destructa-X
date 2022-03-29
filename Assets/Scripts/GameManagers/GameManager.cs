@@ -62,8 +62,31 @@ public class GameManager : NetworkBehaviour
         PlantProgressSlider.gameObject.SetActive(false);
         DefuseProgressSlider.gameObject.SetActive(false);
         GameTime = StartGameLenght;
+
         if (!isServer) return;
+        Invoke("spawnPlayers", .3f);
         CmdStartRound(GameState.StartGame);
+    }
+
+    void spawnPlayers()
+    {
+        int b = 0;
+        int r = 0;
+        foreach (var player in Players)
+        {
+            if (player.PlayerTeam == Team.Blue)
+            {
+                Debug.Log("spawning at blue" + blueSpawnPositions[b].position);
+                player.RespawnPlayer(blueSpawnPositions[b].position);
+                b++;
+            }
+            else if (player.PlayerTeam == Team.Red)
+            {
+                Debug.Log("spawning at red " + redSpawnPositions[r].position);
+                player.RespawnPlayer(redSpawnPositions[r].position);
+                r++;
+            }
+        }
     }
 
     private void Update()
