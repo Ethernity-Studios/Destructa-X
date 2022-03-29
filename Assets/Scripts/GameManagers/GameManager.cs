@@ -3,7 +3,6 @@ using System;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
-using System.Collections.Generic;
 
 public enum GameState
 {
@@ -22,7 +21,7 @@ public class GameManager : NetworkBehaviour
 
     public int RoundsPerHalf = 13;
 
-    public float StartGameLenght = 20; //40s
+    public float StartGameLenght = 20; //45s
     public float EndgameLenght = 5; //10s
 
     public float PreRoundLenght = 20; //30s
@@ -52,6 +51,7 @@ public class GameManager : NetworkBehaviour
     public Slider DefuseProgressSlider;
 
     public GameObject ShopUI;
+    [SerializeField] GameObject MOTD;
 
     [SerializeField] Transform[] blueSpawnPositions, redSpawnPositions;
 
@@ -64,7 +64,7 @@ public class GameManager : NetworkBehaviour
         GameTime = StartGameLenght;
 
         if (!isServer) return;
-        Invoke("spawnPlayers", .3f);
+        Invoke("spawnPlayers", .2f);
         CmdStartRound(GameState.StartGame);
     }
 
@@ -96,7 +96,7 @@ public class GameManager : NetworkBehaviour
 
         if (GameTime > 0) GameTime -= Time.deltaTime;
     }
-
+    #region RoundManagement
     void updateRoundTimer()
     {
         var sec = Convert.ToInt32(GameTime % 60).ToString("00");
@@ -107,30 +107,30 @@ public class GameManager : NetworkBehaviour
 
     void updateGameState()
     {
-        if(BombState == BombState.Planted && GameTime <= 0)
+        if (BombState == BombState.Planted && GameTime <= 0)
         {
             BombManager bombManager = FindObjectOfType<BombManager>();
             bombManager.CmdDetonateBomb();
             CmdChangeBombState(BombState.Exploded);
             CmdSetGameTime(PostRoundlenght);
             CmdChangeGameState(GameState.PostRound);
-        } 
-        if(GameState == GameState.PostRound && GameTime <= 0)
+        }
+        if (GameState == GameState.PostRound && GameTime <= 0)
         {
             //start new round :)
         }
-        if(GameState == GameState.PreRound && GameTime <= 0)
+        if (GameState == GameState.PreRound && GameTime <= 0)
         {
             CloseLocalPlayerShopUI();
             CmdChangeGameState(GameState.Round);
             CmdSetGameTime(RoundLenght);
         }
-        if(GameState == GameState.Round && GameTime <= 0)
+        if (GameState == GameState.Round && GameTime <= 0)
         {
             CmdChangeGameState(GameState.PostRound);
             CmdSetGameTime(PostRoundlenght);
         }
-        if(GameState == GameState.StartGame && GameTime <= 0)
+        if (GameState == GameState.StartGame && GameTime <= 0)
         {
             CloseLocalPlayerShopUI();
             CmdSetGameTime(RoundLenght);
@@ -146,13 +146,13 @@ public class GameManager : NetworkBehaviour
         }
     }
 
-    #region RoundManagement
+
 
     [Command(requiresAuthority = false)]
     public void CmdStartRound(GameState gameState)
     {
         Round++;
-        this.GameState = gameState;
+        GameState = gameState;
     }
 
     [Command(requiresAuthority = false)]
