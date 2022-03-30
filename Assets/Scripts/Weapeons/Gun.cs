@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.UI;
 
 [CreateAssetMenu]
 public class Gun : ScriptableObject
@@ -6,12 +7,16 @@ public class Gun : ScriptableObject
     public string Name;
     public int MagazineSize;
     public int MaxAmmo;
-    public int ReloadTime;
+    public float ReloadTime;
+    public float EquipTime;
     public GunType Type;
+    public GunCategory Category;
 
     public GameObject GunModel;
-    public Sprite GunIcon;
+    public Image GunIcon;
 
     public Fire LMB;
     public RMB RMB;
+
+    public GunStats Stats;
 }

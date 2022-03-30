@@ -76,3 +76,16 @@ public enum GunType
     Primary,
     Secondary
 }
+
+public enum GunCategory
+{
+    MachineGun, Rifle, Shotgun, Sidearm, SMG, SniperRifle
+}
+
+[Serializable]
+public class GunStats
+{
+    public int HeadDamageShort, HeadDamageLong;
+    public int BodyDamageShort, BodyDamageLong;
+    public int LegsDamageShort, LegsDamageLong;
+}
