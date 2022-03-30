@@ -55,6 +55,7 @@ public class GameManager : NetworkBehaviour
 
     [SerializeField] Transform[] blueSpawnPositions, redSpawnPositions;
 
+    [SerializeField] GameObject[] dropdownWalls;
     private void Start()
     {
         ShopUI.SetActive(false);
@@ -92,6 +93,7 @@ public class GameManager : NetworkBehaviour
     private void Update()
     {
         updateRoundTimer();
+        if (isServer)
         updateGameState();
 
         if (GameTime > 0) GameTime -= Time.deltaTime;
@@ -121,6 +123,7 @@ public class GameManager : NetworkBehaviour
         }
         if (GameState == GameState.PreRound && GameTime <= 0)
         {
+            RpcDropWalls();
             CloseLocalPlayerShopUI();
             CmdChangeGameState(GameState.Round);
             CmdSetGameTime(RoundLenght);
@@ -132,9 +135,18 @@ public class GameManager : NetworkBehaviour
         }
         if (GameState == GameState.StartGame && GameTime <= 0)
         {
+            RpcDropWalls();
             CloseLocalPlayerShopUI();
             CmdSetGameTime(RoundLenght);
             CmdChangeGameState(GameState.Round);
+        }
+    }
+    [ClientRpc]
+    void RpcDropWalls()
+    {
+        foreach (var wall in dropdownWalls)
+        {
+            wall.SetActive(false);
         }
     }
 
