@@ -20,9 +20,9 @@ public class ShopManager : MonoBehaviour
 
     [SerializeField] Gun[] guns;
 
-    [SerializeField] GameObject gunInfo;
     [SerializeField] GameObject shieldInfo;
-
+    [SerializeField] GameObject gunInfo;
+    
     public void ShowGunInfo(Gun gun)
     {
         shieldInfo.SetActive(false);
