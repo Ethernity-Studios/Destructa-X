@@ -134,8 +134,11 @@ public class PlayerBombManager : NetworkBehaviour
     void finishPlanting()
     {
         Debug.Log("finished planting!");
-        gameManager.CmdSetGameTime(gameManager.BombDetonationTime);
-        gameManager.CmdChangeBombState(BombState.Planted);
+        if(gameManager.GameState != GameState.PostRound || gameManager.GameState == GameState.EndGame)
+        {
+            gameManager.CmdSetGameTime(gameManager.BombDetonationTime);
+            gameManager.CmdChangeBombState(BombState.Planted);
+        }
         stopPlanting();
         CmdInstantiateBomb();
     }
@@ -161,7 +164,7 @@ public class PlayerBombManager : NetworkBehaviour
 
     void defuseBomb()
     {
-        if (isInBombArea && playerManager.PlayerTeam == Team.Blue)
+        if (isInBombArea && playerManager.PlayerTeam == Team.Blue && gameManager.GameState != GameState.PostRound && gameManager.GameState != GameState.EndGame)
         {
             if (playerManager.PlayerState != PlayerState.Defusing) startDefusing();
             if (Input.GetKey(KeyCode.F) && playerManager.PlayerState == PlayerState.Defusing)

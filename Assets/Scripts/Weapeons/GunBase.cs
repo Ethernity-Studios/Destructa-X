@@ -85,6 +85,8 @@ public enum GunCategory
 [Serializable]
 public class GunStats
 {
+    public float FireRate;
+
     public int HeadDamageShort, HeadDamageLong;
     public int BodyDamageShort, BodyDamageLong;
     public int LegsDamageShort, LegsDamageLong;

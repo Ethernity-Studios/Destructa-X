@@ -5,6 +5,9 @@ using System.Collections.Generic;
 
 public class ShopManager : MonoBehaviour
 {
+    [Header("Guns")]
+    [SerializeField] GameObject gunInfo;
+
     [SerializeField] TMP_Text gunName;
     [SerializeField] TMP_Text gunCategory;
     [SerializeField] TMP_Text gunType;
@@ -20,9 +23,14 @@ public class ShopManager : MonoBehaviour
 
     [SerializeField] Gun[] guns;
 
+
+    [Header("Shields")]
     [SerializeField] GameObject shieldInfo;
-    [SerializeField] GameObject gunInfo;
-    
+
+    [SerializeField] TMP_Text shieldName;
+    [SerializeField] TMP_Text shieldDescription;
+    [SerializeField] Sprite shieldImage;
+
     public void ShowGunInfo(Gun gun)
     {
         shieldInfo.SetActive(false);
@@ -31,7 +39,7 @@ public class ShopManager : MonoBehaviour
         gunCategory.text = ConvertGunCategoryToString(gun.Category);
         gunType.text = ConvertGunTypeToString(gun.Type);
 
-        gunFireRate.text = (gun.LMB.FireDelay * 4).ToString();
+        gunFireRate.text = (gun.Stats.FireRate).ToString();
         gunEquipSpeed.text = gun.EquipTime.ToString();
         gunReloadSpeed.text = gun.ReloadTime.ToString();
         gunMagazine.text = gun.MaxAmmo.ToString();
@@ -44,15 +52,19 @@ public class ShopManager : MonoBehaviour
         gunLegsDamageLong.text = gun.Stats.LegsDamageLong.ToString();
     }
 
-    public void ShowShieldInfo()
+    public void ShowShieldInfo(string shieldType)
     {
         gunInfo.SetActive(false);
         shieldInfo.SetActive(true);
-    }
+        switch (shieldType)
+        {
+            case "light":
 
-    private void Start()
-    {
-        ShowGunInfo(guns[0]);
+                break;
+            case "heavy":
+
+                break;
+        }
     }
     
     public string ConvertGunCategoryToString(GunCategory cat)

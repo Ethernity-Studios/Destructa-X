@@ -225,7 +225,19 @@ MonoBehaviour:
   - eventID: 0
     callback:
       m_PersistentCalls:
-        m_Calls: []
+        m_Calls:
+        - m_Target: {fileID: 702520296}
+          m_TargetAssemblyTypeName: ShopManager, Assembly-CSharp
+          m_MethodName: ShowGunInfo
+          m_Mode: 2
+          m_Arguments:
+            m_ObjectArgument: {fileID: 11400000, guid: b2036781265a8d343919c144f1bf6f20, type: 2}
+            m_ObjectArgumentAssemblyTypeName: Gun, Assembly-CSharp
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
 --- !u!1 &66682297
 GameObject:
   m_ObjectHideFlags: 0
@@ -2160,7 +2172,19 @@ MonoBehaviour:
   - eventID: 0
     callback:
       m_PersistentCalls:
-        m_Calls: []
+        m_Calls:
+        - m_Target: {fileID: 702520296}
+          m_TargetAssemblyTypeName: ShopManager, Assembly-CSharp
+          m_MethodName: ShowGunInfo
+          m_Mode: 2
+          m_Arguments:
+            m_ObjectArgument: {fileID: 11400000, guid: 370f4348b5b791e428482e0c5b054ef1, type: 2}
+            m_ObjectArgumentAssemblyTypeName: Gun, Assembly-CSharp
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
 --- !u!1 &225024140
 GameObject:
   m_ObjectHideFlags: 0
@@ -3998,7 +4022,19 @@ MonoBehaviour:
   - eventID: 0
     callback:
       m_PersistentCalls:
-        m_Calls: []
+        m_Calls:
+        - m_Target: {fileID: 702520296}
+          m_TargetAssemblyTypeName: ShopManager, Assembly-CSharp
+          m_MethodName: ShowGunInfo
+          m_Mode: 2
+          m_Arguments:
+            m_ObjectArgument: {fileID: 11400000, guid: 42752df7826757e49b77d68123f7f591, type: 2}
+            m_ObjectArgumentAssemblyTypeName: Gun, Assembly-CSharp
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
 --- !u!1 &417324084
 GameObject:
   m_ObjectHideFlags: 0
@@ -4476,7 +4512,19 @@ MonoBehaviour:
   - eventID: 0
     callback:
       m_PersistentCalls:
-        m_Calls: []
+        m_Calls:
+        - m_Target: {fileID: 702520296}
+          m_TargetAssemblyTypeName: ShopManager, Assembly-CSharp
+          m_MethodName: ShowGunInfo
+          m_Mode: 2
+          m_Arguments:
+            m_ObjectArgument: {fileID: 11400000, guid: 8065c8f1b2293fb4d877d368152414ab, type: 2}
+            m_ObjectArgumentAssemblyTypeName: Gun, Assembly-CSharp
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
 --- !u!1 &430057650
 GameObject:
   m_ObjectHideFlags: 0
@@ -5462,7 +5510,19 @@ MonoBehaviour:
   - eventID: 0
     callback:
       m_PersistentCalls:
-        m_Calls: []
+        m_Calls:
+        - m_Target: {fileID: 702520296}
+          m_TargetAssemblyTypeName: ShopManager, Assembly-CSharp
+          m_MethodName: ShowGunInfo
+          m_Mode: 2
+          m_Arguments:
+            m_ObjectArgument: {fileID: 11400000, guid: c132e1b25245c9c45b5ccece894c4737, type: 2}
+            m_ObjectArgumentAssemblyTypeName: Gun, Assembly-CSharp
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
 --- !u!1 &461774261
 GameObject:
   m_ObjectHideFlags: 0
@@ -6806,7 +6866,23 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d0b148fe25e99eb48b9724523833bab1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Delegates: []
+  m_Delegates:
+  - eventID: 0
+    callback:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 702520296}
+          m_TargetAssemblyTypeName: ShopManager, Assembly-CSharp
+          m_MethodName: ShowGunInfo
+          m_Mode: 2
+          m_Arguments:
+            m_ObjectArgument: {fileID: 11400000, guid: aa603a1780324fb4e868221fa7c83c53, type: 2}
+            m_ObjectArgumentAssemblyTypeName: Gun, Assembly-CSharp
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
 --- !u!1 &642532570
 GameObject:
   m_ObjectHideFlags: 0
@@ -7591,6 +7667,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 367791fa147883641b5191313fb4ca11, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  gunInfo: {fileID: 1363476802}
   gunName: {fileID: 646898812}
   gunCategory: {fileID: 488592160}
   gunType: {fileID: 1273768314}
@@ -7622,8 +7699,10 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 2b4b1f6b79cc49b41afb5c9ac2ddfced, type: 2}
   - {fileID: 11400000, guid: 370f4348b5b791e428482e0c5b054ef1, type: 2}
   - {fileID: 11400000, guid: 2d1abd84ad117154fbd78804ae4efbdd, type: 2}
-  gunInfo: {fileID: 1363476802}
   shieldInfo: {fileID: 1807199852}
+  shieldName: {fileID: 0}
+  shieldDescription: {fileID: 0}
+  shieldImage: {fileID: 0}
 --- !u!1 &714569158
 GameObject:
   m_ObjectHideFlags: 0
@@ -11106,7 +11185,23 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d0b148fe25e99eb48b9724523833bab1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Delegates: []
+  m_Delegates:
+  - eventID: 0
+    callback:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 702520296}
+          m_TargetAssemblyTypeName: ShopManager, Assembly-CSharp
+          m_MethodName: ShowGunInfo
+          m_Mode: 2
+          m_Arguments:
+            m_ObjectArgument: {fileID: 11400000, guid: 81e1688166dadd04a9b67b27ae61f47e, type: 2}
+            m_ObjectArgumentAssemblyTypeName: Gun, Assembly-CSharp
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
 --- !u!1 &842787472
 GameObject:
   m_ObjectHideFlags: 0
@@ -11321,7 +11416,19 @@ MonoBehaviour:
   - eventID: 0
     callback:
       m_PersistentCalls:
-        m_Calls: []
+        m_Calls:
+        - m_Target: {fileID: 702520296}
+          m_TargetAssemblyTypeName: ShopManager, Assembly-CSharp
+          m_MethodName: ShowGunInfo
+          m_Mode: 2
+          m_Arguments:
+            m_ObjectArgument: {fileID: 11400000, guid: 3426c16190f3dd149a74bfd24cbcee6d, type: 2}
+            m_ObjectArgumentAssemblyTypeName: Gun, Assembly-CSharp
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
 --- !u!1 &852490846
 GameObject:
   m_ObjectHideFlags: 0
@@ -12391,7 +12498,19 @@ MonoBehaviour:
   - eventID: 0
     callback:
       m_PersistentCalls:
-        m_Calls: []
+        m_Calls:
+        - m_Target: {fileID: 702520296}
+          m_TargetAssemblyTypeName: ShopManager, Assembly-CSharp
+          m_MethodName: ShowShieldInfo
+          m_Mode: 5
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: light
+            m_BoolArgument: 0
+          m_CallState: 2
 --- !u!1 &985221896
 GameObject:
   m_ObjectHideFlags: 0
@@ -12570,7 +12689,19 @@ MonoBehaviour:
   - eventID: 0
     callback:
       m_PersistentCalls:
-        m_Calls: []
+        m_Calls:
+        - m_Target: {fileID: 702520296}
+          m_TargetAssemblyTypeName: ShopManager, Assembly-CSharp
+          m_MethodName: ShowGunInfo
+          m_Mode: 2
+          m_Arguments:
+            m_ObjectArgument: {fileID: 11400000, guid: e34981b822f91724a9783b1cfbdf6a59, type: 2}
+            m_ObjectArgumentAssemblyTypeName: Gun, Assembly-CSharp
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
 --- !u!1 &992693801
 GameObject:
   m_ObjectHideFlags: 0
@@ -13826,7 +13957,23 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d0b148fe25e99eb48b9724523833bab1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Delegates: []
+  m_Delegates:
+  - eventID: 0
+    callback:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 702520296}
+          m_TargetAssemblyTypeName: ShopManager, Assembly-CSharp
+          m_MethodName: ShowGunInfo
+          m_Mode: 2
+          m_Arguments:
+            m_ObjectArgument: {fileID: 11400000, guid: 475659704fd14a942aa9653f7630d183, type: 2}
+            m_ObjectArgumentAssemblyTypeName: Gun, Assembly-CSharp
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
 --- !u!1 &1154208964
 GameObject:
   m_ObjectHideFlags: 0
@@ -21316,7 +21463,19 @@ MonoBehaviour:
   - eventID: 0
     callback:
       m_PersistentCalls:
-        m_Calls: []
+        m_Calls:
+        - m_Target: {fileID: 702520296}
+          m_TargetAssemblyTypeName: ShopManager, Assembly-CSharp
+          m_MethodName: ShowGunInfo
+          m_Mode: 2
+          m_Arguments:
+            m_ObjectArgument: {fileID: 11400000, guid: 0b5c373de06cbb54583cb49ec152e042, type: 2}
+            m_ObjectArgumentAssemblyTypeName: Gun, Assembly-CSharp
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
 --- !u!1 &1666469308
 GameObject:
   m_ObjectHideFlags: 0
@@ -22496,7 +22655,7 @@ MonoBehaviour:
         m_Calls:
         - m_Target: {fileID: 702520296}
           m_TargetAssemblyTypeName: ShopManager, Assembly-CSharp
-          m_MethodName: ShowItemInfo
+          m_MethodName: ShowGunInfo
           m_Mode: 2
           m_Arguments:
             m_ObjectArgument: {fileID: 11400000, guid: a64988b0de7a3cd409fc60cce89b8f89, type: 2}
@@ -25174,7 +25333,19 @@ MonoBehaviour:
   - eventID: 0
     callback:
       m_PersistentCalls:
-        m_Calls: []
+        m_Calls:
+        - m_Target: {fileID: 702520296}
+          m_TargetAssemblyTypeName: ShopManager, Assembly-CSharp
+          m_MethodName: ShowGunInfo
+          m_Mode: 2
+          m_Arguments:
+            m_ObjectArgument: {fileID: 11400000, guid: 2b4b1f6b79cc49b41afb5c9ac2ddfced, type: 2}
+            m_ObjectArgumentAssemblyTypeName: Gun, Assembly-CSharp
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
 --- !u!1 &1982170012
 GameObject:
   m_ObjectHideFlags: 0
@@ -26429,7 +26600,19 @@ MonoBehaviour:
   - eventID: 0
     callback:
       m_PersistentCalls:
-        m_Calls: []
+        m_Calls:
+        - m_Target: {fileID: 702520296}
+          m_TargetAssemblyTypeName: ShopManager, Assembly-CSharp
+          m_MethodName: ShowGunInfo
+          m_Mode: 2
+          m_Arguments:
+            m_ObjectArgument: {fileID: 11400000, guid: 5884efa0c837a88479c061a465ead533, type: 2}
+            m_ObjectArgumentAssemblyTypeName: Gun, Assembly-CSharp
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
 --- !u!1 &2068334771
 GameObject:
   m_ObjectHideFlags: 0
@@ -26608,7 +26791,19 @@ MonoBehaviour:
   - eventID: 0
     callback:
       m_PersistentCalls:
-        m_Calls: []
+        m_Calls:
+        - m_Target: {fileID: 702520296}
+          m_TargetAssemblyTypeName: ShopManager, Assembly-CSharp
+          m_MethodName: ShowGunInfo
+          m_Mode: 2
+          m_Arguments:
+            m_ObjectArgument: {fileID: 11400000, guid: 2d1abd84ad117154fbd78804ae4efbdd, type: 2}
+            m_ObjectArgumentAssemblyTypeName: Gun, Assembly-CSharp
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
 --- !u!1 &2076609187
 GameObject:
   m_ObjectHideFlags: 0
@@ -26852,7 +27047,19 @@ MonoBehaviour:
   - eventID: 0
     callback:
       m_PersistentCalls:
-        m_Calls: []
+        m_Calls:
+        - m_Target: {fileID: 702520296}
+          m_TargetAssemblyTypeName: ShopManager, Assembly-CSharp
+          m_MethodName: ShowShieldInfo
+          m_Mode: 5
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: heavy
+            m_BoolArgument: 0
+          m_CallState: 2
 --- !u!1 &2096804624
 GameObject:
   m_ObjectHideFlags: 0
