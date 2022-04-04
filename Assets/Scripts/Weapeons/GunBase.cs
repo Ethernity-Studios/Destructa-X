@@ -3,7 +3,7 @@ using UnityEngine;
 
 public enum FireType
 {
-    Burst = 3,
+    Burst,
     Shotgun,
     Default
 }

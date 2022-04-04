@@ -98,6 +98,7 @@ public class GameManager : NetworkBehaviour
 
         if (GameTime > 0) GameTime -= Time.deltaTime;
     }
+
     #region RoundManagement
     void updateRoundTimer()
     {
@@ -109,6 +110,27 @@ public class GameManager : NetworkBehaviour
 
     void updateGameState()
     {
+        if (GameState == GameState.StartGame && GameTime <= 0)
+        {
+            RpcDropWalls();
+            CloseLocalPlayerShopUI();
+            CmdSetGameTime(RoundLenght);
+            CmdChangeGameState(GameState.Round);
+            RpcCloseMOTD();
+        }
+        if (GameState == GameState.PreRound && GameTime <= 0)
+        {
+            RpcDropWalls();
+            CloseLocalPlayerShopUI();
+            CmdChangeGameState(GameState.Round);
+            CmdSetGameTime(RoundLenght);
+            RpcCloseMOTD();
+        }
+        if (GameState == GameState.Round && GameTime <= 0)
+        {
+            CmdChangeGameState(GameState.PostRound);
+            CmdSetGameTime(PostRoundlenght);
+        }
         if (BombState == BombState.Planted && GameTime <= 0)
         {
             BombManager bombManager = FindObjectOfType<BombManager>();
@@ -121,25 +143,7 @@ public class GameManager : NetworkBehaviour
         {
             //start new round :)
         }
-        if (GameState == GameState.PreRound && GameTime <= 0)
-        {
-            RpcDropWalls();
-            CloseLocalPlayerShopUI();
-            CmdChangeGameState(GameState.Round);
-            CmdSetGameTime(RoundLenght);
-        }
-        if (GameState == GameState.Round && GameTime <= 0)
-        {
-            CmdChangeGameState(GameState.PostRound);
-            CmdSetGameTime(PostRoundlenght);
-        }
-        if (GameState == GameState.StartGame && GameTime <= 0)
-        {
-            RpcDropWalls();
-            CloseLocalPlayerShopUI();
-            CmdSetGameTime(RoundLenght);
-            CmdChangeGameState(GameState.Round);
-        }
+
     }
     [ClientRpc]
     void RpcDropWalls()
@@ -150,6 +154,12 @@ public class GameManager : NetworkBehaviour
         }
     }
 
+    [ClientRpc]
+    void RpcCloseMOTD()
+    {
+        MOTD.SetActive(false);
+    }
+
     void CloseLocalPlayerShopUI()
     {
         foreach (var player in Players)
@@ -157,8 +167,6 @@ public class GameManager : NetworkBehaviour
             player.gameObject.GetComponent<PlayerEconomyManager>().CloseShopUI();
         }
     }
-
-
 
     [Command(requiresAuthority = false)]
     public void CmdStartRound(GameState gameState)

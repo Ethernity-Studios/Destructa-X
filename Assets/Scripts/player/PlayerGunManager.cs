@@ -1,6 +1,5 @@
 using System.Linq;
 using gun;
-using JetBrains.Annotations;
 using material;
 using Mirror;
 using UnityEngine;
@@ -284,7 +283,7 @@ public class PlayerGunManager : NetworkBehaviour
 
     public struct BulletPath
     {
-        [CanBeNull] public BulletImpact[] Impacts;
+        public BulletImpact[] Impacts;
         public RaycastHit? hit;
         public float? DamageModifier;
     }

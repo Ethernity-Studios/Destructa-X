@@ -16,8 +16,10 @@ MonoBehaviour:
   MagazineSize: 15
   MaxAmmo: 30
   ReloadTime: 1
+  EquipTime: 0
   Type: 1
-  GunModel: {fileID: 2630420225552749300, guid: d38bfe476b35eee4ab32fa6455344408, type: 3}
+  Category: 0
+  GunModel: {fileID: 1298712114125637990, guid: fc1456374dc984243a838362139fd483, type: 3}
   GunIcon: {fileID: 0}
   LMB:
     FireType: 5
@@ -49,3 +51,11 @@ MonoBehaviour:
       DamageDrop: 50
       Recoil: 1
       Bloom: 1
+  Stats:
+    FireRate: 0
+    HeadDamageShort: 0
+    HeadDamageLong: 0
+    BodyDamageShort: 0
+    BodyDamageLong: 0
+    LegsDamageShort: 0
+    LegsDamageLong: 0

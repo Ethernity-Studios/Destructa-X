@@ -23,7 +23,6 @@ public class ShopManager : MonoBehaviour
 
     [SerializeField] Gun[] guns;
 
-
     [Header("Shields")]
     [SerializeField] GameObject shieldInfo;
 

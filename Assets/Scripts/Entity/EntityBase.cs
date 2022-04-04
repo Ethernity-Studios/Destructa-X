@@ -17,5 +17,5 @@ public abstract class EntityBase : NetworkBehaviour
 
     public abstract bool TakeDamage(float damage);
 
-    public abstract void Heal(float hp);
+    public abstract void AddHealth(float health);
 }
