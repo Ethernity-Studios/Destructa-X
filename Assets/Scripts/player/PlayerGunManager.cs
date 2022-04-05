@@ -1,7 +1,6 @@
-using System.Linq;
-using gun;
-using material;
 using Mirror;
+using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 public struct GunInstance
@@ -11,15 +10,100 @@ public struct GunInstance
     public int Magazine;
 }
 
-public enum CurrentWeapon
+public enum Item
 {
     Primary,
     Secondary,
-    Knife
+    Knife,
+    Bomb
 }
 public class PlayerGunManager : NetworkBehaviour
 {
-    public Collider coll;
+    public Item EqupiedItem;
+
+    [SerializeField] GameObject knifeHolder;
+    [SerializeField] GameObject bombHolder;
+    [SerializeField] GameObject primaryWeaponHolder;
+    [SerializeField] GameObject secondaryWeaponHolder;
+
+    private void Start()
+    {
+        if (!isLocalPlayer) return;
+        EqupiedItem = Item.Secondary;
+    }
+    private void Update()
+    {
+        if (!isLocalPlayer) return;
+        if (Input.GetKeyDown(KeyCode.Alpha1)) switchItem(Item.Primary);
+        if (Input.GetKeyDown(KeyCode.Alpha2)) switchItem(Item.Secondary);
+        if (Input.GetKeyDown(KeyCode.Alpha3)) switchItem(Item.Knife);
+        if (Input.GetKeyDown(KeyCode.Alpha4)) switchItem(Item.Bomb);
+    }
+
+    void switchItem(Item item)
+    {
+        switch (item)
+        {
+            case Item.Primary:
+                primaryWeaponHolder.SetActive(true);
+                EqupiedItem = Item.Primary;
+                secondaryWeaponHolder.SetActive(false);
+                knifeHolder.SetActive(false);
+                bombHolder.SetActive(false);
+                break;
+            case Item.Secondary:
+                secondaryWeaponHolder.SetActive(true);
+                EqupiedItem = Item.Secondary;
+                primaryWeaponHolder.SetActive(false);
+                knifeHolder.SetActive(false);
+                bombHolder.SetActive(false);
+                break;
+            case Item.Knife:
+                knifeHolder.SetActive(true);
+                EqupiedItem = Item.Knife;
+                primaryWeaponHolder.SetActive(false);
+                secondaryWeaponHolder.SetActive(false);
+                bombHolder.SetActive(false);
+                break;
+            case Item.Bomb:
+                bombHolder.SetActive(true);
+                EqupiedItem = Item.Bomb;
+                primaryWeaponHolder.SetActive(false);
+                secondaryWeaponHolder.SetActive(false);
+                knifeHolder.SetActive(false);
+                break;
+        }
+    }
+
+    [Command]
+    void CmdSpawnWeapon()
+    {
+
+    }
+
+    [ClientRpc]
+    void RpcSpawnWeapon()
+    {
+
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    /*public Collider coll;
     public GameObject Knife;
 
     public CurrentWeapon CurrentWeapon;
@@ -286,5 +370,5 @@ public class PlayerGunManager : NetworkBehaviour
         public BulletImpact[] Impacts;
         public RaycastHit? hit;
         public float? DamageModifier;
-    }
+    }*/
 }
