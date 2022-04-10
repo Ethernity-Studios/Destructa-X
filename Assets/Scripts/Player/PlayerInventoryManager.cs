@@ -17,30 +17,42 @@ public enum Item
     Knife,
     Bomb
 }
-public class PlayerGunManager : NetworkBehaviour
+public class PlayerInventoryManager : NetworkBehaviour
 {
     public Item EqupiedItem;
+    public Item PreviousEqupiedItem;
 
     [SerializeField] GameObject knifeHolder;
     [SerializeField] GameObject bombHolder;
     [SerializeField] GameObject primaryWeaponHolder;
     [SerializeField] GameObject secondaryWeaponHolder;
 
+    public Gun PrimaryGun;
+    public Gun SecondaryGun;
+
+    public GameObject Bomb;
     private void Start()
     {
         if (!isLocalPlayer) return;
         EqupiedItem = Item.Secondary;
+        PreviousEqupiedItem = EqupiedItem;
     }
     private void Update()
     {
         if (!isLocalPlayer) return;
-        if (Input.GetKeyDown(KeyCode.Alpha1)) switchItem(Item.Primary);
-        if (Input.GetKeyDown(KeyCode.Alpha2)) switchItem(Item.Secondary);
-        if (Input.GetKeyDown(KeyCode.Alpha3)) switchItem(Item.Knife);
-        if (Input.GetKeyDown(KeyCode.Alpha4)) switchItem(Item.Bomb);
+        if (Input.GetKeyDown(KeyCode.Alpha1) && PrimaryGun != null) CmdSwitchItem(Item.Primary);
+        if (Input.GetKeyDown(KeyCode.Alpha2) && SecondaryGun != null) CmdSwitchItem(Item.Secondary);
+        if (Input.GetKeyDown(KeyCode.Alpha3)) CmdSwitchItem(Item.Knife);
+        if (Input.GetKeyDown(KeyCode.Alpha4) && Bomb != null) CmdSwitchItem(Item.Bomb);
+    }
+    [Command]
+    public void CmdSwitchItem(Item item)
+    {
+        RpcSwitchItem(item);
     }
 
-    void switchItem(Item item)
+    [ClientRpc]
+    void RpcSwitchItem(Item item)
     {
         switch (item)
         {
@@ -75,27 +87,30 @@ public class PlayerGunManager : NetworkBehaviour
         }
     }
 
-    [Command]
-    void CmdSpawnWeapon()
+    private void OnTriggerEnter(Collider other)
     {
+        if (!isLocalPlayer) return;
+        if(GetComponent<PlayerManager>().PlayerTeam == Team.Red && Bomb == null && other.transform.name == "BombTrigger") CmdPickBomb();
+    }
 
+    [Command(requiresAuthority = false)]
+    void CmdPickBomb()
+    {
+        RpcPickBomb();
     }
 
     [ClientRpc]
-    void RpcSpawnWeapon()
+    void RpcPickBomb()
     {
-
+        GameObject bomb = GameObject.Find("Bomb");
+        Bomb = bomb;
+        bomb.transform.SetParent(bombHolder.transform);
+        bomb.transform.localPosition = new Vector3(0, 0, .5f);
+        bomb.transform.localEulerAngles = new Vector3(0, 0, 0);
+        bomb.GetComponent<Rigidbody>().constraints = RigidbodyConstraints.FreezeAll;
+        bomb.GetComponent<BoxCollider>().enabled = false;
+        CmdSwitchItem(EqupiedItem);
     }
-
-
-
-
-
-
-
-
-
-
 
 
 

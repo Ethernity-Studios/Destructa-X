@@ -5,7 +5,7 @@ using UnityEngine.UI;
 public class Gun : ScriptableObject
 {
     public string Name;
-    public int MagazineSize;
+    public int Ammo;
     public int MaxAmmo;
     public float ReloadTime;
     public float EquipTime;
@@ -15,7 +15,7 @@ public class Gun : ScriptableObject
     public GameObject GunModel;
     public Image GunIcon;
 
-    public Fire LMB;
+    public LMB LMB;
     public RMB RMB;
 
     public GunStats Stats;

@@ -118,7 +118,7 @@ public class GameManager : NetworkBehaviour
             CmdChangeGameState(GameState.Round);
             RpcCloseMOTD();
         }
-        if (GameState == GameState.PreRound && GameTime <= 0)
+        else if (GameState == GameState.PreRound && GameTime <= 0)
         {
             RpcDropWalls();
             CloseLocalPlayerShopUI();
@@ -126,12 +126,7 @@ public class GameManager : NetworkBehaviour
             CmdSetGameTime(RoundLenght);
             RpcCloseMOTD();
         }
-        if (GameState == GameState.Round && GameTime <= 0)
-        {
-            CmdChangeGameState(GameState.PostRound);
-            CmdSetGameTime(PostRoundlenght);
-        }
-        if (BombState == BombState.Planted && GameTime <= 0)
+        else if (BombState == BombState.Planted && GameTime <= 0)
         {
             BombManager bombManager = FindObjectOfType<BombManager>();
             bombManager.CmdDetonateBomb();
@@ -139,7 +134,12 @@ public class GameManager : NetworkBehaviour
             CmdSetGameTime(PostRoundlenght);
             CmdChangeGameState(GameState.PostRound);
         }
-        if (GameState == GameState.PostRound && GameTime <= 0)
+        else if (GameState == GameState.Round && GameTime <= 0)
+        {
+            CmdChangeGameState(GameState.PostRound);
+            CmdSetGameTime(PostRoundlenght);
+        }
+        else if (GameState == GameState.PostRound && GameTime <= 0)
         {
             //start new round :)
         }

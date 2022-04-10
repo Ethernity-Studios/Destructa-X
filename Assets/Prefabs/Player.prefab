@@ -9,13 +9,13 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6167414791317256234}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Knife
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &6167414791317256234
 Transform:
   m_ObjectHideFlags: 0
@@ -40,13 +40,13 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 526830406474773708}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: PrimaryGun
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &526830406474773708
 Transform:
   m_ObjectHideFlags: 0
@@ -71,7 +71,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3500326584062213490}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: GroundCheck
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -103,6 +103,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3500326584878805172}
   - component: {fileID: 3500326584878805177}
+  - component: {fileID: 8529689666563680170}
   - component: {fileID: 3500326584878805178}
   - component: {fileID: -4012904085559630751}
   - component: {fileID: 780416230739192038}
@@ -113,7 +114,7 @@ GameObject:
   - component: {fileID: 3500326584878805175}
   - component: {fileID: 3500326584878805179}
   - component: {fileID: 342818098472151384}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Player
   m_TagString: Player
   m_Icon: {fileID: 0}
@@ -164,6 +165,28 @@ MonoBehaviour:
   IsDeath: 0
   UIAgent: {fileID: 6857847130121847309, guid: bb195f3f46f5b824097ff8cb2ed6b2d1, type: 3}
   PlayerState: 0
+--- !u!114 &8529689666563680170
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3500326584878805168}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b165ebaf8752f3a41adad9d015aa2c44, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncMode: 0
+  syncInterval: 0.1
+  EqupiedItem: 0
+  knifeHolder: {fileID: 1173175646605663888}
+  bombHolder: {fileID: 5525975007229333006}
+  primaryWeaponHolder: {fileID: 2972873353091824587}
+  secondaryWeaponHolder: {fileID: 4463252715339544551}
+  PrimaryGun: {fileID: 0}
+  SecondaryGun: {fileID: 0}
+  Bomb: {fileID: 0}
 --- !u!114 &3500326584878805178
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -377,7 +400,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6443431076018467188}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: SecondaryGun
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -408,7 +431,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7492973276298980375}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Bomb
   m_TagString: Untagged
   m_Icon: {fileID: 0}

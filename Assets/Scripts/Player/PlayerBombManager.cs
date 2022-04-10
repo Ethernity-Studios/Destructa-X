@@ -10,6 +10,7 @@ public class PlayerBombManager : NetworkBehaviour
 
     GameManager gameManager;
     PlayerManager playerManager;
+    PlayerInventoryManager playerInventoryManager;
 
     [SerializeField] GameObject bombPrefab;
 
@@ -19,6 +20,7 @@ public class PlayerBombManager : NetworkBehaviour
     {
         playerManager = GetComponent<PlayerManager>();
         gameManager = FindObjectOfType<GameManager>();
+        playerInventoryManager = GetComponent<PlayerInventoryManager>();
     }
     void Update()
     {
@@ -37,10 +39,10 @@ public class PlayerBombManager : NetworkBehaviour
 
     void plantBomb()
     {
-        if (isInPlantableArea)
+        if (isInPlantableArea && playerInventoryManager.Bomb != null)
         {
             if (playerManager.PlayerState != PlayerState.Planting) startPlanting();
-            if (Input.GetKey(KeyCode.F) && playerManager.PlayerState == PlayerState.Planting)
+            if (Input.GetKey(KeyCode.F) || Input.GetMouseButton(0) && playerManager.PlayerState == PlayerState.Planting) 
             {
                 if (plantTimeLeft < gameManager.BombPlantTime)
                 {
@@ -54,7 +56,7 @@ public class PlayerBombManager : NetworkBehaviour
         {
             finishPlanting();
         }
-        else if (playerManager.PlayerState == PlayerState.Planting && Input.GetKeyUp(KeyCode.F))
+        else if (playerManager.PlayerState == PlayerState.Planting && Input.GetKeyUp(KeyCode.F) || Input.GetMouseButtonUp(0) && playerManager.PlayerState == PlayerState.Planting)
         {
             stopPlanting();
         }
@@ -100,7 +102,7 @@ public class PlayerBombManager : NetworkBehaviour
     }
     void startPlanting()
     {
-        if (Input.GetKeyDown(KeyCode.F))
+        if (Input.GetKey(KeyCode.F) || playerInventoryManager.EqupiedItem == Item.Bomb && Input.GetMouseButton(0))
         {
             Debug.Log("started planting");
             CmdSetPlantTimeLeft(0);
@@ -140,6 +142,8 @@ public class PlayerBombManager : NetworkBehaviour
             gameManager.CmdChangeBombState(BombState.Planted);
         }
         stopPlanting();
+        playerInventoryManager.Bomb = null;
+        playerInventoryManager.CmdSwitchItem(playerInventoryManager.PreviousEqupiedItem);
         CmdInstantiateBomb();
     }
 

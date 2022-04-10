@@ -9,7 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5217863727958955082}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Trigger
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -41,7 +41,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5054250117453284054}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Base Pistol S0
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -73,7 +73,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2902032076121711063}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Slide
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -105,7 +105,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1842095485873437275}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Trigger_end
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -136,7 +136,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 549666633129625114}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Magazine_Main
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -169,7 +169,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1823433819743900636}
   - component: {fileID: 1710989818316389076}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Classic
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -220,7 +220,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 9024266951164259575}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Bullet
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -252,7 +252,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8544193445478846265}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Root
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -293,7 +293,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6525760122036080980}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Slide_Release
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -325,7 +325,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6075770317840666120}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Ejection_end
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -356,7 +356,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1915163923541246554}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Bullet_end
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -387,7 +387,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6903254081589211677}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Slide_Release_end
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -419,7 +419,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7845471494633915010}
   - component: {fileID: 2476928209542606340}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: GN_BasePistol_S0_Skelmesh.mo
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -526,7 +526,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5914943342343896274}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Left_Hand_Target
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -558,7 +558,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6202169223796935610}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Magazine_Main_end
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -589,7 +589,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6436451608481501035}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Slide_end
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -620,7 +620,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1856859956378967254}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Skeleton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -652,7 +652,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 505804003650830661}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Muzzle_end
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -683,7 +683,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8549954231041157839}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Gun_Buddy_end
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -714,7 +714,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 9092200416796903869}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Muzzle
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -746,7 +746,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7854217108639464216}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Ejection
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -778,7 +778,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3734498345899571398}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Hammer
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -810,7 +810,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8924108995958325194}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Gun_Buddy
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -842,7 +842,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 433872086445776367}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Left_Hand_Target_end
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -875,7 +875,7 @@ GameObject:
   - component: {fileID: 2051269446108683757}
   - component: {fileID: 5442215312249266716}
   - component: {fileID: 5774550906724935564}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: GN_BasePistol_Magazine_S0_Staticmesh.mo
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -956,7 +956,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8081014675889906655}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Hammer_end
   m_TagString: Untagged
   m_Icon: {fileID: 0}

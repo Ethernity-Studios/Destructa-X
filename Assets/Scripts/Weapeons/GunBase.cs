@@ -28,7 +28,7 @@ public enum ScopeType
 }
 
 [Serializable]
-public class Fire
+public class LMB
 {
     [Header("Type")] public FireType FireType;
     public FireMode FireMode;
@@ -57,7 +57,7 @@ public class RMB
 {
     public RMBType Type;
     public Scope Scope;
-    public Fire Fire;
+    public LMB Fire;
 }
 
 [Serializable]
