@@ -56,6 +56,9 @@ public class GameManager : NetworkBehaviour
     [SerializeField] Transform[] blueSpawnPositions, redSpawnPositions;
 
     [SerializeField] GameObject[] dropdownWalls;
+
+    public GameObject BombPrefab;
+    public GameObject Bomb;
     private void Start()
     {
         ShopUI.SetActive(false);
@@ -65,8 +68,9 @@ public class GameManager : NetworkBehaviour
         GameTime = StartGameLenght;
 
         if (!isServer) return;
+        CmdSpawnBomb();
         Invoke("spawnPlayers", .2f);
-        CmdStartRound(GameState.StartGame);
+        StartRound(GameState.StartGame);
     }
 
     void spawnPlayers()
@@ -169,7 +173,17 @@ public class GameManager : NetworkBehaviour
     }
 
     [Command(requiresAuthority = false)]
-    public void CmdStartRound(GameState gameState)
+    void CmdSpawnBomb() => RpcSpawnBomb();
+
+    [ClientRpc]
+    void RpcSpawnBomb()
+    {
+        Debug.Log("spawning bomb");
+        Bomb = Instantiate(BombPrefab);
+        NetworkServer.Spawn(Bomb);
+    }
+
+    public void StartRound(GameState gameState)
     {
         Round++;
         GameState = gameState;

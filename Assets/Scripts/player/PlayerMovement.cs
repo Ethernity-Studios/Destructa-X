@@ -27,15 +27,22 @@ public class PlayerMovement : NetworkBehaviour
     bool isGrounded;
 
     PlayerManager playerManager;
+    PlayerInventoryManager playerInventoryManager;
     void Start()
     {
         if (!isLocalPlayer) return;
+        playerInventoryManager = GetComponent<PlayerInventoryManager>();
         playerManager = GetComponent<PlayerManager>();
         playerManager.PlayerState = PlayerState.Idle;
         cameraTransform = Camera.main.transform;
         cameraTransform.SetParent(transform);
         cameraTransform.position = new Vector3(transform.position.x,transform.position.y + .6f, transform.position.z);
         characterController = GetComponent<CharacterController>();
+
+        playerInventoryManager.KnifeHolder.transform.SetParent(cameraTransform);
+        playerInventoryManager.BombHolder.transform.SetParent(cameraTransform);
+        playerInventoryManager.PrimaryWeaponHolder.transform.SetParent(cameraTransform);
+        playerInventoryManager.SecondaryWeaponHolder.transform.SetParent(cameraTransform);
     }
 
     private void Update()

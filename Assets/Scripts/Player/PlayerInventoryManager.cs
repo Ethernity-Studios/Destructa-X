@@ -22,20 +22,25 @@ public class PlayerInventoryManager : NetworkBehaviour
     public Item EqupiedItem;
     public Item PreviousEqupiedItem;
 
-    [SerializeField] GameObject knifeHolder;
-    [SerializeField] GameObject bombHolder;
-    [SerializeField] GameObject primaryWeaponHolder;
-    [SerializeField] GameObject secondaryWeaponHolder;
+    public GameObject KnifeHolder;
+    public GameObject BombHolder;
+    public GameObject PrimaryWeaponHolder;
+    public GameObject SecondaryWeaponHolder;
 
     public Gun PrimaryGun;
     public Gun SecondaryGun;
 
     public GameObject Bomb;
+
+    GameManager gameManager;
+
     private void Start()
     {
         if (!isLocalPlayer) return;
-        EqupiedItem = Item.Secondary;
+        gameManager = FindObjectOfType<GameManager>();
+        CmdSwitchItem(Item.Secondary);
         PreviousEqupiedItem = EqupiedItem;
+        setLayerMask(KnifeHolder, 6);
     }
     private void Update()
     {
@@ -45,6 +50,15 @@ public class PlayerInventoryManager : NetworkBehaviour
         if (Input.GetKeyDown(KeyCode.Alpha3)) CmdSwitchItem(Item.Knife);
         if (Input.GetKeyDown(KeyCode.Alpha4) && Bomb != null) CmdSwitchItem(Item.Bomb);
     }
+
+    void setLayerMask(GameObject gameObject, int layerMask)
+    {
+        foreach (Transform c in gameObject.transform.GetComponentsInChildren<Transform>())
+        {
+            c.gameObject.layer = layerMask;
+        }
+    }
+
     [Command]
     public void CmdSwitchItem(Item item)
     {
@@ -57,32 +71,36 @@ public class PlayerInventoryManager : NetworkBehaviour
         switch (item)
         {
             case Item.Primary:
-                primaryWeaponHolder.SetActive(true);
+                PreviousEqupiedItem = EqupiedItem;
+                PrimaryWeaponHolder.SetActive(true);
                 EqupiedItem = Item.Primary;
-                secondaryWeaponHolder.SetActive(false);
-                knifeHolder.SetActive(false);
-                bombHolder.SetActive(false);
+                SecondaryWeaponHolder.SetActive(false);
+                KnifeHolder.SetActive(false);
+                BombHolder.SetActive(false);
                 break;
             case Item.Secondary:
-                secondaryWeaponHolder.SetActive(true);
+                PreviousEqupiedItem = EqupiedItem;
+                SecondaryWeaponHolder.SetActive(true);
                 EqupiedItem = Item.Secondary;
-                primaryWeaponHolder.SetActive(false);
-                knifeHolder.SetActive(false);
-                bombHolder.SetActive(false);
+                PrimaryWeaponHolder.SetActive(false);
+                KnifeHolder.SetActive(false);
+                BombHolder.SetActive(false);
                 break;
             case Item.Knife:
-                knifeHolder.SetActive(true);
+                PreviousEqupiedItem = EqupiedItem;
+                KnifeHolder.SetActive(true);
                 EqupiedItem = Item.Knife;
-                primaryWeaponHolder.SetActive(false);
-                secondaryWeaponHolder.SetActive(false);
-                bombHolder.SetActive(false);
+                PrimaryWeaponHolder.SetActive(false);
+                SecondaryWeaponHolder.SetActive(false);
+                BombHolder.SetActive(false);
                 break;
             case Item.Bomb:
-                bombHolder.SetActive(true);
+                PreviousEqupiedItem = EqupiedItem;
+                BombHolder.SetActive(true);
                 EqupiedItem = Item.Bomb;
-                primaryWeaponHolder.SetActive(false);
-                secondaryWeaponHolder.SetActive(false);
-                knifeHolder.SetActive(false);
+                PrimaryWeaponHolder.SetActive(false);
+                SecondaryWeaponHolder.SetActive(false);
+                KnifeHolder.SetActive(false);
                 break;
         }
     }
@@ -90,28 +108,22 @@ public class PlayerInventoryManager : NetworkBehaviour
     private void OnTriggerEnter(Collider other)
     {
         if (!isLocalPlayer) return;
-        if(GetComponent<PlayerManager>().PlayerTeam == Team.Red && Bomb == null && other.transform.name == "BombTrigger") CmdPickBomb();
+        if (other.gameObject.name == "BombTrigger") CmdPickBomb();
     }
 
-    [Command(requiresAuthority = false)]
-    void CmdPickBomb()
-    {
-        RpcPickBomb();
-    }
+    [Command]
+    void CmdPickBomb() => RpcPickBomb();
 
     [ClientRpc]
     void RpcPickBomb()
     {
-        GameObject bomb = GameObject.Find("Bomb");
-        Bomb = bomb;
-        bomb.transform.SetParent(bombHolder.transform);
-        bomb.transform.localPosition = new Vector3(0, 0, .5f);
-        bomb.transform.localEulerAngles = new Vector3(0, 0, 0);
-        bomb.GetComponent<Rigidbody>().constraints = RigidbodyConstraints.FreezeAll;
-        bomb.GetComponent<BoxCollider>().enabled = false;
-        CmdSwitchItem(EqupiedItem);
+        Bomb = GameObject.Find("PickableBomb(Clone)");
+        Bomb.transform.SetParent(BombHolder.transform);
+        Bomb.transform.localPosition = new Vector3(0, 0, .5f);
+        Bomb.transform.localEulerAngles = Vector3.zero;
+        Bomb.GetComponent<Rigidbody>().constraints = RigidbodyConstraints.FreezeAll;
+        Bomb.GetComponent<BoxCollider>().enabled = false;
     }
-
 
 
 
