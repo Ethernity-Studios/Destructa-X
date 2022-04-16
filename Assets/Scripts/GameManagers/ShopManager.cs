@@ -30,6 +30,23 @@ public class ShopManager : MonoBehaviour
     [SerializeField] TMP_Text shieldDescription;
     [SerializeField] Sprite shieldImage;
 
+    public PlayerInventoryManager LocalPlayer;
+
+    [SerializeField] GameManager gameManager;
+    private void Start() 
+    {
+        Invoke("getLocalPlayer", .3f);
+    } 
+
+    void getLocalPlayer()
+    {
+        foreach (var player in gameManager.Players)
+        {
+            if (!player.isLocalPlayer) continue;
+            LocalPlayer = player.GetComponent<PlayerInventoryManager>();
+            break;
+        }
+    }
     public void ShowGunInfo(Gun gun)
     {
         shieldInfo.SetActive(false);
@@ -91,5 +108,11 @@ public class ShopManager : MonoBehaviour
         if (type == GunType.Primary) return "Primary Fire";
         else if (type == GunType.Secondary) return "Secundary Fire";
         return "";
+    }
+
+    public void BuyGun(Gun gun)
+    {
+        if (LocalPlayer.GetComponent<PlayerManager>().PlayerMoney < gun.Price) return;
+        LocalPlayer.GiveGun(gun);
     }
 }

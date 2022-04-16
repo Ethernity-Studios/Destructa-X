@@ -1,6 +1,4 @@
 using Mirror;
-using System;
-using System.Collections.Generic;
 using UnityEngine;
 
 public struct GunInstance
@@ -29,15 +27,16 @@ public class PlayerInventoryManager : NetworkBehaviour
 
     public Gun PrimaryGun;
     public Gun SecondaryGun;
-
     public GameObject Bomb;
 
     GameManager gameManager;
 
+    [SerializeField] Gun gun_Classic;   
     private void Start()
     {
-        if (!isLocalPlayer) return;
         gameManager = FindObjectOfType<GameManager>();
+        if (!isLocalPlayer) return;
+        //Invoke("giveDefaultGun",.5f);
         CmdSwitchItem(Item.Secondary);
         PreviousEqupiedItem = EqupiedItem;
         setLayerMask(KnifeHolder, 6);
@@ -50,6 +49,10 @@ public class PlayerInventoryManager : NetworkBehaviour
         if (Input.GetKeyDown(KeyCode.Alpha3)) CmdSwitchItem(Item.Knife);
         if (Input.GetKeyDown(KeyCode.Alpha4) && Bomb != null) CmdSwitchItem(Item.Bomb);
     }
+    void giveDefaultGun()
+    {
+        CmdGiveGun(gun_Classic);
+    }
 
     void setLayerMask(GameObject gameObject, int layerMask)
     {
@@ -60,10 +63,7 @@ public class PlayerInventoryManager : NetworkBehaviour
     }
 
     [Command]
-    public void CmdSwitchItem(Item item)
-    {
-        RpcSwitchItem(item);
-    }
+    public void CmdSwitchItem(Item item) => RpcSwitchItem(item);
 
     [ClientRpc]
     void RpcSwitchItem(Item item)
@@ -108,22 +108,89 @@ public class PlayerInventoryManager : NetworkBehaviour
     private void OnTriggerEnter(Collider other)
     {
         if (!isLocalPlayer) return;
-        if (other.gameObject.name == "BombTrigger") CmdPickBomb();
+        if (other.gameObject == gameManager.Bomb.transform.GetChild(0).gameObject) CmdPickBomb();
+        else if (other.gameObject.transform.CompareTag("PickableGun")) CmdPickGun();
     }
-
     [Command]
     void CmdPickBomb() => RpcPickBomb();
 
     [ClientRpc]
     void RpcPickBomb()
     {
-        Bomb = GameObject.Find("PickableBomb(Clone)");
+        Bomb = gameManager.Bomb;
         Bomb.transform.SetParent(BombHolder.transform);
-        Bomb.transform.localPosition = new Vector3(0, 0, .5f);
         Bomb.transform.localEulerAngles = Vector3.zero;
+        Bomb.transform.localPosition = new Vector3(0, 0, .5f);
         Bomb.GetComponent<Rigidbody>().constraints = RigidbodyConstraints.FreezeAll;
         Bomb.GetComponent<BoxCollider>().enabled = false;
+        if (isLocalPlayer) CmdSwitchItem(EqupiedItem);
     }
+
+    [Command]
+    void CmdPickGun() => RpcPickGun();
+
+    [ClientRpc]
+    void RpcPickGun()
+    {
+
+    }
+
+    [Command]
+    public void CmdDropBomb() => RpcDropBomb();
+
+
+    [ClientRpc]
+    void RpcDropBomb()
+    {
+
+    }
+
+    [Command]
+    public void CmdDropGun() => RpcDropGun();
+
+    [ClientRpc]
+    void RpcDropGun()
+    {
+
+    }
+    Gun t;
+    public void GiveGun(Gun gun)
+    {
+        t = gun;
+        Debug.Log(gun.GunModel + "mOOOODEAL");
+        CmdGiveGun(gun);
+    }
+
+    [Command]
+    public void CmdGiveGun(Gun gun) 
+    {
+        Debug.Log(t.GunModel + " modela");
+        //RpcGiveGun(gun);
+    }// => RpcGiveGun(gun);
+
+    [ClientRpc]
+    void RpcGiveGun(Gun gun)
+    {
+        //Debug.Log("Gun " + gun + gun.Name + "|||" + gun.GunModel);
+        //GameObject g = gun.GunModel;
+
+        //Instantiate(gun.GunModel);
+        /*if (gun.Type == GunType.Primary)
+        {
+            PrimaryGun = gun;
+            g.transform.SetParent(PrimaryWeaponHolder.transform);
+            CmdSwitchItem(Item.Primary);
+        }
+        else if(gun.Type == GunType.Secondary)
+        {
+            SecondaryGun = gun;
+            g.transform.SetParent(SecondaryWeaponHolder.transform);
+        }
+        setLayerMask(g, 6);
+        g.transform.localPosition = gun.GunTransform.FirstPersonGunPosition;
+        g.transform.localEulerAngles = gun.GunTransform.FirstPersonGunRotation;*/
+    }
+
 
 
 

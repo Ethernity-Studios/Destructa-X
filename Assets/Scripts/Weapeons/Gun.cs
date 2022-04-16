@@ -5,6 +5,7 @@ using UnityEngine.UI;
 public class Gun : ScriptableObject
 {
     public string Name;
+    public int Price;
     public int Ammo;
     public int MaxAmmo;
     public float ReloadTime;
@@ -13,10 +14,12 @@ public class Gun : ScriptableObject
     public GunCategory Category;
 
     public GameObject GunModel;
-    public Image GunIcon;
+    //public Sprite GunIcon;
 
     public LMB LMB;
     public RMB RMB;
 
     public GunStats Stats;
+
+    public GunTransform GunTransform;
 }

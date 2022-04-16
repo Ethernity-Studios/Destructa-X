@@ -189,9 +189,7 @@ MonoBehaviour:
   PrimaryGun: {fileID: 0}
   SecondaryGun: {fileID: 0}
   Bomb: {fileID: 0}
-  firstPersonMask:
-    serializedVersion: 2
-    m_Bits: 64
+  gun_Classic: {fileID: 11400000, guid: 475659704fd14a942aa9653f7630d183, type: 2}
 --- !u!114 &3500326584878805178
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -9,6 +9,7 @@ TagManager:
   - Explosion
   - PlantArea
   - ShopArea
+  - PickableGun
   layers:
   - Default
   - TransparentFX

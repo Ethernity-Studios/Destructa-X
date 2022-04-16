@@ -58,6 +58,8 @@ public class GameManager : NetworkBehaviour
     [SerializeField] GameObject[] dropdownWalls;
 
     public GameObject BombPrefab;
+
+    [SyncVar]
     public GameObject Bomb;
     private void Start()
     {
@@ -68,7 +70,6 @@ public class GameManager : NetworkBehaviour
         GameTime = StartGameLenght;
 
         if (!isServer) return;
-        CmdSpawnBomb();
         Invoke("spawnPlayers", .2f);
         StartRound(GameState.StartGame);
     }
@@ -101,6 +102,21 @@ public class GameManager : NetworkBehaviour
         updateGameState();
 
         if (GameTime > 0) GameTime -= Time.deltaTime;
+    }
+
+    GameObject _bomb;
+    [Server]
+    public void SpawnBomb()
+    {
+        _bomb = Instantiate(BombPrefab);
+        NetworkServer.Spawn(_bomb);
+        RpcSpawnBomb();
+    }
+
+    [ClientRpc]
+    void RpcSpawnBomb()
+    {
+        Bomb = _bomb;
     }
 
     #region RoundManagement
@@ -171,22 +187,12 @@ public class GameManager : NetworkBehaviour
             player.gameObject.GetComponent<PlayerEconomyManager>().CloseShopUI();
         }
     }
-
-    [Command(requiresAuthority = false)]
-    void CmdSpawnBomb() => RpcSpawnBomb();
-
-    [ClientRpc]
-    void RpcSpawnBomb()
-    {
-        Debug.Log("spawning bomb");
-        Bomb = Instantiate(BombPrefab);
-        NetworkServer.Spawn(Bomb);
-    }
-
+    [Server]
     public void StartRound(GameState gameState)
     {
         Round++;
         GameState = gameState;
+        SpawnBomb();
     }
 
     [Command(requiresAuthority = false)]

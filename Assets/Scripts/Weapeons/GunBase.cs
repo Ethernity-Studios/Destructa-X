@@ -91,3 +91,10 @@ public class GunStats
     public int BodyDamageShort, BodyDamageLong;
     public int LegsDamageShort, LegsDamageLong;
 }
+
+[Serializable]
+public class GunTransform
+{
+    public Vector3 FirstPersonGunPosition;
+    public Vector3 FirstPersonGunRotation;
+}
