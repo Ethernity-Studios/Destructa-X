@@ -36,7 +36,7 @@ public class PlayerInventoryManager : NetworkBehaviour
     {
         gameManager = FindObjectOfType<GameManager>();
         if (!isLocalPlayer) return;
-        //Invoke("giveDefaultGun",.5f);
+        Invoke("giveDefaultGun",.3f);
         CmdSwitchItem(Item.Secondary);
         PreviousEqupiedItem = EqupiedItem;
         setLayerMask(KnifeHolder, 6);
@@ -51,7 +51,7 @@ public class PlayerInventoryManager : NetworkBehaviour
     }
     void giveDefaultGun()
     {
-        CmdGiveGun(gun_Classic);
+        GiveGun(gun_Classic);
     }
 
     void setLayerMask(GameObject gameObject, int layerMask)
@@ -108,8 +108,8 @@ public class PlayerInventoryManager : NetworkBehaviour
     private void OnTriggerEnter(Collider other)
     {
         if (!isLocalPlayer) return;
-        if (other.gameObject == gameManager.Bomb.transform.GetChild(0).gameObject) CmdPickBomb();
-        else if (other.gameObject.transform.CompareTag("PickableGun")) CmdPickGun();
+        /*if (other.gameObject == gameManager.Bomb.transform.GetChild(0).gameObject) CmdPickBomb();
+        else if (other.gameObject.transform.CompareTag("PickableGun")) CmdPickGun();*/
     }
     [Command]
     void CmdPickBomb() => RpcPickBomb();
@@ -153,42 +153,44 @@ public class PlayerInventoryManager : NetworkBehaviour
     {
 
     }
-    Gun t;
+
+    Gun gun;
     public void GiveGun(Gun gun)
     {
-        t = gun;
-        Debug.Log(gun.GunModel + "mOOOODEAL");
-        CmdGiveGun(gun);
+        Debug.Log("Give Gun " + gun);
+        this.gun = gun;
+        CmdGiveGun();
+    }
+    GameObject gunInstance;
+    [Command]
+    public void CmdGiveGun()
+    {
+        if (gun == null) return;
+        Debug.Log("CmdGiveGun " + gun + gun.GunModel + "< model");
+        gunInstance = Instantiate(gun.GunModel);
+        NetworkServer.Spawn(gunInstance);
+        RpcGiveGun();
     }
 
-    [Command]
-    public void CmdGiveGun(Gun gun) 
-    {
-        Debug.Log(t.GunModel + " modela");
-        //RpcGiveGun(gun);
-    }// => RpcGiveGun(gun);
-
     [ClientRpc]
-    void RpcGiveGun(Gun gun)
+    void RpcGiveGun()
     {
-        //Debug.Log("Gun " + gun + gun.Name + "|||" + gun.GunModel);
-        //GameObject g = gun.GunModel;
-
-        //Instantiate(gun.GunModel);
-        /*if (gun.Type == GunType.Primary)
+        if (gun == null) return;
+        if (gun.Type == GunType.Primary)
         {
             PrimaryGun = gun;
-            g.transform.SetParent(PrimaryWeaponHolder.transform);
+            gunInstance.transform.SetParent(PrimaryWeaponHolder.transform);
             CmdSwitchItem(Item.Primary);
         }
-        else if(gun.Type == GunType.Secondary)
+        else if (gun.Type == GunType.Secondary)
         {
             SecondaryGun = gun;
-            g.transform.SetParent(SecondaryWeaponHolder.transform);
+            gunInstance.transform.SetParent(SecondaryWeaponHolder.transform);
         }
-        setLayerMask(g, 6);
-        g.transform.localPosition = gun.GunTransform.FirstPersonGunPosition;
-        g.transform.localEulerAngles = gun.GunTransform.FirstPersonGunRotation;*/
+        setLayerMask(gunInstance, 6);
+        gunInstance.transform.localScale = new Vector3(1.5f, 1.5f, 1.5f);
+        gunInstance.transform.localPosition = gun.GunTransform.FirstPersonGunPosition;
+        gunInstance.transform.localEulerAngles = gun.GunTransform.FirstPersonGunRotation;
     }
 
 

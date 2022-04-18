@@ -104,19 +104,19 @@ public class GameManager : NetworkBehaviour
         if (GameTime > 0) GameTime -= Time.deltaTime;
     }
 
-    GameObject _bomb;
+    GameObject bombInstance;
     [Server]
     public void SpawnBomb()
     {
-        _bomb = Instantiate(BombPrefab);
-        NetworkServer.Spawn(_bomb);
+        bombInstance = Instantiate(BombPrefab);
+        NetworkServer.Spawn(bombInstance);
         RpcSpawnBomb();
     }
 
     [ClientRpc]
     void RpcSpawnBomb()
     {
-        Bomb = _bomb;
+        Bomb = bombInstance;
     }
 
     #region RoundManagement
