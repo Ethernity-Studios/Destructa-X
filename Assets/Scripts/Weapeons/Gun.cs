@@ -4,6 +4,7 @@ using UnityEngine.UI;
 [CreateAssetMenu]
 public class Gun : ScriptableObject
 {
+    public int GunID;
     public string Name;
     public int Price;
     public int Ammo;

@@ -30,13 +30,15 @@ public class PlayerInventoryManager : NetworkBehaviour
     public GameObject Bomb;
 
     GameManager gameManager;
+    GunManager gunManager;
 
-    [SerializeField] Gun gun_Classic;   
+    [SerializeField] Gun gun_Classic;
     private void Start()
     {
+        gunManager = FindObjectOfType<GunManager>();
         gameManager = FindObjectOfType<GameManager>();
         if (!isLocalPlayer) return;
-        Invoke("giveDefaultGun",.3f);
+        CmdGiveGun(gunManager.GetGunIdByGun(gun_Classic));
         CmdSwitchItem(Item.Secondary);
         PreviousEqupiedItem = EqupiedItem;
         setLayerMask(KnifeHolder, 6);
@@ -49,11 +51,6 @@ public class PlayerInventoryManager : NetworkBehaviour
         if (Input.GetKeyDown(KeyCode.Alpha3)) CmdSwitchItem(Item.Knife);
         if (Input.GetKeyDown(KeyCode.Alpha4) && Bomb != null) CmdSwitchItem(Item.Bomb);
     }
-    void giveDefaultGun()
-    {
-        GiveGun(gun_Classic);
-    }
-
     void setLayerMask(GameObject gameObject, int layerMask)
     {
         foreach (Transform c in gameObject.transform.GetComponentsInChildren<Transform>())
@@ -108,8 +105,8 @@ public class PlayerInventoryManager : NetworkBehaviour
     private void OnTriggerEnter(Collider other)
     {
         if (!isLocalPlayer) return;
-        /*if (other.gameObject == gameManager.Bomb.transform.GetChild(0).gameObject) CmdPickBomb();
-        else if (other.gameObject.transform.CompareTag("PickableGun")) CmdPickGun();*/
+        gameManager = FindObjectOfType<GameManager>();
+        if (other.gameObject == gameManager.Bomb.transform.GetChild(0).gameObject) CmdPickBomb();
     }
     [Command]
     void CmdPickBomb() => RpcPickBomb();
@@ -154,25 +151,16 @@ public class PlayerInventoryManager : NetworkBehaviour
 
     }
 
-    Gun gun;
-    public void GiveGun(Gun gun)
-    {
-        Debug.Log("Give Gun " + gun);
-        this.gun = gun;
-        CmdGiveGun();
-    }
-    GameObject gunInstance;
+
     [Command]
-    public void CmdGiveGun()
+    public void CmdGiveGun(int gunID)
     {
-        if (gun == null) return;
-        Debug.Log("CmdGiveGun " + gun + gun.GunModel + "< model");
-        gunInstance = Instantiate(gun.GunModel);
+        Debug.Log(gunManager.GetGunByID(gunID));
+        GameObject gunInstance = Instantiate(gunManager.GetGunByID(gunID).GunModel);
         NetworkServer.Spawn(gunInstance);
-        RpcGiveGun();
     }
 
-    [ClientRpc]
+    /*[ClientRpc]
     void RpcGiveGun()
     {
         if (gun == null) return;
@@ -191,7 +179,7 @@ public class PlayerInventoryManager : NetworkBehaviour
         gunInstance.transform.localScale = new Vector3(1.5f, 1.5f, 1.5f);
         gunInstance.transform.localPosition = gun.GunTransform.FirstPersonGunPosition;
         gunInstance.transform.localEulerAngles = gun.GunTransform.FirstPersonGunRotation;
-    }
+    }*/
 
 
 

@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2797a7e7978d4fa3bf4d76869be850f0, type: 3}
   m_Name: Sheriff
   m_EditorClassIdentifier: 
+  GunID: 3
   Name: Sheriff
   Price: 800
   Ammo: 0

@@ -190,6 +190,7 @@ MonoBehaviour:
   SecondaryGun: {fileID: 0}
   Bomb: {fileID: 0}
   gun_Classic: {fileID: 11400000, guid: 475659704fd14a942aa9653f7630d183, type: 2}
+  Classic: {fileID: 1298712114125637990, guid: fc1456374dc984243a838362139fd483, type: 3}
 --- !u!114 &3500326584878805178
 MonoBehaviour:
   m_ObjectHideFlags: 0
