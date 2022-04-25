@@ -11090,6 +11090,7 @@ MonoBehaviour:
   - {fileID: 1110109008}
   BombPrefab: {fileID: 4216314358207263061, guid: d89fed99e47bca140b5058f9aa70db3b, type: 3}
   Bomb: {fileID: 0}
+  gunManager: {fileID: 863848735}
 --- !u!4 &814328177
 Transform:
   m_ObjectHideFlags: 0

@@ -61,6 +61,8 @@ public class GameManager : NetworkBehaviour
 
     [SyncVar]
     public GameObject Bomb;
+
+    [SerializeField] GunManager gunManager;
     private void Start()
     {
         ShopUI.SetActive(false);
@@ -68,6 +70,7 @@ public class GameManager : NetworkBehaviour
         PlantProgressSlider.gameObject.SetActive(false);
         DefuseProgressSlider.gameObject.SetActive(false);
         GameTime = StartGameLenght;
+        Invoke("giveDefaultGun", .2f);
 
         if (!isServer) return;
         Invoke("spawnPlayers", .2f);
@@ -92,6 +95,7 @@ public class GameManager : NetworkBehaviour
                 player.RespawnPlayer(redSpawnPositions[r].position);
                 r++;
             }
+
         }
     }
 
@@ -102,6 +106,15 @@ public class GameManager : NetworkBehaviour
         updateGameState();
 
         if (GameTime > 0) GameTime -= Time.deltaTime;
+    }
+
+    void giveDefaultGun()
+    {
+        foreach (var player in Players)
+        {
+            if(player.hasAuthority)
+            player.GetComponent<PlayerInventoryManager>().CmdGiveGun(gunManager.gunList[0].GunID);
+        }
     }
 
     GameObject bombInstance;

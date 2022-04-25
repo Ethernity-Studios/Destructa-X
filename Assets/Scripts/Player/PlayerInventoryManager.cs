@@ -37,12 +37,14 @@ public class PlayerInventoryManager : NetworkBehaviour
     {
         gunManager = FindObjectOfType<GunManager>();
         gameManager = FindObjectOfType<GameManager>();
+
         if (!isLocalPlayer) return;
-        CmdGiveGun(gunManager.GetGunIdByGun(gun_Classic));
+
         CmdSwitchItem(Item.Secondary);
         PreviousEqupiedItem = EqupiedItem;
         setLayerMask(KnifeHolder, 6);
     }
+
     private void Update()
     {
         if (!isLocalPlayer) return;
@@ -150,14 +152,41 @@ public class PlayerInventoryManager : NetworkBehaviour
     {
 
     }
-
-
     [Command]
     public void CmdGiveGun(int gunID)
     {
-        Debug.Log(gunManager.GetGunByID(gunID));
         GameObject gunInstance = Instantiate(gunManager.GetGunByID(gunID).GunModel);
         NetworkServer.Spawn(gunInstance);
+        RpcGiveGun(gunID, gunInstance.GetComponent<NetworkIdentity>());
+    }
+
+    [ClientRpc]
+    public void RpcGiveGun(int gunID, NetworkIdentity gunNetworkIdentity)
+    {
+        NetworkIdentity x = gunNetworkIdentity;
+
+        GameObject gunInstance = x.gameObject;
+        Gun gun = gunManager.GetGunByID(gunID);
+
+        if (gun.Type == GunType.Primary)
+        {
+            PrimaryGun = gun;
+            gunInstance.transform.SetParent(PrimaryWeaponHolder.transform);
+            if (hasAuthority) CmdSwitchItem(Item.Primary);
+
+        }
+        else if (gun.Type == GunType.Secondary)
+        {
+            SecondaryGun = gun;
+            gunInstance.transform.SetParent(SecondaryWeaponHolder.transform);
+            if (hasAuthority) CmdSwitchItem(Item.Secondary);
+        }
+        //REMAKE
+        setLayerMask(gunInstance, 6);
+        gunInstance.transform.localScale = new Vector3(1.5f, 1.5f, 1.5f);
+        gunInstance.transform.localPosition = gun.GunTransform.FirstPersonGunPosition;
+        gunInstance.transform.localEulerAngles = gun.GunTransform.FirstPersonGunRotation;
+
     }
 
     /*[ClientRpc]
