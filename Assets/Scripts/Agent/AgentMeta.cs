@@ -6,7 +6,7 @@ namespace objects
     public enum AgentClass
     {
         Sentinel,
-        Duelis,
+        Duelist,
         Initiator,
         Controller
     }

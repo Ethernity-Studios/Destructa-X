@@ -10,13 +10,13 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 7c225749602f46c3bb83a41df2f179bb, type: 3}
-  m_Name: Sova
+  m_Name: Breach
   m_EditorClassIdentifier: 
-  Name: Sova
+  Name: Breach
   Meta:
     Object: {fileID: 0}
-    Icon: {fileID: 21300000, guid: 35722e5abec10f041879254b4f0a7cb8, type: 3}
-    AClass: 0
+    Icon: {fileID: 21300000, guid: 3cc48950e3621e14e9e3a9cb877bd46a, type: 3}
+    AClass: 2
   Ablities:
     DefaultAbility: 0
     QAbility:

@@ -10,13 +10,13 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 7c225749602f46c3bb83a41df2f179bb, type: 3}
-  m_Name: Phoenix
+  m_Name: Yoru
   m_EditorClassIdentifier: 
-  Name: Phoenix
+  Name: Yoru
   Meta:
     Object: {fileID: 0}
-    Icon: {fileID: 21300000, guid: 6ad705f29810e9a4c965e9b6d09e4fb3, type: 3}
-    AClass: 0
+    Icon: {fileID: 21300000, guid: e08569dcef2af474db9ace7070fbe42f, type: 3}
+    AClass: 1
   Ablities:
     DefaultAbility: 0
     QAbility:

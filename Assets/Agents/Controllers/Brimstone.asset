@@ -10,13 +10,13 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 7c225749602f46c3bb83a41df2f179bb, type: 3}
-  m_Name: Neon
+  m_Name: Brimstone
   m_EditorClassIdentifier: 
-  Name: Neon
+  Name: Brimstone
   Meta:
     Object: {fileID: 0}
-    Icon: {fileID: 21300000, guid: 057de2faed96fe545b049fd6d337067e, type: 3}
-    AClass: 0
+    Icon: {fileID: 21300000, guid: 1735b148936625246a902b2a50b5f54d, type: 3}
+    AClass: 3
   Ablities:
     DefaultAbility: 0
     QAbility:

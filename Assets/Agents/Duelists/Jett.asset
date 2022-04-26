@@ -16,7 +16,7 @@ MonoBehaviour:
   Meta:
     Object: {fileID: 0}
     Icon: {fileID: 21300000, guid: 8696fa7baaa697b44b540cbf35674378, type: 3}
-    AClass: 0
+    AClass: 1
   Ablities:
     DefaultAbility: 0
     QAbility:
