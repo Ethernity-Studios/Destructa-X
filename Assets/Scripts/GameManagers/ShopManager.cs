@@ -112,7 +112,7 @@ public class ShopManager : MonoBehaviour
 
     public void BuyGun(Gun gun)
     {
-        if (LocalPlayer.GetComponent<PlayerManager>().PlayerMoney < gun.Price) return;
-        //LocalPlayer.GiveGun(gun);
+        if (LocalPlayer.GetComponent<PlayerManager>().PlayerGhostMoney < gun.Price) return;
+        LocalPlayer.CmdGiveGun(gun.GunID);
     }
 }

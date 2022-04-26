@@ -58,6 +58,7 @@ public class GameManager : NetworkBehaviour
     [SerializeField] GameObject[] dropdownWalls;
 
     public GameObject BombPrefab;
+    [SerializeField] Transform bombSpawnLocation;
 
     [SyncVar]
     public GameObject Bomb;
@@ -130,6 +131,7 @@ public class GameManager : NetworkBehaviour
     void RpcSpawnBomb()
     {
         Bomb = bombInstance;
+        Bomb.transform.position = bombSpawnLocation.position;
     }
 
     #region RoundManagement

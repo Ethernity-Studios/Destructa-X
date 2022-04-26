@@ -19,6 +19,8 @@ public class PlayerManager : NetworkBehaviour
     [SyncVar]
     public int PlayerMoney = 800;
     [SyncVar]
+    public int PlayerGhostMoney;
+    [SyncVar]
     public int PlayerKills;
     [SyncVar]
     public int PlayerDeaths;

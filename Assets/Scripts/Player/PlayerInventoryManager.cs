@@ -1,12 +1,12 @@
 using Mirror;
 using UnityEngine;
 
-public struct GunInstance
+/*public struct GunInstance
 {
     public Gun Gun;
     public int Ammo;
     public int Magazine;
-}
+}*/
 
 public enum Item
 {
@@ -31,10 +31,14 @@ public class PlayerInventoryManager : NetworkBehaviour
 
     GameManager gameManager;
     GunManager gunManager;
+    PlayerManager playerManager;
 
     [SerializeField] Gun gun_Classic;
+
+    bool canPickBomb;
     private void Start()
     {
+        playerManager = GetComponent<PlayerManager>();
         gunManager = FindObjectOfType<GunManager>();
         gameManager = FindObjectOfType<GameManager>();
 
@@ -108,7 +112,7 @@ public class PlayerInventoryManager : NetworkBehaviour
     {
         if (!isLocalPlayer) return;
         gameManager = FindObjectOfType<GameManager>();
-        if (other.gameObject == gameManager.Bomb.transform.GetChild(0).gameObject) CmdPickBomb();
+        if (other.gameObject == gameManager.Bomb.transform.GetChild(0).gameObject && playerManager.PlayerTeam == Team.Red) CmdPickBomb();
     }
     [Command]
     void CmdPickBomb() => RpcPickBomb();
@@ -167,7 +171,10 @@ public class PlayerInventoryManager : NetworkBehaviour
 
         GameObject gunInstance = x.gameObject;
         Gun gun = gunManager.GetGunByID(gunID);
-
+        gunInstance.AddComponent<GunInstance>();
+        GunInstance spawnedGun = gunInstance.GetComponent<GunInstance>();
+        spawnedGun.GunOwner = playerManager;
+        spawnedGun.IsGunFromCurrentRound = true;
         if (gun.Type == GunType.Primary)
         {
             PrimaryGun = gun;
@@ -188,27 +195,6 @@ public class PlayerInventoryManager : NetworkBehaviour
         gunInstance.transform.localEulerAngles = gun.GunTransform.FirstPersonGunRotation;
 
     }
-
-    /*[ClientRpc]
-    void RpcGiveGun()
-    {
-        if (gun == null) return;
-        if (gun.Type == GunType.Primary)
-        {
-            PrimaryGun = gun;
-            gunInstance.transform.SetParent(PrimaryWeaponHolder.transform);
-            CmdSwitchItem(Item.Primary);
-        }
-        else if (gun.Type == GunType.Secondary)
-        {
-            SecondaryGun = gun;
-            gunInstance.transform.SetParent(SecondaryWeaponHolder.transform);
-        }
-        setLayerMask(gunInstance, 6);
-        gunInstance.transform.localScale = new Vector3(1.5f, 1.5f, 1.5f);
-        gunInstance.transform.localPosition = gun.GunTransform.FirstPersonGunPosition;
-        gunInstance.transform.localEulerAngles = gun.GunTransform.FirstPersonGunRotation;
-    }*/
 
 
 
