@@ -193,7 +193,12 @@ public class PlayerInventoryManager : NetworkBehaviour
         gunInstance.transform.localScale = new Vector3(1.5f, 1.5f, 1.5f);
         gunInstance.transform.localPosition = gun.GunTransform.FirstPersonGunPosition;
         gunInstance.transform.localEulerAngles = gun.GunTransform.FirstPersonGunRotation;
+    }
 
+    [Command]
+    public void DestroyGun(GameObject gun)
+    {
+        NetworkServer.Destroy(gun);
     }
 
 

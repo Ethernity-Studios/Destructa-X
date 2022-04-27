@@ -7,4 +7,6 @@ public class GunInstance : MonoBehaviour
     public PlayerManager GunOwner;
 
     public bool IsGunFromCurrentRound;
+
+    public bool isDropped;
 }

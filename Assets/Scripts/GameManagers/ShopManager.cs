@@ -2,7 +2,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using System.Collections.Generic;
-
+using Mirror;
 public class ShopManager : MonoBehaviour
 {
     [Header("Guns")]
@@ -112,7 +112,23 @@ public class ShopManager : MonoBehaviour
 
     public void BuyGun(Gun gun)
     {
-        if (LocalPlayer.GetComponent<PlayerManager>().PlayerGhostMoney < gun.Price) return;
+        PlayerManager localPlayer = LocalPlayer.GetComponent<PlayerManager>();
+        if (localPlayer.PlayerGhostMoney < gun.Price) return;
+        localPlayer.CmdAddMoney(-gun.Price);
         LocalPlayer.CmdGiveGun(gun.GunID);
+    }
+
+    public void SellGun(Gun gun)
+    {
+        PlayerManager localPlayer = LocalPlayer.GetComponent<PlayerManager>();
+        if(gun.Type == GunType.Primary && LocalPlayer.PrimaryGun != null)
+        {
+            localPlayer.CmdAddMoney(gun.Price);
+            LocalPlayer.DestroyGun(LocalPlayer.PrimaryWeaponHolder.transform.GetChild(0).gameObject);
+        }
+        else if(gun.Type == GunType.Secondary && LocalPlayer.SecondaryGun != null)
+        {
+            localPlayer.CmdAddMoney(gun.Price);
+        }
     }
 }
