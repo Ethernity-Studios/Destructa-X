@@ -4,9 +4,9 @@ using UnityEngine;
 
 public class GunInstance : MonoBehaviour
 {
-    public PlayerManager GunOwner;
+    public Player GunOwner;
 
-    public bool IsGunFromCurrentRound;
+    public bool GunHasBeenDropped = false;
 
-    public bool isDropped;
+    public bool isDropped = false;
 }

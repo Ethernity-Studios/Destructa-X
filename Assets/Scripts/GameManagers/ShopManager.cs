@@ -30,7 +30,7 @@ public class ShopManager : MonoBehaviour
     [SerializeField] TMP_Text shieldDescription;
     [SerializeField] Sprite shieldImage;
 
-    public PlayerInventoryManager LocalPlayer;
+    PlayerInventoryManager PlayerInventory;
 
     [SerializeField] GameManager gameManager;
     private void Start() 
@@ -43,7 +43,7 @@ public class ShopManager : MonoBehaviour
         foreach (var player in gameManager.Players)
         {
             if (!player.isLocalPlayer) continue;
-            LocalPlayer = player.GetComponent<PlayerInventoryManager>();
+            PlayerInventory = player.GetComponent<PlayerInventoryManager>();
             break;
         }
     }
@@ -112,21 +112,22 @@ public class ShopManager : MonoBehaviour
 
     public void BuyGun(Gun gun)
     {
-        PlayerManager localPlayer = LocalPlayer.GetComponent<PlayerManager>();
+        Player localPlayer = PlayerInventory.GetComponent<Player>();
         if (localPlayer.PlayerGhostMoney < gun.Price) return;
+        if (PlayerInventory.PrimaryGun == null || PlayerInventory.SecondaryGun == null) return;
         localPlayer.CmdAddMoney(-gun.Price);
-        LocalPlayer.CmdGiveGun(gun.GunID);
+        PlayerInventory.CmdGiveGun(gun.GunID);
     }
 
     public void SellGun(Gun gun)
     {
-        PlayerManager localPlayer = LocalPlayer.GetComponent<PlayerManager>();
-        if(gun.Type == GunType.Primary && LocalPlayer.PrimaryGun != null)
+        Player localPlayer = PlayerInventory.GetComponent<Player>();
+        if(gun.Type == GunType.Primary && PlayerInventory.PrimaryGun != null)
         {
             localPlayer.CmdAddMoney(gun.Price);
-            LocalPlayer.DestroyGun(LocalPlayer.PrimaryWeaponHolder.transform.GetChild(0).gameObject);
+            PlayerInventory.DestroyGun(PlayerInventory.PrimaryWeaponHolder.transform.GetChild(0).gameObject);
         }
-        else if(gun.Type == GunType.Secondary && LocalPlayer.SecondaryGun != null)
+        else if(gun.Type == GunType.Secondary && PlayerInventory.SecondaryGun != null)
         {
             localPlayer.CmdAddMoney(gun.Price);
         }

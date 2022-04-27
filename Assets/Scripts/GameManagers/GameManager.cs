@@ -45,7 +45,7 @@ public class GameManager : NetworkBehaviour
 
     public Transform BlueUIAgents, RedUIAgents;
 
-    readonly public SyncList<PlayerManager> Players = new();
+    readonly public SyncList<Player> Players = new();
 
     public Slider PlantProgressSlider;
     public Slider DefuseProgressSlider;

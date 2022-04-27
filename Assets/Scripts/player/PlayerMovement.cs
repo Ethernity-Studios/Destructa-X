@@ -26,13 +26,13 @@ public class PlayerMovement : NetworkBehaviour
     Vector3 velocity;
     bool isGrounded;
 
-    PlayerManager playerManager;
+    Player playerManager;
     PlayerInventoryManager playerInventoryManager;
     void Start()
     {
         if (!isLocalPlayer) return;
         playerInventoryManager = GetComponent<PlayerInventoryManager>();
-        playerManager = GetComponent<PlayerManager>();
+        playerManager = GetComponent<Player>();
         playerManager.PlayerState = PlayerState.Idle;
         cameraTransform = Camera.main.transform;
         cameraTransform.SetParent(transform);

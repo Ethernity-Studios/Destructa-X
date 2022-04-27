@@ -31,21 +31,20 @@ public class PlayerInventoryManager : NetworkBehaviour
 
     GameManager gameManager;
     GunManager gunManager;
-    PlayerManager playerManager;
+    Player player;
 
     [SerializeField] Gun gun_Classic;
 
     bool canPickBomb;
     private void Start()
     {
-        playerManager = GetComponent<PlayerManager>();
+        player = GetComponent<Player>();
         gunManager = FindObjectOfType<GunManager>();
         gameManager = FindObjectOfType<GameManager>();
 
         if (!isLocalPlayer) return;
 
         CmdSwitchItem(Item.Secondary);
-        PreviousEqupiedItem = EqupiedItem;
         setLayerMask(KnifeHolder, 6);
     }
 
@@ -71,36 +70,31 @@ public class PlayerInventoryManager : NetworkBehaviour
     [ClientRpc]
     void RpcSwitchItem(Item item)
     {
+        if (item == EqupiedItem) return;
+        PreviousEqupiedItem = EqupiedItem;
+        EqupiedItem = item;
         switch (item)
         {
             case Item.Primary:
-                PreviousEqupiedItem = EqupiedItem;
                 PrimaryWeaponHolder.SetActive(true);
-                EqupiedItem = Item.Primary;
                 SecondaryWeaponHolder.SetActive(false);
                 KnifeHolder.SetActive(false);
                 BombHolder.SetActive(false);
                 break;
             case Item.Secondary:
-                PreviousEqupiedItem = EqupiedItem;
                 SecondaryWeaponHolder.SetActive(true);
-                EqupiedItem = Item.Secondary;
                 PrimaryWeaponHolder.SetActive(false);
                 KnifeHolder.SetActive(false);
                 BombHolder.SetActive(false);
                 break;
             case Item.Knife:
-                PreviousEqupiedItem = EqupiedItem;
                 KnifeHolder.SetActive(true);
-                EqupiedItem = Item.Knife;
                 PrimaryWeaponHolder.SetActive(false);
                 SecondaryWeaponHolder.SetActive(false);
                 BombHolder.SetActive(false);
                 break;
             case Item.Bomb:
-                PreviousEqupiedItem = EqupiedItem;
                 BombHolder.SetActive(true);
-                EqupiedItem = Item.Bomb;
                 PrimaryWeaponHolder.SetActive(false);
                 SecondaryWeaponHolder.SetActive(false);
                 KnifeHolder.SetActive(false);
@@ -112,7 +106,7 @@ public class PlayerInventoryManager : NetworkBehaviour
     {
         if (!isLocalPlayer) return;
         gameManager = FindObjectOfType<GameManager>();
-        if (other.gameObject == gameManager.Bomb.transform.GetChild(0).gameObject && playerManager.PlayerTeam == Team.Red) CmdPickBomb();
+        if (other.gameObject == gameManager.Bomb.transform.GetChild(0).gameObject && player.PlayerTeam == Team.Red) CmdPickBomb();
     }
     [Command]
     void CmdPickBomb() => RpcPickBomb();
@@ -173,8 +167,7 @@ public class PlayerInventoryManager : NetworkBehaviour
         Gun gun = gunManager.GetGunByID(gunID);
         gunInstance.AddComponent<GunInstance>();
         GunInstance spawnedGun = gunInstance.GetComponent<GunInstance>();
-        spawnedGun.GunOwner = playerManager;
-        spawnedGun.IsGunFromCurrentRound = true;
+        spawnedGun.GunOwner = player;
         if (gun.Type == GunType.Primary)
         {
             PrimaryGun = gun;

@@ -9,7 +9,7 @@ public class PlayerBombManager : NetworkBehaviour
     public bool isInBombArea;
 
     GameManager gameManager;
-    PlayerManager playerManager;
+    Player player;
     PlayerInventoryManager playerInventoryManager;
 
     [SerializeField] GameObject bombPrefab;
@@ -18,7 +18,7 @@ public class PlayerBombManager : NetworkBehaviour
 
     private void Awake()
     {
-        playerManager = GetComponent<PlayerManager>();
+        player = GetComponent<Player>();
         gameManager = FindObjectOfType<GameManager>();
         playerInventoryManager = GetComponent<PlayerInventoryManager>();
     }
@@ -26,8 +26,8 @@ public class PlayerBombManager : NetworkBehaviour
     {
         if (!isLocalPlayer) return;
 
-        if (playerManager.PlayerTeam == Team.Red) plantBomb();
-        if (playerManager.PlayerTeam == Team.Blue) defuseBomb();
+        if (player.PlayerTeam == Team.Red) plantBomb();
+        if (player.PlayerTeam == Team.Blue) defuseBomb();
     }
 
     [SyncVar]
@@ -41,8 +41,8 @@ public class PlayerBombManager : NetworkBehaviour
     {
         if (isInPlantableArea && playerInventoryManager.Bomb != null)
         {
-            if (playerManager.PlayerState != PlayerState.Planting) startPlanting();
-            if (Input.GetKey(KeyCode.F) || Input.GetMouseButton(0) && playerManager.PlayerState == PlayerState.Planting) 
+            if (player.PlayerState != PlayerState.Planting) startPlanting();
+            if (Input.GetKey(KeyCode.F) || Input.GetMouseButton(0) && player.PlayerState == PlayerState.Planting) 
             {
                 if (plantTimeLeft < gameManager.BombPlantTime)
                 {
@@ -52,11 +52,11 @@ public class PlayerBombManager : NetworkBehaviour
             }
         }
 
-        if (playerManager.PlayerState == PlayerState.Planting && plantTimeLeft >= gameManager.BombPlantTime)
+        if (player.PlayerState == PlayerState.Planting && plantTimeLeft >= gameManager.BombPlantTime)
         {
             finishPlanting();
         }
-        else if (playerManager.PlayerState == PlayerState.Planting && Input.GetKeyUp(KeyCode.F) || Input.GetMouseButtonUp(0) && playerManager.PlayerState == PlayerState.Planting)
+        else if (player.PlayerState == PlayerState.Planting && Input.GetKeyUp(KeyCode.F) || Input.GetMouseButtonUp(0) && player.PlayerState == PlayerState.Planting)
         {
             stopPlanting();
         }
@@ -106,7 +106,7 @@ public class PlayerBombManager : NetworkBehaviour
         {
             Debug.Log("started planting");
             CmdSetPlantTimeLeft(0);
-            playerManager.PlayerState = PlayerState.Planting;
+            player.PlayerState = PlayerState.Planting;
             foreach (var player in gameManager.Players)
             {
                 if (player.PlayerTeam == Team.Red)
@@ -120,7 +120,7 @@ public class PlayerBombManager : NetworkBehaviour
     void stopPlanting()
     {
         Debug.Log("stopped planting");
-        playerManager.PlayerState = PlayerState.Idle;
+        player.PlayerState = PlayerState.Idle;
         CmdSetPlantTimeLeft(0);
         gameManager.PlantProgressSlider.value = 0;
         CmdChangePlantSliderValue();
@@ -168,10 +168,10 @@ public class PlayerBombManager : NetworkBehaviour
 
     void defuseBomb()
     {
-        if (isInBombArea && playerManager.PlayerTeam == Team.Blue && gameManager.GameState != GameState.PostRound && gameManager.GameState != GameState.EndGame)
+        if (isInBombArea && player.PlayerTeam == Team.Blue && gameManager.GameState != GameState.PostRound && gameManager.GameState != GameState.EndGame)
         {
-            if (playerManager.PlayerState != PlayerState.Defusing) startDefusing();
-            if (Input.GetKey(KeyCode.F) && playerManager.PlayerState == PlayerState.Defusing)
+            if (player.PlayerState != PlayerState.Defusing) startDefusing();
+            if (Input.GetKey(KeyCode.F) && player.PlayerState == PlayerState.Defusing)
             {
                 if (defuseTimeLeft < gameManager.BombDefuseTime)
                 {
@@ -181,11 +181,11 @@ public class PlayerBombManager : NetworkBehaviour
             }
         }
 
-        if (playerManager.PlayerState == PlayerState.Defusing && defuseTimeLeft >= gameManager.BombDefuseTime)
+        if (player.PlayerState == PlayerState.Defusing && defuseTimeLeft >= gameManager.BombDefuseTime)
         {
             finishDefusing();
         }
-        else if (playerManager.PlayerState == PlayerState.Defusing && Input.GetKeyUp(KeyCode.F))
+        else if (player.PlayerState == PlayerState.Defusing && Input.GetKeyUp(KeyCode.F))
         {
             stopDefusing();
         }
@@ -208,7 +208,7 @@ public class PlayerBombManager : NetworkBehaviour
             if (defuseTimeLeft >= gameManager.BombDefuseTime / 2) CmdSetDefuseTimeLeft(gameManager.BombDefuseTime / 2);
             else CmdSetDefuseTimeLeft(0);
 
-            playerManager.PlayerState = PlayerState.Defusing;
+            player.PlayerState = PlayerState.Defusing;
             foreach (var player in gameManager.Players)
             {
                 if (player.PlayerTeam == Team.Blue)
@@ -222,7 +222,7 @@ public class PlayerBombManager : NetworkBehaviour
     void stopDefusing()
     {
         Debug.Log("stopped defusing");
-        playerManager.PlayerState = PlayerState.Idle;
+        player.PlayerState = PlayerState.Idle;
         if (defuseTimeLeft >= gameManager.BombDefuseTime / 2)
         {
             CmdSetDefuseTimeLeft(gameManager.BombDefuseTime / 2);
