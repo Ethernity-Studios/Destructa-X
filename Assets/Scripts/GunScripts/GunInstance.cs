@@ -9,4 +9,22 @@ public class GunInstance : MonoBehaviour
     public bool CanBeSelled = false;
 
     public bool IsDropped = false;
+
+    private void OnCollisionEnter(Collision collision)
+    {
+        if (!IsDropped) return;
+        if(collision.gameObject.layer == 3)
+        {
+            StartCoroutine(SetDroppedGun(collision.GetContact(0).point));
+        }
+    }
+
+    IEnumerator SetDroppedGun(Vector3 dropPosition)
+    {
+        Vector3 rotation = transform.localEulerAngles;
+        yield return new WaitForSeconds(.2f);
+        transform.localPosition = dropPosition + new Vector3(0,.15f,0);
+        transform.localEulerAngles = new Vector3(90,rotation.y,rotation.z);
+        GetComponent<Rigidbody>().useGravity = false;
+    }
 }

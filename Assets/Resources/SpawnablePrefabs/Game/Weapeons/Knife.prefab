@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1098459715707645435}
   - component: {fileID: 5813189758111967399}
-  m_Layer: 6
+  m_Layer: 0
   m_Name: Knife
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -60,7 +60,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3134276004537052695}
-  m_Layer: 6
+  m_Layer: 0
   m_Name: Root
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -93,7 +93,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2803500119633324878}
   - component: {fileID: 4155429740466853842}
-  m_Layer: 6
+  m_Layer: 0
   m_Name: EQ_Melee_S0_Skelmesh.mo
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -180,7 +180,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2388695386771632754}
-  m_Layer: 6
+  m_Layer: 0
   m_Name: Root_end
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -211,7 +211,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3319885286752376411}
-  m_Layer: 6
+  m_Layer: 0
   m_Name: Melee S0
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -243,7 +243,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6941572421258380556}
-  m_Layer: 6
+  m_Layer: 0
   m_Name: Skeleton
   m_TagString: Untagged
   m_Icon: {fileID: 0}

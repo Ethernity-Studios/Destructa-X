@@ -19,7 +19,7 @@ MonoBehaviour:
   MaxAmmo: 0
   ReloadTime: 0
   EquipTime: 0
-  Type: 0
+  Type: 1
   Category: 0
   GunModel: {fileID: 1298712114125637990, guid: fc1456374dc984243a838362139fd483, type: 3}
   LMB:

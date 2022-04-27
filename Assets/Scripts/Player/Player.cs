@@ -19,7 +19,7 @@ public class Player : NetworkBehaviour
     [SyncVar]
     public int PlayerMoney = 800;
     [SyncVar]
-    public int PlayerGhostMoney;
+    public int PlayerGhostMoney = 800;
     [SyncVar]
     public int PlayerKills;
     [SyncVar]

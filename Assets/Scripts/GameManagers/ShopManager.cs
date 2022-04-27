@@ -1,8 +1,5 @@
-using UnityEngine;
-using UnityEngine.UI;
 using TMPro;
-using System.Collections.Generic;
-using Mirror;
+using UnityEngine;
 public class ShopManager : MonoBehaviour
 {
     [Header("Guns")]
@@ -33,10 +30,10 @@ public class ShopManager : MonoBehaviour
     PlayerInventoryManager PlayerInventory;
 
     [SerializeField] GameManager gameManager;
-    private void Start() 
+    private void Start()
     {
         Invoke("getLocalPlayer", .3f);
-    } 
+    }
 
     void getLocalPlayer()
     {
@@ -114,12 +111,12 @@ public class ShopManager : MonoBehaviour
     {
         Player localPlayer = PlayerInventory.GetComponent<Player>();
         if (localPlayer.PlayerGhostMoney < gun.Price) return;
-        if(PlayerInventory.PrimaryGun == null && gun.Type == GunType.Primary)
+        if (PlayerInventory.PrimaryGun == null && gun.Type == GunType.Primary)
         {
             localPlayer.CmdAddMoney(-gun.Price);
             PlayerInventory.CmdGiveGun(gun.GunID);
         }
-        else if(PlayerInventory.SecondaryGun == null &&gun.Type == GunType.Secondary)
+        else if (PlayerInventory.SecondaryGun == null && gun.Type == GunType.Secondary)
         {
             localPlayer.CmdAddMoney(-gun.Price);
             PlayerInventory.CmdGiveGun(gun.GunID);
@@ -129,12 +126,12 @@ public class ShopManager : MonoBehaviour
     public void SellGun(Gun gun)
     {
         Player localPlayer = PlayerInventory.GetComponent<Player>();
-        if(gun.Type == GunType.Primary && PlayerInventory.PrimaryGun != null)
+        if (gun.Type == GunType.Primary && PlayerInventory.PrimaryGun != null)
         {
             localPlayer.CmdAddMoney(gun.Price);
             PlayerInventory.DestroyGun(PlayerInventory.PrimaryWeaponHolder.transform.GetChild(0).gameObject);
         }
-        else if(gun.Type == GunType.Secondary && PlayerInventory.SecondaryGun != null)
+        else if (gun.Type == GunType.Secondary && PlayerInventory.SecondaryGun != null)
         {
             localPlayer.CmdAddMoney(gun.Price);
         }

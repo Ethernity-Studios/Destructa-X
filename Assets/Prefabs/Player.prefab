@@ -160,6 +160,7 @@ MonoBehaviour:
   PlayerTeam: 0
   PlayerAgent: 0
   PlayerMoney: 800
+  PlayerGhostMoney: 0
   PlayerKills: 0
   PlayerDeaths: 0
   PlayerAssists: 0
@@ -180,17 +181,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   syncMode: 0
   syncInterval: 0.1
-  EqupiedItem: 0
-  PreviousEqupiedItem: 0
   KnifeHolder: {fileID: 1173175646605663888}
   BombHolder: {fileID: 5525975007229333006}
   PrimaryWeaponHolder: {fileID: 2972873353091824587}
   SecondaryWeaponHolder: {fileID: 4463252715339544551}
+  EqupiedItem: 0
+  PreviousEqupiedItem: 0
   PrimaryGun: {fileID: 0}
   SecondaryGun: {fileID: 0}
+  PrimaryGunInstance: {fileID: 0}
+  SecondaryGunInstance: {fileID: 0}
   Bomb: {fileID: 0}
-  gun_Classic: {fileID: 11400000, guid: 475659704fd14a942aa9653f7630d183, type: 2}
-  Classic: {fileID: 1298712114125637990, guid: fc1456374dc984243a838362139fd483, type: 3}
 --- !u!114 &3500326584878805178
 MonoBehaviour:
   m_ObjectHideFlags: 0

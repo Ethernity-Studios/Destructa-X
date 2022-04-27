@@ -58,8 +58,8 @@ public class GameManager : NetworkBehaviour
     [SerializeField] GameObject[] dropdownWalls;
 
     public GameObject BombPrefab;
+    public GameObject GunHolder;
     [SerializeField] Transform bombSpawnLocation;
-
     [SyncVar]
     public GameObject Bomb;
 
@@ -111,7 +111,7 @@ public class GameManager : NetworkBehaviour
     {
         foreach (var player in Players)
         {
-            if(player.hasAuthority)
+            if(player.isLocalPlayer)
             player.GetComponent<PlayerInventoryManager>().CmdGiveGun(gunManager.gunList[0].GunID);
         }
     }

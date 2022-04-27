@@ -14,7 +14,7 @@ public class PlayerInventoryManager : NetworkBehaviour
     public GameObject BombHolder;
     public GameObject PrimaryWeaponHolder;
     public GameObject SecondaryWeaponHolder;
-    
+
     public Item EqupiedItem;
     public Item PreviousEqupiedItem;
 
@@ -52,8 +52,8 @@ public class PlayerInventoryManager : NetworkBehaviour
         if (Input.GetKeyDown(KeyCode.Alpha3)) CmdSwitchItem(Item.Knife);
         if (Input.GetKeyDown(KeyCode.Alpha4) && Bomb != null) CmdSwitchItem(Item.Bomb);
 
-        if (Input.GetKeyDown(KeyCode.G) && EqupiedItem == Item.Primary) CmdDropGun((int)PrimaryGunInstance.GetComponent<NetworkIdentity>().netId);
-        else if(Input.GetKeyDown(KeyCode.G) && EqupiedItem == Item.Secondary) CmdDropGun((int)SecondaryGunInstance.GetComponent<NetworkIdentity>().netId);
+        if (Input.GetKeyDown(KeyCode.G) && EqupiedItem == Item.Primary) CmdDropGun(GunType.Primary);
+        else if (Input.GetKeyDown(KeyCode.G) && EqupiedItem == Item.Secondary) CmdDropGun(GunType.Secondary);
     }
     void setLayerMask(GameObject gameObject, int layerMask)
     {
@@ -144,22 +144,41 @@ public class PlayerInventoryManager : NetworkBehaviour
     }
 
     [Command]
-    public void CmdDropGun(int gunID) => RpcDropGun(gunID);
+    public void CmdDropGun(GunType gunType) => RpcDropGun(gunType);
 
     [ClientRpc]
-    void RpcDropGun(int gunID)
+    void RpcDropGun(GunType gunType)
     {
-        
+        GameObject gunInstance = null;
+        if (gunType == GunType.Primary)
+        {
+            gunInstance = SecondaryGunInstance;
+            gunInstance.GetComponent<Rigidbody>();
+            setLayerMask(gunInstance, 8);
+            PrimaryGunInstance = null;
+            PrimaryGun = null;
+        }
+        else if(gunType == GunType.Secondary)
+        {
+            gunInstance = SecondaryGunInstance;
+            gunInstance.GetComponent<Rigidbody>();
+            setLayerMask(gunInstance, 8);
+            SecondaryGunInstance = null;
+            SecondaryGun = null;
+        }
+        gunInstance.transform.localPosition = new Vector3(0, .6f, .75f);
+        gunInstance.transform.SetParent(gameManager.GunHolder.transform);
+        gunInstance.GetComponent<GunInstance>().IsDropped = true;
+        gunInstance.GetComponent<GunInstance>().CanBeSelled = false;
+        Rigidbody rb = gunInstance.GetComponent<Rigidbody>();
+        rb.useGravity = true;
+        rb.AddForce(transform.TransformDirection(new Vector3(0, 30, 170)));
     }
 
     [Command]
     public void CmdGiveGun(int gunID)
     {
-        GunType type = gunManager.GetGunByID(gunID).Type;
-
         GameObject gunInstance = Instantiate(gunManager.GetGunByID(gunID).GunModel);
-        if (type == GunType.Primary) PrimaryGunInstance = gunInstance;
-        else if (type == GunType.Secondary) SecondaryGunInstance = gunInstance;
         NetworkServer.Spawn(gunInstance);
         RpcGiveGun(gunID, gunInstance.GetComponent<NetworkIdentity>());
     }
@@ -167,12 +186,14 @@ public class PlayerInventoryManager : NetworkBehaviour
     [ClientRpc]
     public void RpcGiveGun(int gunID, NetworkIdentity gunNetworkIdentity)
     {
-
         GameObject gunInstance = gunNetworkIdentity.gameObject;
         Gun gun = gunManager.GetGunByID(gunID);
         gunInstance.AddComponent<GunInstance>();
         GunInstance spawnedGun = gunInstance.GetComponent<GunInstance>();
         spawnedGun.GunOwner = player;
+        GunType type = gunManager.GetGunByID(gunID).Type;
+        if (type == GunType.Primary) PrimaryGunInstance = gunInstance;
+        else if (type == GunType.Secondary) SecondaryGunInstance = gunInstance;
         if (gun.Type == GunType.Primary)
         {
             PrimaryGun = gun;
@@ -191,7 +212,7 @@ public class PlayerInventoryManager : NetworkBehaviour
         gunInstance.transform.localScale = new Vector3(1.5f, 1.5f, 1.5f);
         gunInstance.transform.localPosition = gun.GunTransform.FirstPersonGunPosition;
         gunInstance.transform.localEulerAngles = gun.GunTransform.FirstPersonGunRotation;
-        if(isLocalPlayer) setLayerMask(gunInstance, 6);
+        if (isLocalPlayer) setLayerMask(gunInstance, 6);
     }
 
     [Command]
