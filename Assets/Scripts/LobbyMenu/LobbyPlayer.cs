@@ -115,7 +115,6 @@ public class LobbyPlayer : NetworkRoomPlayer
                 roomManager.BlueTeamSize = tempB;
                 roomManager.RedTeamSize = tempR;
             }
-            Debug.Log(tempB + " W " + tempR);
         }
         base.OnClientExitRoom();
     }

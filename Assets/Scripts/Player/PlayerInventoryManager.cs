@@ -1,13 +1,6 @@
 using Mirror;
 using UnityEngine;
 
-/*public struct GunInstance
-{
-    public Gun Gun;
-    public int Ammo;
-    public int Magazine;
-}*/
-
 public enum Item
 {
     Primary,
@@ -17,23 +10,26 @@ public enum Item
 }
 public class PlayerInventoryManager : NetworkBehaviour
 {
-    public Item EqupiedItem;
-    public Item PreviousEqupiedItem;
-
     public GameObject KnifeHolder;
     public GameObject BombHolder;
     public GameObject PrimaryWeaponHolder;
     public GameObject SecondaryWeaponHolder;
+    
+    public Item EqupiedItem;
+    public Item PreviousEqupiedItem;
+
 
     public Gun PrimaryGun;
     public Gun SecondaryGun;
+
+    public GameObject PrimaryGunInstance;
+    public GameObject SecondaryGunInstance;
+
     public GameObject Bomb;
 
     GameManager gameManager;
     GunManager gunManager;
     Player player;
-
-    [SerializeField] Gun gun_Classic;
 
     bool canPickBomb;
     private void Start()
@@ -45,7 +41,7 @@ public class PlayerInventoryManager : NetworkBehaviour
         if (!isLocalPlayer) return;
 
         CmdSwitchItem(Item.Secondary);
-        setLayerMask(KnifeHolder, 6);
+        setLayerMask(KnifeHolder.transform.GetChild(0).gameObject, 6);
     }
 
     private void Update()
@@ -55,6 +51,9 @@ public class PlayerInventoryManager : NetworkBehaviour
         if (Input.GetKeyDown(KeyCode.Alpha2) && SecondaryGun != null) CmdSwitchItem(Item.Secondary);
         if (Input.GetKeyDown(KeyCode.Alpha3)) CmdSwitchItem(Item.Knife);
         if (Input.GetKeyDown(KeyCode.Alpha4) && Bomb != null) CmdSwitchItem(Item.Bomb);
+
+        if (Input.GetKeyDown(KeyCode.G) && EqupiedItem == Item.Primary) CmdDropGun((int)PrimaryGunInstance.GetComponent<NetworkIdentity>().netId);
+        else if(Input.GetKeyDown(KeyCode.G) && EqupiedItem == Item.Secondary) CmdDropGun((int)SecondaryGunInstance.GetComponent<NetworkIdentity>().netId);
     }
     void setLayerMask(GameObject gameObject, int layerMask)
     {
@@ -107,7 +106,9 @@ public class PlayerInventoryManager : NetworkBehaviour
         if (!isLocalPlayer) return;
         gameManager = FindObjectOfType<GameManager>();
         if (other.gameObject == gameManager.Bomb.transform.GetChild(0).gameObject && player.PlayerTeam == Team.Red) CmdPickBomb();
+        if (other.gameObject.TryGetComponent(out GunInstance instance)) if (instance.IsDropped) CmdPickGun();
     }
+
     [Command]
     void CmdPickBomb() => RpcPickBomb();
 
@@ -143,17 +144,22 @@ public class PlayerInventoryManager : NetworkBehaviour
     }
 
     [Command]
-    public void CmdDropGun() => RpcDropGun();
+    public void CmdDropGun(int gunID) => RpcDropGun(gunID);
 
     [ClientRpc]
-    void RpcDropGun()
+    void RpcDropGun(int gunID)
     {
-
+        
     }
+
     [Command]
     public void CmdGiveGun(int gunID)
     {
+        GunType type = gunManager.GetGunByID(gunID).Type;
+
         GameObject gunInstance = Instantiate(gunManager.GetGunByID(gunID).GunModel);
+        if (type == GunType.Primary) PrimaryGunInstance = gunInstance;
+        else if (type == GunType.Secondary) SecondaryGunInstance = gunInstance;
         NetworkServer.Spawn(gunInstance);
         RpcGiveGun(gunID, gunInstance.GetComponent<NetworkIdentity>());
     }
@@ -161,9 +167,8 @@ public class PlayerInventoryManager : NetworkBehaviour
     [ClientRpc]
     public void RpcGiveGun(int gunID, NetworkIdentity gunNetworkIdentity)
     {
-        NetworkIdentity x = gunNetworkIdentity;
 
-        GameObject gunInstance = x.gameObject;
+        GameObject gunInstance = gunNetworkIdentity.gameObject;
         Gun gun = gunManager.GetGunByID(gunID);
         gunInstance.AddComponent<GunInstance>();
         GunInstance spawnedGun = gunInstance.GetComponent<GunInstance>();
@@ -182,10 +187,11 @@ public class PlayerInventoryManager : NetworkBehaviour
             if (hasAuthority) CmdSwitchItem(Item.Secondary);
         }
         //REMAKE
-        setLayerMask(gunInstance, 6);
+
         gunInstance.transform.localScale = new Vector3(1.5f, 1.5f, 1.5f);
         gunInstance.transform.localPosition = gun.GunTransform.FirstPersonGunPosition;
         gunInstance.transform.localEulerAngles = gun.GunTransform.FirstPersonGunRotation;
+        if(isLocalPlayer) setLayerMask(gunInstance, 6);
     }
 
     [Command]

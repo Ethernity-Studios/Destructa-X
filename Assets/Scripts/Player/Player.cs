@@ -102,7 +102,7 @@ public class Player : NetworkBehaviour
     public void CmdSwitchPlayerAgent(Agent agent) => PlayerAgent = agent;
 
     [Command]
-    public void CmdAddMoney(int money) => PlayerMoney = money;
+    public void CmdAddMoney(int money) => PlayerMoney += money;
 
     [ClientRpc]
     public void RespawnPlayer(Vector3 position)

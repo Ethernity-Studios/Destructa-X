@@ -86,13 +86,11 @@ public class GameManager : NetworkBehaviour
         {
             if (player.PlayerTeam == Team.Blue)
             {
-                Debug.Log("spawning at blue" + blueSpawnPositions[b].position);
                 player.RespawnPlayer(blueSpawnPositions[b].position);
                 b++;
             }
             else if (player.PlayerTeam == Team.Red)
             {
-                Debug.Log("spawning at red " + redSpawnPositions[r].position);
                 player.RespawnPlayer(redSpawnPositions[r].position);
                 r++;
             }

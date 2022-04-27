@@ -114,9 +114,16 @@ public class ShopManager : MonoBehaviour
     {
         Player localPlayer = PlayerInventory.GetComponent<Player>();
         if (localPlayer.PlayerGhostMoney < gun.Price) return;
-        if (PlayerInventory.PrimaryGun == null || PlayerInventory.SecondaryGun == null) return;
-        localPlayer.CmdAddMoney(-gun.Price);
-        PlayerInventory.CmdGiveGun(gun.GunID);
+        if(PlayerInventory.PrimaryGun == null && gun.Type == GunType.Primary)
+        {
+            localPlayer.CmdAddMoney(-gun.Price);
+            PlayerInventory.CmdGiveGun(gun.GunID);
+        }
+        else if(PlayerInventory.SecondaryGun == null &&gun.Type == GunType.Secondary)
+        {
+            localPlayer.CmdAddMoney(-gun.Price);
+            PlayerInventory.CmdGiveGun(gun.GunID);
+        }
     }
 
     public void SellGun(Gun gun)
