@@ -20,6 +20,12 @@ public class GunInstance : MonoBehaviour
             StartCoroutine(SetDroppedGun(collision.GetContact(0).point));
         }
     }
+    private void Start() => Invoke("setDroppedStatus",.3f);
+
+    void setDroppedStatus()
+    {
+        IsDropped = true;
+    }
 
     IEnumerator SetDroppedGun(Vector3 dropPosition)
     {

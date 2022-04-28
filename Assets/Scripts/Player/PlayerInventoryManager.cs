@@ -141,7 +141,7 @@ public class PlayerInventoryManager : NetworkBehaviour
     [ClientRpc]
     void RpcPickGun(GameObject gunInstance)
     {
-           
+
     }
 
     [Command]
@@ -167,7 +167,6 @@ public class PlayerInventoryManager : NetworkBehaviour
         }
         gunInstance.transform.localPosition = new Vector3(0, .6f, .5f);
         gunInstance.transform.SetParent(gameManager.GunHolder.transform);
-        gunInstance.GetComponent<GunInstance>().IsDropped = true;
         gunInstance.GetComponent<GunInstance>().CanBeSelled = false;
         setLayerMask(gunInstance.transform.GetChild(0).gameObject, 8);
         Rigidbody rb = gunInstance.GetComponent<Rigidbody>();
