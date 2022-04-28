@@ -169,11 +169,13 @@ public class PlayerInventoryManager : NetworkBehaviour
             SecondaryGunInstance = gunInstance;
             SecondaryGun = gun;
         }
+        setGunTransform(gunInstance, gun);
         Rigidbody rb = gunInstance.GetComponent<Rigidbody>();
         rb.useGravity = false;
         rb.velocity = Vector3.zero;
         gunInstance.gameObject.transform.GetChild(0).gameObject.layer = 6;
-        setGunTransform(gunInstance, gun);
+        setLayerMask(gunInstance.transform.GetChild(1).gameObject, 6);
+
     }
 
     [Command]
@@ -206,10 +208,11 @@ public class PlayerInventoryManager : NetworkBehaviour
         instance.IsDropped = true;
         instance.Invoke("SetPickStatus", .5f);
         gunInstance.gameObject.transform.GetChild(0).gameObject.layer = 8;
+        setLayerMask(gunInstance.transform.GetChild(1).gameObject, 8);
         Rigidbody rb = gunInstance.GetComponent<Rigidbody>();
         rb.useGravity = true;
         rb.constraints = RigidbodyConstraints.None;
-        rb.AddForce(Camera.main.transform.TransformDirection(new Vector3(0, 0, 400)));
+        rb.AddForce(gameObject.transform.GetChild(1).transform.TransformDirection(new Vector3(0, 0, 400))); // Camera
     }
 
     [Command]
