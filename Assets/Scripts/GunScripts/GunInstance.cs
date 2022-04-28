@@ -12,6 +12,8 @@ public class GunInstance : MonoBehaviour
 
     public bool IsDropped = false;
 
+    public bool CanBePicked = false;
+
     private void OnCollisionEnter(Collision collision)
     {
         if (!IsDropped) return;
@@ -20,11 +22,10 @@ public class GunInstance : MonoBehaviour
             StartCoroutine(SetDroppedGun(collision.GetContact(0).point));
         }
     }
-    private void Start() => Invoke("setDroppedStatus",.3f);
 
-    void setDroppedStatus()
+    public void SetPickStatus()
     {
-        IsDropped = true;
+        CanBePicked = true;
     }
 
     IEnumerator SetDroppedGun(Vector3 dropPosition)
@@ -34,6 +35,7 @@ public class GunInstance : MonoBehaviour
         transform.localPosition = dropPosition + new Vector3(0,.15f,0);
         transform.localEulerAngles = new Vector3(90,rotation.y,rotation.z);
         Rigidbody rb = transform.GetComponent<Rigidbody>();
+        rb.constraints = RigidbodyConstraints.FreezeAll;
         rb.useGravity = false;
         rb.velocity = Vector3.zero;
         transform.GetChild(0).GetComponent<BoxCollider>().material = null;

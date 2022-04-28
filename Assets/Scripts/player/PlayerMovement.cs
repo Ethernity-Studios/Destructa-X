@@ -41,8 +41,8 @@ public class PlayerMovement : NetworkBehaviour
 
         playerInventoryManager.KnifeHolder.transform.SetParent(cameraTransform);
         playerInventoryManager.BombHolder.transform.SetParent(cameraTransform);
-        playerInventoryManager.PrimaryWeaponHolder.transform.SetParent(cameraTransform);
-        playerInventoryManager.SecondaryWeaponHolder.transform.SetParent(cameraTransform);
+        playerInventoryManager.PrimaryGunHolder.transform.SetParent(cameraTransform);
+        playerInventoryManager.SecondaryGunHolder.transform.SetParent(cameraTransform);
     }
 
     private void Update()

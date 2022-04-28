@@ -129,7 +129,7 @@ public class ShopManager : MonoBehaviour
         if (gun.Type == GunType.Primary && PlayerInventory.PrimaryGun != null)
         {
             localPlayer.CmdAddMoney(gun.Price);
-            PlayerInventory.DestroyGun(PlayerInventory.PrimaryWeaponHolder.transform.GetChild(0).gameObject);
+            PlayerInventory.DestroyGun(PlayerInventory.PrimaryGunHolder.transform.GetChild(0).gameObject);
         }
         else if (gun.Type == GunType.Secondary && PlayerInventory.SecondaryGun != null)
         {

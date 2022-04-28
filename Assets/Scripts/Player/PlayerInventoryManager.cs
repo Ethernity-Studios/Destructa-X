@@ -12,8 +12,8 @@ public class PlayerInventoryManager : NetworkBehaviour
 {
     public GameObject KnifeHolder;
     public GameObject BombHolder;
-    public GameObject PrimaryWeaponHolder;
-    public GameObject SecondaryWeaponHolder;
+    public GameObject PrimaryGunHolder;
+    public GameObject SecondaryGunHolder;
 
     public Item EqupiedItem;
     public Item PreviousEqupiedItem;
@@ -75,39 +75,48 @@ public class PlayerInventoryManager : NetworkBehaviour
         switch (item)
         {
             case Item.Primary:
-                PrimaryWeaponHolder.SetActive(true);
-                SecondaryWeaponHolder.SetActive(false);
+                PrimaryGunHolder.SetActive(true);
+                SecondaryGunHolder.SetActive(false);
                 KnifeHolder.SetActive(false);
                 BombHolder.SetActive(false);
                 break;
             case Item.Secondary:
-                SecondaryWeaponHolder.SetActive(true);
-                PrimaryWeaponHolder.SetActive(false);
+                SecondaryGunHolder.SetActive(true);
+                PrimaryGunHolder.SetActive(false);
                 KnifeHolder.SetActive(false);
                 BombHolder.SetActive(false);
                 break;
             case Item.Knife:
                 KnifeHolder.SetActive(true);
-                PrimaryWeaponHolder.SetActive(false);
-                SecondaryWeaponHolder.SetActive(false);
+                PrimaryGunHolder.SetActive(false);
+                SecondaryGunHolder.SetActive(false);
                 BombHolder.SetActive(false);
                 break;
             case Item.Bomb:
                 BombHolder.SetActive(true);
-                PrimaryWeaponHolder.SetActive(false);
-                SecondaryWeaponHolder.SetActive(false);
+                PrimaryGunHolder.SetActive(false);
+                SecondaryGunHolder.SetActive(false);
                 KnifeHolder.SetActive(false);
                 break;
         }
     }
 
-    private void OnTriggerEnter(Collider other)
+    /*private void OnTriggerEnter(Collider other)
     {
         if (!isLocalPlayer) return;
         gameManager = FindObjectOfType<GameManager>();
         if (other.gameObject == gameManager.Bomb.transform.GetChild(0).gameObject && player.PlayerTeam == Team.Red) CmdPickBomb();
 
-        if (other.gameObject.TryGetComponent(out GunInstance instance)) if (instance.IsDropped) CmdPickGun(instance.GetComponent<NetworkIdentity>().netId);
+        if (other.gameObject.TryGetComponent(out GunInstance instance)) if (instance.CanBePicked) CmdPickGun(instance.GetComponent<NetworkIdentity>().netId);
+    }*/
+
+    private void OnTriggerStay(Collider other)
+    {
+        if (!isLocalPlayer) return;
+        gameManager = FindObjectOfType<GameManager>();
+        if (other.gameObject == gameManager.Bomb.transform.GetChild(0).gameObject && player.PlayerTeam == Team.Red) CmdPickBomb();
+
+        if (other.gameObject.TryGetComponent(out GunInstance instance)) if (instance.CanBePicked) CmdPickGun(instance.GetComponent<NetworkIdentity>().netId);
     }
 
     [Command]
@@ -141,7 +150,30 @@ public class PlayerInventoryManager : NetworkBehaviour
     [ClientRpc]
     void RpcPickGun(GameObject gunInstance)
     {
+        GunInstance instance = gunInstance.GetComponent<GunInstance>();
+        if (!instance.CanBePicked) return;
+        Debug.Log("Picking gun!");
 
+        instance.CanBePicked = false;
+        instance.IsDropped = false;
+        Gun gun = instance.Gun;
+        if(gun.Type == GunType.Primary)
+        {
+            gunInstance.transform.SetParent(PrimaryGunHolder.transform);
+            PrimaryGunInstance = gunInstance;
+            PrimaryGun = gun;
+        }
+        else if(gun.Type == GunType.Secondary)
+        {
+            gunInstance.transform.SetParent(SecondaryGunHolder.transform);
+            SecondaryGunInstance = gunInstance;
+            SecondaryGun = gun;
+        }
+        Rigidbody rb = gunInstance.GetComponent<Rigidbody>();
+        rb.useGravity = false;
+        rb.velocity = Vector3.zero;
+        gunInstance.gameObject.transform.GetChild(0).gameObject.layer = 6;
+        setGunTransform(gunInstance, gun);
     }
 
     [Command]
@@ -166,12 +198,18 @@ public class PlayerInventoryManager : NetworkBehaviour
             SecondaryGun = null;
         }
         gunInstance.transform.localPosition = new Vector3(0, .6f, .5f);
+        gunInstance.transform.localEulerAngles += new Vector3(30,0,0);
         gunInstance.transform.SetParent(gameManager.GunHolder.transform);
-        gunInstance.GetComponent<GunInstance>().CanBeSelled = false;
-        setLayerMask(gunInstance.transform.GetChild(0).gameObject, 8);
+        gunInstance.transform.GetChild(0).GetComponent<BoxCollider>().enabled = true;
+        GunInstance instance = gunInstance.GetComponent<GunInstance>();
+        instance.CanBeSelled = false;
+        instance.IsDropped = true;
+        instance.Invoke("SetPickStatus", .5f);
+        gunInstance.gameObject.transform.GetChild(0).gameObject.layer = 8;
         Rigidbody rb = gunInstance.GetComponent<Rigidbody>();
         rb.useGravity = true;
-        rb.AddForce(transform.TransformDirection(new Vector3(0, 0, 280)));
+        rb.constraints = RigidbodyConstraints.None;
+        rb.AddForce(Camera.main.transform.TransformDirection(new Vector3(0, 0, 400)));
     }
 
     [Command]
@@ -198,14 +236,14 @@ public class PlayerInventoryManager : NetworkBehaviour
         if (gun.Type == GunType.Primary)
         {
             PrimaryGun = gun;
-            gunInstance.transform.SetParent(PrimaryWeaponHolder.transform);
+            gunInstance.transform.SetParent(PrimaryGunHolder.transform);
             if (hasAuthority) CmdSwitchItem(Item.Primary);
 
         }
         else if (gun.Type == GunType.Secondary)
         {
             SecondaryGun = gun;
-            gunInstance.transform.SetParent(SecondaryWeaponHolder.transform);
+            gunInstance.transform.SetParent(SecondaryGunHolder.transform);
             if (hasAuthority) CmdSwitchItem(Item.Secondary);
         }
         //REMAKE
@@ -216,6 +254,8 @@ public class PlayerInventoryManager : NetworkBehaviour
 
     void setGunTransform(GameObject gunInstance, Gun gun)
     {
+        gunInstance.GetComponent<Rigidbody>().constraints = RigidbodyConstraints.FreezeAll;
+        gunInstance.transform.GetChild(0).GetComponent<BoxCollider>().enabled = false;
         gunInstance.transform.localScale = new Vector3(1.5f, 1.5f, 1.5f);
         gunInstance.transform.localPosition = gun.GunTransform.FirstPersonGunPosition;
         gunInstance.transform.localEulerAngles = gun.GunTransform.FirstPersonGunRotation;

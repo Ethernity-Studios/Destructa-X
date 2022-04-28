@@ -71,7 +71,7 @@ public class GameManager : NetworkBehaviour
         PlantProgressSlider.gameObject.SetActive(false);
         DefuseProgressSlider.gameObject.SetActive(false);
         GameTime = StartGameLenght;
-        Invoke("giveDefaultGun", .2f);
+        Invoke("giveDefaultGun", .3f);
 
         if (!isServer) return;
         Invoke("spawnPlayers", .2f);

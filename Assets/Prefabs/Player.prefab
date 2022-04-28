@@ -183,8 +183,8 @@ MonoBehaviour:
   syncInterval: 0.1
   KnifeHolder: {fileID: 1173175646605663888}
   BombHolder: {fileID: 5525975007229333006}
-  PrimaryWeaponHolder: {fileID: 2972873353091824587}
-  SecondaryWeaponHolder: {fileID: 4463252715339544551}
+  PrimaryGunHolder: {fileID: 2972873353091824587}
+  SecondaryGunHolder: {fileID: 4463252715339544551}
   EqupiedItem: 0
   PreviousEqupiedItem: 0
   PrimaryGun: {fileID: 0}
