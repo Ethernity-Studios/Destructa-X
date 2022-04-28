@@ -159,12 +159,14 @@ public class PlayerInventoryManager : NetworkBehaviour
         Gun gun = instance.Gun;
         if(gun.Type == GunType.Primary)
         {
+            if (PrimaryGun != null) return;
             gunInstance.transform.SetParent(PrimaryGunHolder.transform);
             PrimaryGunInstance = gunInstance;
             PrimaryGun = gun;
         }
         else if(gun.Type == GunType.Secondary)
         {
+            if(SecondaryGun != null) return;
             gunInstance.transform.SetParent(SecondaryGunHolder.transform);
             SecondaryGunInstance = gunInstance;
             SecondaryGun = gun;
