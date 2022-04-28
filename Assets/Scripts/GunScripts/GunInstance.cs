@@ -6,6 +6,8 @@ public class GunInstance : MonoBehaviour
 {
     public Player GunOwner;
 
+    public Gun Gun;
+
     public bool CanBeSelled = false;
 
     public bool IsDropped = false;
@@ -25,6 +27,9 @@ public class GunInstance : MonoBehaviour
         yield return new WaitForSeconds(.2f);
         transform.localPosition = dropPosition + new Vector3(0,.15f,0);
         transform.localEulerAngles = new Vector3(90,rotation.y,rotation.z);
-        GetComponent<Rigidbody>().useGravity = false;
+        Rigidbody rb = transform.GetComponent<Rigidbody>();
+        rb.useGravity = false;
+        rb.velocity = Vector3.zero;
+        transform.GetChild(0).GetComponent<BoxCollider>().material = null;
     }
 }
