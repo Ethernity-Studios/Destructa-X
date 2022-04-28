@@ -10,6 +10,7 @@ public class PlayerMovement : NetworkBehaviour
     float xRotation = 0f;
     Transform cameraTransform;
 
+    [SerializeField] Transform cameraHolder;
 
     CharacterController characterController;
 
@@ -30,20 +31,31 @@ public class PlayerMovement : NetworkBehaviour
     PlayerInventoryManager playerInventoryManager;
     void Start()
     {
-        if (!isLocalPlayer) return;
         playerInventoryManager = GetComponent<PlayerInventoryManager>();
-        playerManager = GetComponent<Player>();
-        playerManager.PlayerState = PlayerState.Idle;
-        cameraTransform = Camera.main.transform;
-        cameraTransform.SetParent(transform);
-        cameraTransform.position = new Vector3(transform.position.x,transform.position.y + .6f, transform.position.z);
-        characterController = GetComponent<CharacterController>();
-
-        playerInventoryManager.KnifeHolder.transform.SetParent(cameraTransform);
-        playerInventoryManager.BombHolder.transform.SetParent(cameraTransform);
-        playerInventoryManager.PrimaryGunHolder.transform.SetParent(cameraTransform);
-        playerInventoryManager.SecondaryGunHolder.transform.SetParent(cameraTransform);
+        if (isLocalPlayer) 
+        {
+            playerManager = GetComponent<Player>();
+            playerManager.PlayerState = PlayerState.Idle;
+            cameraTransform = Camera.main.transform;
+            cameraTransform.SetParent(transform.GetChild(0));
+            cameraTransform.position = new Vector3(transform.position.x, transform.position.y, transform.position.z);
+            characterController = GetComponent<CharacterController>();
+        }
+        CmdSetHolderPositions();
     }
+    [Command]
+    void CmdSetHolderPositions() => RpcSetHolderPositions();
+
+    [ClientRpc]
+    void RpcSetHolderPositions()
+    {
+        cameraHolder.transform.localPosition = new Vector3(0, .6f, 0);
+        playerInventoryManager.KnifeHolder.transform.localPosition = new Vector3(0, -.6f, 0);
+        playerInventoryManager.BombHolder.transform.localPosition = new Vector3(0, -.6f, 0);
+        playerInventoryManager.PrimaryGunHolder.transform.localPosition = new Vector3(0, -.6f, 0);
+        playerInventoryManager.SecondaryGunHolder.transform.localPosition = new Vector3(0, -.6f, 0);
+    }
+
 
     private void Update()
     {
@@ -67,7 +79,7 @@ public class PlayerMovement : NetworkBehaviour
         float mouseY = Input.GetAxis("Mouse Y") * MouseSens*100 * Time.fixedDeltaTime;
         xRotation -= mouseY;
         xRotation = Mathf.Clamp(xRotation, -90f, 90f);
-        cameraTransform.localRotation = Quaternion.Euler(xRotation, 0f, 0f);
+        cameraTransform.parent.localRotation = Quaternion.Euler(xRotation, 0f, 0f);
         transform.Rotate(Vector3.up * mouseX);
     }
 

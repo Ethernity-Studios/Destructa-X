@@ -152,7 +152,6 @@ public class PlayerInventoryManager : NetworkBehaviour
     {
         GunInstance instance = gunInstance.GetComponent<GunInstance>();
         if (!instance.CanBePicked) return;
-        Debug.Log("Picking gun!");
 
         instance.CanBePicked = false;
         instance.IsDropped = false;
@@ -214,7 +213,8 @@ public class PlayerInventoryManager : NetworkBehaviour
         Rigidbody rb = gunInstance.GetComponent<Rigidbody>();
         rb.useGravity = true;
         rb.constraints = RigidbodyConstraints.None;
-        rb.AddForce(gameObject.transform.GetChild(1).transform.TransformDirection(new Vector3(0, 0, 400))); // Camera
+        //rb.AddForce(Camera.main.transform.TransformDirection(new Vector3(0, 0, 400)));
+        rb.AddForce(transform.GetChild(0).transform.TransformDirection(new Vector3(0, 0, 400))); // Camera
     }
 
     [Command]
