@@ -129,6 +129,7 @@ public class GameManager : NetworkBehaviour
     void RpcSpawnBomb()
     {
         Bomb = bombInstance;
+        Bomb.transform.SetParent(gameObject.transform);
         Bomb.transform.position = bombSpawnLocation.position;
     }
 

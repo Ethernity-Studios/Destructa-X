@@ -52,8 +52,7 @@ public class PlayerInventoryManager : NetworkBehaviour
         if (Input.GetKeyDown(KeyCode.Alpha3)) CmdSwitchItem(Item.Knife);
         if (Input.GetKeyDown(KeyCode.Alpha4) && Bomb != null) CmdSwitchItem(Item.Bomb);
 
-        if (Input.GetKeyDown(KeyCode.G) && EqupiedItem == Item.Primary && PrimaryGun != null) CmdDropGun(GunType.Primary);
-        else if (Input.GetKeyDown(KeyCode.G) && EqupiedItem == Item.Secondary && SecondaryGun != null) CmdDropGun(GunType.Secondary);
+        if (Input.GetKeyDown(KeyCode.G)) dropItem();
     }
     void setLayerMask(GameObject gameObject, int layerMask)
     {
@@ -61,6 +60,13 @@ public class PlayerInventoryManager : NetworkBehaviour
         {
             c.gameObject.layer = layerMask;
         }
+    }
+
+    void dropItem()
+    {
+        if(EqupiedItem == Item.Primary && PrimaryGun != null) CmdDropGun(GunType.Primary);
+        if(EqupiedItem == Item.Secondary && SecondaryGun != null) CmdDropGun(GunType.Secondary);
+        if (EqupiedItem == Item.Bomb && Bomb != null) CmdDropBomb();
     }
 
     [Command]
@@ -114,7 +120,7 @@ public class PlayerInventoryManager : NetworkBehaviour
     {
         if (!isLocalPlayer) return;
         gameManager = FindObjectOfType<GameManager>();
-        if (other.gameObject == gameManager.Bomb.transform.GetChild(0).gameObject && player.PlayerTeam == Team.Red) CmdPickBomb();
+        if (other.gameObject == gameManager.Bomb.transform.GetChild(0).gameObject && other.gameObject.layer != 6 && player.PlayerTeam == Team.Red) CmdPickBomb();
 
         if (other.gameObject.TryGetComponent(out GunInstance instance)) if (instance.CanBePicked) CmdPickGun(instance.GetComponent<NetworkIdentity>().netId);
     }
@@ -126,6 +132,8 @@ public class PlayerInventoryManager : NetworkBehaviour
     void RpcPickBomb()
     {
         Bomb = gameManager.Bomb;
+        Bomb.transform.GetChild(0).gameObject.layer = 6;
+        //gameManager.Bomb = null;
         Bomb.transform.SetParent(BombHolder.transform);
         Bomb.transform.localEulerAngles = Vector3.zero;
         Bomb.transform.localPosition = new Vector3(0, 0, .5f);
@@ -141,8 +149,18 @@ public class PlayerInventoryManager : NetworkBehaviour
     [ClientRpc]
     void RpcDropBomb()
     {
-
+        Bomb.transform.localPosition = new Vector3(0, .6f, .5f);
+        Bomb.transform.SetParent(gameManager.gameObject.transform);
+        Invoke("setBombLayer", .5f);
+        Rigidbody rb = Bomb.GetComponent<Rigidbody>();
+        rb.constraints = RigidbodyConstraints.None;
+        Bomb.GetComponent<BoxCollider>().enabled = true;
+        rb.AddForce(transform.GetChild(0).transform.TransformDirection(new Vector3(0, 0, 400)));
+        //gameManager.Bomb = Bomb;
+        Bomb = null;
     }
+
+    void setBombLayer() => gameManager.Bomb.transform.GetChild(0).gameObject.layer = 0;
 
     [Command]
     void CmdPickGun(uint GunID) => RpcPickGun(NetworkServer.spawned[GunID].gameObject);
