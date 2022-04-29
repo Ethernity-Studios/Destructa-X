@@ -159,11 +159,13 @@ public class PlayerInventoryManager : NetworkBehaviour
     {
         GunInstance instance = gunInstance.GetComponent<GunInstance>();
         if (!instance.CanBePicked) return;
-
-        instance.CanBePicked = false;
+        instance.StopAllCoroutines();
         instance.IsDropped = false;
+        instance.CanBePicked = false;
+
         Gun gun = instance.Gun;
-        if(gun.Type == GunType.Primary)
+
+        if (gun.Type == GunType.Primary)
         {
             if (PrimaryGun != null) return;
             gunInstance.transform.SetParent(PrimaryGunHolder.transform);
@@ -183,7 +185,6 @@ public class PlayerInventoryManager : NetworkBehaviour
         rb.velocity = Vector3.zero;
         gunInstance.gameObject.transform.GetChild(0).gameObject.layer = 6;
         setLayerMask(gunInstance.transform.GetChild(1).gameObject, 6);
-
     }
 
     [Command]
@@ -264,7 +265,10 @@ public class PlayerInventoryManager : NetworkBehaviour
 
     void setGunTransform(GameObject gunInstance, Gun gun)
     {
+        gunInstance.transform.localPosition = Vector3.zero;
+        gunInstance.transform.localEulerAngles = Vector3.zero;
         gunInstance.GetComponent<Rigidbody>().constraints = RigidbodyConstraints.FreezeAll;
+        gunInstance.GetComponent<Rigidbody>().velocity = Vector3.zero;
         gunInstance.transform.GetChild(0).GetComponent<BoxCollider>().enabled = false;
         gunInstance.transform.localScale = new Vector3(1.5f, 1.5f, 1.5f);
         gunInstance.transform.localPosition = gun.GunTransform.FirstPersonGunPosition;

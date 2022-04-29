@@ -28,7 +28,7 @@ public class GunInstance : MonoBehaviour
         CanBePicked = true;
     }
 
-    IEnumerator SetDroppedGun(Vector3 dropPosition)
+    public IEnumerator SetDroppedGun(Vector3 dropPosition)
     {
         Vector3 rotation = transform.localEulerAngles;
         yield return new WaitForSeconds(.2f);
