@@ -1,5 +1,6 @@
 using TMPro;
 using UnityEngine;
+using Mirror;
 public class ShopManager : MonoBehaviour
 {
     [Header("Guns")]
@@ -109,6 +110,7 @@ public class ShopManager : MonoBehaviour
 
     public void BuyGun(Gun gun)
     {
+        Debug.Log("buying gun");
         Player localPlayer = PlayerInventory.GetComponent<Player>();
         if (localPlayer.PlayerGhostMoney < gun.Price) return;
         if (PlayerInventory.PrimaryGun == null && gun.Type == GunType.Primary)
@@ -125,15 +127,19 @@ public class ShopManager : MonoBehaviour
 
     public void SellGun(Gun gun)
     {
+        Debug.Log("selling gun");
         Player localPlayer = PlayerInventory.GetComponent<Player>();
         if (gun.Type == GunType.Primary && PlayerInventory.PrimaryGun != null)
         {
             localPlayer.CmdAddMoney(gun.Price);
-            PlayerInventory.DestroyGun(PlayerInventory.PrimaryGunHolder.transform.GetChild(0).gameObject);
+            PlayerInventory.CmdDestroyGun(PlayerInventory.PrimaryGunInstance.GetComponent<NetworkIdentity>().netId);
+            PlayerInventory.PrimaryGun = null;
         }
         else if (gun.Type == GunType.Secondary && PlayerInventory.SecondaryGun != null)
         {
             localPlayer.CmdAddMoney(gun.Price);
+            PlayerInventory.CmdDestroyGun(PlayerInventory.SecondaryGunInstance.GetComponent<NetworkIdentity>().netId);
+            PlayerInventory.SecondaryGun = null;
         }
     }
 }

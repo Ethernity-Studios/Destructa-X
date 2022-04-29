@@ -211,7 +211,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 702520296}
         m_TargetAssemblyTypeName: ShopManager, Assembly-CSharp
-        m_MethodName: BuyGun
+        m_MethodName: SellGun
         m_Mode: 2
         m_Arguments:
           m_ObjectArgument: {fileID: 11400000, guid: b2036781265a8d343919c144f1bf6f20, type: 2}
@@ -3691,7 +3691,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 702520296}
         m_TargetAssemblyTypeName: ShopManager, Assembly-CSharp
-        m_MethodName: BuyGun
+        m_MethodName: SellGun
         m_Mode: 2
         m_Arguments:
           m_ObjectArgument: {fileID: 11400000, guid: ba89c74c629929542ac9683e2f4c0c6f, type: 2}
@@ -4291,7 +4291,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 702520296}
         m_TargetAssemblyTypeName: ShopManager, Assembly-CSharp
-        m_MethodName: BuyGun
+        m_MethodName: SellGun
         m_Mode: 2
         m_Arguments:
           m_ObjectArgument: {fileID: 11400000, guid: 42752df7826757e49b77d68123f7f591, type: 2}
@@ -4793,7 +4793,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 702520296}
         m_TargetAssemblyTypeName: ShopManager, Assembly-CSharp
-        m_MethodName: BuyGun
+        m_MethodName: SellGun
         m_Mode: 2
         m_Arguments:
           m_ObjectArgument: {fileID: 11400000, guid: 8065c8f1b2293fb4d877d368152414ab, type: 2}
@@ -5803,7 +5803,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 702520296}
         m_TargetAssemblyTypeName: ShopManager, Assembly-CSharp
-        m_MethodName: BuyGun
+        m_MethodName: SellGun
         m_Mode: 2
         m_Arguments:
           m_ObjectArgument: {fileID: 11400000, guid: c132e1b25245c9c45b5ccece894c4737, type: 2}
@@ -7519,7 +7519,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 702520296}
         m_TargetAssemblyTypeName: ShopManager, Assembly-CSharp
-        m_MethodName: BuyGun
+        m_MethodName: SellGun
         m_Mode: 2
         m_Arguments:
           m_ObjectArgument: {fileID: 11400000, guid: aa603a1780324fb4e868221fa7c83c53, type: 2}
@@ -11670,7 +11670,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 702520296}
         m_TargetAssemblyTypeName: ShopManager, Assembly-CSharp
-        m_MethodName: BuyGun
+        m_MethodName: SellGun
         m_Mode: 2
         m_Arguments:
           m_ObjectArgument: {fileID: 11400000, guid: 81e1688166dadd04a9b67b27ae61f47e, type: 2}
@@ -14526,6 +14526,7 @@ GameObject:
   - component: {fileID: 1136759655}
   - component: {fileID: 1136759656}
   - component: {fileID: 1136759657}
+  - component: {fileID: 1136759658}
   m_Layer: 5
   m_Name: Classic
   m_TagString: Untagged
@@ -14600,19 +14601,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 231195326}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 702520296}
-        m_TargetAssemblyTypeName: ShopManager, Assembly-CSharp
-        m_MethodName: BuyGun
-        m_Mode: 2
-        m_Arguments:
-          m_ObjectArgument: {fileID: 11400000, guid: 475659704fd14a942aa9653f7630d183, type: 2}
-          m_ObjectArgumentAssemblyTypeName: Gun, Assembly-CSharp
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
 --- !u!114 &1136759657
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -14642,6 +14631,19 @@ MonoBehaviour:
             m_StringArgument: 
             m_BoolArgument: 0
           m_CallState: 2
+--- !u!114 &1136759658
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1136759654}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b4bdd9fde1b7b584b9be20aea3fc827e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Gun: {fileID: 11400000, guid: 475659704fd14a942aa9653f7630d183, type: 2}
 --- !u!1 &1154208964
 GameObject:
   m_ObjectHideFlags: 0
@@ -21382,7 +21384,7 @@ Mesh:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: pb_Mesh100232
+  m_Name: pb_Mesh59460
   serializedVersion: 10
   m_SubMeshes:
   - serializedVersion: 2
@@ -22930,7 +22932,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 702520296}
         m_TargetAssemblyTypeName: ShopManager, Assembly-CSharp
-        m_MethodName: BuyGun
+        m_MethodName: SellGun
         m_Mode: 2
         m_Arguments:
           m_ObjectArgument: {fileID: 11400000, guid: e44c0cb49d2828347bc157120349c547, type: 2}
@@ -26210,7 +26212,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 702520296}
         m_TargetAssemblyTypeName: ShopManager, Assembly-CSharp
-        m_MethodName: BuyGun
+        m_MethodName: SellGun
         m_Mode: 2
         m_Arguments:
           m_ObjectArgument: {fileID: 11400000, guid: 2b4b1f6b79cc49b41afb5c9ac2ddfced, type: 2}
@@ -27487,7 +27489,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 702520296}
         m_TargetAssemblyTypeName: ShopManager, Assembly-CSharp
-        m_MethodName: BuyGun
+        m_MethodName: SellGun
         m_Mode: 2
         m_Arguments:
           m_ObjectArgument: {fileID: 11400000, guid: 5884efa0c837a88479c061a465ead533, type: 2}

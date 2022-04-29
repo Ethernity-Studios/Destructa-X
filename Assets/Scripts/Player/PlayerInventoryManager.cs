@@ -66,7 +66,7 @@ public class PlayerInventoryManager : NetworkBehaviour
     {
         if(EqupiedItem == Item.Primary && PrimaryGun != null) CmdDropGun(GunType.Primary);
         if(EqupiedItem == Item.Secondary && SecondaryGun != null) CmdDropGun(GunType.Secondary);
-        if (EqupiedItem == Item.Bomb && Bomb != null) CmdDropBomb();
+        if(EqupiedItem == Item.Bomb && Bomb != null) CmdDropBomb();
     }
 
     [Command]
@@ -107,15 +107,6 @@ public class PlayerInventoryManager : NetworkBehaviour
         }
     }
 
-    /*private void OnTriggerEnter(Collider other)
-    {
-        if (!isLocalPlayer) return;
-        gameManager = FindObjectOfType<GameManager>();
-        if (other.gameObject == gameManager.Bomb.transform.GetChild(0).gameObject && player.PlayerTeam == Team.Red) CmdPickBomb();
-
-        if (other.gameObject.TryGetComponent(out GunInstance instance)) if (instance.CanBePicked) CmdPickGun(instance.GetComponent<NetworkIdentity>().netId);
-    }*/
-
     private void OnTriggerStay(Collider other)
     {
         if (!isLocalPlayer) return;
@@ -133,7 +124,6 @@ public class PlayerInventoryManager : NetworkBehaviour
     {
         Bomb = gameManager.Bomb;
         Bomb.transform.GetChild(0).gameObject.layer = 6;
-        //gameManager.Bomb = null;
         Bomb.transform.SetParent(BombHolder.transform);
         Bomb.transform.localEulerAngles = Vector3.zero;
         Bomb.transform.localPosition = new Vector3(0, 0, .5f);
@@ -156,7 +146,6 @@ public class PlayerInventoryManager : NetworkBehaviour
         rb.constraints = RigidbodyConstraints.None;
         Bomb.GetComponent<BoxCollider>().enabled = true;
         rb.AddForce(transform.GetChild(0).transform.TransformDirection(new Vector3(0, 0, 400)));
-        //gameManager.Bomb = Bomb;
         Bomb = null;
     }
 
@@ -231,7 +220,6 @@ public class PlayerInventoryManager : NetworkBehaviour
         Rigidbody rb = gunInstance.GetComponent<Rigidbody>();
         rb.useGravity = true;
         rb.constraints = RigidbodyConstraints.None;
-        //rb.AddForce(Camera.main.transform.TransformDirection(new Vector3(0, 0, 400)));
         rb.AddForce(transform.GetChild(0).transform.TransformDirection(new Vector3(0, 0, 400))); // Camera
     }
 
@@ -269,7 +257,6 @@ public class PlayerInventoryManager : NetworkBehaviour
             gunInstance.transform.SetParent(SecondaryGunHolder.transform);
             if (hasAuthority) CmdSwitchItem(Item.Secondary);
         }
-        //REMAKE
         setGunTransform(gunInstance, gun);
 
         if (isLocalPlayer) setLayerMask(gunInstance, 6);
@@ -284,284 +271,8 @@ public class PlayerInventoryManager : NetworkBehaviour
         gunInstance.transform.localEulerAngles = gun.GunTransform.FirstPersonGunRotation;
     }
 
-    [Command]
-    public void DestroyGun(GameObject gun)
+    public void CmdDestroyGun(uint gunID)
     {
-        NetworkServer.Destroy(gun);
+        NetworkServer.Destroy(NetworkServer.spawned[gunID].gameObject);
     }
-
-
-
-
-
-
-
-    /*public Collider coll;
-    public GameObject Knife;
-
-    public CurrentWeapon CurrentWeapon;
-    public GameObject CurrenRenderWeapon;
-    public Gun DefaultGun;
-
-    private Camera camyr;
-
-    public GunInstance? Primary;
-    public GunInstance? Secondary;
-
-    private void Start()
-    {
-        if (!isLocalPlayer) return;
-
-        CurrentWeapon = CurrentWeapon.Secondary;
-        Secondary = new GunInstance {Gun = DefaultGun, Ammo = DefaultGun.MaxAmmo, Magazine = DefaultGun.MagazineSize};
-        CurrenRenderWeapon = Instantiate(DefaultGun.GunModel, transform.position, Quaternion.identity, transform);
-
-        camyr = Camera.main;
-        coll = GetComponent<Collider>();
-    }
-
-    private void Update()
-    {
-        if (!isLocalPlayer) return;
-
-        control();
-        ChnageWeapon();
-        HandleDropWeapon();
-    }
-#nullable enable
-    public void OnCollisionEnter(Collision collision)
-    {
-        GunScript? gun = null;
-        collision.collider.TryGetComponent(out gun);
-
-        if (gun == null) return;
-        switch (gun.Gun.Gun.Type)
-        {
-            case GunType.Primary:
-            {
-                if (Primary != null)
-                {
-                    Primary = gun.Gun;
-                    CurrentWeapon = CurrentWeapon.Primary;
-                    RenderWeapon();
-                }
-
-                break;
-            }
-            case GunType.Secondary:
-            {
-                if (Secondary != null)
-                {
-                    Secondary = gun.Gun;
-                    CurrentWeapon = CurrentWeapon.Primary;
-                    RenderWeapon();
-                }
-
-                break;
-            }
-        }
-
-        Destroy(collision.collider.transform);
-    }
-#nullable disable
-    public void HandlePickup()
-    {
-    }
-
-    public void Shoot()
-    {
-        // todo
-    }
-
-    public void Reload()
-    {
-        // todo
-    }
-
-    private void ChnageWeapon()
-    {
-        if (Input.GetKeyDown(KeyCode.Alpha1) && Primary != null)
-        {
-            CurrentWeapon = CurrentWeapon.Primary;
-            RenderWeapon();
-        }
-        else if (Input.GetKeyDown(KeyCode.Alpha2) && Secondary != null)
-        {
-            CurrentWeapon = CurrentWeapon.Secondary;
-            RenderWeapon();
-        }
-        else if (Input.GetKeyDown(KeyCode.Alpha3))
-        {
-            CurrentWeapon = CurrentWeapon.Knife;
-            RenderWeapon();
-        }
-    }
-
-
-    private void RenderWeapon()
-    {
-        Destroy(CurrenRenderWeapon);
-
-        switch (CurrentWeapon)
-        {
-            case CurrentWeapon.Primary:
-            {
-                var cur = Primary;
-                CurrenRenderWeapon = Instantiate(cur?.Gun.GunModel, transform.position, Quaternion.identity, transform);
-                break;
-            }
-            case CurrentWeapon.Secondary:
-            {
-                var cur = Secondary;
-                CurrenRenderWeapon = Instantiate(cur?.Gun.GunModel, transform.position, Quaternion.identity, transform);
-                break;
-            }
-            case CurrentWeapon.Knife:
-            {
-                CurrenRenderWeapon = Instantiate(Knife, transform.position, Quaternion.identity, transform);
-                break;
-            }
-        }
-    }
-
-    public void control()
-    {
-        // todo
-        // switch weapons
-        // shoot
-        // reload
-        // drop weapon
-        // pickup weapon
-    }
-
-    // Debug.DrawRay(pos.position, pos.TransformDirection(Vector3.forward) * 10, Color.cyan);
-    public BulletPath BulletPenetration(Transform pos, int maxpen = 5) // FIXME
-    {
-        var direction = pos.TransformDirection(Vector3.forward) * 10;
-
-        BulletImpact[] impacts = null;
-        RaycastHit? hitus = null;
-        var damagemod = 0f;
-
-        var origin = pos;
-
-        for (var i = 0; i <= maxpen; i++)
-        {
-            var ray = new Ray(origin.position, direction);
-
-            if (Physics.Raycast(ray, out var hit) && hit.collider.GetComponent<EntityBase>())
-            {
-                hitus = hit;
-            }
-            else if (hit.collider.GetComponent<Penetration>())
-            {
-                var pen = hit.collider.GetComponent<Penetration>();
-
-                if (coll.Raycast(new Ray(hit.transform.position + Vector3.one * 20, direction * -1), out var hitb,
-                        50.0f))
-                {
-                    var len = (hitb.transform.position - hit.transform.position).magnitude;
-                    origin = hitb.transform; // todo some small offset
-
-                    damagemod += pen.value * len;
-                    if (damagemod >= 100)
-                    {
-                        impacts.Append(new BulletImpact {Location = hit, Penetrated = true});
-                        impacts.Append(new BulletImpact {Location = hitb, Penetrated = false});
-                        return new BulletPath {Impacts = impacts, hit = hitus, DamageModifier = damagemod};
-                    }
-
-                    impacts.Append(new BulletImpact {Location = hit, Penetrated = true});
-                    impacts.Append(new BulletImpact {Location = hitb, Penetrated = true});
-                }
-                else
-                {
-                    impacts.Append(new BulletImpact {Location = hit, Penetrated = false});
-                    return new BulletPath {Impacts = impacts, hit = hitus, DamageModifier = damagemod};
-                }
-            }
-        }
-
-        return new BulletPath {Impacts = impacts, hit = hitus, DamageModifier = damagemod};
-    }
-
-    public void Refresh()
-    {
-        // TODO replanish ammo after respawn
-    }
-
-    public void PickupWeapon()
-    {
-        // TODO
-    }
-
-    public void HandleDropWeapon()
-    {
-        if (Input.GetKeyDown(KeyCode.G)) DropCurrentWeapon();
-    }
-
-
-    public void DropCurrentWeapon()
-    {
-        switch (CurrentWeapon)
-        {
-            case CurrentWeapon.Primary:
-            {
-                var model = Primary?.Gun.GunModel;
-                var obj = Instantiate(model, transform.position, Quaternion.identity);
-                //var bodyr = obj.AddComponent<Rigidbody>();
-                obj.AddComponent<GunScript>().Init(Primary.Value);
-                Primary = null;
-                //bodyr.AddForce(transform.position.normalized*2*Time.deltaTime);
-                if (Secondary != null)
-                {
-                    CurrentWeapon = CurrentWeapon.Secondary;
-                    RenderWeapon();
-                }
-                else
-                {
-                    CurrentWeapon = CurrentWeapon.Knife;
-                    RenderWeapon();
-                }
-
-                break;
-            }
-            case CurrentWeapon.Secondary:
-            {
-                var model = Secondary?.Gun.GunModel;
-                var obj = Instantiate(model, transform.position, Quaternion.identity);
-                //obj.AddComponent<Rigidbody>();
-                obj.AddComponent<GunScript>().Init(Secondary.Value);
-                Secondary = null;
-                //obj.GetComponent<Rigidbody>().AddForce(transform.position.normalized*2*Time.deltaTime);
-
-                if (Primary != null)
-                {
-                    CurrentWeapon = CurrentWeapon.Secondary;
-                    RenderWeapon();
-                }
-                else
-                {
-                    CurrentWeapon = CurrentWeapon.Knife;
-                    RenderWeapon();
-                }
-
-                break;
-            }
-        }
-    }
-
-
-    public struct BulletImpact
-    {
-        public bool Penetrated;
-        public RaycastHit Location;
-    }
-
-    public struct BulletPath
-    {
-        public BulletImpact[] Impacts;
-        public RaycastHit? hit;
-        public float? DamageModifier;
-    }*/
 }
