@@ -113,7 +113,7 @@ public class PlayerInventoryManager : NetworkBehaviour
         gameManager = FindObjectOfType<GameManager>();
         if (other.gameObject == gameManager.Bomb.transform.GetChild(0).gameObject && other.gameObject.layer != 6 && player.PlayerTeam == Team.Red) CmdPickBomb();
 
-        if (other.gameObject.TryGetComponent(out GunInstance instance)) if (instance.CanBePicked) CmdPickGun(instance.GetComponent<NetworkIdentity>().netId);
+        if (other.gameObject.TryGetComponent(out GunInstance instance)) if (instance.CanBePicked && instance.IsDropped) CmdPickGun(instance.GetComponent<NetworkIdentity>().netId);
     }
 
     [Command]
@@ -159,15 +159,13 @@ public class PlayerInventoryManager : NetworkBehaviour
     {
         GunInstance instance = gunInstance.GetComponent<GunInstance>();
         if (!instance.CanBePicked) return;
-        instance.StopAllCoroutines();
-        instance.IsDropped = false;
-        instance.CanBePicked = false;
 
         Gun gun = instance.Gun;
 
         if (gun.Type == GunType.Primary)
         {
             if (PrimaryGun != null) return;
+            instance.StopAllCoroutines();
             gunInstance.transform.SetParent(PrimaryGunHolder.transform);
             PrimaryGunInstance = gunInstance;
             PrimaryGun = gun;
@@ -175,10 +173,13 @@ public class PlayerInventoryManager : NetworkBehaviour
         else if(gun.Type == GunType.Secondary)
         {
             if(SecondaryGun != null) return;
+            instance.StopAllCoroutines();
             gunInstance.transform.SetParent(SecondaryGunHolder.transform);
             SecondaryGunInstance = gunInstance;
             SecondaryGun = gun;
         }
+        instance.IsDropped = false;
+        instance.CanBePicked = false;
         setGunTransform(gunInstance, gun);
         Rigidbody rb = gunInstance.GetComponent<Rigidbody>();
         rb.useGravity = false;
