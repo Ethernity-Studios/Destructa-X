@@ -19,8 +19,6 @@ public class Player : NetworkBehaviour
     [SyncVar(hook = nameof(updateMoneyText))]
     public int PlayerMoney = 800;
     [SyncVar]
-    public int PlayerGhostMoney = 800;
-    [SyncVar]
     public int PlayerKills;
     [SyncVar]
     public int PlayerDeaths;
@@ -102,7 +100,7 @@ public class Player : NetworkBehaviour
     public void CmdSwitchPlayerAgent(Agent agent) => PlayerAgent = agent;
 
     [Command]
-    public void CmdAddMoney(int money) => PlayerMoney += money;
+    public void CmdChangeMoney(int money) => PlayerMoney += money;
 
     [ClientRpc]
     public void RespawnPlayer(Vector3 position)

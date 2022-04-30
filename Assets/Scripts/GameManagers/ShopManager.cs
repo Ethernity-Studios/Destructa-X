@@ -28,7 +28,7 @@ public class ShopManager : MonoBehaviour
     [SerializeField] TMP_Text shieldDescription;
     [SerializeField] Sprite shieldImage;
 
-    PlayerInventoryManager PlayerInventory;
+    PlayerInventoryManager playerInventory;
 
     [SerializeField] GameManager gameManager;
 
@@ -43,7 +43,7 @@ public class ShopManager : MonoBehaviour
         foreach (var player in gameManager.Players)
         {
             if (!player.isLocalPlayer) continue;
-            PlayerInventory = player.GetComponent<PlayerInventoryManager>();
+            playerInventory = player.GetComponent<PlayerInventoryManager>();
             break;
         }
     }
@@ -112,38 +112,52 @@ public class ShopManager : MonoBehaviour
 
     public void BuyGun(Gun gun)
     {
-        Debug.Log("buying gun");
-        Player localPlayer = PlayerInventory.GetComponent<Player>();
-        if (localPlayer.PlayerGhostMoney < gun.Price) return;
-        if (PlayerInventory.PrimaryGun == null && gun.Type == GunType.Primary)
+        Player localPlayer = playerInventory.GetComponent<Player>();
+        if (localPlayer.PlayerMoney >= gun.Price) 
         {
-            localPlayer.CmdAddMoney(-gun.Price);
-            PlayerInventory.CmdGiveGun(gun.GunID);
-            PlayerInventory.CmdSwitchItem(Item.Primary);
+            if (playerInventory.PrimaryGun == null && gun.Type == GunType.Primary)
+            {
+                localPlayer.CmdChangeMoney(-gun.Price);
+                playerInventory.CmdGiveGun(gun.GunID);
+            }
+            else if (playerInventory.SecondaryGun == null && gun.Type == GunType.Secondary)
+            {
+                localPlayer.CmdChangeMoney(-gun.Price);
+                playerInventory.CmdGiveGun(gun.GunID);
+                if (playerInventory.PrimaryGun == null) playerInventory.CmdSwitchItem(Item.Secondary);
+            }
         }
-        else if (PlayerInventory.SecondaryGun == null && gun.Type == GunType.Secondary)
+        if(localPlayer.PlayerMoney + playerInventory.PrimaryGun.Price > gun.Price)
         {
-            localPlayer.CmdAddMoney(-gun.Price);
-            PlayerInventory.CmdGiveGun(gun.GunID);
-            if(PlayerInventory.PrimaryGun == null) PlayerInventory.CmdSwitchItem(Item.Secondary);
+            SellGun(playerInventory.PrimaryGun);
+            if (playerInventory.PrimaryGun == null && gun.Type == GunType.Primary)
+            {
+                localPlayer.CmdChangeMoney(-gun.Price);
+                playerInventory.CmdGiveGun(gun.GunID);
+            }
+            else if (playerInventory.SecondaryGun == null && gun.Type == GunType.Secondary)
+            {
+                localPlayer.CmdChangeMoney(-gun.Price);
+                playerInventory.CmdGiveGun(gun.GunID);
+                if (playerInventory.PrimaryGun == null) playerInventory.CmdSwitchItem(Item.Secondary);
+            }
         }
     }
 
     public void SellGun(Gun gun)
     {
-        Debug.Log("selling gun");
-        Player localPlayer = PlayerInventory.GetComponent<Player>();
-        if (gun.Type == GunType.Primary && PlayerInventory.PrimaryGun != null)
+        Player localPlayer = playerInventory.GetComponent<Player>();
+        if (gun.Type == GunType.Primary && playerInventory.PrimaryGun != null && playerInventory.PrimaryGunInstance.GetComponent<GunInstance>().CanBeSelled)
         {
-            localPlayer.CmdAddMoney(gun.Price);
-            PlayerInventory.CmdDestroyGun(PlayerInventory.PrimaryGunInstance.GetComponent<NetworkIdentity>().netId);
-            PlayerInventory.PrimaryGun = null;
+            localPlayer.CmdChangeMoney(gun.Price);
+            playerInventory.CmdSellGun(playerInventory.PrimaryGunInstance.GetComponent<NetworkIdentity>().netId);
+            playerInventory.PrimaryGun = null;
         }
-        else if (gun.Type == GunType.Secondary && PlayerInventory.SecondaryGun != null)
+        else if (gun.Type == GunType.Secondary && playerInventory.SecondaryGun != null && playerInventory.SecondaryGunInstance.GetComponent<GunInstance>().CanBeSelled)
         {
-            localPlayer.CmdAddMoney(gun.Price);
-            PlayerInventory.CmdDestroyGun(PlayerInventory.SecondaryGunInstance.GetComponent<NetworkIdentity>().netId);
-            PlayerInventory.SecondaryGun = null;
+            localPlayer.CmdChangeMoney(gun.Price);
+            playerInventory.CmdSellGun(playerInventory.SecondaryGunInstance.GetComponent<NetworkIdentity>().netId);
+            playerInventory.SecondaryGun = null;
         }
     }
 }

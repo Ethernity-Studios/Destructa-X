@@ -252,13 +252,12 @@ public class PlayerInventoryManager : NetworkBehaviour
             PrimaryGun = gun;
             gunInstance.transform.SetParent(PrimaryGunHolder.transform);
             if (hasAuthority) CmdSwitchItem(Item.Primary);
-
         }
         else if (gun.Type == GunType.Secondary)
         {
             SecondaryGun = gun;
             gunInstance.transform.SetParent(SecondaryGunHolder.transform);
-            if (hasAuthority) CmdSwitchItem(Item.Secondary);
+            if (hasAuthority && PrimaryGun == null) CmdSwitchItem(Item.Secondary);
         }
         setGunTransform(gunInstance, gun);
 
@@ -277,7 +276,8 @@ public class PlayerInventoryManager : NetworkBehaviour
         gunInstance.transform.localEulerAngles = gun.GunTransform.FirstPersonGunRotation;
     }
 
-    public void CmdDestroyGun(uint gunID)
+    [Command]
+    public void CmdSellGun(uint gunID)
     {
         NetworkServer.Destroy(NetworkServer.spawned[gunID].gameObject);
     }
