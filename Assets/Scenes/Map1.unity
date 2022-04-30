@@ -134,6 +134,7 @@ GameObject:
   - component: {fileID: 39372765}
   - component: {fileID: 39372766}
   - component: {fileID: 39372767}
+  - component: {fileID: 39372768}
   m_Layer: 5
   m_Name: Stinger
   m_TagString: Untagged
@@ -208,19 +209,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 721373430}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 702520296}
-        m_TargetAssemblyTypeName: ShopManager, Assembly-CSharp
-        m_MethodName: SellGun
-        m_Mode: 2
-        m_Arguments:
-          m_ObjectArgument: {fileID: 11400000, guid: b2036781265a8d343919c144f1bf6f20, type: 2}
-          m_ObjectArgumentAssemblyTypeName: Gun, Assembly-CSharp
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
 --- !u!114 &39372767
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -250,6 +239,19 @@ MonoBehaviour:
             m_StringArgument: 
             m_BoolArgument: 0
           m_CallState: 2
+--- !u!114 &39372768
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 39372764}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b4bdd9fde1b7b584b9be20aea3fc827e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Gun: {fileID: 11400000, guid: b2036781265a8d343919c144f1bf6f20, type: 2}
 --- !u!1 &54740243
 GameObject:
   m_ObjectHideFlags: 0
@@ -1847,9 +1849,9 @@ RectTransform:
   m_Father: {fileID: 1382740012}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 75, y: -70}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 150, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &192355269
@@ -2171,6 +2173,7 @@ GameObject:
   - component: {fileID: 212998267}
   - component: {fileID: 212998268}
   - component: {fileID: 212998269}
+  - component: {fileID: 212998270}
   m_Layer: 5
   m_Name: Ares
   m_TagString: Untagged
@@ -2245,19 +2248,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1093405477}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 702520296}
-        m_TargetAssemblyTypeName: ShopManager, Assembly-CSharp
-        m_MethodName: BuyGun
-        m_Mode: 2
-        m_Arguments:
-          m_ObjectArgument: {fileID: 11400000, guid: 370f4348b5b791e428482e0c5b054ef1, type: 2}
-          m_ObjectArgumentAssemblyTypeName: Gun, Assembly-CSharp
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
 --- !u!114 &212998269
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2287,6 +2278,19 @@ MonoBehaviour:
             m_StringArgument: 
             m_BoolArgument: 0
           m_CallState: 2
+--- !u!114 &212998270
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 212998266}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b4bdd9fde1b7b584b9be20aea3fc827e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Gun: {fileID: 11400000, guid: 370f4348b5b791e428482e0c5b054ef1, type: 2}
 --- !u!1 &225024140
 GameObject:
   m_ObjectHideFlags: 0
@@ -3614,6 +3618,7 @@ GameObject:
   - component: {fileID: 366723359}
   - component: {fileID: 366723360}
   - component: {fileID: 366723361}
+  - component: {fileID: 366723362}
   m_Layer: 5
   m_Name: Sheriff
   m_TagString: Untagged
@@ -3688,19 +3693,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1904773211}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 702520296}
-        m_TargetAssemblyTypeName: ShopManager, Assembly-CSharp
-        m_MethodName: SellGun
-        m_Mode: 2
-        m_Arguments:
-          m_ObjectArgument: {fileID: 11400000, guid: ba89c74c629929542ac9683e2f4c0c6f, type: 2}
-          m_ObjectArgumentAssemblyTypeName: Gun, Assembly-CSharp
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
 --- !u!114 &366723361
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3730,6 +3723,19 @@ MonoBehaviour:
             m_StringArgument: 
             m_BoolArgument: 0
           m_CallState: 2
+--- !u!114 &366723362
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 366723358}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b4bdd9fde1b7b584b9be20aea3fc827e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Gun: {fileID: 11400000, guid: ba89c74c629929542ac9683e2f4c0c6f, type: 2}
 --- !u!1 &373653724
 GameObject:
   m_ObjectHideFlags: 0
@@ -4214,6 +4220,7 @@ GameObject:
   - component: {fileID: 410591077}
   - component: {fileID: 410591078}
   - component: {fileID: 410591079}
+  - component: {fileID: 410591080}
   m_Layer: 5
   m_Name: Spectre
   m_TagString: Untagged
@@ -4288,19 +4295,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1794168846}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 702520296}
-        m_TargetAssemblyTypeName: ShopManager, Assembly-CSharp
-        m_MethodName: SellGun
-        m_Mode: 2
-        m_Arguments:
-          m_ObjectArgument: {fileID: 11400000, guid: 42752df7826757e49b77d68123f7f591, type: 2}
-          m_ObjectArgumentAssemblyTypeName: Gun, Assembly-CSharp
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
 --- !u!114 &410591079
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4330,6 +4325,19 @@ MonoBehaviour:
             m_StringArgument: 
             m_BoolArgument: 0
           m_CallState: 2
+--- !u!114 &410591080
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 410591076}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b4bdd9fde1b7b584b9be20aea3fc827e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Gun: {fileID: 11400000, guid: 42752df7826757e49b77d68123f7f591, type: 2}
 --- !u!1 &417324084
 GameObject:
   m_ObjectHideFlags: 0
@@ -4716,6 +4724,7 @@ GameObject:
   - component: {fileID: 427508348}
   - component: {fileID: 427508349}
   - component: {fileID: 427508350}
+  - component: {fileID: 427508351}
   m_Layer: 5
   m_Name: Judge
   m_TagString: Untagged
@@ -4790,19 +4799,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1978291300}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 702520296}
-        m_TargetAssemblyTypeName: ShopManager, Assembly-CSharp
-        m_MethodName: SellGun
-        m_Mode: 2
-        m_Arguments:
-          m_ObjectArgument: {fileID: 11400000, guid: 8065c8f1b2293fb4d877d368152414ab, type: 2}
-          m_ObjectArgumentAssemblyTypeName: Gun, Assembly-CSharp
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
 --- !u!114 &427508350
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4832,6 +4829,19 @@ MonoBehaviour:
             m_StringArgument: 
             m_BoolArgument: 0
           m_CallState: 2
+--- !u!114 &427508351
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 427508347}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b4bdd9fde1b7b584b9be20aea3fc827e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Gun: {fileID: 11400000, guid: 8065c8f1b2293fb4d877d368152414ab, type: 2}
 --- !u!1 &430057650
 GameObject:
   m_ObjectHideFlags: 0
@@ -5726,6 +5736,7 @@ GameObject:
   - component: {fileID: 459415063}
   - component: {fileID: 459415064}
   - component: {fileID: 459415065}
+  - component: {fileID: 459415066}
   m_Layer: 5
   m_Name: Bucky
   m_TagString: Untagged
@@ -5800,19 +5811,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 837972124}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 702520296}
-        m_TargetAssemblyTypeName: ShopManager, Assembly-CSharp
-        m_MethodName: SellGun
-        m_Mode: 2
-        m_Arguments:
-          m_ObjectArgument: {fileID: 11400000, guid: c132e1b25245c9c45b5ccece894c4737, type: 2}
-          m_ObjectArgumentAssemblyTypeName: Gun, Assembly-CSharp
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
 --- !u!114 &459415065
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5842,6 +5841,19 @@ MonoBehaviour:
             m_StringArgument: 
             m_BoolArgument: 0
           m_CallState: 2
+--- !u!114 &459415066
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 459415062}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b4bdd9fde1b7b584b9be20aea3fc827e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Gun: {fileID: 11400000, guid: c132e1b25245c9c45b5ccece894c4737, type: 2}
 --- !u!1 &461774261
 GameObject:
   m_ObjectHideFlags: 0
@@ -7442,6 +7454,7 @@ GameObject:
   - component: {fileID: 640417309}
   - component: {fileID: 640417310}
   - component: {fileID: 640417311}
+  - component: {fileID: 640417312}
   m_Layer: 5
   m_Name: Shorty
   m_TagString: Untagged
@@ -7516,19 +7529,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 718139816}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 702520296}
-        m_TargetAssemblyTypeName: ShopManager, Assembly-CSharp
-        m_MethodName: SellGun
-        m_Mode: 2
-        m_Arguments:
-          m_ObjectArgument: {fileID: 11400000, guid: aa603a1780324fb4e868221fa7c83c53, type: 2}
-          m_ObjectArgumentAssemblyTypeName: Gun, Assembly-CSharp
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
 --- !u!114 &640417311
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -7558,6 +7559,19 @@ MonoBehaviour:
             m_StringArgument: 
             m_BoolArgument: 0
           m_CallState: 2
+--- !u!114 &640417312
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 640417308}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b4bdd9fde1b7b584b9be20aea3fc827e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Gun: {fileID: 11400000, guid: aa603a1780324fb4e868221fa7c83c53, type: 2}
 --- !u!1 &642706614
 GameObject:
   m_ObjectHideFlags: 0
@@ -11301,7 +11315,7 @@ MonoBehaviour:
   syncInterval: 0.1
   Round: 0
   RoundsPerHalf: 13
-  StartGameLenght: 20
+  StartGameLenght: 200
   EndgameLenght: 5
   PreRoundLenght: 20
   RoundLenght: 20
@@ -11594,6 +11608,7 @@ GameObject:
   - component: {fileID: 840497007}
   - component: {fileID: 840497008}
   - component: {fileID: 840497009}
+  - component: {fileID: 840497010}
   m_Layer: 5
   m_Name: Frenzy
   m_TagString: Untagged
@@ -11668,19 +11683,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1032393229}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 702520296}
-        m_TargetAssemblyTypeName: ShopManager, Assembly-CSharp
-        m_MethodName: SellGun
-        m_Mode: 2
-        m_Arguments:
-          m_ObjectArgument: {fileID: 11400000, guid: 81e1688166dadd04a9b67b27ae61f47e, type: 2}
-          m_ObjectArgumentAssemblyTypeName: Gun, Assembly-CSharp
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
 --- !u!114 &840497009
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -11710,6 +11713,19 @@ MonoBehaviour:
             m_StringArgument: 
             m_BoolArgument: 0
           m_CallState: 2
+--- !u!114 &840497010
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 840497006}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b4bdd9fde1b7b584b9be20aea3fc827e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Gun: {fileID: 11400000, guid: 81e1688166dadd04a9b67b27ae61f47e, type: 2}
 --- !u!1 &842787472
 GameObject:
   m_ObjectHideFlags: 0
@@ -11833,6 +11849,7 @@ GameObject:
   - component: {fileID: 851417424}
   - component: {fileID: 851417425}
   - component: {fileID: 851417426}
+  - component: {fileID: 851417427}
   m_Layer: 5
   m_Name: Guardian
   m_TagString: Untagged
@@ -11907,19 +11924,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 763006799}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 702520296}
-        m_TargetAssemblyTypeName: ShopManager, Assembly-CSharp
-        m_MethodName: BuyGun
-        m_Mode: 2
-        m_Arguments:
-          m_ObjectArgument: {fileID: 11400000, guid: 3426c16190f3dd149a74bfd24cbcee6d, type: 2}
-          m_ObjectArgumentAssemblyTypeName: Gun, Assembly-CSharp
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
 --- !u!114 &851417426
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -11949,6 +11954,19 @@ MonoBehaviour:
             m_StringArgument: 
             m_BoolArgument: 0
           m_CallState: 2
+--- !u!114 &851417427
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 851417423}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b4bdd9fde1b7b584b9be20aea3fc827e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Gun: {fileID: 11400000, guid: 3426c16190f3dd149a74bfd24cbcee6d, type: 2}
 --- !u!1 &852490846
 GameObject:
   m_ObjectHideFlags: 0
@@ -13248,6 +13266,7 @@ GameObject:
   - component: {fileID: 992050284}
   - component: {fileID: 992050285}
   - component: {fileID: 992050286}
+  - component: {fileID: 992050287}
   m_Layer: 5
   m_Name: Phantom
   m_TagString: Untagged
@@ -13322,19 +13341,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1566563809}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 702520296}
-        m_TargetAssemblyTypeName: ShopManager, Assembly-CSharp
-        m_MethodName: BuyGun
-        m_Mode: 2
-        m_Arguments:
-          m_ObjectArgument: {fileID: 11400000, guid: e34981b822f91724a9783b1cfbdf6a59, type: 2}
-          m_ObjectArgumentAssemblyTypeName: Gun, Assembly-CSharp
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
 --- !u!114 &992050286
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -13364,6 +13371,19 @@ MonoBehaviour:
             m_StringArgument: 
             m_BoolArgument: 0
           m_CallState: 2
+--- !u!114 &992050287
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 992050283}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b4bdd9fde1b7b584b9be20aea3fc827e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Gun: {fileID: 11400000, guid: e34981b822f91724a9783b1cfbdf6a59, type: 2}
 --- !u!1 &992693801
 GameObject:
   m_ObjectHideFlags: 0
@@ -14033,7 +14053,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &1049830187
 RectTransform:
   m_ObjectHideFlags: 0
@@ -16764,9 +16784,9 @@ RectTransform:
   m_Father: {fileID: 1382740012}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 75, y: -180}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 150, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1317167916
@@ -22115,6 +22135,7 @@ GameObject:
   - component: {fileID: 1649003580}
   - component: {fileID: 1649003581}
   - component: {fileID: 1649003582}
+  - component: {fileID: 1649003583}
   m_Layer: 5
   m_Name: Vandal
   m_TagString: Untagged
@@ -22189,19 +22210,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1780911735}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 702520296}
-        m_TargetAssemblyTypeName: ShopManager, Assembly-CSharp
-        m_MethodName: BuyGun
-        m_Mode: 2
-        m_Arguments:
-          m_ObjectArgument: {fileID: 11400000, guid: 0b5c373de06cbb54583cb49ec152e042, type: 2}
-          m_ObjectArgumentAssemblyTypeName: Gun, Assembly-CSharp
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
 --- !u!114 &1649003582
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -22231,6 +22240,19 @@ MonoBehaviour:
             m_StringArgument: 
             m_BoolArgument: 0
           m_CallState: 2
+--- !u!114 &1649003583
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1649003579}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b4bdd9fde1b7b584b9be20aea3fc827e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Gun: {fileID: 11400000, guid: 0b5c373de06cbb54583cb49ec152e042, type: 2}
 --- !u!1 &1666469308
 GameObject:
   m_ObjectHideFlags: 0
@@ -22861,6 +22883,7 @@ GameObject:
   - component: {fileID: 1766969807}
   - component: {fileID: 1766969808}
   - component: {fileID: 1766969809}
+  - component: {fileID: 1766969810}
   m_Layer: 5
   m_Name: Ghost
   m_TagString: Untagged
@@ -22935,19 +22958,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 77583154}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 702520296}
-        m_TargetAssemblyTypeName: ShopManager, Assembly-CSharp
-        m_MethodName: SellGun
-        m_Mode: 2
-        m_Arguments:
-          m_ObjectArgument: {fileID: 11400000, guid: e44c0cb49d2828347bc157120349c547, type: 2}
-          m_ObjectArgumentAssemblyTypeName: Gun, Assembly-CSharp
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
 --- !u!114 &1766969809
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -22977,6 +22988,19 @@ MonoBehaviour:
             m_StringArgument: 
             m_BoolArgument: 0
           m_CallState: 2
+--- !u!114 &1766969810
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1766969806}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b4bdd9fde1b7b584b9be20aea3fc827e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Gun: {fileID: 11400000, guid: e44c0cb49d2828347bc157120349c547, type: 2}
 --- !u!1 &1780911733
 GameObject:
   m_ObjectHideFlags: 0
@@ -23492,6 +23516,7 @@ GameObject:
   - component: {fileID: 1847104507}
   - component: {fileID: 1847104508}
   - component: {fileID: 1847104509}
+  - component: {fileID: 1847104510}
   m_Layer: 5
   m_Name: Bulldog
   m_TagString: Untagged
@@ -23566,19 +23591,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 843135011}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 702520296}
-        m_TargetAssemblyTypeName: ShopManager, Assembly-CSharp
-        m_MethodName: BuyGun
-        m_Mode: 2
-        m_Arguments:
-          m_ObjectArgument: {fileID: 11400000, guid: a64988b0de7a3cd409fc60cce89b8f89, type: 2}
-          m_ObjectArgumentAssemblyTypeName: Gun, Assembly-CSharp
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
 --- !u!114 &1847104509
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -23608,6 +23621,19 @@ MonoBehaviour:
             m_StringArgument: 
             m_BoolArgument: 0
           m_CallState: 2
+--- !u!114 &1847104510
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1847104506}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b4bdd9fde1b7b584b9be20aea3fc827e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Gun: {fileID: 11400000, guid: a64988b0de7a3cd409fc60cce89b8f89, type: 2}
 --- !u!1 &1848875287
 GameObject:
   m_ObjectHideFlags: 0
@@ -24318,9 +24344,9 @@ RectTransform:
   m_Father: {fileID: 402896602}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 75, y: -70}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 150, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1895416013
@@ -26141,6 +26167,7 @@ GameObject:
   - component: {fileID: 1981607405}
   - component: {fileID: 1981607406}
   - component: {fileID: 1981607407}
+  - component: {fileID: 1981607408}
   m_Layer: 5
   m_Name: Operator
   m_TagString: Untagged
@@ -26215,19 +26242,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1184244617}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 702520296}
-        m_TargetAssemblyTypeName: ShopManager, Assembly-CSharp
-        m_MethodName: SellGun
-        m_Mode: 2
-        m_Arguments:
-          m_ObjectArgument: {fileID: 11400000, guid: 2b4b1f6b79cc49b41afb5c9ac2ddfced, type: 2}
-          m_ObjectArgumentAssemblyTypeName: Gun, Assembly-CSharp
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
 --- !u!114 &1981607407
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -26257,6 +26272,19 @@ MonoBehaviour:
             m_StringArgument: 
             m_BoolArgument: 0
           m_CallState: 2
+--- !u!114 &1981607408
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1981607404}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b4bdd9fde1b7b584b9be20aea3fc827e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Gun: {fileID: 11400000, guid: 2b4b1f6b79cc49b41afb5c9ac2ddfced, type: 2}
 --- !u!1 &1982170012
 GameObject:
   m_ObjectHideFlags: 0
@@ -27418,6 +27446,7 @@ GameObject:
   - component: {fileID: 2067133229}
   - component: {fileID: 2067133230}
   - component: {fileID: 2067133231}
+  - component: {fileID: 2067133232}
   m_Layer: 5
   m_Name: Marshal
   m_TagString: Untagged
@@ -27492,19 +27521,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1666847897}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 702520296}
-        m_TargetAssemblyTypeName: ShopManager, Assembly-CSharp
-        m_MethodName: SellGun
-        m_Mode: 2
-        m_Arguments:
-          m_ObjectArgument: {fileID: 11400000, guid: 5884efa0c837a88479c061a465ead533, type: 2}
-          m_ObjectArgumentAssemblyTypeName: Gun, Assembly-CSharp
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
 --- !u!114 &2067133231
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -27534,6 +27551,19 @@ MonoBehaviour:
             m_StringArgument: 
             m_BoolArgument: 0
           m_CallState: 2
+--- !u!114 &2067133232
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2067133228}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b4bdd9fde1b7b584b9be20aea3fc827e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Gun: {fileID: 11400000, guid: 5884efa0c837a88479c061a465ead533, type: 2}
 --- !u!1 &2068334771
 GameObject:
   m_ObjectHideFlags: 0
@@ -27621,6 +27651,7 @@ GameObject:
   - component: {fileID: 2076297295}
   - component: {fileID: 2076297296}
   - component: {fileID: 2076297297}
+  - component: {fileID: 2076297298}
   m_Layer: 5
   m_Name: Odin
   m_TagString: Untagged
@@ -27695,19 +27726,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 985221898}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 702520296}
-        m_TargetAssemblyTypeName: ShopManager, Assembly-CSharp
-        m_MethodName: BuyGun
-        m_Mode: 2
-        m_Arguments:
-          m_ObjectArgument: {fileID: 11400000, guid: 2d1abd84ad117154fbd78804ae4efbdd, type: 2}
-          m_ObjectArgumentAssemblyTypeName: Gun, Assembly-CSharp
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
 --- !u!114 &2076297297
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -27737,6 +27756,19 @@ MonoBehaviour:
             m_StringArgument: 
             m_BoolArgument: 0
           m_CallState: 2
+--- !u!114 &2076297298
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2076297294}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b4bdd9fde1b7b584b9be20aea3fc827e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Gun: {fileID: 11400000, guid: 2d1abd84ad117154fbd78804ae4efbdd, type: 2}
 --- !u!1 &2076609187
 GameObject:
   m_ObjectHideFlags: 0
@@ -27773,9 +27805,9 @@ RectTransform:
   m_Father: {fileID: 402896602}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 75, y: -180}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 150, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &2076609189

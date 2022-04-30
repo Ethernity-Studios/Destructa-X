@@ -12,13 +12,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2797a7e7978d4fa3bf4d76869be850f0, type: 3}
   m_Name: Stinger
   m_EditorClassIdentifier: 
-  Name: 
-  MagazineSize: 0
+  GunID: 6
+  Name: Stinger
+  Price: 0
+  Ammo: 0
   MaxAmmo: 0
   ReloadTime: 0
+  EquipTime: 0
   Type: 0
+  Category: 0
   GunModel: {fileID: 0}
-  GunIcon: {fileID: 0}
   LMB:
     FireType: 0
     FireMode: 0
@@ -49,3 +52,14 @@ MonoBehaviour:
       DamageDrop: 0
       Recoil: 0
       Bloom: 0
+  Stats:
+    FireRate: 0
+    HeadDamageShort: 0
+    HeadDamageLong: 0
+    BodyDamageShort: 0
+    BodyDamageLong: 0
+    LegsDamageShort: 0
+    LegsDamageLong: 0
+  GunTransform:
+    FirstPersonGunPosition: {x: 0, y: 0, z: 0}
+    FirstPersonGunRotation: {x: 0, y: 0, z: 0}

@@ -158,7 +158,6 @@ MonoBehaviour:
   PlayerTeam: 0
   PlayerAgent: 0
   PlayerMoney: 800
-  PlayerGhostMoney: 800
   PlayerKills: 0
   PlayerDeaths: 0
   PlayerAssists: 0
@@ -183,8 +182,8 @@ MonoBehaviour:
   BombHolder: {fileID: 5525975007229333006}
   PrimaryGunHolder: {fileID: 2972873353091824587}
   SecondaryGunHolder: {fileID: 4463252715339544551}
-  EqupiedItem: 0
-  PreviousEqupiedItem: 0
+  EqupiedItem: 1
+  PreviousEqupiedItem: 2
   PrimaryGun: {fileID: 0}
   SecondaryGun: {fileID: 0}
   PrimaryGunInstance: {fileID: 0}

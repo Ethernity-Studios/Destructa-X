@@ -15,8 +15,8 @@ public class PlayerInventoryManager : NetworkBehaviour
     public GameObject PrimaryGunHolder;
     public GameObject SecondaryGunHolder;
 
-    public Item EqupiedItem;
-    public Item PreviousEqupiedItem;
+    public Item EqupiedItem = Item.Secondary;
+    public Item PreviousEqupiedItem = Item.Knife;
 
 
     public Gun PrimaryGun;
@@ -40,7 +40,9 @@ public class PlayerInventoryManager : NetworkBehaviour
 
         if (!isLocalPlayer) return;
 
+
         CmdSwitchItem(Item.Secondary);
+        CmdSwitchItem(Item.Knife);
         setLayerMask(KnifeHolder.transform.GetChild(0).gameObject, 6);
     }
 
@@ -197,7 +199,7 @@ public class PlayerInventoryManager : NetworkBehaviour
         GameObject gunInstance = null;
         if (gunType == GunType.Primary)
         {
-            gunInstance = SecondaryGunInstance;
+            gunInstance = PrimaryGunInstance;
             gunInstance.GetComponent<Rigidbody>();
             PrimaryGunInstance = null;
             PrimaryGun = null;
@@ -251,13 +253,13 @@ public class PlayerInventoryManager : NetworkBehaviour
         {
             PrimaryGun = gun;
             gunInstance.transform.SetParent(PrimaryGunHolder.transform);
-            if (hasAuthority) CmdSwitchItem(Item.Primary);
+            CmdSwitchItem(Item.Primary);
         }
         else if (gun.Type == GunType.Secondary)
         {
             SecondaryGun = gun;
             gunInstance.transform.SetParent(SecondaryGunHolder.transform);
-            if (hasAuthority && PrimaryGun == null) CmdSwitchItem(Item.Secondary);
+            if (PrimaryGun == null) CmdSwitchItem(Item.Secondary);
         }
         setGunTransform(gunInstance, gun);
 
@@ -277,8 +279,19 @@ public class PlayerInventoryManager : NetworkBehaviour
     }
 
     [Command]
-    public void CmdSellGun(uint gunID)
+    public void CmdSellGun(uint gunID, Gun gun)
     {
+        if (gun.Type == GunType.Primary)
+        {
+            PrimaryGun = null;
+            PrimaryGunInstance = null;
+        }
+        else if (gun.Type == GunType.Secondary) 
+        {
+            SecondaryGun = null;
+            SecondaryGunInstance = null;
+        } 
+        CmdSwitchItem(PreviousEqupiedItem);
         NetworkServer.Destroy(NetworkServer.spawned[gunID].gameObject);
     }
 }
