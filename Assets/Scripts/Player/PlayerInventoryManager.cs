@@ -140,7 +140,7 @@ public class PlayerInventoryManager : NetworkBehaviour
     [ClientRpc]
     void RpcDropBomb()
     {
-        CmdSwitchItem(PreviousEqupiedItem);
+        if(hasAuthority)CmdSwitchItem(PreviousEqupiedItem);
         Bomb.transform.localPosition = new Vector3(0, .6f, .5f);
         Bomb.transform.SetParent(gameManager.gameObject.transform);
         Invoke("setBombLayer", .5f);
@@ -211,7 +211,7 @@ public class PlayerInventoryManager : NetworkBehaviour
             SecondaryGunInstance = null;
             SecondaryGun = null;
         }
-        CmdSwitchItem(PreviousEqupiedItem);
+        if(hasAuthority)CmdSwitchItem(PreviousEqupiedItem);
         gunInstance.transform.localPosition = new Vector3(0, .6f, .5f);
         gunInstance.transform.localEulerAngles += new Vector3(30,0,0);
         gunInstance.transform.SetParent(gameManager.GunHolder.transform);
@@ -253,13 +253,13 @@ public class PlayerInventoryManager : NetworkBehaviour
         {
             PrimaryGun = gun;
             gunInstance.transform.SetParent(PrimaryGunHolder.transform);
-            CmdSwitchItem(Item.Primary);
+            if(hasAuthority)CmdSwitchItem(Item.Primary);
         }
         else if (gun.Type == GunType.Secondary)
         {
             SecondaryGun = gun;
             gunInstance.transform.SetParent(SecondaryGunHolder.transform);
-            if (PrimaryGun == null) CmdSwitchItem(Item.Secondary);
+            if (PrimaryGun == null && hasAuthority) CmdSwitchItem(Item.Secondary);
         }
         setGunTransform(gunInstance, gun);
 

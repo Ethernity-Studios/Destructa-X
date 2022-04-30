@@ -41,9 +41,9 @@ public class PlayerMovement : NetworkBehaviour
             cameraTransform.position = new Vector3(transform.position.x, transform.position.y, transform.position.z);
             characterController = GetComponent<CharacterController>();
         }
-        CmdSetHolderPositions();
+        if(hasAuthority) CmdSetHolderPositions();
     }
-    [Command(requiresAuthority = false)]
+    [Command]
     void CmdSetHolderPositions() => RpcSetHolderPositions();
 
     [ClientRpc]
