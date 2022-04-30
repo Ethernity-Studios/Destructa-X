@@ -47,10 +47,10 @@ public class PlayerInventoryManager : NetworkBehaviour
     private void Update()
     {
         if (!isLocalPlayer) return;
-        if (Input.GetKeyDown(KeyCode.Alpha1) && PrimaryGun != null) CmdSwitchItem(Item.Primary);
-        if (Input.GetKeyDown(KeyCode.Alpha2) && SecondaryGun != null) CmdSwitchItem(Item.Secondary);
-        if (Input.GetKeyDown(KeyCode.Alpha3)) CmdSwitchItem(Item.Knife);
-        if (Input.GetKeyDown(KeyCode.Alpha4) && Bomb != null) CmdSwitchItem(Item.Bomb);
+        if (Input.GetKeyDown(KeyCode.Alpha1) && PrimaryGun != null && EqupiedItem != Item.Primary) CmdSwitchItem(Item.Primary);
+        if (Input.GetKeyDown(KeyCode.Alpha2) && SecondaryGun != null && EqupiedItem != Item.Secondary) CmdSwitchItem(Item.Secondary);
+        if (Input.GetKeyDown(KeyCode.Alpha3) && EqupiedItem != Item.Knife) CmdSwitchItem(Item.Knife);
+        if (Input.GetKeyDown(KeyCode.Alpha4) && Bomb != null && EqupiedItem != Item.Bomb) CmdSwitchItem(Item.Bomb);
 
         if (Input.GetKeyDown(KeyCode.G)) dropItem();
     }
@@ -74,8 +74,7 @@ public class PlayerInventoryManager : NetworkBehaviour
 
     [ClientRpc]
     void RpcSwitchItem(Item item)
-    {
-        if (item == EqupiedItem) return;
+    { 
         PreviousEqupiedItem = EqupiedItem;
         EqupiedItem = item;
         switch (item)
@@ -109,8 +108,8 @@ public class PlayerInventoryManager : NetworkBehaviour
 
     private void OnTriggerStay(Collider other)
     {
-        if (!isLocalPlayer) return;
         gameManager = FindObjectOfType<GameManager>();
+        if (!isLocalPlayer) return;
         if (other.gameObject == gameManager.Bomb.transform.GetChild(0).gameObject && other.gameObject.layer != 6 && player.PlayerTeam == Team.Red) CmdPickBomb();
 
         if (other.gameObject.TryGetComponent(out GunInstance instance)) if (instance.CanBePicked && instance.IsDropped) CmdPickGun(instance.GetComponent<NetworkIdentity>().netId);
@@ -139,6 +138,7 @@ public class PlayerInventoryManager : NetworkBehaviour
     [ClientRpc]
     void RpcDropBomb()
     {
+        CmdSwitchItem(PreviousEqupiedItem);
         Bomb.transform.localPosition = new Vector3(0, .6f, .5f);
         Bomb.transform.SetParent(gameManager.gameObject.transform);
         Invoke("setBombLayer", .5f);
@@ -209,6 +209,7 @@ public class PlayerInventoryManager : NetworkBehaviour
             SecondaryGunInstance = null;
             SecondaryGun = null;
         }
+        CmdSwitchItem(PreviousEqupiedItem);
         gunInstance.transform.localPosition = new Vector3(0, .6f, .5f);
         gunInstance.transform.localEulerAngles += new Vector3(30,0,0);
         gunInstance.transform.SetParent(gameManager.GunHolder.transform);

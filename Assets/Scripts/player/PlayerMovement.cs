@@ -43,7 +43,7 @@ public class PlayerMovement : NetworkBehaviour
         }
         CmdSetHolderPositions();
     }
-    [Command]
+    [Command(requiresAuthority = false)]
     void CmdSetHolderPositions() => RpcSetHolderPositions();
 
     [ClientRpc]

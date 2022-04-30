@@ -31,6 +31,8 @@ public class ShopManager : MonoBehaviour
     PlayerInventoryManager PlayerInventory;
 
     [SerializeField] GameManager gameManager;
+
+    public TMP_Text PlayerMoneyText;
     private void Start()
     {
         Invoke("getLocalPlayer", .3f);
@@ -117,11 +119,13 @@ public class ShopManager : MonoBehaviour
         {
             localPlayer.CmdAddMoney(-gun.Price);
             PlayerInventory.CmdGiveGun(gun.GunID);
+            PlayerInventory.CmdSwitchItem(Item.Primary);
         }
         else if (PlayerInventory.SecondaryGun == null && gun.Type == GunType.Secondary)
         {
             localPlayer.CmdAddMoney(-gun.Price);
             PlayerInventory.CmdGiveGun(gun.GunID);
+            if(PlayerInventory.PrimaryGun == null) PlayerInventory.CmdSwitchItem(Item.Secondary);
         }
     }
 

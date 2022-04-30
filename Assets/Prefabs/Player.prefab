@@ -158,7 +158,7 @@ MonoBehaviour:
   PlayerTeam: 0
   PlayerAgent: 0
   PlayerMoney: 800
-  PlayerGhostMoney: 0
+  PlayerGhostMoney: 800
   PlayerKills: 0
   PlayerDeaths: 0
   PlayerAssists: 0

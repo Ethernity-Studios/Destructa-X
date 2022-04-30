@@ -2497,7 +2497,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: XXXX
+  m_text: 800
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 5ed251ae614676840a2e608f7bce38d3, type: 2}
   m_sharedMaterial: {fileID: 2668923041365894296, guid: 5ed251ae614676840a2e608f7bce38d3, type: 2}
@@ -8291,6 +8291,7 @@ MonoBehaviour:
   shieldDescription: {fileID: 0}
   shieldImage: {fileID: 0}
   gameManager: {fileID: 814328176}
+  PlayerMoneyText: {fileID: 234212383}
 --- !u!1 &714569158
 GameObject:
   m_ObjectHideFlags: 0
@@ -12344,6 +12345,11 @@ MonoBehaviour:
   - {fileID: 11400000, guid: e44c0cb49d2828347bc157120349c547, type: 2}
   - {fileID: 11400000, guid: ba89c74c629929542ac9683e2f4c0c6f, type: 2}
   - {fileID: 11400000, guid: aa603a1780324fb4e868221fa7c83c53, type: 2}
+  - {fileID: 11400000, guid: 42752df7826757e49b77d68123f7f591, type: 2}
+  - {fileID: 11400000, guid: b2036781265a8d343919c144f1bf6f20, type: 2}
+  - {fileID: 11400000, guid: c132e1b25245c9c45b5ccece894c4737, type: 2}
+  - {fileID: 11400000, guid: 8065c8f1b2293fb4d877d368152414ab, type: 2}
+  - {fileID: 11400000, guid: a64988b0de7a3cd409fc60cce89b8f89, type: 2}
 --- !u!1 &866211988
 GameObject:
   m_ObjectHideFlags: 0
@@ -23053,7 +23059,7 @@ Mesh:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: pb_Mesh107742
+  m_Name: pb_Mesh73210
   serializedVersion: 10
   m_SubMeshes:
   - serializedVersion: 2

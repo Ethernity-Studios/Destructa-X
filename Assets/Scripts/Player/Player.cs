@@ -16,7 +16,7 @@ public class Player : NetworkBehaviour
     [SyncVar]
     public Agent PlayerAgent;
 
-    [SyncVar]
+    [SyncVar(hook = nameof(updateMoneyText))]
     public int PlayerMoney = 800;
     [SyncVar]
     public int PlayerGhostMoney = 800;
@@ -33,6 +33,7 @@ public class Player : NetworkBehaviour
     [SerializeField] GameObject UIAgent;
 
     GameManager gameManager;
+    ShopManager shopManager;
     AgentManager agentManager;
     CharacterController characterController;
     NetworkManagerRoom room;
@@ -40,9 +41,8 @@ public class Player : NetworkBehaviour
     public PlayerState PlayerState;
     private void Awake()
     {
-        if (!isLocalPlayer) return;
-
         PlayerState = PlayerState.Idle;
+        shopManager = FindObjectOfType<ShopManager>();
         gameManager = FindObjectOfType<GameManager>();  
         room = FindObjectOfType<NetworkManagerRoom>();
     }
@@ -111,5 +111,10 @@ public class Player : NetworkBehaviour
         characterController.enabled = false;
         transform.position = position;
         characterController.enabled = true;
+    }
+
+    void updateMoneyText(int _, int newValue)
+    {
+        shopManager.PlayerMoneyText.text = newValue.ToString();
     }
 }

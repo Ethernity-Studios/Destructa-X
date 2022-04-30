@@ -12,15 +12,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2797a7e7978d4fa3bf4d76869be850f0, type: 3}
   m_Name: Bulldog
   m_EditorClassIdentifier: 
+  GunID: 9
   Name: Bulldog
-  MagazineSize: 0
+  Price: 500
+  Ammo: 0
   MaxAmmo: 0
   ReloadTime: 0
   EquipTime: 0
   Type: 0
   Category: 0
-  GunModel: {fileID: 0}
-  GunIcon: {fileID: 0}
+  GunModel: {fileID: 1298712114125637990, guid: fc1456374dc984243a838362139fd483, type: 3}
   LMB:
     FireType: 5
     FireMode: 0
@@ -52,9 +53,13 @@ MonoBehaviour:
       Recoil: 0
       Bloom: 0
   Stats:
+    FireRate: 0
     HeadDamageShort: 0
     HeadDamageLong: 0
     BodyDamageShort: 0
     BodyDamageLong: 0
     LegsDamageShort: 0
     LegsDamageLong: 0
+  GunTransform:
+    FirstPersonGunPosition: {x: 0.7, y: 0.15, z: 0.92}
+    FirstPersonGunRotation: {x: 0, y: 75, z: 0}
