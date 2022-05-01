@@ -122,7 +122,7 @@ public class ShopManager : MonoBehaviour
                 localPlayer.CmdChangeMoney(-gun.Price);
                 playerInventory.CmdGiveGun(gun.GunID);
             }
-            else if (playerInventory.SecondaryGun == null && gun.Type == GunType.Secondary)
+            else if (gun.Type == GunType.Secondary)
             {
                 localPlayer.CmdChangeMoney(-gun.Price);
                 playerInventory.CmdGiveGun(gun.GunID);
@@ -130,24 +130,31 @@ public class ShopManager : MonoBehaviour
             }
             return;
         }
-        else if(playerInventory.PrimaryGun != null)
+        else if(playerInventory.PrimaryGun != null && gun.Type == GunType.Primary)
         {
-            Debug.Log("trying tzo buy gun with gun and money!");
+            Debug.Log("trying tzo buy primary gun with gun and money!");
             if (localPlayer.PlayerMoney + playerInventory.PrimaryGun.Price < gun.Price) return;
             Debug.Log(playerInventory.PrimaryGun.Price + "Gun price");
-            Debug.Log("buying gun with moeny and primary gun");
+            Debug.Log("buying primary gun with moeny and primary gun");
             SellGun(playerInventory.PrimaryGun);
             if (playerInventory.PrimaryGun == null && gun.Type == GunType.Primary)
             {
                 localPlayer.CmdChangeMoney(-gun.Price);
                 playerInventory.CmdGiveGun(gun.GunID);
-                //playerInventory.CmdSwitchItem(Item.Primary);
             }
-            else if (playerInventory.SecondaryGun == null && gun.Type == GunType.Secondary)
+            return;
+        }
+        else if(playerInventory.SecondaryGun != null &&gun.Type == GunType.Secondary)
+        {
+            Debug.Log("trying tzo buy secundary gun with gun and money!");
+            if (localPlayer.PlayerMoney + playerInventory.SecondaryGun.Price < gun.Price) return;
+            Debug.Log(playerInventory.SecondaryGun.Price + "Gun price");
+            Debug.Log("buying secundary gun with moeny and primary gun");
+            SellGun(playerInventory.SecondaryGun);
+            if (playerInventory.SecondaryGun == null && gun.Type == GunType.Secondary)
             {
                 localPlayer.CmdChangeMoney(-gun.Price);
                 playerInventory.CmdGiveGun(gun.GunID);
-                //if (playerInventory.PrimaryGun == null) playerInventory.CmdSwitchItem(Item.Secondary);
             }
             return;
         }
