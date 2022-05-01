@@ -61,5 +61,5 @@ MonoBehaviour:
     LegsDamageShort: 46
     LegsDamageLong: 42
   GunTransform:
-    FirstPersonGunPosition: {x: 0, y: 0, z: 0}
-    FirstPersonGunRotation: {x: 0, y: 0, z: 0}
+    FirstPersonGunPosition: {x: 0.7, y: 0.15, z: 0.92}
+    FirstPersonGunRotation: {x: 0, y: 75, z: 0}

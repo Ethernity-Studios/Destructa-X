@@ -130,7 +130,6 @@ public class PlayerInventoryManager : NetworkBehaviour
         Bomb.transform.localPosition = new Vector3(0, 0, .5f);
         Bomb.GetComponent<Rigidbody>().constraints = RigidbodyConstraints.FreezeAll;
         Bomb.GetComponent<BoxCollider>().enabled = false;
-        if (isLocalPlayer) CmdSwitchItem(EqupiedItem);
     }
 
     [Command]
