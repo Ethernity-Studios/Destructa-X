@@ -4,6 +4,8 @@ public class Bullet : MonoBehaviour
 {
     public float time;
     [SerializeField] float speed;
+
+    public int Damage;
     void Update()
     {
         transform.Translate(Vector3.forward * speed * Time.deltaTime);
@@ -13,6 +15,10 @@ public class Bullet : MonoBehaviour
         if (isInWall)
         {
             time += Time.deltaTime;
+        }
+        else
+        {
+            time = 0;
         }
     }
     public bool isInWall;
