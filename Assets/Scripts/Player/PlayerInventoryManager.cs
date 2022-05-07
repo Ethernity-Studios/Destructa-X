@@ -17,7 +17,8 @@ public class PlayerInventoryManager : NetworkBehaviour
 
     public Item EqupiedItem = Item.Secondary;
     public Item PreviousEqupiedItem = Item.Knife;
-
+    public Gun EqupiedGun;
+    public GameObject EqupiedGunInstance;
 
     public Gun PrimaryGun;
     public Gun SecondaryGun;
@@ -31,7 +32,6 @@ public class PlayerInventoryManager : NetworkBehaviour
     GunManager gunManager;
     Player player;
 
-    bool canPickBomb;
     private void Start()
     {
         player = GetComponent<Player>();
@@ -82,24 +82,32 @@ public class PlayerInventoryManager : NetworkBehaviour
         switch (item)
         {
             case Item.Primary:
+                EqupiedGunInstance = PrimaryGunInstance;
+                EqupiedGun = PrimaryGun;
                 PrimaryGunHolder.SetActive(true);
                 SecondaryGunHolder.SetActive(false);
                 KnifeHolder.SetActive(false);
                 BombHolder.SetActive(false);
                 break;
             case Item.Secondary:
+                EqupiedGunInstance = SecondaryGunInstance;
+                EqupiedGun = SecondaryGun;
                 SecondaryGunHolder.SetActive(true);
                 PrimaryGunHolder.SetActive(false);
                 KnifeHolder.SetActive(false);
                 BombHolder.SetActive(false);
                 break;
             case Item.Knife:
+                EqupiedGunInstance = null;
+                EqupiedGun = null;
                 KnifeHolder.SetActive(true);
                 PrimaryGunHolder.SetActive(false);
                 SecondaryGunHolder.SetActive(false);
                 BombHolder.SetActive(false);
                 break;
             case Item.Bomb:
+                EqupiedGunInstance = null;
+                EqupiedGun = null;
                 BombHolder.SetActive(true);
                 PrimaryGunHolder.SetActive(false);
                 SecondaryGunHolder.SetActive(false);

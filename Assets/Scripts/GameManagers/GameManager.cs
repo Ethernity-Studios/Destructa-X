@@ -117,8 +117,8 @@ public class GameManager : NetworkBehaviour
     }
 
     GameObject bombInstance;
-    [Server]
-    public void SpawnBomb()
+    [Command(requiresAuthority = false)]
+    public void CmdSpawnBomb()
     {
         bombInstance = Instantiate(BombPrefab);
         NetworkServer.Spawn(bombInstance);
@@ -206,7 +206,7 @@ public class GameManager : NetworkBehaviour
     {
         Round++;
         GameState = gameState;
-        SpawnBomb();
+        CmdSpawnBomb();
     }
 
     [Command(requiresAuthority = false)]

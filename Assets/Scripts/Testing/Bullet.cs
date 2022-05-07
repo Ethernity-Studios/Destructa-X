@@ -2,49 +2,74 @@ using UnityEngine;
 
 public class Bullet : MonoBehaviour
 {
-    public float time;
-    [SerializeField] float speed;
+    public float penetrationAmount;
+    public Vector3 endPoint;
+    public Vector3? penetrationPoint;
+    public Vector3? impactPoint;
 
-    public int Damage;
-    void Update()
+    [SerializeField] float bulletSpeed;
+    private void Start()
     {
-        transform.Translate(Vector3.forward * speed * Time.deltaTime);
+        Destroy(gameObject,5f);
+    }
 
+    private void Update()
+    {
+        transform.Translate(Vector3.forward * bulletSpeed * Time.deltaTime);
+        if (penetrationPoint != null)
+        UpdatePenetration();
+    }
 
-
-        if (isInWall)
+    void UpdatePenetration()
+    {
+        Ray ray = new Ray(this.transform.position, this.transform.forward);
+        RaycastHit hit;
+        if (Physics.Raycast(ray, out hit))
         {
-            time += Time.deltaTime;
+            impactPoint = hit.point;
+            Ray penRay = new Ray(hit.point + ray.direction * penetrationAmount, -ray.direction);
+            RaycastHit penHit;
+            if (hit.collider.Raycast(penRay, out penHit, penetrationAmount))
+            {
+                penetrationPoint = penHit.point;
+                endPoint = this.transform.position + this.transform.forward * 1000;
+            }
+            else
+            {
+                endPoint = impactPoint.Value + ray.direction * penetrationAmount;
+                penetrationPoint = endPoint;
+            }
         }
         else
         {
-            time = 0;
+            endPoint = this.transform.position + this.transform.forward * 1000;
+            penetrationPoint = null;
+            impactPoint = null;
         }
     }
-    public bool isInWall;
-
-    public GameObject wallGO;
-
-    private void OnTriggerEnter(Collider other)
+    
+    private void OnDrawGizmos()
     {
-        if(wallGO == null)
+        UpdatePenetration();
+
+        if (!penetrationPoint.HasValue || !impactPoint.HasValue)
         {
-            isInWall = true;
-            Debug.Log("Entered object!" + other.name);
-            wallGO = other.gameObject;
+            Gizmos.color = Color.green;
+            Gizmos.DrawLine(this.transform.position, endPoint);
         }
-
+        else
+        {
+            Gizmos.color = Color.green;
+            Gizmos.DrawLine(this.transform.position, impactPoint.Value);
+            Gizmos.color = Color.red;
+            Gizmos.DrawLine(impactPoint.Value, penetrationPoint.Value);
+            Gizmos.color = Color.yellow;
+            Gizmos.DrawLine(penetrationPoint.Value, endPoint);
+        }
     }
-
-    private void OnTriggerExit(Collider other)
+    private void OnCollisionEnter(Collision collision)
     {
-        if(other.gameObject == wallGO)
-        {
-            isInWall = false;
-            Debug.Log("Leaved object!" + other.name);
-            wallGO = null;
-        }
-
+        Debug.Log("Colisionen bulleten");
+        Destroy(gameObject);
     }
-
 }
