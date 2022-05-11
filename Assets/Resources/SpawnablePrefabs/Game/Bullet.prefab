@@ -115,7 +115,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   penetrationAmount: 1.71
   endPoint: {x: 12.75, y: 2.721, z: 1013.942}
-  bulletSpeed: 1
+  bulletSpeed: 5
 --- !u!54 &8144868883611176393
 Rigidbody:
   m_ObjectHideFlags: 0

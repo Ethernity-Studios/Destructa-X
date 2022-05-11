@@ -6,6 +6,13 @@ public class PlayerShootingManager : NetworkBehaviour
     [SerializeField] GameObject bullet;
     [SerializeField] PlayerInventoryManager playerInventory;
     [SerializeField] Transform cameraHolder;
+
+    GameManager gameManager;
+
+    private void Start()
+    {
+        gameManager = FindObjectOfType<GameManager>();
+    }
     void Update()
     {
         if (Input.GetMouseButtonDown(0))
@@ -44,23 +51,17 @@ public class PlayerShootingManager : NetworkBehaviour
 
     void RpcSpawnBullet(GameObject bulletInstance)
     {
-        Debug.Log("Spawning bullet");
+        bulletInstance.transform.SetParent(gameManager.BulletHolder.transform);
         bulletInstance.transform.localPosition = playerInventory.EqupiedGunInstance.transform.GetChild(2).transform.position;
         RaycastHit hit;
-        //Ray ray = cameraHolder.GetComponent<Camera>().ScreenPointToRay(Input.mousePosition);
         Ray ray = cameraHolder.GetComponent<Camera>().ViewportPointToRay(new Vector3(.5f,.5f,0));
-        Debug.Log("Ray origin: " + ray.origin + " Ray direction: " + ray.direction);
         if (Physics.Raycast(ray.origin, ray.direction, out hit,Mathf.Infinity, mask))
         {
             bulletInstance.transform.LookAt(hit.point);
-            Debug.Log("Looking at target: " + hit.transform.gameObject);
         }
         else
         {
-            Debug.Log("Looking at air");
-            bulletInstance.transform.LookAt(ray.GetPoint(50));
+            bulletInstance.transform.LookAt(ray.GetPoint(20));
         }
-
-        //bulletInstance.transform.localEulerAngles = cameraHolder.transform.localEulerAngles + transform.localEulerAngles + transform.forward;
     }
 }

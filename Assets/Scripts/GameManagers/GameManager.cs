@@ -64,6 +64,7 @@ public class GameManager : NetworkBehaviour
     public GameObject Bomb;
 
     [SerializeField] GunManager gunManager;
+    public GameObject BulletHolder;
     private void Start()
     {
         ShopUI.SetActive(false);
