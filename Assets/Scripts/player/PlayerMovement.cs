@@ -8,9 +8,8 @@ public class PlayerMovement : NetworkBehaviour
 {
     public float MouseSens = 2f;
     float xRotation = 0f;
-    Transform cameraTransform;
 
-    [SerializeField] Transform cameraHolder;
+    [SerializeField] Transform playerHead;
 
     CharacterController characterController;
 
@@ -36,24 +35,11 @@ public class PlayerMovement : NetworkBehaviour
         {
             playerManager = GetComponent<Player>();
             playerManager.PlayerState = PlayerState.Idle;
-            cameraTransform = Camera.main.transform;
-            cameraTransform.SetParent(transform.GetChild(0));
-            cameraTransform.position = new Vector3(transform.position.x, transform.position.y, transform.position.z);
+            //cameraTransform = Camera.main.transform;
+            //cameraTransform.SetParent(transform.GetChild(0));
+            //cameraTransform.position = new Vector3(transform.position.x, transform.position.y, transform.position.z);
             characterController = GetComponent<CharacterController>();
         }
-        if(hasAuthority) CmdSetHolderPositions();
-    }
-    [Command]
-    void CmdSetHolderPositions() => RpcSetHolderPositions();
-
-    [ClientRpc]
-    void RpcSetHolderPositions()
-    {
-        cameraHolder.transform.localPosition = new Vector3(0, .6f, 0);
-        playerInventoryManager.KnifeHolder.transform.localPosition = new Vector3(0, -.6f, 0);
-        playerInventoryManager.BombHolder.transform.localPosition = new Vector3(0, -.6f, 0);
-        playerInventoryManager.PrimaryGunHolder.transform.localPosition = new Vector3(0, -.6f, 0);
-        playerInventoryManager.SecondaryGunHolder.transform.localPosition = new Vector3(0, -.6f, 0);
     }
 
 
@@ -69,17 +55,17 @@ public class PlayerMovement : NetworkBehaviour
     void LateUpdate()
     {
         if (!isLocalPlayer) return;
-        rotateCamera();
+        rotateHead();
     }
 
-    void rotateCamera()
+    void rotateHead()
     {
         if (GetComponent<PlayerEconomyManager>().isShopOpen) return;
         float mouseX = Input.GetAxis("Mouse X") * MouseSens*100 * Time.fixedDeltaTime;
         float mouseY = Input.GetAxis("Mouse Y") * MouseSens*100 * Time.fixedDeltaTime;
         xRotation -= mouseY;
         xRotation = Mathf.Clamp(xRotation, -90f, 90f);
-        cameraTransform.parent.localRotation = Quaternion.Euler(xRotation, 0f, 0f);
+        playerHead.localRotation = Quaternion.Euler(xRotation, 0f, 0f);
         transform.Rotate(Vector3.up * mouseX);
     }
 
