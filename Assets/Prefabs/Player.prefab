@@ -93,7 +93,7 @@ Camera:
     height: 1
   near clip plane: 0.01
   far clip plane: 1000
-  field of view: 90
+  field of view: 103
   orthographic: 0
   orthographic size: 5
   m_Depth: 1
@@ -268,7 +268,6 @@ GameObject:
   - component: {fileID: 6377724403748821300}
   - component: {fileID: 2881539023193352742}
   - component: {fileID: 3621634630160273031}
-  - component: {fileID: 5298468333092208492}
   m_Layer: 7
   m_Name: Body
   m_TagString: Untagged
@@ -341,20 +340,6 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!136 &5298468333092208492
-CapsuleCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5224999313321314874}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  m_Radius: 0.5
-  m_Height: 2
-  m_Direction: 1
-  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &5903658972895255663
 GameObject:
   m_ObjectHideFlags: 0
@@ -413,7 +398,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6263509137884671384}
   m_LocalRotation: {x: -0, y: -0.7069592, z: -0, w: 0.70725435}
-  m_LocalPosition: {x: 0.343, y: -0.369, z: 0.485}
+  m_LocalPosition: {x: 0.4, y: -0.369, z: 0.485}
   m_LocalScale: {x: 0.4, y: 0.15, z: 0.15}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -657,7 +642,7 @@ CharacterController:
   m_Enabled: 1
   serializedVersion: 2
   m_Height: 2
-  m_Radius: 0.5
+  m_Radius: 0.8
   m_SlopeLimit: 30
   m_StepOffset: 0.3
   m_SkinWidth: 0.08
@@ -809,7 +794,7 @@ Camera:
     height: 1
   near clip plane: 0.3
   far clip plane: 1000
-  field of view: 90
+  field of view: 80
   orthographic: 0
   orthographic size: 5
   m_Depth: 0
@@ -911,7 +896,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1098459715707645435, guid: 8caddfdcf3faf32499a460e9f3f178ab, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0.689
+      value: 0.469
       objectReference: {fileID: 0}
     - target: {fileID: 1098459715707645435, guid: 8caddfdcf3faf32499a460e9f3f178ab, type: 3}
       propertyPath: m_LocalRotation.w
