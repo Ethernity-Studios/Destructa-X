@@ -561,7 +561,7 @@ SkinnedMeshRenderer:
   m_GameObject: {fileID: 2654804341798694852}
   m_Enabled: 1
   m_CastShadows: 1
-  m_ReceiveShadows: 1
+  m_ReceiveShadows: 0
   m_DynamicOccludee: 1
   m_StaticShadowCaster: 0
   m_MotionVectors: 1
@@ -1090,7 +1090,7 @@ MeshRenderer:
   m_GameObject: {fileID: 8945157620776408034}
   m_Enabled: 1
   m_CastShadows: 1
-  m_ReceiveShadows: 1
+  m_ReceiveShadows: 0
   m_DynamicOccludee: 1
   m_StaticShadowCaster: 0
   m_MotionVectors: 1

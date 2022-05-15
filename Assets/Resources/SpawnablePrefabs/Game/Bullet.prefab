@@ -114,7 +114,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   penetrationAmount: 1.71
-  endPoint: {x: 12.75, y: 2.721, z: 1013.942}
+  endPoint: {x: 12.75, y: 2, z: 1015.25}
   bulletSpeed: 5
 --- !u!54 &8144868883611176393
 Rigidbody:
@@ -128,10 +128,10 @@ Rigidbody:
   m_Drag: 0
   m_AngularDrag: 0.05
   m_UseGravity: 0
-  m_IsKinematic: 1
+  m_IsKinematic: 0
   m_Interpolate: 0
   m_Constraints: 0
-  m_CollisionDetection: 0
+  m_CollisionDetection: 3
 --- !u!114 &6354746011707147046
 MonoBehaviour:
   m_ObjectHideFlags: 0

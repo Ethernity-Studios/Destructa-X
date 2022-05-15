@@ -8,16 +8,21 @@ public class Bullet : MonoBehaviour
     public Vector3? impactPoint;
 
     [SerializeField] float bulletSpeed;
+
+    MeshRenderer meshRenderer;
+    TrailRenderer trailRenderer;
     private void Start()
     {
-        Destroy(gameObject,5f);
+        meshRenderer = GetComponent<MeshRenderer>();
+        trailRenderer = GetComponent<TrailRenderer>();
+        Destroy(gameObject, 5f);
     }
 
     private void Update()
     {
         transform.Translate(Vector3.forward * bulletSpeed * Time.deltaTime);
         if (penetrationPoint != null)
-        UpdatePenetration();
+            UpdatePenetration();
     }
 
     void UpdatePenetration()
@@ -47,7 +52,7 @@ public class Bullet : MonoBehaviour
             impactPoint = null;
         }
     }
-    
+
     private void OnDrawGizmos()
     {
         UpdatePenetration();
@@ -69,6 +74,11 @@ public class Bullet : MonoBehaviour
     }
     private void OnCollisionEnter(Collision collision)
     {
+        if (meshRenderer.enabled == false) 
+        {
+            meshRenderer.enabled = true;
+            trailRenderer.enabled = true;
+        } 
         Debug.Log("Colisionen bulleten");
         Destroy(gameObject);
     }

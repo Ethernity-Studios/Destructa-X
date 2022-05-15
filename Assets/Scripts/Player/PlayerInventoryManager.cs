@@ -280,7 +280,7 @@ public class PlayerInventoryManager : NetworkBehaviour
         gunInstance.GetComponent<Rigidbody>().constraints = RigidbodyConstraints.FreezeAll;
         gunInstance.GetComponent<Rigidbody>().velocity = Vector3.zero;
         gunInstance.transform.GetChild(0).GetComponent<BoxCollider>().enabled = false;
-        gunInstance.transform.localScale = new Vector3(1.5f, 1.5f, 1.5f);
+        gunInstance.transform.localScale = new Vector3(1f, 1f, 1.5f);
         gunInstance.transform.localPosition = gun.GunTransform.FirstPersonGunPosition;
         gunInstance.transform.localEulerAngles = gun.GunTransform.FirstPersonGunRotation;
     }

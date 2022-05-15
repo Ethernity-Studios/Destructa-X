@@ -93,7 +93,7 @@ Camera:
     height: 1
   near clip plane: 0.01
   far clip plane: 1000
-  field of view: 103
+  field of view: 80
   orthographic: 0
   orthographic size: 5
   m_Depth: 1
@@ -422,7 +422,7 @@ MeshRenderer:
   m_GameObject: {fileID: 6263509137884671384}
   m_Enabled: 1
   m_CastShadows: 1
-  m_ReceiveShadows: 1
+  m_ReceiveShadows: 0
   m_DynamicOccludee: 1
   m_StaticShadowCaster: 0
   m_MotionVectors: 1
@@ -642,7 +642,7 @@ CharacterController:
   m_Enabled: 1
   serializedVersion: 2
   m_Height: 2
-  m_Radius: 0.8
+  m_Radius: 0.65
   m_SlopeLimit: 30
   m_StepOffset: 0.3
   m_SkinWidth: 0.08
@@ -876,15 +876,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1098459715707645435, guid: 8caddfdcf3faf32499a460e9f3f178ab, type: 3}
       propertyPath: m_LocalScale.x
-      value: 2
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1098459715707645435, guid: 8caddfdcf3faf32499a460e9f3f178ab, type: 3}
       propertyPath: m_LocalScale.y
-      value: 2
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1098459715707645435, guid: 8caddfdcf3faf32499a460e9f3f178ab, type: 3}
       propertyPath: m_LocalScale.z
-      value: 2
+      value: 1.5
       objectReference: {fileID: 0}
     - target: {fileID: 1098459715707645435, guid: 8caddfdcf3faf32499a460e9f3f178ab, type: 3}
       propertyPath: m_LocalPosition.x
@@ -925,6 +925,10 @@ PrefabInstance:
     - target: {fileID: 1098459715707645435, guid: 8caddfdcf3faf32499a460e9f3f178ab, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 28.112
+      objectReference: {fileID: 0}
+    - target: {fileID: 4155429740466853842, guid: 8caddfdcf3faf32499a460e9f3f178ab, type: 3}
+      propertyPath: m_ReceiveShadows
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5617082572542355940, guid: 8caddfdcf3faf32499a460e9f3f178ab, type: 3}
       propertyPath: m_Layer
