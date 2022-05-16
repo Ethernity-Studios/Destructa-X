@@ -49,31 +49,34 @@ public class PlayerShootingManager : NetworkBehaviour
     }
     [SerializeField] LayerMask mask;
 
+    [ClientRpc]
     void RpcSpawnBullet(GameObject bulletInstance)
     {
         bulletInstance.transform.SetParent(gameManager.BulletHolder.transform);
-
         RaycastHit hit;
+
         Ray ray = cameraHolder.GetComponent<Camera>().ViewportPointToRay(new Vector3(.5f,.5f,0));
         if (Physics.Raycast(ray.origin, ray.direction, out hit,Mathf.Infinity, mask))
         {
-            if(Vector3.Distance(ray.origin,hit.point) > 2)
+            if(Vector3.Distance(ray.origin,hit.point) > .7f)
             {
+                bulletInstance.GetComponent<Renderer>().enabled = true;
+                bulletInstance.GetComponent<TrailRenderer>().enabled = true;
                 bulletInstance.transform.localPosition = playerInventory.EqupiedGunInstance.transform.GetChild(2).transform.position;
             }
             else
             {
                 bulletInstance.transform.localPosition = ray.origin;
-                Bullet bullet = bulletInstance.GetComponent<Bullet>();
-                bullet.GetComponent<MeshRenderer>().enabled = false;
-                bullet.GetComponent<TrailRenderer>().enabled = false;
             }
             bulletInstance.transform.LookAt(hit.point);
         }
         else
         {
+            bulletInstance.GetComponent<Renderer>().enabled = true;
+            bulletInstance.GetComponent<TrailRenderer>().enabled = true;
             bulletInstance.transform.localPosition = playerInventory.EqupiedGunInstance.transform.GetChild(2).transform.position;
-            bulletInstance.transform.LookAt(new Vector3(ray.GetPoint(10).x,ray.GetPoint(10).y-.2f, ray.GetPoint(10).z));
+            bulletInstance.transform.LookAt(new Vector3(ray.GetPoint(10).x,ray.GetPoint(10).y-.15f, ray.GetPoint(10).z));
         }
+        bulletInstance.GetComponent<Bullet>().SetBulletDirection(new Vector3(cameraHolder.eulerAngles.x,transform.eulerAngles.y));
     }
 }

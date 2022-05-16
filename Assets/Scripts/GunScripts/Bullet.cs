@@ -1,6 +1,7 @@
 using UnityEngine;
+using Mirror;
 
-public class Bullet : MonoBehaviour
+public class Bullet : NetworkBehaviour
 {
     public float penetrationAmount;
     public Vector3 endPoint;
@@ -9,12 +10,15 @@ public class Bullet : MonoBehaviour
 
     [SerializeField] float bulletSpeed;
 
-    MeshRenderer meshRenderer;
     TrailRenderer trailRenderer;
+    Renderer BulletRenderer;
+
     private void Start()
     {
-        meshRenderer = GetComponent<MeshRenderer>();
         trailRenderer = GetComponent<TrailRenderer>();
+        BulletRenderer = GetComponent<Renderer>();
+        BulletRenderer.enabled = false;
+        trailRenderer.enabled = false;
         Destroy(gameObject, 5f);
     }
 
@@ -52,6 +56,30 @@ public class Bullet : MonoBehaviour
             impactPoint = null;
         }
     }
+    bool firstCollision;
+    private void OnCollisionEnter(Collision collision)
+    {
+        if (BulletRenderer.enabled == false) Invoke("enableBulletVisuals",.1f);
+        if(firstCollision == false) setBulletDirection();
+        Debug.Log("Colisionen bulleten");
+    }
+
+    void enableBulletVisuals()
+    {
+        BulletRenderer.enabled = true;
+        trailRenderer.enabled = true;
+    }
+
+    Vector3 bulletDirection;
+
+    [Command(requiresAuthority = false)]
+    public void SetBulletDirection(Vector3 dir) => bulletDirection = dir;
+
+    void setBulletDirection() 
+    {
+        transform.eulerAngles = bulletDirection;
+        firstCollision = false;
+    } 
 
     private void OnDrawGizmos()
     {
@@ -71,15 +99,5 @@ public class Bullet : MonoBehaviour
             Gizmos.color = Color.yellow;
             Gizmos.DrawLine(penetrationPoint.Value, endPoint);
         }
-    }
-    private void OnCollisionEnter(Collision collision)
-    {
-        if (meshRenderer.enabled == false) 
-        {
-            meshRenderer.enabled = true;
-            trailRenderer.enabled = true;
-        } 
-        Debug.Log("Colisionen bulleten");
-        Destroy(gameObject);
     }
 }
