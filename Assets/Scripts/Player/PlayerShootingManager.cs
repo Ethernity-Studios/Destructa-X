@@ -77,6 +77,6 @@ public class PlayerShootingManager : NetworkBehaviour
             bulletInstance.transform.localPosition = playerInventory.EqupiedGunInstance.transform.GetChild(2).transform.position;
             bulletInstance.transform.LookAt(new Vector3(ray.GetPoint(10).x,ray.GetPoint(10).y-.15f, ray.GetPoint(10).z));
         }
-        bulletInstance.GetComponent<Bullet>().SetBulletDirection(new Vector3(cameraHolder.eulerAngles.x,transform.eulerAngles.y));
+        bulletInstance.GetComponent<Bullet>().BulletDirection = new Vector3(cameraHolder.eulerAngles.x,transform.eulerAngles.y);
     }
 }

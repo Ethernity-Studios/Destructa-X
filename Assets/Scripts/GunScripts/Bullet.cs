@@ -1,7 +1,6 @@
 using UnityEngine;
-using Mirror;
 
-public class Bullet : NetworkBehaviour
+public class Bullet : MonoBehaviour
 {
     public float penetrationAmount;
     public Vector3 endPoint;
@@ -12,9 +11,12 @@ public class Bullet : NetworkBehaviour
 
     TrailRenderer trailRenderer;
     Renderer BulletRenderer;
+    Rigidbody rb;
 
+    [HideInInspector]public Vector3 BulletDirection;
     private void Start()
     {
+        rb = GetComponent<Rigidbody>();
         trailRenderer = GetComponent<TrailRenderer>();
         BulletRenderer = GetComponent<Renderer>();
         BulletRenderer.enabled = false;
@@ -24,9 +26,13 @@ public class Bullet : NetworkBehaviour
 
     private void Update()
     {
-        transform.Translate(Vector3.forward * bulletSpeed * Time.deltaTime);
         if (penetrationPoint != null)
             UpdatePenetration();
+    }
+
+    private void FixedUpdate()
+    {
+        rb.MovePosition(transform.position + transform.forward * Time.fixedDeltaTime * bulletSpeed);
     }
 
     void UpdatePenetration()
@@ -59,9 +65,8 @@ public class Bullet : NetworkBehaviour
     bool firstCollision;
     private void OnCollisionEnter(Collision collision)
     {
-        if (BulletRenderer.enabled == false) Invoke("enableBulletVisuals",.1f);
-        if(firstCollision == false) setBulletDirection();
-        Debug.Log("Colisionen bulleten");
+        if (BulletRenderer.enabled == false) Invoke("enableBulletVisuals", .1f);
+        if (firstCollision == false) setBulletDirection();
     }
 
     void enableBulletVisuals()
@@ -70,16 +75,14 @@ public class Bullet : NetworkBehaviour
         trailRenderer.enabled = true;
     }
 
-    Vector3 bulletDirection;
 
-    [Command(requiresAuthority = false)]
-    public void SetBulletDirection(Vector3 dir) => bulletDirection = dir;
 
-    void setBulletDirection() 
+    void setBulletDirection()
     {
-        transform.eulerAngles = bulletDirection;
+        Debug.Log("setting bullet direction");
+        transform.eulerAngles = BulletDirection;
         firstCollision = false;
-    } 
+    }
 
     private void OnDrawGizmos()
     {
