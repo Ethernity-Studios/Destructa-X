@@ -2,18 +2,21 @@ using UnityEngine;
 
 public class Bullet : MonoBehaviour
 {
-    public float penetrationAmount;
-    public Vector3 endPoint;
-    public Vector3? penetrationPoint;
-    public Vector3? impactPoint;
-
+    public float PenetrationAmount;
     [SerializeField] float bulletSpeed;
+
+    public bool CanPenetrate;
+
+    [HideInInspector] public Vector3 BulletDirection;
+    [HideInInspector] public Vector3 CameraPosition;
 
     TrailRenderer trailRenderer;
     Renderer BulletRenderer;
     Rigidbody rb;
 
-    [HideInInspector]public Vector3 BulletDirection;
+    Vector3 endPoint;
+    Vector3? penetrationPoint;
+    Vector3? impactPoint;
     private void Start()
     {
         rb = GetComponent<Rigidbody>();
@@ -24,12 +27,6 @@ public class Bullet : MonoBehaviour
         Destroy(gameObject, 5f);
     }
 
-    private void Update()
-    {
-        if (penetrationPoint != null)
-            UpdatePenetration();
-    }
-
     private void FixedUpdate()
     {
         rb.MovePosition(transform.position + transform.forward * Time.fixedDeltaTime * bulletSpeed);
@@ -37,21 +34,21 @@ public class Bullet : MonoBehaviour
 
     void UpdatePenetration()
     {
-        Ray ray = new Ray(this.transform.position, this.transform.forward);
+        Ray ray = new Ray(this.transform.position+new Vector3(0,0,transform.localScale.z), this.transform.forward);
         RaycastHit hit;
         if (Physics.Raycast(ray, out hit))
         {
             impactPoint = hit.point;
-            Ray penRay = new Ray(hit.point + ray.direction * penetrationAmount, -ray.direction);
+            Ray penRay = new Ray(hit.point + ray.direction * PenetrationAmount, -ray.direction);
             RaycastHit penHit;
-            if (hit.collider.Raycast(penRay, out penHit, penetrationAmount))
+            if (hit.collider.Raycast(penRay, out penHit, PenetrationAmount))
             {
                 penetrationPoint = penHit.point;
                 endPoint = this.transform.position + this.transform.forward * 1000;
             }
             else
             {
-                endPoint = impactPoint.Value + ray.direction * penetrationAmount;
+                endPoint = impactPoint.Value + ray.direction * PenetrationAmount;
                 penetrationPoint = endPoint;
             }
         }
@@ -62,26 +59,23 @@ public class Bullet : MonoBehaviour
             impactPoint = null;
         }
     }
-    bool firstCollision;
+
     private void OnCollisionEnter(Collision collision)
     {
-        if (BulletRenderer.enabled == false) Invoke("enableBulletVisuals", .1f);
-        if (firstCollision == false) setBulletDirection();
+        if (!BulletRenderer.enabled) enableBulletRenderer();
+        if (transform.eulerAngles != BulletDirection) transform.eulerAngles = BulletDirection;
     }
 
-    void enableBulletVisuals()
+    private void OnCollisionExit(Collision collision)
+    {
+        if (penetrationPoint != null)
+        UpdatePenetration();
+    }
+
+    void enableBulletRenderer()
     {
         BulletRenderer.enabled = true;
         trailRenderer.enabled = true;
-    }
-
-
-
-    void setBulletDirection()
-    {
-        Debug.Log("setting bullet direction");
-        transform.eulerAngles = BulletDirection;
-        firstCollision = false;
     }
 
     private void OnDrawGizmos()
@@ -91,12 +85,12 @@ public class Bullet : MonoBehaviour
         if (!penetrationPoint.HasValue || !impactPoint.HasValue)
         {
             Gizmos.color = Color.green;
-            Gizmos.DrawLine(this.transform.position, endPoint);
+            Gizmos.DrawLine(this.transform.position + new Vector3(0, 0, transform.localScale.z), endPoint);
         }
         else
         {
             Gizmos.color = Color.green;
-            Gizmos.DrawLine(this.transform.position, impactPoint.Value);
+            Gizmos.DrawLine(this.transform.position + new Vector3(0, 0, transform.localScale.z), impactPoint.Value);
             Gizmos.color = Color.red;
             Gizmos.DrawLine(impactPoint.Value, penetrationPoint.Value);
             Gizmos.color = Color.yellow;

@@ -2,7 +2,7 @@
 
 public enum Toughness
 {
-    ExtraSoft, Soft, MediumSoft, MediumHard, Hard, ExtraHard, Unbreakable
+    ExtraSoft, Soft, MediumSoft, Medium, MediumHard, Hard, ExtraHard
 }
 public class MaterialToughness : MonoBehaviour
 {

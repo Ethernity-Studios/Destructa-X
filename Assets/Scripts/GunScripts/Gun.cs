@@ -13,9 +13,9 @@ public class Gun : ScriptableObject
     public float EquipTime;
     public GunType Type;
     public GunCategory Category;
+    public float BulletPenetration;
 
     public GameObject GunModel;
-    //public Sprite GunIcon;
 
     public LMB LMB;
     public RMB RMB;

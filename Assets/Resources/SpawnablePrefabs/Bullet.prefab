@@ -50,11 +50,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4393a657ed66c5c409c722842c6ddb21, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  penetrationAmount: 1.71
-  endPoint: {x: 12.75, y: 2, z: 1015.25}
+  PenetrationAmount: 1
   bulletSpeed: 10
-  rb: {fileID: 8144868883611176393}
+  CanPenetrate: 0
   BulletDirection: {x: 0, y: 0, z: 0}
+  CameraPosition: {x: 0, y: 0, z: 0}
 --- !u!33 &8144868883611176395
 MeshFilter:
   m_ObjectHideFlags: 0
