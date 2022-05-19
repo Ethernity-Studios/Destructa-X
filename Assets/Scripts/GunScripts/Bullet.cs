@@ -32,7 +32,7 @@ public class Bullet : MonoBehaviour
         rb.MovePosition(transform.position + transform.forward * Time.fixedDeltaTime * bulletSpeed);
     }
 
-    void UpdatePenetration()
+    void CheckPenetration()
     {
         Ray ray = new Ray(this.transform.position+new Vector3(0,0,transform.localScale.z), this.transform.forward);
         RaycastHit hit;
@@ -69,7 +69,7 @@ public class Bullet : MonoBehaviour
     private void OnCollisionExit(Collision collision)
     {
         if (penetrationPoint != null)
-        UpdatePenetration();
+        CheckPenetration();
     }
 
     void enableBulletRenderer()
@@ -80,7 +80,7 @@ public class Bullet : MonoBehaviour
 
     private void OnDrawGizmos()
     {
-        UpdatePenetration();
+        CheckPenetration();
 
         if (!penetrationPoint.HasValue || !impactPoint.HasValue)
         {
