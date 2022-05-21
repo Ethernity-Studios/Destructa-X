@@ -24,7 +24,8 @@ public class Bullet : MonoBehaviour
         BulletRenderer = GetComponent<Renderer>();
         BulletRenderer.enabled = false;
         trailRenderer.enabled = false;
-        Destroy(gameObject, 5f);
+        Destroy(gameObject, 50f);
+        CheckPenetration();
     }
 
     private void FixedUpdate()
@@ -32,8 +33,9 @@ public class Bullet : MonoBehaviour
         rb.MovePosition(transform.position + transform.forward * Time.fixedDeltaTime * bulletSpeed);
     }
 
-    void CheckPenetration()
+    public void CheckPenetration()
     {
+        Debug.Log("Checking penetration");
         Ray ray = new Ray(this.transform.position+new Vector3(0,0,transform.localScale.z), this.transform.forward);
         RaycastHit hit;
         if (Physics.Raycast(ray, out hit))
@@ -45,31 +47,42 @@ public class Bullet : MonoBehaviour
             {
                 penetrationPoint = penHit.point;
                 endPoint = this.transform.position + this.transform.forward * 1000;
+
+                if(hit.transform.TryGetComponent<MaterialToughness>(out MaterialToughness materialToughness))
+                {
+                    CanPenetrate = true;
+                    PenetrationAmount -= Vector3.Distance((Vector3)penetrationPoint, hit.point);
+                    PenetrationAmount -= materialToughness.ToughnessAmount;
+                }
+                else
+                {
+                    CanPenetrate = false;
+                    NonPenetrableObject = hit.transform.gameObject;
+                }
             }
             else
             {
                 endPoint = impactPoint.Value + ray.direction * PenetrationAmount;
                 penetrationPoint = endPoint;
+                CanPenetrate = false;
+                NonPenetrableObject = hit.transform.gameObject;
             }
         }
         else
         {
+            CanPenetrate = true;
             endPoint = this.transform.position + this.transform.forward * 1000;
             penetrationPoint = null;
             impactPoint = null;
         }
     }
-
+    GameObject NonPenetrableObject;
     private void OnCollisionEnter(Collision collision)
     {
+        if (NonPenetrableObject == collision.gameObject && !CanPenetrate) Destroy(gameObject);
+        CheckPenetration();
         if (!BulletRenderer.enabled) enableBulletRenderer();
         if (transform.eulerAngles != BulletDirection) transform.eulerAngles = BulletDirection;
-    }
-
-    private void OnCollisionExit(Collision collision)
-    {
-        if (penetrationPoint != null)
-        CheckPenetration();
     }
 
     void enableBulletRenderer()
@@ -80,7 +93,7 @@ public class Bullet : MonoBehaviour
 
     private void OnDrawGizmos()
     {
-        CheckPenetration();
+        //CheckPenetration();
 
         if (!penetrationPoint.HasValue || !impactPoint.HasValue)
         {
