@@ -51,10 +51,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   PenetrationAmount: 1
-  bulletSpeed: 1
+  bulletSpeed: 80
   CanPenetrate: 0
   BulletDirection: {x: 0, y: 0, z: 0}
   CameraPosition: {x: 0, y: 0, z: 0}
+  NonPenetrableObject: {fileID: 0}
 --- !u!33 &8144868883611176395
 MeshFilter:
   m_ObjectHideFlags: 0

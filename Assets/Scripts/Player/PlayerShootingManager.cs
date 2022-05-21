@@ -61,7 +61,7 @@ public class PlayerShootingManager : NetworkBehaviour
         Ray ray = cameraHolder.GetComponent<Camera>().ViewportPointToRay(new Vector3(.5f, .5f, 0));
         if (Physics.Raycast(ray.origin, ray.direction, out hit, Mathf.Infinity, mask))
         {
-            if (Vector3.Distance(ray.origin, hit.point) > .7f)
+            if (Vector3.Distance(ray.origin, hit.point) > .9f)
             {
                 bulletInstance.GetComponent<Renderer>().enabled = true;
                 bulletInstance.GetComponent<TrailRenderer>().enabled = true;
