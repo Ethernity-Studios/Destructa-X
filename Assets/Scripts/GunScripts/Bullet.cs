@@ -24,8 +24,7 @@ public class Bullet : MonoBehaviour
         BulletRenderer = GetComponent<Renderer>();
         BulletRenderer.enabled = false;
         trailRenderer.enabled = false;
-        Destroy(gameObject, 50f);
-        CheckPenetration();
+        Destroy(gameObject, 5f);
     }
 
     private void FixedUpdate()
@@ -48,14 +47,16 @@ public class Bullet : MonoBehaviour
                 penetrationPoint = penHit.point;
                 endPoint = this.transform.position + this.transform.forward * 1000;
 
-                if(hit.transform.TryGetComponent<MaterialToughness>(out MaterialToughness materialToughness))
+                if(hit.transform.TryGetComponent(out MaterialToughness materialToughness))
                 {
+                    Debug.Log("Object has meterial toughness");
                     CanPenetrate = true;
                     PenetrationAmount -= Vector3.Distance((Vector3)penetrationPoint, hit.point);
                     PenetrationAmount -= materialToughness.ToughnessAmount;
                 }
                 else
                 {
+                    Debug.Log("Object doesnt have meterial toughness");
                     CanPenetrate = false;
                     NonPenetrableObject = hit.transform.gameObject;
                 }
@@ -76,7 +77,7 @@ public class Bullet : MonoBehaviour
             impactPoint = null;
         }
     }
-    GameObject NonPenetrableObject;
+    [SerializeField] GameObject NonPenetrableObject;
     private void OnCollisionEnter(Collision collision)
     {
         if (NonPenetrableObject == collision.gameObject && !CanPenetrate) Destroy(gameObject);

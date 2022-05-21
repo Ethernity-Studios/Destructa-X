@@ -53,7 +53,9 @@ public class PlayerShootingManager : NetworkBehaviour
     void RpcSpawnBullet(GameObject bulletInstance)
     {
         Bullet bullet = bulletInstance.GetComponent<Bullet>();
+        bullet.PenetrationAmount = playerInventory.EqupiedGun.BulletPenetration;
         bulletInstance.transform.SetParent(gameManager.BulletHolder.transform);
+
         RaycastHit hit;
 
         Ray ray = cameraHolder.GetComponent<Camera>().ViewportPointToRay(new Vector3(.5f, .5f, 0));
@@ -63,15 +65,18 @@ public class PlayerShootingManager : NetworkBehaviour
             {
                 bulletInstance.GetComponent<Renderer>().enabled = true;
                 bulletInstance.GetComponent<TrailRenderer>().enabled = true;
+                bulletInstance.transform.localPosition = ray.origin;
+                bulletInstance.transform.LookAt(hit.point);
+                bullet.CheckPenetration();
                 bulletInstance.transform.localPosition = playerInventory.EqupiedGunInstance.transform.GetChild(2).transform.position;
             }
             else
             {
                 bulletInstance.transform.localPosition = ray.origin;
+                bulletInstance.transform.LookAt(hit.point);
+                bullet.CheckPenetration();
             }
             bulletInstance.transform.LookAt(hit.point);
-            if (hit.collider.TryGetComponent<MaterialToughness>(out MaterialToughness materialToughness)) bullet.CanPenetrate = true;
-            else bullet.CanPenetrate = false;
         }
         else
         {
@@ -80,7 +85,7 @@ public class PlayerShootingManager : NetworkBehaviour
             bulletInstance.transform.localPosition = playerInventory.EqupiedGunInstance.transform.GetChild(2).transform.position;
             bulletInstance.transform.LookAt(new Vector3(ray.GetPoint(10).x, ray.GetPoint(10).y - .15f, ray.GetPoint(10).z));
         }
-        bullet.BulletDirection = new Vector3(cameraHolder.eulerAngles.x, transform.eulerAngles.y);
         bullet.CameraPosition = cameraHolder.position;
+        bullet.BulletDirection = new Vector3(cameraHolder.eulerAngles.x, transform.eulerAngles.y);
     }
 }
