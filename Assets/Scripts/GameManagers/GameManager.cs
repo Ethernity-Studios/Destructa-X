@@ -123,13 +123,13 @@ public class GameManager : NetworkBehaviour
     {
         bombInstance = Instantiate(BombPrefab);
         NetworkServer.Spawn(bombInstance);
+        Bomb = bombInstance;
         RpcSpawnBomb();
     }
 
     [ClientRpc]
     void RpcSpawnBomb()
     {
-        Bomb = bombInstance;
         Bomb.transform.SetParent(gameObject.transform);
         Bomb.transform.position = bombSpawnLocation.position;
     }

@@ -15,6 +15,7 @@ public class PlayerShootingManager : NetworkBehaviour
     }
     void Update()
     {
+        if (!isLocalPlayer) return;
         if (Input.GetMouseButtonDown(0))
         {
             if (playerInventory.EqupiedGun != null)
