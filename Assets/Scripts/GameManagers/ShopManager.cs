@@ -146,10 +146,10 @@ public class ShopManager : MonoBehaviour
         }
         else if(playerInventory.SecondaryGun != null &&gun.Type == GunType.Secondary)
         {
-            Debug.Log("trying tzo buy secundary gun with gun and money!");
+            Debug.Log("trying tzo buy secondary gun with gun and money!");
             if (localPlayer.PlayerMoney + playerInventory.SecondaryGun.Price < gun.Price) return;
             Debug.Log(playerInventory.SecondaryGun.Price + "Gun price");
-            Debug.Log("buying secundary gun with moeny and primary gun");
+            Debug.Log("buying secondary gun with moeny and primary gun");
             SellGun(playerInventory.SecondaryGun);
             if (playerInventory.SecondaryGun == null && gun.Type == GunType.Secondary)
             {
@@ -171,7 +171,7 @@ public class ShopManager : MonoBehaviour
         }
         else if (gun.Type == GunType.Secondary && playerInventory.SecondaryGun == gun && playerInventory.SecondaryGunInstance.GetComponent<GunInstance>().CanBeSelled)
         {
-            Debug.Log("selling secudnary gun");
+            Debug.Log("selling secodnary gun");
             localPlayer.CmdChangeMoney(gun.Price);
             playerInventory.CmdSellGun(playerInventory.SecondaryGunInstance.GetComponent<NetworkIdentity>().netId, gun);
         }

@@ -50,7 +50,6 @@ public class Player : NetworkBehaviour
         if (!isLocalPlayer) return;
         Cursor.lockState = CursorLockMode.Locked;
         CmdSetPlayerInfo(NicknameManager.DisplayName, RoomManager.PTeam, RoomManager.PAgent);
-
     }
 
     public override void OnStartLocalPlayer()

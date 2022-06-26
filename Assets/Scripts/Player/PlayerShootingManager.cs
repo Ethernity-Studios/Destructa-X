@@ -67,8 +67,6 @@ public class PlayerShootingManager : NetworkBehaviour
         {
             if (Vector3.Distance(ray.origin, hit.point) > .9f)
             {
-                //bulletInstance.GetComponent<Renderer>().enabled = true;
-                //bulletInstance.GetComponent<TrailRenderer>().enabled = true;
                 bulletInstance.transform.localPosition = ray.origin;
                 bulletInstance.transform.LookAt(hit.point);
                 bullet.CheckPenetration();
@@ -87,8 +85,6 @@ public class PlayerShootingManager : NetworkBehaviour
         }
         else
         {
-            //bulletInstance.GetComponent<Renderer>().enabled = true;
-            //bulletInstance.GetComponent<TrailRenderer>().enabled = true;
             bulletInstance.transform.localPosition = playerInventory.EqupiedGunInstance.transform.GetChild(2).transform.position;
             bulletInstance.transform.LookAt(new Vector3(ray.GetPoint(10).x, ray.GetPoint(10).y - .15f, ray.GetPoint(10).z));
         }
