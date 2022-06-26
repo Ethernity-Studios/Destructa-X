@@ -22,8 +22,8 @@ public class Bullet : MonoBehaviour
         rb = GetComponent<Rigidbody>();
         trailRenderer = GetComponent<TrailRenderer>();
         BulletRenderer = GetComponent<Renderer>();
-        BulletRenderer.enabled = false;
-        trailRenderer.enabled = false;
+        //BulletRenderer.enabled = false;
+        //trailRenderer.enabled = false;
         Destroy(gameObject, 5f);
     }
 

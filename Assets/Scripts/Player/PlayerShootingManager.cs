@@ -9,10 +9,13 @@ public class PlayerShootingManager : NetworkBehaviour
 
     GameManager gameManager;
 
-    private void Start()
+    private void Start() 
     {
         gameManager = FindObjectOfType<GameManager>();
-    }
+        if (!isLocalPlayer) return;
+        cameraHolder.GetComponent<Camera>().enabled = true;
+        cameraHolder.GetChild(0).GetComponent<Camera>().enabled = true;
+    } 
     void Update()
     {
         if (!isLocalPlayer) return;
@@ -64,8 +67,8 @@ public class PlayerShootingManager : NetworkBehaviour
         {
             if (Vector3.Distance(ray.origin, hit.point) > .9f)
             {
-                bulletInstance.GetComponent<Renderer>().enabled = true;
-                bulletInstance.GetComponent<TrailRenderer>().enabled = true;
+                //bulletInstance.GetComponent<Renderer>().enabled = true;
+                //bulletInstance.GetComponent<TrailRenderer>().enabled = true;
                 bulletInstance.transform.localPosition = ray.origin;
                 bulletInstance.transform.LookAt(hit.point);
                 bullet.CheckPenetration();
@@ -73,6 +76,9 @@ public class PlayerShootingManager : NetworkBehaviour
             }
             else
             {
+                Debug.Log("ELSE");
+                bulletInstance.GetComponent<Renderer>().enabled = false;
+                bulletInstance.GetComponent<TrailRenderer>().enabled = false;
                 bulletInstance.transform.localPosition = ray.origin;
                 bulletInstance.transform.LookAt(hit.point);
                 bullet.CheckPenetration();
@@ -81,8 +87,8 @@ public class PlayerShootingManager : NetworkBehaviour
         }
         else
         {
-            bulletInstance.GetComponent<Renderer>().enabled = true;
-            bulletInstance.GetComponent<TrailRenderer>().enabled = true;
+            //bulletInstance.GetComponent<Renderer>().enabled = true;
+            //bulletInstance.GetComponent<TrailRenderer>().enabled = true;
             bulletInstance.transform.localPosition = playerInventory.EqupiedGunInstance.transform.GetChild(2).transform.position;
             bulletInstance.transform.LookAt(new Vector3(ray.GetPoint(10).x, ray.GetPoint(10).y - .15f, ray.GetPoint(10).z));
         }
