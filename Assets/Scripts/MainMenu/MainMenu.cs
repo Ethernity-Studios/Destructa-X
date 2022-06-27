@@ -24,6 +24,7 @@ public class MainMenu : MonoBehaviour
     public void HostLobby()
     {
         if (string.IsNullOrEmpty(NetworkAdressInputField.text)) return;
+        Debug.Log(networkManagerLobby.networkAddress);
         networkManagerLobby.StartHost();
     }
 

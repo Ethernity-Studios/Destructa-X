@@ -94,7 +94,7 @@ public class Bullet : MonoBehaviour
 
     private void OnDrawGizmos()
     {
-        //CheckPenetration();
+        CheckPenetration();
 
         if (!penetrationPoint.HasValue || !impactPoint.HasValue)
         {

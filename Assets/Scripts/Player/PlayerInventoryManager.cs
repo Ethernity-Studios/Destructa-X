@@ -121,7 +121,7 @@ public class PlayerInventoryManager : NetworkBehaviour
         player = GetComponent<Player>();
         gameManager = FindObjectOfType<GameManager>();
         if (!isLocalPlayer) return;
-        //if (other.gameObject == gameManager.Bomb.transform.GetChild(0).gameObject && other.gameObject.layer != 6 && player.PlayerTeam == Team.Red) CmdPickBomb();
+        if (other.gameObject == gameManager.Bomb.transform.GetChild(0).gameObject && other.gameObject.layer != 6 && player.PlayerTeam == Team.Red) CmdPickBomb();
 
         if (other.gameObject.TryGetComponent(out GunInstance instance)) if (instance.CanBePicked && instance.IsDropped) CmdPickGun(instance.GetComponent<NetworkIdentity>().netId);
     }

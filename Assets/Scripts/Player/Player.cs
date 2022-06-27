@@ -7,7 +7,7 @@ public enum PlayerState
     Idle, Walk, Run, Crouch, Jump, Planting, Defusing, Dead
 }
 
-public class Player : NetworkBehaviour
+public class Player : NetworkBehaviour, IDamageable
 {
     [SyncVar]
     public string PlayerName;
@@ -37,6 +37,10 @@ public class Player : NetworkBehaviour
     NetworkManagerRoom room;
 
     public PlayerState PlayerState;
+
+    public float Health { get => throw new System.NotImplementedException(); set => throw new System.NotImplementedException(); }
+    public float MaxHealth { get => throw new System.NotImplementedException(); set => throw new System.NotImplementedException(); }
+
     private void Awake()
     {
         PlayerState = PlayerState.Idle;
@@ -113,5 +117,15 @@ public class Player : NetworkBehaviour
     void updateMoneyText(int _, int newValue)
     {
         shopManager.PlayerMoneyText.text = newValue.ToString();
+    }
+
+    public bool TakeDamage(float damage)
+    {
+        throw new System.NotImplementedException();
+    }
+
+    public void AddHealth(float health)
+    {
+        throw new System.NotImplementedException();
     }
 }
