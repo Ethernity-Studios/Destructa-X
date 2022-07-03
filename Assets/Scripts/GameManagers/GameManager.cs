@@ -61,7 +61,7 @@ public class GameManager : NetworkBehaviour
     public GameObject GunHolder;
     [SerializeField] Transform bombSpawnLocation;
     [SyncVar]
-    public GameObject Bomb;
+    public GameObject Bomb = null;
 
     [SerializeField] GunManager gunManager;
     public GameObject BulletHolder;
@@ -127,10 +127,11 @@ public class GameManager : NetworkBehaviour
 
     public void SpawnBomb()
     {
-        bombInstance = Instantiate(BombPrefab, gameObject.transform);
+        bombInstance = Instantiate(BombPrefab, Vector3.zero,Quaternion.identity,gameObject.transform);
         NetworkServer.Spawn(bombInstance);
         Bomb = bombInstance;
-        Invoke("RpcSpawnBomb", 1f);
+        RpcSpawnBomb();
+        //Invoke("RpcSpawnBomb", 2f);
     }
 
     [ClientRpc]
@@ -213,6 +214,7 @@ public class GameManager : NetworkBehaviour
     {
         Round++;
         GameState = gameState;
+        if(Bomb == null)
         SpawnBomb();
     }
 

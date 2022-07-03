@@ -15,9 +15,9 @@ public class ShopManager : MonoBehaviour
     [SerializeField] TMP_Text gunReloadSpeed;
     [SerializeField] TMP_Text gunMagazine;
 
-    [SerializeField] TMP_Text gunHeadDamageShort, gunHeadDamageLong;
-    [SerializeField] TMP_Text gunBodyDamageShort, gunBodyDamageLong;
-    [SerializeField] TMP_Text gunLegsDamageShort, gunLegsDamageLong;
+    //[SerializeField] TMP_Text gunHeadDamageShort, gunHeadDamageLong;
+    //[SerializeField] TMP_Text gunBodyDamageShort, gunBodyDamageLong;
+    //[SerializeField] TMP_Text gunLegsDamageShort, gunLegsDamageLong;
 
     [SerializeField] Gun[] guns;
 
@@ -60,12 +60,12 @@ public class ShopManager : MonoBehaviour
         gunReloadSpeed.text = gun.ReloadTime.ToString();
         gunMagazine.text = gun.Ammo.ToString();
 
-        gunHeadDamageShort.text = gun.Stats.HeadDamageShort.ToString();
-        gunHeadDamageLong.text = gun.Stats.HeadDamageLong.ToString();
-        gunBodyDamageShort.text = gun.Stats.BodyDamageShort.ToString();
-        gunBodyDamageLong.text = gun.Stats.BodyDamageLong.ToString();
-        gunLegsDamageShort.text = gun.Stats.LegsDamageShort.ToString();
-        gunLegsDamageLong.text = gun.Stats.LegsDamageLong.ToString();
+        //gunHeadDamageShort.text = gun.Stats.HeadDamageShort.ToString();
+        //gunHeadDamageLong.text = gun.Stats.HeadDamageLong.ToString();
+        //gunBodyDamageShort.text = gun.Stats.BodyDamageShort.ToString();
+        //gunBodyDamageLong.text = gun.Stats.BodyDamageLong.ToString();
+        //gunLegsDamageShort.text = gun.Stats.LegsDamageShort.ToString();
+        //gunLegsDamageLong.text = gun.Stats.LegsDamageLong.ToString();
     }
 
     public void ShowShieldInfo(string shieldType)

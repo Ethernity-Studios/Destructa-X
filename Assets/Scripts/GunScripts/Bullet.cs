@@ -19,16 +19,19 @@ public class Bullet : MonoBehaviour
     Vector3? impactPoint;
 
     public Player BulletOwner;
+    public Gun Gun;
 
     GameObject NonPenetrableObject;
+
+    public int BulletDamage;
+
+    bool collided;
 
     private void Start()
     {
         rb = GetComponent<Rigidbody>();
         trailRenderer = GetComponent<TrailRenderer>();
         BulletRenderer = GetComponent<Renderer>();
-        //BulletRenderer.enabled = false;
-        //trailRenderer.enabled = false;
         Destroy(gameObject, 5f);
     }
 
@@ -39,7 +42,6 @@ public class Bullet : MonoBehaviour
 
     public void CheckPenetration()
     {
-        //Debug.Log("Checking penetration");
         Ray ray = new Ray(this.transform.position+new Vector3(0,0,transform.localScale.z), this.transform.forward);
         RaycastHit hit;
         if (Physics.Raycast(ray, out hit))
@@ -83,35 +85,46 @@ public class Bullet : MonoBehaviour
 
     private void OnCollisionEnter(Collision collision)
     {
+        if (collision.transform.parent == null) return;
+        if (collision.transform.parent.TryGetComponent(out IDamageable iDamageable))
+        {
+            if (collision.gameObject == BulletOwner.gameObject.transform.GetChild(0)) return;
+
+            iDamageable.TakeDamage(CalculateDamage());
+            Destroy(gameObject);
+        }
         if (NonPenetrableObject == collision.gameObject && !CanPenetrate) Destroy(gameObject);
         CheckPenetration();
         if (!BulletRenderer.enabled) enableBulletRenderer();
         if (transform.eulerAngles != BulletDirection) transform.eulerAngles = BulletDirection;
     }
 
+
+    int CalculateDamage()
+    {
+        float distance = Vector3.Distance(transform.position, CameraPosition);
+        if (Gun.Damages.Count == 1)
+        {
+            BulletDamage = Gun.Damages[0].BodyDamage;
+        }
+        else if(Gun.Damages.Count == 2)
+        {
+            if(distance <= Gun.Damages[0].MaxDistance) BulletDamage = Gun.Damages[0].BodyDamage;
+            else if(distance >= Gun.Damages[1].MinDistance) BulletDamage = Gun.Damages[1].BodyDamage;
+        }
+        else if(Gun.Damages.Count == 3)
+        {
+            if (distance <= Gun.Damages[0].MaxDistance) BulletDamage = Gun.Damages[0].BodyDamage;
+            else if (distance >= Gun.Damages[1].MinDistance && distance <= Gun.Damages[1].MaxDistance) BulletDamage = Gun.Damages[1].BodyDamage;
+            else if (distance >= Gun.Damages[2].MinDistance) BulletDamage = Gun.Damages[2].BodyDamage; 
+        }
+        Debug.Log("Bulelt daamage: " + BulletDamage);
+        return BulletDamage;
+    }
+
     void enableBulletRenderer()
     {
         BulletRenderer.enabled = true;
         trailRenderer.enabled = true;
-    }
-
-    private void OnDrawGizmos()
-    {
-        //CheckPenetration();
-
-        if (!penetrationPoint.HasValue || !impactPoint.HasValue)
-        {
-            Gizmos.color = Color.green;
-            Gizmos.DrawLine(this.transform.position + new Vector3(0, 0, transform.localScale.z), endPoint);
-        }
-        else
-        {
-            Gizmos.color = Color.green;
-            Gizmos.DrawLine(this.transform.position + new Vector3(0, 0, transform.localScale.z), impactPoint.Value);
-            Gizmos.color = Color.red;
-            Gizmos.DrawLine(impactPoint.Value, penetrationPoint.Value);
-            Gizmos.color = Color.yellow;
-            Gizmos.DrawLine(penetrationPoint.Value, endPoint);
-        }
     }
 }

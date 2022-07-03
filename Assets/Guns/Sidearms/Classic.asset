@@ -22,6 +22,17 @@ MonoBehaviour:
   Type: 1
   Category: 0
   BulletPenetration: 3
+  Damages:
+  - MinDistance: 0
+    MaxDistance: 30
+    HeadDamage: 78
+    BodyDamage: 26
+    LegsDamage: 22
+  - MinDistance: 31
+    MaxDistance: 50
+    HeadDamage: 66
+    BodyDamage: 22
+    LegsDamage: 18
   GunModel: {fileID: 1298712114125637990, guid: fc1456374dc984243a838362139fd483, type: 3}
   LMB:
     FireType: 2
@@ -55,12 +66,6 @@ MonoBehaviour:
       Bloom: 1
   Stats:
     FireRate: 0
-    HeadDamageShort: 0
-    HeadDamageLong: 0
-    BodyDamageShort: 0
-    BodyDamageLong: 0
-    LegsDamageShort: 0
-    LegsDamageLong: 0
   GunTransform:
     FirstPersonGunPosition: {x: 0.45, y: -0.25, z: 0.48}
     FirstPersonGunRotation: {x: 0, y: 80, z: 0}

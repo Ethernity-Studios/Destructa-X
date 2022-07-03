@@ -38,28 +38,41 @@ public class Player : NetworkBehaviour, IDamageable
 
     public PlayerState PlayerState;
 
-    public float Health { get => throw new System.NotImplementedException(); set => throw new System.NotImplementedException(); }
-    public float MaxHealth { get => throw new System.NotImplementedException(); set => throw new System.NotImplementedException(); }
+    [SerializeField] GameObject playerBody;
+
+    [SyncVar]
+    public int Health;
+    public int MaxHealth;
+
+    [SyncVar]
+    public int Shield;
+    public int MaxShield;
 
     private void Awake()
     {
         PlayerState = PlayerState.Idle;
         shopManager = FindObjectOfType<ShopManager>();
-        gameManager = FindObjectOfType<GameManager>();  
+        gameManager = FindObjectOfType<GameManager>();
         room = FindObjectOfType<NetworkManagerRoom>();
     }
 
     public void Start()
     {
-        Invoke("SpawnUIAgent", .3f);
+        Invoke("setPlayerBody", 2f);
+        Invoke("spawnUIAgent", .3f);
         if (!isLocalPlayer) return;
-        //CmdAddPlayer();
-        Invoke("CmdAddPlayer",.3f);
+        Invoke("CmdAddPlayer", .3f);
         Cursor.lockState = CursorLockMode.Locked;
         CmdSetPlayerInfo(NicknameManager.DisplayName, RoomManager.PTeam, RoomManager.PAgent);
     }
 
-    void SpawnUIAgent()
+    void setPlayerBody()
+    {
+        if(!isLocalPlayer)
+        playerBody.layer = 10;
+    }
+
+    void spawnUIAgent()
     {
         gameManager = FindObjectOfType<GameManager>();
         agentManager = FindObjectOfType<AgentManager>();
@@ -102,6 +115,16 @@ public class Player : NetworkBehaviour, IDamageable
     [Command]
     public void CmdChangeMoney(int money) => PlayerMoney += money;
 
+    [Command(requiresAuthority = false)]
+    public void CmdTakeDamage(int damage)
+    {
+        Health -= damage;
+        if (Health <= 0) CmdKillPlayer();
+    }
+
+    [Command]
+    public void CmdAddHealth(int health) => Health += health;
+
     [ClientRpc]
     public void RespawnPlayer(Vector3 position)
     {
@@ -111,18 +134,18 @@ public class Player : NetworkBehaviour, IDamageable
         characterController.enabled = true;
     }
 
+    [Command(requiresAuthority = false)]
+    public void CmdKillPlayer()
+    {
+        IsDeath = true;
+    }
+
     void updateMoneyText(int _, int newValue)
     {
         shopManager.PlayerMoneyText.text = newValue.ToString();
     }
 
-    public bool TakeDamage(float damage)
-    {
-        throw new System.NotImplementedException();
-    }
+    public void TakeDamage(int damage) => CmdTakeDamage(damage);
 
-    public void AddHealth(float health)
-    {
-        throw new System.NotImplementedException();
-    }
+    public void AddHealth(int health) => CmdAddHealth(health);
 }

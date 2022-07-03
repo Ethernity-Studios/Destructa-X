@@ -87,10 +87,17 @@ public enum GunCategory
 public class GunStats
 {
     public float FireRate;
+}
 
-    public int HeadDamageShort, HeadDamageLong;
-    public int BodyDamageShort, BodyDamageLong;
-    public int LegsDamageShort, LegsDamageLong;
+[Serializable]
+public struct Damages
+{
+    public int MinDistance;
+    public int MaxDistance;
+    [Space]
+    public int HeadDamage;
+    public int BodyDamage;
+    public int LegsDamage;
 }
 
 [Serializable]

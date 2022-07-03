@@ -112,8 +112,11 @@ public class LobbyPlayer : NetworkRoomPlayer
                         tempR++;
                         break;
                 }
-                roomManager.BlueTeamSize = tempB;
-                roomManager.RedTeamSize = tempR;
+                if(SceneManager.GetActiveScene().name == "RoomScene" && isServer && roomManager != null)
+                {
+                    roomManager.BlueTeamSize = tempB;
+                    roomManager.RedTeamSize = tempR;
+                }
             }
         }
         base.OnClientExitRoom();

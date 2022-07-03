@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
+using System.Collections.Generic;
 
 [CreateAssetMenu]
 public class Gun : ScriptableObject
@@ -14,6 +15,7 @@ public class Gun : ScriptableObject
     public GunType Type;
     public GunCategory Category;
     public float BulletPenetration;
+    public List<Damages> Damages;
 
     public GameObject GunModel;
 

@@ -87,7 +87,7 @@ public class PlayerInventoryManager : NetworkBehaviour
         gunEqupied = true;
     }
 
-    [Command]
+    [Command(requiresAuthority = false)]
     public void CmdSwitchItem(Item item) => RpcSwitchItem(item);
 
     [ClientRpc]
@@ -141,9 +141,8 @@ public class PlayerInventoryManager : NetworkBehaviour
 
     private void OnTriggerStay(Collider other)
     {
-        player = GetComponent<Player>();
-        gameManager = FindObjectOfType<GameManager>();
         if (!isLocalPlayer) return;
+        if (gameManager.Bomb == null) return;
         if (other.gameObject == gameManager.Bomb.transform.GetChild(0).gameObject && other.gameObject.layer != 6 && player.PlayerTeam == Team.Red) CmdPickBomb();
 
         if (other.gameObject.TryGetComponent(out GunInstance instance)) if (instance.CanBePicked && instance.IsDropped) CmdPickGun(instance.GetComponent<NetworkIdentity>().netId);

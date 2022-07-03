@@ -49,16 +49,6 @@ public class PlayerShootingManager : NetworkBehaviour
         {
             StartCoroutine(Reload());
         }
-        /*RaycastHit hit;
-        Ray ray = cameraHolder.GetComponent<Camera>().ViewportPointToRay(new Vector3(.5f, .5f, 0));
-        if (Physics.Raycast(ray.origin, ray.direction, out hit, Mathf.Infinity, mask))
-        {
-            Debug.DrawRay(ray.origin, ray.direction, Color.magenta, .1f);
-        }
-        else
-        {
-            Debug.DrawRay(ray.origin, ray.direction, Color.white);
-        }*/
     }
 
     public IEnumerator DelayFire()
@@ -78,10 +68,8 @@ public class PlayerShootingManager : NetworkBehaviour
 
     public IEnumerator Reload()
     {
-        Debug.Log("Starting reloiad");
         Reloading = true;
         yield return new WaitForSeconds(playerInventory.EqupiedGun.ReloadTime);
-        Debug.Log("Stopped reloading");
         Reloading = false;
         if (gunInstance.Ammo >= playerInventory.EqupiedGun.MagazineAmmo)
         {
@@ -132,7 +120,6 @@ public class PlayerShootingManager : NetworkBehaviour
             }
             else
             {
-                Debug.Log("ELSE");
                 bulletInstance.GetComponent<Renderer>().enabled = false;
                 bulletInstance.GetComponent<TrailRenderer>().enabled = false;
                 bulletInstance.transform.localPosition = ray.origin;
@@ -149,5 +136,6 @@ public class PlayerShootingManager : NetworkBehaviour
         bullet.CameraPosition = cameraHolder.position;
         bullet.BulletDirection = new Vector3(cameraHolder.eulerAngles.x, transform.eulerAngles.y);
         bullet.BulletOwner = GetComponent<Player>();
+        bullet.Gun = playerInventory.EqupiedGun;
     }
 }
