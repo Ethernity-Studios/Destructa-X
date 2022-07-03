@@ -7,8 +7,8 @@ public class Gun : ScriptableObject
     public int GunID;
     public string Name;
     public int Price;
+    public int MagazineAmmo;
     public int Ammo;
-    public int MaxAmmo;
     public float ReloadTime;
     public float EquipTime;
     public GunType Type;

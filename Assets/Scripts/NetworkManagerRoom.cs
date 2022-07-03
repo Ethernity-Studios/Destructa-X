@@ -55,9 +55,4 @@ public class NetworkManagerRoom : NetworkRoomManager
         }
         base.OnClientSceneChanged();
     }
-    public override void OnRoomClientSceneChanged()
-    {
-        Debug.Log("OnRoomClientSceneChanged");
-        base.OnRoomClientSceneChanged();
-    }
 }

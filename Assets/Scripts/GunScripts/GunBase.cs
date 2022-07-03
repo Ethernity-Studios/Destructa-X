@@ -12,7 +12,7 @@ public enum FireMode
 {
     Automatic,
     SemiAutomatic,
-    LimitedAutomatic
+    Manual
 }
 
 public enum GunMode

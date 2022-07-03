@@ -15,18 +15,18 @@ MonoBehaviour:
   GunID: 0
   Name: clasic
   Price: 0
-  Ammo: 0
-  MaxAmmo: 30
+  MagazineAmmo: 12
+  Ammo: 36
   ReloadTime: 1
-  EquipTime: 0
+  EquipTime: 0.75
   Type: 1
   Category: 0
   BulletPenetration: 3
   GunModel: {fileID: 1298712114125637990, guid: fc1456374dc984243a838362139fd483, type: 3}
   LMB:
-    FireType: 5
-    FireMode: 1
-    FireDelay: 0.1
+    FireType: 2
+    FireMode: 2
+    FireDelay: 0.15
     AmmoLoss: 1
     LegDamage: 50
     BodyDamage: 50
@@ -35,7 +35,7 @@ MonoBehaviour:
     Recoil: 1
     Bloom: 1
   RMB:
-    Type: 2
+    Type: 3
     Scope:
       Magnification: 0
       ScopeType: 0
@@ -43,7 +43,7 @@ MonoBehaviour:
       BloomModifier: 0
       RecoilModifier: 0
     Fire:
-      FireType: 3
+      FireType: 1
       FireMode: 1
       FireDelay: 1
       AmmoLoss: 3

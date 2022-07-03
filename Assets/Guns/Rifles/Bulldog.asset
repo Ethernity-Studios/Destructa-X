@@ -15,18 +15,18 @@ MonoBehaviour:
   GunID: 9
   Name: Bulldog
   Price: 500
-  Ammo: 0
-  MaxAmmo: 0
-  ReloadTime: 0
-  EquipTime: 0
+  MagazineAmmo: 24
+  Ammo: 72
+  ReloadTime: 2.5
+  EquipTime: 1
   Type: 0
   Category: 0
-  BulletPenetration: 0
+  BulletPenetration: 5
   GunModel: {fileID: 4105488676187192654, guid: 13c043ae6a33bb04bbc4b7befc69f2cd, type: 3}
   LMB:
     FireType: 2
     FireMode: 0
-    FireDelay: 0
+    FireDelay: 0.1
     AmmoLoss: 0
     LegDamage: 0
     BodyDamage: 0

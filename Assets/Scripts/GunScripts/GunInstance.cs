@@ -14,6 +14,9 @@ public class GunInstance : MonoBehaviour
 
     public bool CanBePicked = false;
 
+    public int Ammo;
+    public int Magazine;
+
     private void OnCollisionEnter(Collision collision)
     {
         if (!IsDropped) return;

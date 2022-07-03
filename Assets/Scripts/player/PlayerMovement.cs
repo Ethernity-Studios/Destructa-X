@@ -71,7 +71,7 @@ public class PlayerMovement : NetworkBehaviour
 
     void movePlayer()
     {
-        if (playerManager.PlayerState == PlayerState.Planting) return;
+        if (playerManager.PlayerState == PlayerState.Planting || playerManager.PlayerState == PlayerState.Defusing) return;
         float speed = 7;
         float x = Input.GetAxis("Horizontal");
         float z = Input.GetAxis("Vertical");

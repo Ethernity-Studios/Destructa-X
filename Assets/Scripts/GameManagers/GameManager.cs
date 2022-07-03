@@ -80,6 +80,9 @@ public class GameManager : NetworkBehaviour
         StartRound(GameState.StartGame);
     }
 
+
+
+
     void spawnPlayers()
     {
         int b = 0;
@@ -104,7 +107,7 @@ public class GameManager : NetworkBehaviour
     {
         updateRoundTimer();
         if (isServer)
-        updateGameState();
+            updateGameState();
 
         if (GameTime > 0) GameTime -= Time.deltaTime;
     }
@@ -113,19 +116,21 @@ public class GameManager : NetworkBehaviour
     {
         foreach (var player in Players)
         {
-                Debug.Log("Giving default gun to: " + player);
-                player.GetComponent<PlayerInventoryManager>().CmdGiveGun(gunManager.gunList[0].GunID);
+            PlayerInventoryManager playerInventory = player.GetComponent<PlayerInventoryManager>();
+            playerInventory.CmdGiveGun(gunManager.gunList[0].GunID);
+            playerInventory.CmdSwitchItem(Item.Secondary);
+            playerInventory.CmdSwitchItem(Item.Knife);
         }
     }
 
     GameObject bombInstance;
-    [Command(requiresAuthority = false)]
-    public void CmdSpawnBomb()
+
+    public void SpawnBomb()
     {
-        bombInstance = Instantiate(BombPrefab);
+        bombInstance = Instantiate(BombPrefab, gameObject.transform);
         NetworkServer.Spawn(bombInstance);
         Bomb = bombInstance;
-        RpcSpawnBomb();
+        Invoke("RpcSpawnBomb", 1f);
     }
 
     [ClientRpc]
@@ -208,7 +213,7 @@ public class GameManager : NetworkBehaviour
     {
         Round++;
         GameState = gameState;
-        CmdSpawnBomb();
+        SpawnBomb();
     }
 
     [Command(requiresAuthority = false)]

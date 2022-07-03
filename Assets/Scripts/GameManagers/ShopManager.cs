@@ -36,7 +36,7 @@ public class ShopManager : MonoBehaviour
 
     private void Start()
     {
-        Invoke("getLocalPlayer", .3f);
+        Invoke("getLocalPlayer", 1f);
     }
 
     void getLocalPlayer()
@@ -58,7 +58,7 @@ public class ShopManager : MonoBehaviour
         gunFireRate.text = (gun.Stats.FireRate).ToString();
         gunEquipSpeed.text = gun.EquipTime.ToString();
         gunReloadSpeed.text = gun.ReloadTime.ToString();
-        gunMagazine.text = gun.MaxAmmo.ToString();
+        gunMagazine.text = gun.Ammo.ToString();
 
         gunHeadDamageShort.text = gun.Stats.HeadDamageShort.ToString();
         gunHeadDamageLong.text = gun.Stats.HeadDamageLong.ToString();

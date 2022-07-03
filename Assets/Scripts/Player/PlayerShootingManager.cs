@@ -1,33 +1,55 @@
 using Mirror;
+using System.Collections;
 using UnityEngine;
 
 public class PlayerShootingManager : NetworkBehaviour
 {
     [SerializeField] GameObject bullet;
     [SerializeField] PlayerInventoryManager playerInventory;
+    [SerializeField] UIManager uiManager;
+
     [SerializeField] Transform cameraHolder;
 
     GameManager gameManager;
 
-    private void Start() 
+    [SerializeField] bool canShoot = true;
+    public bool Reloading;
+
+    public GunInstance gunInstance;
+    private void Start()
     {
         gameManager = FindObjectOfType<GameManager>();
+        uiManager = FindObjectOfType<UIManager>();
         if (!isLocalPlayer) return;
         cameraHolder.GetComponent<Camera>().enabled = true;
         cameraHolder.GetChild(0).GetComponent<Camera>().enabled = true;
-    } 
+    }
     void Update()
     {
         if (!isLocalPlayer) return;
-        if (Input.GetMouseButtonDown(0))
+        if (gunInstance == null) return;
+
+        if (playerInventory.EqupiedGun != null && playerInventory.gunEqupied && canShoot && gunInstance.Magazine > 0 && !Reloading)
         {
-            if (playerInventory.EqupiedGun != null)
+            if (playerInventory.EqupiedGun.LMB.FireMode == FireMode.Manual && Input.GetMouseButtonDown(0))
+            {
                 Shoot();
+            }
+            else if (playerInventory.EqupiedGun.LMB.FireMode == FireMode.Automatic && Input.GetMouseButton(0))
+            {
+                Shoot();
+            }
         }
-
-
-
-        RaycastHit hit;
+        if (playerInventory.EqupiedGun == null) return;
+        if (gunInstance.Magazine == 0 && gunInstance.Ammo > 0 && !Reloading)
+        {
+            StartCoroutine(Reload());
+        }
+        if (gunInstance.Magazine != playerInventory.EqupiedGun.MagazineAmmo && Input.GetKeyDown(KeyCode.R) && gunInstance.Ammo > 0 && !Reloading)
+        {
+            StartCoroutine(Reload());
+        }
+        /*RaycastHit hit;
         Ray ray = cameraHolder.GetComponent<Camera>().ViewportPointToRay(new Vector3(.5f, .5f, 0));
         if (Physics.Raycast(ray.origin, ray.direction, out hit, Mathf.Infinity, mask))
         {
@@ -36,13 +58,48 @@ public class PlayerShootingManager : NetworkBehaviour
         else
         {
             Debug.DrawRay(ray.origin, ray.direction, Color.white);
-        }
+        }*/
+    }
+
+    public IEnumerator DelayFire()
+    {
+        yield return new WaitForSeconds(playerInventory.EqupiedGun.LMB.FireDelay);
+        canShoot = true;
     }
 
     public void Shoot()
     {
-        if(playerInventory.EqupiedGun != null)
+        canShoot = false;
+        StartCoroutine(DelayFire());
+        gunInstance.Magazine--;
         CmdSpawnBullet();
+        UpdateUIAmmo();
+    }
+
+    public IEnumerator Reload()
+    {
+        Debug.Log("Starting reloiad");
+        Reloading = true;
+        yield return new WaitForSeconds(playerInventory.EqupiedGun.ReloadTime);
+        Debug.Log("Stopped reloading");
+        Reloading = false;
+        if (gunInstance.Ammo >= playerInventory.EqupiedGun.MagazineAmmo)
+        {
+            gunInstance.Ammo -= playerInventory.EqupiedGun.MagazineAmmo - gunInstance.Magazine;
+            gunInstance.Magazine = playerInventory.EqupiedGun.MagazineAmmo;
+        }
+        else
+        {
+            gunInstance.Magazine = gunInstance.Ammo;
+            gunInstance.Ammo = 0;
+        }
+        UpdateUIAmmo();
+    }
+
+    public void UpdateUIAmmo()
+    {
+        uiManager.MaxAmmoText.text = gunInstance.Ammo.ToString();
+        uiManager.MagazineText.text = gunInstance.Magazine.ToString();
     }
 
     [Command]
