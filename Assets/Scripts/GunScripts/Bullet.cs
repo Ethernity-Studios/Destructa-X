@@ -42,6 +42,7 @@ public class Bullet : MonoBehaviour
 
     public void CheckPenetration()
     {
+        Debug.Log("Check penetration");
         Ray ray = new Ray(this.transform.position+new Vector3(0,0,transform.localScale.z), this.transform.forward);
         RaycastHit hit;
         if (Physics.Raycast(ray, out hit))
@@ -85,18 +86,33 @@ public class Bullet : MonoBehaviour
 
     private void OnCollisionEnter(Collision collision)
     {
-        if (collision.transform.parent == null) return;
-        if (collision.transform.parent.TryGetComponent(out IDamageable iDamageable))
+        /*if (collision.transform.parent != null && collision.transform.parent.TryGetComponent(out IDamageable iDamageable))
         {
+            Debug.Log(collision.gameObject);
+            Debug.Log(BulletOwner.gameObject.transform.GetChild(0));
             if (collision.gameObject == BulletOwner.gameObject.transform.GetChild(0)) return;
-
+            Debug.Log("Still dealing dmaage");
             iDamageable.TakeDamage(CalculateDamage());
             Destroy(gameObject);
-        }
+        }*/
         if (NonPenetrableObject == collision.gameObject && !CanPenetrate) Destroy(gameObject);
         CheckPenetration();
         if (!BulletRenderer.enabled) enableBulletRenderer();
         if (transform.eulerAngles != BulletDirection) transform.eulerAngles = BulletDirection;
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.transform.parent == null) return;
+        if (other.transform.parent.TryGetComponent(out IDamageable iDamageable))
+        {
+            Debug.Log(other.gameObject);
+            Debug.Log(BulletOwner.gameObject.transform.GetChild(0));
+            if (other.gameObject == BulletOwner.gameObject.transform.GetChild(0)) return;
+            Debug.Log("Still dealing dmaage");
+            iDamageable.TakeDamage(CalculateDamage());
+            Destroy(gameObject);
+        }
     }
 
 
@@ -118,7 +134,6 @@ public class Bullet : MonoBehaviour
             else if (distance >= Gun.Damages[1].MinDistance && distance <= Gun.Damages[1].MaxDistance) BulletDamage = Gun.Damages[1].BodyDamage;
             else if (distance >= Gun.Damages[2].MinDistance) BulletDamage = Gun.Damages[2].BodyDamage; 
         }
-        Debug.Log("Bulelt daamage: " + BulletDamage);
         return BulletDamage;
     }
 
