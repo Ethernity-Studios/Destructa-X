@@ -86,15 +86,6 @@ public class Bullet : MonoBehaviour
 
     private void OnCollisionEnter(Collision collision)
     {
-        /*if (collision.transform.parent != null && collision.transform.parent.TryGetComponent(out IDamageable iDamageable))
-        {
-            Debug.Log(collision.gameObject);
-            Debug.Log(BulletOwner.gameObject.transform.GetChild(0));
-            if (collision.gameObject == BulletOwner.gameObject.transform.GetChild(0)) return;
-            Debug.Log("Still dealing dmaage");
-            iDamageable.TakeDamage(CalculateDamage());
-            Destroy(gameObject);
-        }*/
         if (NonPenetrableObject == collision.gameObject && !CanPenetrate) Destroy(gameObject);
         CheckPenetration();
         if (!BulletRenderer.enabled) enableBulletRenderer();

@@ -127,7 +127,7 @@ public class GameManager : NetworkBehaviour
 
     public void SpawnBomb()
     {
-        bombInstance = Instantiate(BombPrefab, Vector3.zero,Quaternion.identity,gameObject.transform);
+        bombInstance = Instantiate(BombPrefab, Vector3.zero, Quaternion.identity, gameObject.transform);
         NetworkServer.Spawn(bombInstance);
         Bomb = bombInstance;
         RpcSpawnBomb();
@@ -214,8 +214,8 @@ public class GameManager : NetworkBehaviour
     {
         Round++;
         GameState = gameState;
-        if(Bomb == null)
-        SpawnBomb();
+        if (Bomb == null)
+            SpawnBomb();
     }
 
     [Command(requiresAuthority = false)]
