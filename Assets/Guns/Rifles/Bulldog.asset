@@ -21,9 +21,10 @@ MonoBehaviour:
   EquipTime: 0
   Type: 0
   Category: 0
+  BulletPenetration: 0
   GunModel: {fileID: 4105488676187192654, guid: 13c043ae6a33bb04bbc4b7befc69f2cd, type: 3}
   LMB:
-    FireType: 5
+    FireType: 2
     FireMode: 0
     FireDelay: 0
     AmmoLoss: 0

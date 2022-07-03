@@ -43,9 +43,8 @@ public class ShopManager : MonoBehaviour
     {
         foreach (var player in gameManager.Players)
         {
-            if (!player.isLocalPlayer) continue;
+            if(player.isLocalPlayer)
             playerInventory = player.GetComponent<PlayerInventoryManager>();
-            break;
         }
     }
     public void ShowGunInfo(Gun gun)

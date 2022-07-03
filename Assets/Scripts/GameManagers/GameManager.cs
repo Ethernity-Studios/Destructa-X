@@ -65,6 +65,7 @@ public class GameManager : NetworkBehaviour
 
     [SerializeField] GunManager gunManager;
     public GameObject BulletHolder;
+
     private void Start()
     {
         ShopUI.SetActive(false);
@@ -72,10 +73,10 @@ public class GameManager : NetworkBehaviour
         PlantProgressSlider.gameObject.SetActive(false);
         DefuseProgressSlider.gameObject.SetActive(false);
         GameTime = StartGameLenght;
-        Invoke("giveDefaultGun", .3f);
 
         if (!isServer) return;
-        Invoke("spawnPlayers", .2f);
+        Invoke("spawnPlayers", 1f);
+        Invoke("giveDefaultGun", 1.5f);
         StartRound(GameState.StartGame);
     }
 
@@ -112,8 +113,8 @@ public class GameManager : NetworkBehaviour
     {
         foreach (var player in Players)
         {
-            if(player.isLocalPlayer)
-            player.GetComponent<PlayerInventoryManager>().CmdGiveGun(gunManager.gunList[0].GunID);
+                Debug.Log("Giving default gun to: " + player);
+                player.GetComponent<PlayerInventoryManager>().CmdGiveGun(gunManager.gunList[0].GunID);
         }
     }
 

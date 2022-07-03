@@ -48,18 +48,15 @@ public class Player : NetworkBehaviour, IDamageable
         gameManager = FindObjectOfType<GameManager>();  
         room = FindObjectOfType<NetworkManagerRoom>();
     }
+
     public void Start()
     {
         Invoke("SpawnUIAgent", .3f);
         if (!isLocalPlayer) return;
+        //CmdAddPlayer();
+        Invoke("CmdAddPlayer",.3f);
         Cursor.lockState = CursorLockMode.Locked;
         CmdSetPlayerInfo(NicknameManager.DisplayName, RoomManager.PTeam, RoomManager.PAgent);
-    }
-
-    public override void OnStartLocalPlayer()
-    {
-        Invoke("CmdAddPlayer", .1f);
-        base.OnStartLocalPlayer();
     }
 
     void SpawnUIAgent()

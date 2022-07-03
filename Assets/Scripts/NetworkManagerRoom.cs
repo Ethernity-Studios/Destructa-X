@@ -51,9 +51,13 @@ public class NetworkManagerRoom : NetworkRoomManager
     {
         if (SceneManager.GetActiveScene().name.StartsWith("Map"))
         {
+            Debug.Log("OnClientSceneChanged");
         }
         base.OnClientSceneChanged();
     }
-
-
+    public override void OnRoomClientSceneChanged()
+    {
+        Debug.Log("OnRoomClientSceneChanged");
+        base.OnRoomClientSceneChanged();
+    }
 }

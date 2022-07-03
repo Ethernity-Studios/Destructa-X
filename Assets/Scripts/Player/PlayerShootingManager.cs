@@ -41,6 +41,7 @@ public class PlayerShootingManager : NetworkBehaviour
 
     public void Shoot()
     {
+        if(playerInventory.EqupiedGun != null)
         CmdSpawnBullet();
     }
 
@@ -90,5 +91,6 @@ public class PlayerShootingManager : NetworkBehaviour
         }
         bullet.CameraPosition = cameraHolder.position;
         bullet.BulletDirection = new Vector3(cameraHolder.eulerAngles.x, transform.eulerAngles.y);
+        bullet.BulletOwner = GetComponent<Player>();
     }
 }

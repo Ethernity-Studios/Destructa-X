@@ -17,6 +17,11 @@ public class Bullet : MonoBehaviour
     Vector3 endPoint;
     Vector3? penetrationPoint;
     Vector3? impactPoint;
+
+    public Player BulletOwner;
+
+    GameObject NonPenetrableObject;
+
     private void Start()
     {
         rb = GetComponent<Rigidbody>();
@@ -34,7 +39,7 @@ public class Bullet : MonoBehaviour
 
     public void CheckPenetration()
     {
-        Debug.Log("Checking penetration");
+        //Debug.Log("Checking penetration");
         Ray ray = new Ray(this.transform.position+new Vector3(0,0,transform.localScale.z), this.transform.forward);
         RaycastHit hit;
         if (Physics.Raycast(ray, out hit))
@@ -49,14 +54,12 @@ public class Bullet : MonoBehaviour
 
                 if(hit.transform.TryGetComponent(out MaterialToughness materialToughness))
                 {
-                    Debug.Log("Object has meterial toughness");
                     CanPenetrate = true;
                     PenetrationAmount -= Vector3.Distance((Vector3)penetrationPoint, hit.point);
                     PenetrationAmount -= materialToughness.ToughnessAmount;
                 }
                 else
                 {
-                    Debug.Log("Object doesnt have meterial toughness");
                     CanPenetrate = false;
                     NonPenetrableObject = hit.transform.gameObject;
                 }
@@ -77,7 +80,7 @@ public class Bullet : MonoBehaviour
             impactPoint = null;
         }
     }
-    [SerializeField] GameObject NonPenetrableObject;
+
     private void OnCollisionEnter(Collision collision)
     {
         if (NonPenetrableObject == collision.gameObject && !CanPenetrate) Destroy(gameObject);
@@ -94,7 +97,7 @@ public class Bullet : MonoBehaviour
 
     private void OnDrawGizmos()
     {
-        CheckPenetration();
+        //CheckPenetration();
 
         if (!penetrationPoint.HasValue || !impactPoint.HasValue)
         {

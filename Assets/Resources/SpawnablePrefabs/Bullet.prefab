@@ -51,7 +51,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   PenetrationAmount: 1
-  bulletSpeed: 80
+  bulletSpeed: 100
   CanPenetrate: 0
   BulletDirection: {x: 0, y: 0, z: 0}
   CameraPosition: {x: 0, y: 0, z: 0}
