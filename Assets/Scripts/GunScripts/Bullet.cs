@@ -108,8 +108,7 @@ public class Bullet : MonoBehaviour
         {
             Debug.Log(other.gameObject);
             Debug.Log(BulletOwner.gameObject.transform.GetChild(0));
-            if (other.gameObject == BulletOwner.gameObject.transform.GetChild(0)) return;
-            Debug.Log("Still dealing dmaage");
+            if (other.gameObject == BulletOwner.gameObject.transform.GetChild(0).gameObject) return;
             iDamageable.TakeDamage(CalculateDamage());
             Destroy(gameObject);
         }
