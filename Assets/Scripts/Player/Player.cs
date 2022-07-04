@@ -26,13 +26,17 @@ public class Player : NetworkBehaviour, IDamageable
     public int PlayerAssists;
 
     [SyncVar]
-    public bool IsDeath = false;
+    public bool IsDead = false;
 
     [SerializeField] GameObject UIAgent;
 
     GameManager gameManager;
     ShopManager shopManager;
     AgentManager agentManager;
+    PlayerSpectateManager playerSpectateManager;
+    PlayerInventoryManager playerInventoryManager;
+    PlayerShootingManager playerShootingManager;
+    PlayerBombManager playerBombManager;
     UIManager uiManager;
     CharacterController characterController;
     NetworkManagerRoom room;
@@ -51,6 +55,10 @@ public class Player : NetworkBehaviour, IDamageable
     private void Awake()
     {
         PlayerState = PlayerState.Idle;
+        playerSpectateManager = GetComponent<PlayerSpectateManager>();
+        playerInventoryManager = GetComponent<PlayerInventoryManager>();
+        playerShootingManager = GetComponent<PlayerShootingManager>();
+        playerBombManager = GetComponent<PlayerBombManager>();
         uiManager = FindObjectOfType<UIManager>();
         shopManager = FindObjectOfType<ShopManager>();
         gameManager = FindObjectOfType<GameManager>();
@@ -69,8 +77,8 @@ public class Player : NetworkBehaviour, IDamageable
 
     void setPlayerBody()
     {
-        if(!isLocalPlayer)
-        playerBody.layer = 10;
+        if (!isLocalPlayer)
+            playerBody.layer = 10;
     }
 
     void spawnUIAgent()
@@ -97,6 +105,8 @@ public class Player : NetworkBehaviour, IDamageable
     {
         gameManager = FindObjectOfType<GameManager>();
         gameManager.Players.Add(this);
+        if (PlayerTeam == Team.Blue) gameManager.BlueTeamSize++;
+        else if(PlayerTeam == Team.Red) gameManager.RedTeamSize++;
     }
 
     [Command]
@@ -119,6 +129,7 @@ public class Player : NetworkBehaviour, IDamageable
     [Command(requiresAuthority = false)]
     public void CmdTakeDamage(int damage)
     {
+        Debug.Log(this + " Taking damage");
         Health -= damage;
         if (Health <= 0) CmdKillPlayer();
     }
@@ -139,25 +150,43 @@ public class Player : NetworkBehaviour, IDamageable
     public void CmdKillPlayer()
     {
         Debug.Log("Killing player: " + PlayerName);
-        IsDeath = true;
+        IsDead = true;
+        PlayerState = PlayerState.Dead;
+        playerSpectateManager.PlayerDeath();
+        RpcKillPlayer(connectionToClient);
+    }
+    [TargetRpc]
+    public void RpcKillPlayer(NetworkConnection conn)
+    {
+        Debug.Log("Rpc kill palyer");
+        playerBombManager.StopAllCoroutines();
+        playerShootingManager.StopAllCoroutines();
+        playerInventoryManager.StopAllCoroutines();
+        playerSpectateManager.StartCoroutine(playerSpectateManager.PlayerDeathCoroutine());
     }
 
     void updateHealth(int _, int newValue)
     {
+        if(isLocalPlayer)
         uiManager.Health.text = newValue.ToString();
     }
 
     void updateShield(int _, int newValue)
     {
+        if(isLocalPlayer)
         uiManager.Shield.text = newValue.ToString();
     }
 
     void updateMoneyText(int _, int newValue)
     {
+        if(isLocalPlayer)
         uiManager.Money.text = newValue.ToString();
     }
 
-    public void TakeDamage(int damage) => CmdTakeDamage(damage);
+    public void TakeDamage(int damage)
+    {
+        CmdTakeDamage(damage);
+    }
 
     public void AddHealth(int health) => CmdAddHealth(health);
 }

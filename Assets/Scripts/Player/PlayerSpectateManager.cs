@@ -1,15 +1,80 @@
+using System.Collections;
 using UnityEngine;
 
 public class PlayerSpectateManager : MonoBehaviour
 {
     Player player;
+    GameManager gameManager;
+
+    [SerializeField] float deathScreenTime;
+
+    [SerializeField] GameObject playerBody;
+    [SerializeField] GameObject itemHolder;
+    [SerializeField] GameObject playerHands;
+    [SerializeField] GameObject playerHead;
+
+    public Camera PlayerCamera;
+    public Camera ItemCamera;
+
+    [SerializeField] Player currentlySpectating = null;
+
+    bool isSpectating;
     private void Start()
     {
-        player = GetComponent<Player>();    
+        player = GetComponent<Player>();
+        gameManager = FindObjectOfType<GameManager>();
     }
 
     private void Update()
     {
-        if (player.IsDeath) return;
+        if (!player.IsDead) return;
+        if (!isSpectating) return;
+        if (Input.GetMouseButtonDown(0))
+        {
+            spectate();
+        }
+    }
+
+    public void PlayerDeath()
+    {
+        playerBody.transform.localEulerAngles = new Vector3(90, 0, 0);
+        playerBody.transform.localPosition = new Vector3(0, -.7f, 0);
+        playerHead.transform.localPosition = new Vector3(0, 2, 0);
+        playerHead.transform.localEulerAngles = new Vector3(90, 0, 0);
+    }
+
+    public IEnumerator PlayerDeathCoroutine()
+    {
+        Debug.Log("Coroutine PlayerDeath");
+        itemHolder.SetActive(false);
+        playerHands.SetActive(false);
+        playerBody.transform.localEulerAngles = new Vector3(90, 0, 0);
+        playerBody.transform.localPosition = new Vector3(0,-.7f,0);
+        playerHead.transform.localPosition = new Vector3(0,2,0);
+        playerHead.transform.localEulerAngles = new Vector3(90,0,0);
+        yield return new WaitForSeconds(deathScreenTime);
+        if (player.PlayerTeam == Team.Blue && gameManager.BlueTeamSize > 1) spectate();
+        else if (player.PlayerTeam == Team.Red && gameManager.RedTeamSize > 1) spectate();
+        else Debug.Log("No players to spectate");
+    }
+
+    void spectate()
+    {
+        Debug.Log("spectate");
+        isSpectating = true;
+        PlayerCamera.enabled = false;
+        ItemCamera.enabled = false;
+        foreach (var player in gameManager.Players)
+        {
+            if (player.isLocalPlayer) continue;
+            if (player.PlayerTeam != this.player.PlayerTeam) continue;
+            if(player == currentlySpectating) continue;
+            
+            PlayerSpectateManager playerSpectateManager = player.GetComponent<PlayerSpectateManager>();
+            playerSpectateManager.PlayerCamera.enabled = true;
+            playerSpectateManager.ItemCamera.enabled = true;
+            currentlySpectating = player;
+            Debug.Log("Currently spectating: " + currentlySpectating);
+        }
     }
 }

@@ -6,6 +6,7 @@ public class PlayerShootingManager : NetworkBehaviour
 {
     [SerializeField] GameObject bullet;
     [SerializeField] PlayerInventoryManager playerInventory;
+    Player player;
     [SerializeField] UIManager uiManager;
 
     [SerializeField] Transform cameraHolder;
@@ -18,6 +19,7 @@ public class PlayerShootingManager : NetworkBehaviour
     public GunInstance gunInstance;
     private void Start()
     {
+        player = GetComponent<Player>();
         gameManager = FindObjectOfType<GameManager>();
         uiManager = FindObjectOfType<UIManager>();
         if (!isLocalPlayer) return;
@@ -27,6 +29,7 @@ public class PlayerShootingManager : NetworkBehaviour
     void Update()
     {
         Debug.DrawRay(cameraHolder.position, cameraHolder.forward, Color.red);
+        if (player.IsDead) return;
         if (!isLocalPlayer) return;
         if (gunInstance == null) return;
 
@@ -108,7 +111,7 @@ public class PlayerShootingManager : NetworkBehaviour
         {
             if(hit.transform.parent.gameObject.TryGetComponent(out IDamageable entity))
             {
-                Debug.Log("Dealing damage!");
+                Debug.Log("Dealing damage!: " + CalculateDamage(hit.point));
                 entity.TakeDamage(CalculateDamage(hit.point));
             }
             Debug.Log(hit.transform.name + " hittd object");

@@ -306,7 +306,7 @@ public class PlayerInventoryManager : NetworkBehaviour
         }
         setGunTransform(gunInstance, gun);
 
-        if (isLocalPlayer) setLayerMask(gunInstance, 6);
+        setLayerMask(gunInstance, 6);
     }
 
     void setGunTransform(GameObject gunInstance, Gun gun)

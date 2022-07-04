@@ -46,7 +46,7 @@ public class PlayerMovement : NetworkBehaviour
     private void Update()
     {
         if (!isLocalPlayer) return;
-        if (playerManager.PlayerState == PlayerState.Dead) return;
+        if (playerManager.IsDead) return;
         movePlayer();
         jump();
         crouch();
@@ -55,6 +55,7 @@ public class PlayerMovement : NetworkBehaviour
     void LateUpdate()
     {
         if (!isLocalPlayer) return;
+        if(playerManager.IsDead) return;
         rotateHead();
     }
 

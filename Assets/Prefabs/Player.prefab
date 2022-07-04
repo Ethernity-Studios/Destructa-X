@@ -274,7 +274,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5224999313321314874}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -476,6 +476,7 @@ GameObject:
   - component: {fileID: 7365863876986519927}
   - component: {fileID: 6021906618316908405}
   - component: {fileID: 4591204699662543079}
+  - component: {fileID: -7474328044268257047}
   - component: {fileID: 8727875781923725074}
   - component: {fileID: 3516282345566254277}
   - component: {fileID: 5070754395047204269}
@@ -528,11 +529,11 @@ MonoBehaviour:
   PlayerKills: 0
   PlayerDeaths: 0
   PlayerAssists: 0
-  IsDeath: 0
+  IsDead: 0
   UIAgent: {fileID: 6857847130121847309, guid: bb195f3f46f5b824097ff8cb2ed6b2d1, type: 3}
   PlayerState: 0
   playerBody: {fileID: 5224999313321314874}
-  Health: 1000
+  Health: 100
   Shield: 0
   MaxShield: 50
 --- !u!114 &1850405224234988842
@@ -646,6 +647,26 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0.1
   isShopOpen: 0
+--- !u!114 &-7474328044268257047
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6720852769967137176}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7b0276bdcad19904b9b6021ab72ccd41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  deathScreenTime: 2
+  playerBody: {fileID: 5224999313321314874}
+  itemHolder: {fileID: 399943159590823399}
+  playerHands: {fileID: 6263509137884671384}
+  playerHead: {fileID: 6906543326731332664}
+  PlayerCamera: {fileID: 8837322168990955401}
+  ItemCamera: {fileID: 1270561995127500589}
+  currentlySpectating: {fileID: 0}
 --- !u!143 &8727875781923725074
 CharacterController:
   m_ObjectHideFlags: 0
