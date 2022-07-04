@@ -74,6 +74,7 @@ public class PlayerInventoryManager : NetworkBehaviour
 
     void SwitchItem(Item item)
     {
+        if (player.PlayerState == PlayerState.Planting || player.PlayerState == PlayerState.Defusing || player.PlayerState == PlayerState.Dead) return;
         StopCoroutine(toggleEqupiedGun());
         gunEqupied = false;
         playerShootingManager.StopAllCoroutines();
@@ -141,6 +142,7 @@ public class PlayerInventoryManager : NetworkBehaviour
 
     private void OnTriggerStay(Collider other)
     {
+        gameManager = FindObjectOfType<GameManager>();
         if (!isLocalPlayer) return;
         if (gameManager.Bomb == null) return;
         if (other.gameObject == gameManager.Bomb.transform.GetChild(0).gameObject && other.gameObject.layer != 6 && player.PlayerTeam == Team.Red) CmdPickBomb();

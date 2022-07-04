@@ -8607,7 +8607,6 @@ MonoBehaviour:
   shieldDescription: {fileID: 0}
   shieldImage: {fileID: 0}
   gameManager: {fileID: 814328176}
-  PlayerMoneyText: {fileID: 234212383}
 --- !u!1 &714569158
 GameObject:
   m_ObjectHideFlags: 0
@@ -26510,8 +26509,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   MagazineText: {fileID: 286275736}
   MaxAmmoText: {fileID: 1350334447}
-  Health: {fileID: 0}
-  Shield: {fileID: 0}
+  Health: {fileID: 457943771}
+  Shield: {fileID: 1293872201}
+  Money: {fileID: 234212383}
 --- !u!1 &1934109852
 GameObject:
   m_ObjectHideFlags: 0

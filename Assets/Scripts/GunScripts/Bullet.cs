@@ -42,7 +42,6 @@ public class Bullet : MonoBehaviour
 
     public void CheckPenetration()
     {
-        Debug.Log("Check penetration");
         Ray ray = new Ray(this.transform.position+new Vector3(0,0,transform.localScale.z), this.transform.forward);
         RaycastHit hit;
         if (Physics.Raycast(ray, out hit))
@@ -94,11 +93,10 @@ public class Bullet : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
+        Debug.Log(other);
         if (other.transform.parent == null) return;
         if (other.transform.parent.TryGetComponent(out IDamageable iDamageable))
         {
-            Debug.Log(other.gameObject);
-            Debug.Log(BulletOwner.gameObject.transform.GetChild(0));
             if (other.gameObject == BulletOwner.gameObject.transform.GetChild(0).gameObject) return;
             iDamageable.TakeDamage(CalculateDamage());
             Destroy(gameObject);

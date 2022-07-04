@@ -9,4 +9,6 @@ public class UIManager : MonoBehaviour
 
     public TMP_Text Health;
     public TMP_Text Shield;
+
+    public TMP_Text Money;
 }

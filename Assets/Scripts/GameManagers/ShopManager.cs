@@ -32,8 +32,6 @@ public class ShopManager : MonoBehaviour
 
     [SerializeField] GameManager gameManager;
 
-    public TMP_Text PlayerMoneyText;
-
     private void Start()
     {
         Invoke("getLocalPlayer", 1f);

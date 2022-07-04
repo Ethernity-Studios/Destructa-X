@@ -33,6 +33,7 @@ public class Player : NetworkBehaviour, IDamageable
     GameManager gameManager;
     ShopManager shopManager;
     AgentManager agentManager;
+    UIManager uiManager;
     CharacterController characterController;
     NetworkManagerRoom room;
 
@@ -40,17 +41,17 @@ public class Player : NetworkBehaviour, IDamageable
 
     [SerializeField] GameObject playerBody;
 
-    [SyncVar]
+    [SyncVar(hook = nameof(updateHealth))]
     public int Health;
-    public int MaxHealth;
 
-    [SyncVar]
+    [SyncVar(hook = nameof(updateShield))]
     public int Shield;
     public int MaxShield;
 
     private void Awake()
     {
         PlayerState = PlayerState.Idle;
+        uiManager = FindObjectOfType<UIManager>();
         shopManager = FindObjectOfType<ShopManager>();
         gameManager = FindObjectOfType<GameManager>();
         room = FindObjectOfType<NetworkManagerRoom>();
@@ -137,12 +138,23 @@ public class Player : NetworkBehaviour, IDamageable
     [Command(requiresAuthority = false)]
     public void CmdKillPlayer()
     {
+        Debug.Log("Killing player: " + PlayerName);
         IsDeath = true;
+    }
+
+    void updateHealth(int _, int newValue)
+    {
+        uiManager.Health.text = newValue.ToString();
+    }
+
+    void updateShield(int _, int newValue)
+    {
+        uiManager.Shield.text = newValue.ToString();
     }
 
     void updateMoneyText(int _, int newValue)
     {
-        shopManager.PlayerMoneyText.text = newValue.ToString();
+        uiManager.Money.text = newValue.ToString();
     }
 
     public void TakeDamage(int damage) => CmdTakeDamage(damage);
