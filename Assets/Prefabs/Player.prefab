@@ -533,7 +533,6 @@ MonoBehaviour:
   PlayerState: 0
   playerBody: {fileID: 5224999313321314874}
   Health: 1000
-  MaxHealth: 1000
   Shield: 0
   MaxShield: 50
 --- !u!114 &1850405224234988842
@@ -587,7 +586,7 @@ MonoBehaviour:
   gunInstance: {fileID: 0}
   mask:
     serializedVersion: 2
-    m_Bits: 831
+    m_Bits: 1599
 --- !u!114 &7365863876986519927
 MonoBehaviour:
   m_ObjectHideFlags: 0
