@@ -337,4 +337,23 @@ public class PlayerInventoryManager : NetworkBehaviour
         CmdSwitchItem(PreviousEqupiedItem);
         NetworkServer.Destroy(NetworkServer.spawned[gunID].gameObject);
     }
+
+    [Command]
+    public void CmdDestroyGun(GunType type)
+    {
+        if(type == GunType.Primary && PrimaryGun != null)
+        {
+            CmdSwitchItem(PreviousEqupiedItem);
+            PrimaryGun = null;
+            PrimaryGunInstance = null;
+            NetworkServer.Destroy(NetworkServer.spawned[PrimaryGunInstance.GetComponent<NetworkIdentity>().netId].gameObject);
+        }
+        else if(type == GunType.Secondary && SecondaryGun != null)
+        {
+            CmdSwitchItem(PreviousEqupiedItem);
+            SecondaryGun = null;
+            SecondaryGunInstance = null;
+            NetworkServer.Destroy(NetworkServer.spawned[SecondaryGunInstance.GetComponent<NetworkIdentity>().netId].gameObject);
+        }
+    }
 }

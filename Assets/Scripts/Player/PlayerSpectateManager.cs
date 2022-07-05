@@ -5,6 +5,7 @@ public class PlayerSpectateManager : MonoBehaviour
 {
     Player player;
     GameManager gameManager;
+    UIManager uiManager;
 
     [SerializeField] float deathScreenTime;
 
@@ -23,6 +24,7 @@ public class PlayerSpectateManager : MonoBehaviour
     {
         player = GetComponent<Player>();
         gameManager = FindObjectOfType<GameManager>();
+        uiManager = FindObjectOfType<UIManager>();
     }
 
     private void Update()
@@ -39,8 +41,12 @@ public class PlayerSpectateManager : MonoBehaviour
     {
         playerBody.transform.localEulerAngles = new Vector3(90, 0, 0);
         playerBody.transform.localPosition = new Vector3(0, -.7f, 0);
+        playerBody.GetComponent<CapsuleCollider>().enabled = false;
+        playerBody.transform.parent.GetComponent<CharacterController>().enabled = false;
+        itemHolder.SetActive(false);
         playerHead.transform.localPosition = new Vector3(0, 2, 0);
         playerHead.transform.localEulerAngles = new Vector3(90, 0, 0);
+        playerHands.GetComponent<Renderer>().enabled = false;
     }
 
     public IEnumerator PlayerDeathCoroutine()
@@ -74,6 +80,8 @@ public class PlayerSpectateManager : MonoBehaviour
             playerSpectateManager.PlayerCamera.enabled = true;
             playerSpectateManager.ItemCamera.enabled = true;
             currentlySpectating = player;
+            uiManager.SpectatingUI.SetActive(true);
+            uiManager.SpectatingPlayerName.text = player.PlayerName;
             Debug.Log("Currently spectating: " + currentlySpectating);
         }
     }

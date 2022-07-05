@@ -11,4 +11,7 @@ public class UIManager : MonoBehaviour
     public TMP_Text Shield;
 
     public TMP_Text Money;
+
+    public GameObject SpectatingUI;
+    public TMP_Text SpectatingPlayerName;
 }

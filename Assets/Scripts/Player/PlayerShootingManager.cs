@@ -111,7 +111,8 @@ public class PlayerShootingManager : NetworkBehaviour
         {
             if(hit.transform.parent.gameObject.TryGetComponent(out IDamageable entity))
             {
-                Debug.Log("Dealing damage!: " + CalculateDamage(hit.point));
+                ///// Cannot hit dummy -- need rework
+                if (hit.transform.parent.gameObject.GetComponent<Player>().PlayerTeam != player.PlayerTeam)
                 entity.TakeDamage(CalculateDamage(hit.point));
             }
             Debug.Log(hit.transform.name + " hittd object");

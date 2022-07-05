@@ -106,7 +106,7 @@ public class Player : NetworkBehaviour, IDamageable
         gameManager = FindObjectOfType<GameManager>();
         gameManager.Players.Add(this);
         if (PlayerTeam == Team.Blue) gameManager.BlueTeamSize++;
-        else if(PlayerTeam == Team.Red) gameManager.RedTeamSize++;
+        else if (PlayerTeam == Team.Red) gameManager.RedTeamSize++;
     }
 
     [Command]
@@ -152,35 +152,60 @@ public class Player : NetworkBehaviour, IDamageable
         Debug.Log("Killing player: " + PlayerName);
         IsDead = true;
         PlayerState = PlayerState.Dead;
-        playerSpectateManager.PlayerDeath();
-        RpcKillPlayer(connectionToClient);
+        rpcKillPlayer();
+        targetRpcKillPlayer(connectionToClient);
     }
-    [TargetRpc]
-    public void RpcKillPlayer(NetworkConnection conn)
+
+    [ClientRpc]
+    void rpcKillPlayer()
     {
-        Debug.Log("Rpc kill palyer");
+        playerSpectateManager.PlayerDeath();
+    }
+
+    [TargetRpc]
+    void targetRpcKillPlayer(NetworkConnection conn)
+    {
         playerBombManager.StopAllCoroutines();
         playerShootingManager.StopAllCoroutines();
         playerInventoryManager.StopAllCoroutines();
+        dropItems();
         playerSpectateManager.StartCoroutine(playerSpectateManager.PlayerDeathCoroutine());
+    }
+
+    void dropItems()
+    {
+        if (playerInventoryManager.Bomb != null) playerInventoryManager.CmdDropBomb();
+
+        if (playerInventoryManager.PrimaryGun != null)
+        {
+            playerInventoryManager.CmdSwitchItem(playerInventoryManager.PreviousEqupiedItem);
+            playerInventoryManager.CmdDropGun(GunType.Primary);
+            playerInventoryManager.CmdDestroyGun(GunType.Secondary);
+        }
+        else if (playerInventoryManager.PrimaryGun == null && playerInventoryManager.SecondaryGun != null)
+        {
+            playerInventoryManager.CmdSwitchItem(playerInventoryManager.PreviousEqupiedItem);
+            playerInventoryManager.CmdDropGun(GunType.Secondary);
+        }
     }
 
     void updateHealth(int _, int newValue)
     {
-        if(isLocalPlayer)
+        if (!isLocalPlayer) return;
         uiManager.Health.text = newValue.ToString();
+        if (newValue < 0) uiManager.Health.text = 0.ToString();
     }
 
     void updateShield(int _, int newValue)
     {
-        if(isLocalPlayer)
-        uiManager.Shield.text = newValue.ToString();
+        if (isLocalPlayer)
+            uiManager.Shield.text = newValue.ToString();
     }
 
     void updateMoneyText(int _, int newValue)
     {
-        if(isLocalPlayer)
-        uiManager.Money.text = newValue.ToString();
+        if (isLocalPlayer)
+            uiManager.Money.text = newValue.ToString();
     }
 
     public void TakeDamage(int damage)
@@ -189,4 +214,12 @@ public class Player : NetworkBehaviour, IDamageable
     }
 
     public void AddHealth(int health) => CmdAddHealth(health);
+
+
+
+    private void Update()
+    {
+        if (!isLocalPlayer) return;
+        if (Input.GetKeyDown(KeyCode.U)) TakeDamage(10);
+    }
 }
