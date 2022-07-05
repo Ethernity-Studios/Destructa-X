@@ -12023,11 +12023,11 @@ MonoBehaviour:
   syncInterval: 0.01
   Round: 0
   RoundsPerHalf: 13
-  StartGameLenght: 30
+  StartGameLenght: 5
   EndgameLenght: 5
-  PreRoundLenght: 20
-  RoundLenght: 20
-  PostRoundlenght: 10
+  PreRoundLenght: 5
+  RoundLenght: 5
+  PostRoundlenght: 5
   BombPlantTime: 5
   BombHalfDefuseTime: 5
   BombDefuseTime: 10

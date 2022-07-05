@@ -1,5 +1,6 @@
 using Mirror;
 using System;
+using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -64,8 +65,8 @@ public class GameManager : NetworkBehaviour
     public GameObject BombPrefab;
     public GameObject GunHolder;
     [SerializeField] Transform bombSpawnLocation;
-    [SyncVar]
-    public GameObject Bomb = null;
+
+    public GameObject Bomb;
 
     [SerializeField] GunManager gunManager;
     public GameObject BulletHolder;
@@ -78,15 +79,13 @@ public class GameManager : NetworkBehaviour
         DefuseProgressSlider.gameObject.SetActive(false);
         GameTime = StartGameLenght;
 
+
         if (!isServer) return;
+        Invoke("spawnBomb",1f);
         Invoke("spawnPlayers", 1f);
         Invoke("giveDefaultGun", 1.5f);
         StartRound(GameState.StartGame);
     }
-
-
-
-
     void spawnPlayers()
     {
         int b = 0;
@@ -95,12 +94,12 @@ public class GameManager : NetworkBehaviour
         {
             if (player.PlayerTeam == Team.Blue)
             {
-                player.RespawnPlayer(blueSpawnPositions[b].position);
+                player.RpcRespawnPlayer(blueSpawnPositions[b].position);
                 b++;
             }
             else if (player.PlayerTeam == Team.Red)
             {
-                player.RespawnPlayer(redSpawnPositions[r].position);
+                player.RpcRespawnPlayer(redSpawnPositions[r].position);
                 r++;
             }
 
@@ -110,8 +109,7 @@ public class GameManager : NetworkBehaviour
     private void Update()
     {
         updateRoundTimer();
-        if (isServer)
-            updateGameState();
+        if (isServer) updateGameState();
 
         if (GameTime > 0) GameTime -= Time.deltaTime;
     }
@@ -127,20 +125,19 @@ public class GameManager : NetworkBehaviour
         }
     }
 
-    GameObject bombInstance;
-
-    public void SpawnBomb()
+    void spawnBomb()
     {
-        bombInstance = Instantiate(BombPrefab, Vector3.zero, Quaternion.identity, gameObject.transform);
+        Debug.Log("spawnBomb");
+        GameObject bombInstance = Instantiate(BombPrefab);
         NetworkServer.Spawn(bombInstance);
-        Bomb = bombInstance;
-        RpcSpawnBomb();
-        //Invoke("RpcSpawnBomb", 2f);
+        RpcSpawnBomb(bombInstance);
     }
 
     [ClientRpc]
-    void RpcSpawnBomb()
+    void RpcSpawnBomb(GameObject bombInstance)
     {
+        Debug.Log("RpcSpawnBomb");
+        Bomb = bombInstance;
         Bomb.transform.SetParent(gameObject.transform);
         Bomb.transform.position = bombSpawnLocation.position;
     }
@@ -158,22 +155,25 @@ public class GameManager : NetworkBehaviour
     {
         if (GameState == GameState.StartGame && GameTime <= 0)
         {
+            //Buy phase - Start
             RpcDropWalls();
             CloseLocalPlayerShopUI();
             CmdSetGameTime(RoundLenght);
             CmdChangeGameState(GameState.Round);
-            RpcCloseMOTD();
+            RpcToggleMOTD(false);
         }
         else if (GameState == GameState.PreRound && GameTime <= 0)
         {
+            //Buy phase
             RpcDropWalls();
             CloseLocalPlayerShopUI();
             CmdChangeGameState(GameState.Round);
             CmdSetGameTime(RoundLenght);
-            RpcCloseMOTD();
+            RpcToggleMOTD(false);
         }
         else if (BombState == BombState.Planted && GameTime <= 0)
         {
+            //Bomb explosion
             BombManager bombManager = FindObjectOfType<BombManager>();
             bombManager.CmdDetonateBomb();
             CmdChangeBombState(BombState.Exploded);
@@ -182,15 +182,79 @@ public class GameManager : NetworkBehaviour
         }
         else if (GameState == GameState.Round && GameTime <= 0)
         {
-            CmdChangeGameState(GameState.PostRound);
+            //end round
             CmdSetGameTime(PostRoundlenght);
+            CmdChangeGameState(GameState.PostRound);
         }
         else if (GameState == GameState.PostRound && GameTime <= 0)
         {
-            //start new round :)
+            //start new round
+            startNewRound();
+        }
+    }
+
+    void startNewRound()
+    {
+        CmdSetGameTime(PreRoundLenght);
+        CmdChangeGameState(GameState.PreRound);
+        CmdChangeBombState(BombState.NotPlanted);
+        Round++;
+
+        RpcToggleMOTD(true);
+
+        NetworkServer.Destroy(Bomb);
+        spawnBomb();
+        if(GunHolder.transform.childCount > 0)
+        {
+            foreach (Transform gun in GunHolder.transform)
+            {
+                Debug.Log("Destroyingh gun: " + gun.name);
+                NetworkServer.Destroy(gun.gameObject);
+            }
         }
 
+        spawnPlayers();
+        foreach (var player in Players)
+        {
+            Debug.Log("PLayja " + player.name);
+            PlayerInventoryManager playerInventory = player.GetComponent<PlayerInventoryManager>();
+            if(playerInventory.Bomb != null) NetworkServer.Destroy(playerInventory.Bomb);
+
+            if (playerInventory.SecondaryGun == null)
+            {
+                Debug.Log("1");
+                playerInventory.CmdGiveGun(gunManager.gunList[0].GunID);
+                playerInventory.CmdSwitchItem(Item.Secondary);
+                playerInventory.CmdSwitchItem(Item.Knife);
+            }
+
+            if(playerInventory.PrimaryGun != null)
+            {
+                Debug.Log("2");
+                playerInventory.CmdSwitchItem(Item.Primary);
+            }
+            else if(playerInventory.SecondaryGun != null && playerInventory.PrimaryGun == null)
+            {
+                Debug.Log("3");
+                playerInventory.CmdSwitchItem(Item.Secondary);
+            }
+
+
+            PlayerSpectateManager playerSpectateManager = player.GetComponent<PlayerSpectateManager>();
+            playerSpectateManager.playerBody.transform.localEulerAngles = new Vector3(0, 0, 0);
+            playerSpectateManager.playerBody.transform.localPosition = new Vector3(0, 0, 0);
+            playerSpectateManager.playerBody.GetComponent<CapsuleCollider>().enabled = true;
+            playerSpectateManager.playerBody.transform.parent.GetComponent<CharacterController>().enabled = true;
+            playerSpectateManager.itemHolder.SetActive(true);
+            playerSpectateManager.playerHead.transform.localPosition = new Vector3(0, .6f, 0);
+            playerSpectateManager.playerHead.transform.localEulerAngles = new Vector3(0, 0, 0);
+            playerSpectateManager.playerHands.GetComponent<Renderer>().enabled = true;
+            player.IsDead = false;
+            player.Health = 100;
+            player.PlayerState = PlayerState.Idle;
+        }
     }
+
     [ClientRpc]
     void RpcDropWalls()
     {
@@ -201,9 +265,9 @@ public class GameManager : NetworkBehaviour
     }
 
     [ClientRpc]
-    void RpcCloseMOTD()
+    void RpcToggleMOTD(bool statement)
     {
-        MOTD.SetActive(false);
+        MOTD.SetActive(statement);
     }
 
     void CloseLocalPlayerShopUI()
@@ -218,8 +282,6 @@ public class GameManager : NetworkBehaviour
     {
         Round++;
         GameState = gameState;
-        if (Bomb == null)
-            SpawnBomb();
     }
 
     [Command(requiresAuthority = false)]

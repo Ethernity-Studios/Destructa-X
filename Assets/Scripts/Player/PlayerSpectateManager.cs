@@ -9,10 +9,10 @@ public class PlayerSpectateManager : MonoBehaviour
 
     [SerializeField] float deathScreenTime;
 
-    [SerializeField] GameObject playerBody;
-    [SerializeField] GameObject itemHolder;
-    [SerializeField] GameObject playerHands;
-    [SerializeField] GameObject playerHead;
+    public GameObject playerBody;
+    public GameObject itemHolder;
+    public GameObject playerHands;
+    public GameObject playerHead;
 
     public Camera PlayerCamera;
     public Camera ItemCamera;
@@ -40,7 +40,6 @@ public class PlayerSpectateManager : MonoBehaviour
     public void PlayerDeath()
     {
         playerBody.transform.localEulerAngles = new Vector3(90, 0, 0);
-        playerBody.transform.localPosition = new Vector3(0, -1.5f, 0);
         playerBody.transform.localPosition = new Vector3(0, -1.5f, 0);
         playerBody.GetComponent<CapsuleCollider>().enabled = false;
         playerBody.transform.parent.GetComponent<CharacterController>().enabled = false;

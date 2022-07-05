@@ -138,7 +138,7 @@ public class Player : NetworkBehaviour, IDamageable
     public void CmdAddHealth(int health) => Health += health;
 
     [ClientRpc]
-    public void RespawnPlayer(Vector3 position)
+    public void RpcRespawnPlayer(Vector3 position)
     {
         characterController = GetComponent<CharacterController>();
         characterController.enabled = false;
