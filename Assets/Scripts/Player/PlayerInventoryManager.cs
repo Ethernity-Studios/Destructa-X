@@ -147,7 +147,7 @@ public class PlayerInventoryManager : NetworkBehaviour
         if (gameManager.Bomb == null) return;
         if (other.gameObject == gameManager.Bomb.transform.GetChild(0).gameObject && other.gameObject.layer != 6 && player.PlayerTeam == Team.Red) CmdPickBomb();
 
-        if (other.gameObject.TryGetComponent(out GunInstance instance)) if (instance.CanBePicked && instance.IsDropped) CmdPickGun(instance.GetComponent<NetworkIdentity>().netId);
+        if (other.gameObject.TryGetComponent(out GunInstance instance)) if (instance.CanBePicked && instance.IsDropped && !player.IsDead) CmdPickGun(instance.GetComponent<NetworkIdentity>().netId);
     }
 
     [Command]
@@ -343,17 +343,21 @@ public class PlayerInventoryManager : NetworkBehaviour
     {
         if(type == GunType.Primary && PrimaryGun != null)
         {
-            CmdSwitchItem(PreviousEqupiedItem);
+            Debug.Log("Destroying primary gun");
             PrimaryGun = null;
-            PrimaryGunInstance = null;
+            PrimaryGunHolder.SetActive(true);
             NetworkServer.Destroy(NetworkServer.spawned[PrimaryGunInstance.GetComponent<NetworkIdentity>().netId].gameObject);
+            PrimaryGunHolder.SetActive(false);
+            CmdSwitchItem(Item.Knife);
         }
         else if(type == GunType.Secondary && SecondaryGun != null)
         {
-            CmdSwitchItem(PreviousEqupiedItem);
+            Debug.Log("Destroying secondary gun");
             SecondaryGun = null;
-            SecondaryGunInstance = null;
+            SecondaryGunHolder.SetActive(false);
             NetworkServer.Destroy(NetworkServer.spawned[SecondaryGunInstance.GetComponent<NetworkIdentity>().netId].gameObject);
+            SecondaryGunHolder.SetActive(true);
+            CmdSwitchItem(Item.Knife);
         }
     }
 }

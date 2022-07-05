@@ -104,42 +104,38 @@ public class PlayerShootingManager : NetworkBehaviour
 
     public void CheckPenetration()
     {
-        Debug.Log("Checking peentration");
-        Ray ray = new Ray(this.transform.position + new Vector3(0, 0, transform.localScale.z), this.transform.forward);
+        Ray ray = new Ray(transform.position + new Vector3(0, 0, transform.localScale.z), transform.forward);
         RaycastHit hit;
         if (Physics.Raycast(cameraHolder.position,cameraHolder.forward, out hit, Mathf.Infinity, mask))
         {
             if(hit.transform.parent.gameObject.TryGetComponent(out IDamageable entity))
             {
+                Player hittedPlayer = hit.transform.parent.gameObject.GetComponent<Player>();
                 ///// Cannot hit dummy -- need rework
-                if (hit.transform.parent.gameObject.GetComponent<Player>().PlayerTeam != player.PlayerTeam)
+                if (hittedPlayer.PlayerTeam != player.PlayerTeam && !hittedPlayer.IsDead)
                 entity.TakeDamage(CalculateDamage(hit.point));
             }
-            Debug.Log(hit.transform.name + " hittd object");
             impactPoint = hit.point;
             Ray penRay = new Ray(hit.point + ray.direction * penetrationAmount, -ray.direction);
             RaycastHit penHit;
             if (hit.collider.Raycast(penRay, out penHit, penetrationAmount))
             {
                 penetrationPoint = penHit.point;
-                endPoint = this.transform.position + this.transform.forward * 1000;
+                endPoint = transform.position + transform.forward * 1000;
 
                 if (hit.transform.TryGetComponent(out MaterialToughness materialToughness))
                 {
-                    Debug.Log("1");
                     penetrationAmount -= Vector3.Distance((Vector3)penetrationPoint, hit.point);
                     penetrationAmount -= materialToughness.ToughnessAmount;
                     CheckPenetration();
                 }
                 else
                 {
-                    Debug.Log("return");
                     return;
                 }
             }
             else
             {
-                Debug.Log("2");
                 endPoint = impactPoint.Value + ray.direction * penetrationAmount;
                 penetrationPoint = endPoint;
                 return;
@@ -147,8 +143,7 @@ public class PlayerShootingManager : NetworkBehaviour
         }
         else
         {
-            Debug.Log("2");
-            endPoint = this.transform.position + this.transform.forward * 1000;
+            endPoint = transform.position + transform.forward * 1000;
             penetrationPoint = null;
             impactPoint = null;
         }
@@ -159,7 +154,6 @@ public class PlayerShootingManager : NetworkBehaviour
     {
         Gun gun = playerInventory.EqupiedGun;
         float distance = Vector3.Distance(entityPosition, cameraHolder.position);
-        Debug.Log("Distance: " + distance);
         if (gun.Damages.Count == 1)
         {
             BulletDamage = gun.Damages[0].BodyDamage;

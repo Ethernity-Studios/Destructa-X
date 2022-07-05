@@ -152,18 +152,18 @@ public class Player : NetworkBehaviour, IDamageable
         Debug.Log("Killing player: " + PlayerName);
         IsDead = true;
         PlayerState = PlayerState.Dead;
-        rpcKillPlayer();
-        targetRpcKillPlayer(connectionToClient);
+        RpcKillPlayer();
+        TargetRpcKillPlayer(connectionToClient);
     }
 
     [ClientRpc]
-    void rpcKillPlayer()
+    void RpcKillPlayer()
     {
         playerSpectateManager.PlayerDeath();
     }
 
     [TargetRpc]
-    void targetRpcKillPlayer(NetworkConnection conn)
+    void TargetRpcKillPlayer(NetworkConnection conn)
     {
         playerBombManager.StopAllCoroutines();
         playerShootingManager.StopAllCoroutines();
@@ -178,15 +178,14 @@ public class Player : NetworkBehaviour, IDamageable
 
         if (playerInventoryManager.PrimaryGun != null)
         {
-            playerInventoryManager.CmdSwitchItem(playerInventoryManager.PreviousEqupiedItem);
             playerInventoryManager.CmdDropGun(GunType.Primary);
             playerInventoryManager.CmdDestroyGun(GunType.Secondary);
         }
         else if (playerInventoryManager.PrimaryGun == null && playerInventoryManager.SecondaryGun != null)
         {
-            playerInventoryManager.CmdSwitchItem(playerInventoryManager.PreviousEqupiedItem);
             playerInventoryManager.CmdDropGun(GunType.Secondary);
         }
+        playerInventoryManager.CmdSwitchItem(Item.Knife);
     }
 
     void updateHealth(int _, int newValue)

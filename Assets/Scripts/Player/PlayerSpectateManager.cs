@@ -40,7 +40,8 @@ public class PlayerSpectateManager : MonoBehaviour
     public void PlayerDeath()
     {
         playerBody.transform.localEulerAngles = new Vector3(90, 0, 0);
-        playerBody.transform.localPosition = new Vector3(0, -.7f, 0);
+        playerBody.transform.localPosition = new Vector3(0, -1.5f, 0);
+        playerBody.transform.localPosition = new Vector3(0, -1.5f, 0);
         playerBody.GetComponent<CapsuleCollider>().enabled = false;
         playerBody.transform.parent.GetComponent<CharacterController>().enabled = false;
         itemHolder.SetActive(false);
@@ -51,11 +52,10 @@ public class PlayerSpectateManager : MonoBehaviour
 
     public IEnumerator PlayerDeathCoroutine()
     {
-        Debug.Log("Coroutine PlayerDeath");
         itemHolder.SetActive(false);
         playerHands.SetActive(false);
         playerBody.transform.localEulerAngles = new Vector3(90, 0, 0);
-        playerBody.transform.localPosition = new Vector3(0,-.7f,0);
+        playerBody.transform.localPosition = new Vector3(0,-1.5f,0);
         playerHead.transform.localPosition = new Vector3(0,2,0);
         playerHead.transform.localEulerAngles = new Vector3(90,0,0);
         yield return new WaitForSeconds(deathScreenTime);
@@ -66,7 +66,6 @@ public class PlayerSpectateManager : MonoBehaviour
 
     void spectate()
     {
-        Debug.Log("spectate");
         isSpectating = true;
         PlayerCamera.enabled = false;
         ItemCamera.enabled = false;
