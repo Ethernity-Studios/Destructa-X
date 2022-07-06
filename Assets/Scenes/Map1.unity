@@ -12023,11 +12023,11 @@ MonoBehaviour:
   syncInterval: 0.01
   Round: 0
   RoundsPerHalf: 13
-  StartGameLenght: 5
+  StartGameLenght: 30
   EndgameLenght: 5
-  PreRoundLenght: 5
-  RoundLenght: 15
-  PostRoundlenght: 5
+  PreRoundLenght: 10
+  RoundLenght: 20
+  PostRoundlenght: 10
   BombPlantTime: 5
   BombHalfDefuseTime: 5
   BombDefuseTime: 10
@@ -12038,8 +12038,8 @@ MonoBehaviour:
   roundTimer: {fileID: 1280828156}
   BlueUIAgents: {fileID: 1414175276}
   RedUIAgents: {fileID: 1539574436}
-  BlueTeamSize: 0
-  RedTeamSize: 0
+  AliveBluePlayers: 0
+  AliveRedPlayers: 0
   PlantProgressSlider: {fileID: 308350159}
   DefuseProgressSlider: {fileID: 1190775424}
   ShopUI: {fileID: 1049830186}
@@ -12064,11 +12064,15 @@ MonoBehaviour:
   bombSpawnLocation: {fileID: 5579749639605169770}
   Bomb: {fileID: 0}
   gunManager: {fileID: 863848735}
+  shopManager: {fileID: 0}
   BulletHolder: {fileID: 446060248}
   BlueTeamScore: 0
   RedTeamScore: 0
   BlueTeamScoreText: {fileID: 1597456852}
   RedTeamScoreText: {fileID: 85132037}
+  BombPlanted: 0
+  LosingTeam: 0
+  LossStreak: 0
 --- !u!4 &814328177
 Transform:
   m_ObjectHideFlags: 0
@@ -13715,6 +13719,7 @@ GameObject:
   - component: {fileID: 978163558}
   - component: {fileID: 978163559}
   - component: {fileID: 978163560}
+  - component: {fileID: 978163561}
   m_Layer: 5
   m_Name: LightShields
   m_TagString: Untagged
@@ -13819,6 +13824,19 @@ MonoBehaviour:
             m_StringArgument: light
             m_BoolArgument: 0
           m_CallState: 2
+--- !u!114 &978163561
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 978163557}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a2106b4d58057ec4885fa2ae12304217, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  shield: light
 --- !u!1 &985221896
 GameObject:
   m_ObjectHideFlags: 0
@@ -21783,7 +21801,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1536136338}
   m_Layer: 5
-  m_Name: Armor
+  m_Name: Shields
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -29625,6 +29643,7 @@ GameObject:
   - component: {fileID: 2095263529}
   - component: {fileID: 2095263530}
   - component: {fileID: 2095263531}
+  - component: {fileID: 2095263532}
   m_Layer: 5
   m_Name: HeavyShields
   m_TagString: Untagged
@@ -29729,6 +29748,19 @@ MonoBehaviour:
             m_StringArgument: heavy
             m_BoolArgument: 0
           m_CallState: 2
+--- !u!114 &2095263532
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2095263528}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a2106b4d58057ec4885fa2ae12304217, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  shield: heavy
 --- !u!1 &2096804624
 GameObject:
   m_ObjectHideFlags: 0

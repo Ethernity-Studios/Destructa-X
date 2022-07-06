@@ -12,6 +12,7 @@ public class PlayerShootingManager : NetworkBehaviour
     [SerializeField] Transform cameraHolder;
 
     GameManager gameManager;
+    PlayerEconomyManager playerEconomyManager;
 
     [SerializeField] bool canShoot = true;
     public bool Reloading;
@@ -22,6 +23,7 @@ public class PlayerShootingManager : NetworkBehaviour
         player = GetComponent<Player>();
         gameManager = FindObjectOfType<GameManager>();
         uiManager = FindObjectOfType<UIManager>();
+        playerEconomyManager = GetComponent<PlayerEconomyManager>();
         if (!isLocalPlayer) return;
         cameraHolder.GetComponent<Camera>().enabled = true;
         cameraHolder.GetChild(0).GetComponent<Camera>().enabled = true;
@@ -32,6 +34,7 @@ public class PlayerShootingManager : NetworkBehaviour
         if (player.IsDead) return;
         if (!isLocalPlayer) return;
         if (gunInstance == null) return;
+        if (playerEconomyManager.IsShopOpen) return;
 
         if (playerInventory.EqupiedGun != null && playerInventory.gunEqupied && canShoot && gunInstance.Magazine > 0 && !Reloading)
         {
@@ -113,7 +116,11 @@ public class PlayerShootingManager : NetworkBehaviour
                 Player hittedPlayer = hit.transform.parent.gameObject.GetComponent<Player>();
                 ///// Cannot hit dummy -- need rework
                 if (hittedPlayer.PlayerTeam != player.PlayerTeam && !hittedPlayer.IsDead)
-                    if (entity.TakeDamage(CalculateDamage(hit.point))) player.CmdAddKill();
+                    if (entity.TakeDamage(CalculateDamage(hit.point))) 
+                    {
+                        player.CmdAddKill();
+                        player.CmdAddRoundKill();
+                    } 
             }
             impactPoint = hit.point;
             Ray penRay = new Ray(hit.point + ray.direction * penetrationAmount, -ray.direction);

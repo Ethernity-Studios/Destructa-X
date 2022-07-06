@@ -1,6 +1,11 @@
+using Mirror;
 using TMPro;
 using UnityEngine;
-using Mirror;
+
+public enum ShieldType
+{
+    None, Light, Heavy
+}
 public class ShopManager : MonoBehaviour
 {
     [Header("Guns")]
@@ -41,8 +46,8 @@ public class ShopManager : MonoBehaviour
     {
         foreach (var player in gameManager.Players)
         {
-            if(player.isLocalPlayer)
-            playerInventory = player.GetComponent<PlayerInventoryManager>();
+            if (player.isLocalPlayer)
+                playerInventory = player.GetComponent<PlayerInventoryManager>();
         }
     }
     public void ShowGunInfo(Gun gun)
@@ -80,7 +85,7 @@ public class ShopManager : MonoBehaviour
                 break;
         }
     }
-    
+
     public string ConvertGunCategoryToString(GunCategory cat)
     {
         switch (cat)
@@ -111,7 +116,7 @@ public class ShopManager : MonoBehaviour
     public void BuyGun(Gun gun)
     {
         Player localPlayer = playerInventory.GetComponent<Player>();
-        if (localPlayer.PlayerMoney >= gun.Price) 
+        if (localPlayer.PlayerMoney >= gun.Price)
         {
             Debug.Log("buying gun with money");
             if (playerInventory.PrimaryGun == null && gun.Type == GunType.Primary)
@@ -127,7 +132,7 @@ public class ShopManager : MonoBehaviour
             }
             return;
         }
-        else if(playerInventory.PrimaryGun != null && gun.Type == GunType.Primary)
+        else if (playerInventory.PrimaryGun != null && gun.Type == GunType.Primary)
         {
             Debug.Log("trying tzo buy primary gun with gun and money!");
             if (localPlayer.PlayerMoney + playerInventory.PrimaryGun.Price < gun.Price) return;
@@ -141,7 +146,7 @@ public class ShopManager : MonoBehaviour
             }
             return;
         }
-        else if(playerInventory.SecondaryGun != null &&gun.Type == GunType.Secondary)
+        else if (playerInventory.SecondaryGun != null && gun.Type == GunType.Secondary)
         {
             Debug.Log("trying tzo buy secondary gun with gun and money!");
             if (localPlayer.PlayerMoney + playerInventory.SecondaryGun.Price < gun.Price) return;
@@ -172,6 +177,47 @@ public class ShopManager : MonoBehaviour
             localPlayer.CmdChangeMoney(gun.Price);
             playerInventory.CmdSellGun(playerInventory.SecondaryGunInstance.GetComponent<NetworkIdentity>().netId, gun);
         }
+    }
+
+    public void BuyShield(string shieldType)
+    {
+        Player localPlayer = playerInventory.GetComponent<Player>();
+        if (shieldType == "light")
+        {
+            if (localPlayer.Shield != 25 && localPlayer.PreviousRoundShield > 25 && localPlayer.ShieldType != ShieldType.Light)
+            {
+                if (localPlayer.ShieldType == ShieldType.Heavy) SellShield("heavy");
+                if(localPlayer.PlayerMoney > 400)
+                {
+                    Debug.Log("Buying light");
+                    localPlayer.CmdSetShield(25);
+                    localPlayer.CmdSetShieldType(ShieldType.Light);
+                }
+            }
+        }
+        else if (shieldType == "heavy")
+        {
+            if (localPlayer.Shield != 50 && localPlayer.PreviousRoundShield != 50 && localPlayer.ShieldType != ShieldType.Heavy)
+            {
+                if (localPlayer.ShieldType == ShieldType.Light) SellShield("light");
+                if (localPlayer.PlayerMoney > 1000)
+                {
+                    Debug.Log("Buying heavy");
+                    localPlayer.CmdSetShield(50);
+                    localPlayer.CmdSetShieldType(ShieldType.Heavy);
+                }
+            }
+        }
+    }
+
+    public void SellShield(string shieldType)
+    {
+        Player localPlayer = playerInventory.GetComponent<Player>();
+        localPlayer.CmdSetShield(localPlayer.PreviousRoundShield);
+        localPlayer.CmdSetShieldType(ShieldType.None);
+        Debug.Log("Selling shield: " + shieldType);
+        if (shieldType == "light") localPlayer.CmdChangeMoney(400);
+        else if (shieldType == "heavy") localPlayer.CmdChangeMoney(1000);
     }
 
     private void Update()

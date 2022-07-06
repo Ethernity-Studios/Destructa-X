@@ -61,7 +61,7 @@ public class PlayerMovement : NetworkBehaviour
 
     void rotateHead()
     {
-        if (GetComponent<PlayerEconomyManager>().isShopOpen) return;
+        if (GetComponent<PlayerEconomyManager>().IsShopOpen) return;
         float mouseX = Input.GetAxis("Mouse X") * MouseSens*100 * Time.fixedDeltaTime;
         float mouseY = Input.GetAxis("Mouse Y") * MouseSens*100 * Time.fixedDeltaTime;
         xRotation -= mouseY;

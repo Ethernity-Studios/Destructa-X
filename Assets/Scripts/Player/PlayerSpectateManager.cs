@@ -1,4 +1,3 @@
-using System;
 using System.Collections;
 using UnityEngine;
 
@@ -55,12 +54,19 @@ public class PlayerSpectateManager : MonoBehaviour
         itemHolder.SetActive(false);
         playerHands.SetActive(false);
         playerBody.transform.localEulerAngles = new Vector3(90, 0, 0);
-        playerBody.transform.localPosition = new Vector3(0,-1.5f,0);
-        playerHead.transform.localPosition = new Vector3(0,2,0);
-        playerHead.transform.localEulerAngles = new Vector3(90,0,0);
+        playerBody.transform.localPosition = new Vector3(0, -1.5f, 0);
+        playerHead.transform.localPosition = new Vector3(0, 2, 0);
+        playerHead.transform.localEulerAngles = new Vector3(90, 0, 0);
         yield return new WaitForSeconds(deathScreenTime);
-        if (player.PlayerTeam == Team.Blue && gameManager.BlueTeam.Count > 1) spectate();
-        else if (player.PlayerTeam == Team.Red && gameManager.RedTeam.Count > 1) spectate();
+        if (player.PlayerTeam == Team.Blue)
+        {
+            if (gameManager.AliveBluePlayers > 1) spectate();
+        }
+        else if (player.PlayerTeam == Team.Red) 
+        {
+            if(gameManager.AliveRedPlayers > 1) spectate();
+            else if(gameManager.AliveRedPlayers == 0 && gameManager.BombPlanted) spectateBomb();
+        }
         else Debug.Log("No players to spectate");
     }
 
@@ -73,7 +79,7 @@ public class PlayerSpectateManager : MonoBehaviour
         {
             if (player.isLocalPlayer) continue;
             if (player.PlayerTeam != this.player.PlayerTeam) continue;
-            if(player == currentlySpectating) continue;
+            if (player == currentlySpectating) continue;
             PlayerSpectateManager playerSpectateManager = player.GetComponent<PlayerSpectateManager>();
             playerSpectateManager.PlayerCamera.enabled = true;
             playerSpectateManager.ItemCamera.enabled = true;
@@ -82,5 +88,13 @@ public class PlayerSpectateManager : MonoBehaviour
             uiManager.SpectatingPlayerName.text = player.PlayerName;
             Debug.Log("Currently spectating: " + currentlySpectating);
         }
+    }
+
+    void spectateBomb()
+    {
+        isSpectating = true;
+        PlayerCamera.enabled = false;
+        ItemCamera.enabled = false;
+        Debug.Log("Currently spectating bomb");
     }
 }

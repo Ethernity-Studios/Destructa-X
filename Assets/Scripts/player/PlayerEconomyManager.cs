@@ -5,7 +5,7 @@ public class PlayerEconomyManager : NetworkBehaviour
 {
     GameManager gameManager;
 
-    [HideInInspector]public bool isShopOpen;
+    [HideInInspector]public bool IsShopOpen;
     private void Start()
     {
         if (!isLocalPlayer) return;
@@ -21,12 +21,12 @@ public class PlayerEconomyManager : NetworkBehaviour
 
                 if (gameManager.ShopUI.activeInHierarchy)
                 {
-                    isShopOpen = false;
+                    IsShopOpen = false;
                     CloseShopUI();
                 }
                 else
                 {
-                    isShopOpen = true;
+                    IsShopOpen = true;
                     gameManager.ShopUI.gameObject.SetActive(true);
                     Cursor.lockState = CursorLockMode.None;
                 } 
@@ -36,7 +36,7 @@ public class PlayerEconomyManager : NetworkBehaviour
 
     public void CloseShopUI()
     {
-        isShopOpen = false;
+        IsShopOpen = false;
         Cursor.lockState = CursorLockMode.Locked;
         gameManager = FindObjectOfType<GameManager>();
         gameManager.ShopUI.SetActive(false);

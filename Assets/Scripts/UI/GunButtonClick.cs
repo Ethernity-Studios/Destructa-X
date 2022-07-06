@@ -12,7 +12,7 @@ public class GunButtonClick : MonoBehaviour, IPointerClickHandler
     }
     public void OnPointerClick(PointerEventData eventData)
     {
-        if (eventData.button == PointerEventData.InputButton.Right) shopManager.SellGun(Gun);
         if(eventData.button == PointerEventData.InputButton.Left) shopManager.BuyGun(Gun);
+        if (eventData.button == PointerEventData.InputButton.Right) shopManager.SellGun(Gun);
     }
 }

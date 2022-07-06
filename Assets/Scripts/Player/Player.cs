@@ -47,14 +47,18 @@ public class Player : NetworkBehaviour, IDamageable
     [SerializeField] GameObject playerBody;
 
     [SyncVar(hook = nameof(updateHealth))]
-    public int Health;
+    public int Health = 100;
 
     [SyncVar(hook = nameof(updateShield))]
-    public int Shield;
-    public int MaxShield;
+    public int Shield = 0;
+    [SyncVar]
+    public int PreviousRoundShield = 0;
 
     [SyncVar]
     public int RoundKills;
+
+    [SyncVar]
+    public ShieldType ShieldType;
 
     private void Awake()
     {
@@ -109,8 +113,16 @@ public class Player : NetworkBehaviour, IDamageable
     {
         gameManager = FindObjectOfType<GameManager>();
         gameManager.Players.Add(this);
-        if (PlayerTeam == Team.Blue) gameManager.BlueTeam.Add(this);
-        else if (PlayerTeam == Team.Red) gameManager.RedTeam.Add(this);
+        if (PlayerTeam == Team.Blue)
+        {
+            gameManager.BlueTeam.Add(this);
+            gameManager.AliveBluePlayers++;
+        }
+        else if (PlayerTeam == Team.Red) 
+        {
+            gameManager.RedTeam.Add(this);
+            gameManager.AliveRedPlayers++;
+        } 
     }
 
     [Command]
@@ -127,7 +139,7 @@ public class Player : NetworkBehaviour, IDamageable
     [Command]
     public void CmdSwitchPlayerAgent(Agent agent) => PlayerAgent = agent;
 
-    [Command]
+    [Command(requiresAuthority = false)]
     public void CmdChangeMoney(int money) 
     {
         PlayerMoney += money;
@@ -135,23 +147,28 @@ public class Player : NetworkBehaviour, IDamageable
     } 
 
     [Command(requiresAuthority = false)]
-    public bool CmdTakeDamage(int damage)
+    public void CmdTakeDamage(int damage)
     {
         Debug.Log(this + " Taking damage");
         Health -= damage;
         if (Health <= 0)
         {
             CmdKillPlayer();
-            return true;
         }
-        else return false;
     }
 
     [Command]
     public void CmdAddHealth(int health) => Health += health;
 
     [Command]
+    public void CmdSetShield(int shield) => Shield = shield;
+    [Command]
+    public void CmdSetShieldType(ShieldType shieldType) => ShieldType = shieldType;
+
+    [Command]
     public void CmdAddKill() => PlayerKills++;
+    [Command]
+    public void CmdAddRoundKill() => RoundKills++;
 
     [ClientRpc]
     public void RpcRespawnPlayer(Vector3 position)
@@ -168,6 +185,8 @@ public class Player : NetworkBehaviour, IDamageable
         Debug.Log("Killing player: " + PlayerName);
         IsDead = true;
         PlayerState = PlayerState.Dead;
+        if (PlayerTeam == Team.Blue) gameManager.AliveBluePlayers--;
+        else if(PlayerTeam == Team.Red) gameManager.AliveRedPlayers--;
         RpcKillPlayer();
         TargetRpcKillPlayer(connectionToClient);
     }
@@ -225,7 +244,9 @@ public class Player : NetworkBehaviour, IDamageable
 
     public bool TakeDamage(int damage)
     {
-        return CmdTakeDamage(damage);
+        int h = Health;
+        CmdTakeDamage(damage);
+        return damage >= h;   
     }
 
     public void AddHealth(int health) => CmdAddHealth(health);
