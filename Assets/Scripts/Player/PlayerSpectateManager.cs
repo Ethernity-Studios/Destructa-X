@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using UnityEngine;
 
@@ -58,8 +59,8 @@ public class PlayerSpectateManager : MonoBehaviour
         playerHead.transform.localPosition = new Vector3(0,2,0);
         playerHead.transform.localEulerAngles = new Vector3(90,0,0);
         yield return new WaitForSeconds(deathScreenTime);
-        if (player.PlayerTeam == Team.Blue && gameManager.BlueTeamSize > 1) spectate();
-        else if (player.PlayerTeam == Team.Red && gameManager.RedTeamSize > 1) spectate();
+        if (player.PlayerTeam == Team.Blue && gameManager.BlueTeam.Count > 1) spectate();
+        else if (player.PlayerTeam == Team.Red && gameManager.RedTeam.Count > 1) spectate();
         else Debug.Log("No players to spectate");
     }
 
@@ -73,7 +74,6 @@ public class PlayerSpectateManager : MonoBehaviour
             if (player.isLocalPlayer) continue;
             if (player.PlayerTeam != this.player.PlayerTeam) continue;
             if(player == currentlySpectating) continue;
-            
             PlayerSpectateManager playerSpectateManager = player.GetComponent<PlayerSpectateManager>();
             playerSpectateManager.PlayerCamera.enabled = true;
             playerSpectateManager.ItemCamera.enabled = true;

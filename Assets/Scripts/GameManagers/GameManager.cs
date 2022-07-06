@@ -47,10 +47,9 @@ public class GameManager : NetworkBehaviour
     public Transform BlueUIAgents, RedUIAgents;
 
     readonly public SyncList<Player> Players = new();
-    [SyncVar]
-    public int BlueTeamSize;
-    [SyncVar]
-    public int RedTeamSize;
+
+    readonly public SyncList<Player> BlueTeam = new();
+    readonly public SyncList<Player> RedTeam = new();
 
     public Slider PlantProgressSlider;
     public Slider DefuseProgressSlider;
@@ -70,6 +69,22 @@ public class GameManager : NetworkBehaviour
 
     [SerializeField] GunManager gunManager;
     public GameObject BulletHolder;
+
+    [SyncVar(hook = nameof(updateBlueTeamScore))]
+    public int BlueTeamScore;
+    [SyncVar(hook = nameof(updateRedTeamScore))]
+    public int RedTeamScore;
+
+    [SerializeField] TMP_Text BlueTeamScoreText;
+    [SerializeField] TMP_Text RedTeamScoreText;
+
+    [SyncVar]
+    public bool BombPlanted;
+
+    [SyncVar]
+    public Team LosingTeam;
+    [SyncVar]
+    public int LossStreak;
 
     private void Start()
     {
@@ -151,6 +166,10 @@ public class GameManager : NetworkBehaviour
         if (GameTime <= 0) roundTimer.text = "00:00";
     }
 
+    void updateBlueTeamScore(int _, int newValue) => BlueTeamScoreText.text = newValue.ToString();
+    void updateRedTeamScore(int _, int newValue) => RedTeamScoreText.text = newValue.ToString();    
+
+
     void updateGameState()
     {
         if (GameState == GameState.StartGame && GameTime <= 0)
@@ -195,6 +214,7 @@ public class GameManager : NetworkBehaviour
 
     void startNewRound()
     {
+        giveMoney();
         CmdSetGameTime(PreRoundLenght);
         CmdChangeGameState(GameState.PreRound);
         CmdChangeBombState(BombState.NotPlanted);
@@ -222,7 +242,6 @@ public class GameManager : NetworkBehaviour
 
             if (playerInventory.SecondaryGun == null)
             {
-                Debug.Log("1");
                 playerInventory.CmdGiveGun(gunManager.gunList[0].GunID);
                 playerInventory.CmdSwitchItem(Item.Secondary);
                 playerInventory.CmdSwitchItem(Item.Knife);
@@ -230,12 +249,10 @@ public class GameManager : NetworkBehaviour
 
             if(playerInventory.PrimaryGun != null)
             {
-                Debug.Log("2");
                 playerInventory.CmdSwitchItem(Item.Primary);
             }
             else if(playerInventory.SecondaryGun != null && playerInventory.PrimaryGun == null)
             {
-                Debug.Log("3");
                 playerInventory.CmdSwitchItem(Item.Secondary);
             }
 
@@ -252,6 +269,72 @@ public class GameManager : NetworkBehaviour
             player.IsDead = false;
             player.Health = 100;
             player.PlayerState = PlayerState.Idle;
+        }
+
+        BombPlanted = false;
+    }
+
+    void giveMoney()
+    {
+        //KILLS
+        foreach (var player in Players)
+        {
+            player.CmdChangeMoney(player.RoundKills*200);
+        }
+        //RED TEAM BOMB PLANT
+        if (BombPlanted)
+        {
+            foreach (var player in RedTeam)
+            {
+                player.CmdChangeMoney(300);
+            }
+        }
+
+        //WINNING TEAM
+        if(BombState == BombState.Defused)
+        {
+            BlueTeamScore++;
+            foreach (var player in BlueTeam)
+            {
+                if (player.IsDead) player.CmdChangeMoney(3000);
+                else player.CmdChangeMoney(1000);
+            }
+            foreach (var player in RedTeam)
+            {
+                if (player.IsDead) player.CmdChangeMoney(1900);
+                else player.CmdChangeMoney(1000);
+            }
+            if (LosingTeam == Team.Blue) LossStreak = 0;
+            LosingTeam = Team.Red;
+            LossStreak++;
+        }
+        else if(BombState == BombState.Exploded)
+        {
+            RedTeamScore++;
+            foreach (var player in RedTeam)
+            {
+                if (player.IsDead) player.CmdChangeMoney(3000);
+                else player.CmdChangeMoney(1000);
+            }
+            foreach (var player in BlueTeam)
+            {
+                if (player.IsDead) player.CmdChangeMoney(1900);
+                else player.CmdChangeMoney(1000);
+            }
+            if (LosingTeam == Team.Red) LossStreak = 0;
+            LosingTeam = Team.Blue;
+            LossStreak++;
+        }
+
+        //LOSS STREAK
+        foreach (var player in Players)
+        {
+            if(player.PlayerTeam == LosingTeam)
+            {
+                if (LossStreak == 2) player.CmdChangeMoney(500);
+                else if(LossStreak >= 3) player.CmdChangeMoney(1000);
+            }
+            player.RoundKills = 0;
         }
     }
 
@@ -292,6 +375,9 @@ public class GameManager : NetworkBehaviour
 
     [Command(requiresAuthority = false)]
     public void CmdChangeBombState(BombState bombState) => BombState = bombState;
+
+    [Command(requiresAuthority = false)]
+    public void CmdSetBombPlanted() => BombPlanted = true;
 
     #endregion
 }

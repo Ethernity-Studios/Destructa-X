@@ -104,7 +104,7 @@ public class ShopManager : MonoBehaviour
     public string ConvertGunTypeToString(GunType type)
     {
         if (type == GunType.Primary) return "Primary Fire";
-        else if (type == GunType.Secondary) return "Secundary Fire";
+        else if (type == GunType.Secondary) return "Secondary Fire";
         return "";
     }
 

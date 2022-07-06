@@ -1,6 +1,7 @@
 using Mirror;
 using UnityEngine;
 using UnityEngine.UI;
+using System;
 
 public enum PlayerState
 {
@@ -51,6 +52,9 @@ public class Player : NetworkBehaviour, IDamageable
     [SyncVar(hook = nameof(updateShield))]
     public int Shield;
     public int MaxShield;
+
+    [SyncVar]
+    public int RoundKills;
 
     private void Awake()
     {
@@ -105,8 +109,8 @@ public class Player : NetworkBehaviour, IDamageable
     {
         gameManager = FindObjectOfType<GameManager>();
         gameManager.Players.Add(this);
-        if (PlayerTeam == Team.Blue) gameManager.BlueTeamSize++;
-        else if (PlayerTeam == Team.Red) gameManager.RedTeamSize++;
+        if (PlayerTeam == Team.Blue) gameManager.BlueTeam.Add(this);
+        else if (PlayerTeam == Team.Red) gameManager.RedTeam.Add(this);
     }
 
     [Command]
@@ -124,18 +128,30 @@ public class Player : NetworkBehaviour, IDamageable
     public void CmdSwitchPlayerAgent(Agent agent) => PlayerAgent = agent;
 
     [Command]
-    public void CmdChangeMoney(int money) => PlayerMoney += money;
+    public void CmdChangeMoney(int money) 
+    {
+        PlayerMoney += money;
+        if (PlayerMoney > 9000) PlayerMoney = 9000;
+    } 
 
     [Command(requiresAuthority = false)]
-    public void CmdTakeDamage(int damage)
+    public bool CmdTakeDamage(int damage)
     {
         Debug.Log(this + " Taking damage");
         Health -= damage;
-        if (Health <= 0) CmdKillPlayer();
+        if (Health <= 0)
+        {
+            CmdKillPlayer();
+            return true;
+        }
+        else return false;
     }
 
     [Command]
     public void CmdAddHealth(int health) => Health += health;
+
+    [Command]
+    public void CmdAddKill() => PlayerKills++;
 
     [ClientRpc]
     public void RpcRespawnPlayer(Vector3 position)
@@ -207,14 +223,12 @@ public class Player : NetworkBehaviour, IDamageable
             uiManager.Money.text = newValue.ToString();
     }
 
-    public void TakeDamage(int damage)
+    public bool TakeDamage(int damage)
     {
-        CmdTakeDamage(damage);
+        return CmdTakeDamage(damage);
     }
 
     public void AddHealth(int health) => CmdAddHealth(health);
-
-
 
     private void Update()
     {

@@ -140,6 +140,7 @@ public class PlayerBombManager : NetworkBehaviour
         {
             gameManager.CmdSetGameTime(gameManager.BombDetonationTime);
             gameManager.CmdChangeBombState(BombState.Planted);
+            gameManager.CmdSetBombPlanted();
         }
         stopPlanting();
         playerInventoryManager.Bomb = null;
@@ -157,7 +158,7 @@ public class PlayerBombManager : NetworkBehaviour
     [ClientRpc]
     void RpcSetupBomb(GameObject bomb)
     {
-        bomb.transform.SetParent(GameObject.Find("World").transform);
+        bomb.transform.SetParent(gameManager.transform);
         bomb.transform.position = new Vector3(transform.position.x, transform.position.y - bombPlantOffset, transform.position.z);
         bomb.transform.rotation = transform.rotation;
     }

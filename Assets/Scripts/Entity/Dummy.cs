@@ -7,8 +7,9 @@ public class Dummy : MonoBehaviour, IDamageable
         throw new System.NotImplementedException();
     }
 
-    public void TakeDamage(int damage)
+    public bool TakeDamage(int damage)
     {
         Debug.Log(gameObject.name + " Taken damage: " + damage);
+        return false;
     }
 }

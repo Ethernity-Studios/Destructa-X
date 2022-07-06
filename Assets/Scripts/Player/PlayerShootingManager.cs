@@ -106,14 +106,14 @@ public class PlayerShootingManager : NetworkBehaviour
     {
         Ray ray = new Ray(transform.position + new Vector3(0, 0, transform.localScale.z), transform.forward);
         RaycastHit hit;
-        if (Physics.Raycast(cameraHolder.position,cameraHolder.forward, out hit, Mathf.Infinity, mask))
+        if (Physics.Raycast(cameraHolder.position, cameraHolder.forward, out hit, Mathf.Infinity, mask))
         {
-            if(hit.transform.parent.gameObject.TryGetComponent(out IDamageable entity))
+            if (hit.transform.parent.gameObject.TryGetComponent(out IDamageable entity))
             {
                 Player hittedPlayer = hit.transform.parent.gameObject.GetComponent<Player>();
                 ///// Cannot hit dummy -- need rework
                 if (hittedPlayer.PlayerTeam != player.PlayerTeam && !hittedPlayer.IsDead)
-                entity.TakeDamage(CalculateDamage(hit.point));
+                    if (entity.TakeDamage(CalculateDamage(hit.point))) player.CmdAddKill();
             }
             impactPoint = hit.point;
             Ray penRay = new Ray(hit.point + ray.direction * penetrationAmount, -ray.direction);
