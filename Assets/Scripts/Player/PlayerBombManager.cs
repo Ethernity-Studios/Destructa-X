@@ -1,5 +1,4 @@
 using Mirror;
-using System;
 using UnityEngine;
 
 public class PlayerBombManager : NetworkBehaviour
@@ -42,7 +41,7 @@ public class PlayerBombManager : NetworkBehaviour
         if (isInPlantableArea && playerInventoryManager.Bomb != null)
         {
             if (player.PlayerState != PlayerState.Planting) startPlanting();
-            if (Input.GetKey(KeyCode.F) || Input.GetMouseButton(0) && player.PlayerState == PlayerState.Planting) 
+            if (Input.GetKey(KeyCode.F) || Input.GetMouseButton(0) && player.PlayerState == PlayerState.Planting)
             {
                 if (plantTimeLeft < gameManager.BombPlantTime)
                 {
@@ -76,11 +75,12 @@ public class PlayerBombManager : NetworkBehaviour
         gameManager.PlantProgressSlider.value = (plantTimeLeft / gameManager.BombPlantTime) * 100;
     }
     [Command]
-    void CmdPlantSlider(bool enable) 
+    void CmdPlantSlider(bool enable)
     {
-        foreach (var player in gameManager.Players)
+        foreach (var playerID in gameManager.PlayersID)
         {
-            if(player.PlayerTeam == Team.Red)
+            Player player = NetworkServer.spawned[playerID].GetComponent<Player>();
+            if (player.PlayerTeam == Team.Red)
             {
                 GameObject plantProgressSlider = gameManager.PlantProgressSlider.gameObject;
                 if (plantProgressSlider.activeInHierarchy)
@@ -93,7 +93,7 @@ public class PlayerBombManager : NetworkBehaviour
                 }
             }
         }
-    } 
+    }
 
     [TargetRpc]
     void RpcPlantSlider(NetworkConnection conn, bool enable)
@@ -107,12 +107,9 @@ public class PlayerBombManager : NetworkBehaviour
             Debug.Log("started planting");
             CmdSetPlantTimeLeft(0);
             player.PlayerState = PlayerState.Planting;
-            foreach (var player in gameManager.Players)
+            foreach (var playerID in gameManager.RedTeamPlayersIDs)
             {
-                if (player.PlayerTeam == Team.Red)
-                {
-                    CmdPlantSlider(true);
-                } 
+                CmdPlantSlider(true);
             }
         }
     }
@@ -124,19 +121,16 @@ public class PlayerBombManager : NetworkBehaviour
         CmdSetPlantTimeLeft(0);
         gameManager.PlantProgressSlider.value = 0;
         CmdChangePlantSliderValue();
-        foreach (var player in gameManager.Players)
+        foreach (var playerID in gameManager.RedTeamPlayersIDs)
         {
-            if (player.PlayerTeam == Team.Red) 
-            {
-                CmdPlantSlider(false);
-            }
+            CmdPlantSlider(false);
         }
     }
 
     void finishPlanting()
     {
         Debug.Log("finished planting!");
-        if(gameManager.GameState != GameState.PostRound || gameManager.GameState == GameState.EndGame)
+        if (gameManager.GameState != GameState.PostRound || gameManager.GameState == GameState.EndGame)
         {
             gameManager.CmdSetGameTime(gameManager.BombDetonationTime);
             gameManager.CmdChangeBombState(BombState.Planted);
@@ -210,12 +204,9 @@ public class PlayerBombManager : NetworkBehaviour
             else CmdSetDefuseTimeLeft(0);
 
             player.PlayerState = PlayerState.Defusing;
-            foreach (var player in gameManager.Players)
+            foreach (var playerID in gameManager.BlueTeamPlayersIDs)
             {
-                if (player.PlayerTeam == Team.Blue)
-                {
-                    CmdDefuseSlider(true);
-                }
+                CmdDefuseSlider(true);
             }
         }
     }
@@ -229,19 +220,16 @@ public class PlayerBombManager : NetworkBehaviour
             CmdSetDefuseTimeLeft(gameManager.BombDefuseTime / 2);
             gameManager.DefuseProgressSlider.value = 50;
         }
-        else if (defuseTimeLeft < gameManager.BombDefuseTime/2)
+        else if (defuseTimeLeft < gameManager.BombDefuseTime / 2)
         {
             CmdSetDefuseTimeLeft(0);
             gameManager.DefuseProgressSlider.value = 0;
         }
 
         CmdChangeDefuseSliderValue();
-        foreach (var player in gameManager.Players)
+        foreach (var playerID in gameManager.BlueTeamPlayersIDs)
         {
-            if (player.PlayerTeam == Team.Blue)
-            {
-                CmdDefuseSlider(false);
-            }
+            CmdDefuseSlider(false);
         }
     }
 
@@ -263,12 +251,11 @@ public class PlayerBombManager : NetworkBehaviour
     [Command]
     void CmdDefuseSlider(bool enable)
     {
-        foreach (var player in gameManager.Players)
+        foreach (var playerID in gameManager.BlueTeamPlayersIDs)
         {
-            if (player.PlayerTeam == Team.Blue)
-            {
-                RpcDefuseSlider((NetworkConnectionToClient)player.connectionToClient, enable);
-            }
+            Player player = NetworkServer.spawned[playerID].GetComponent<Player>();
+            RpcDefuseSlider((NetworkConnectionToClient)player.connectionToClient, enable);
+
         }
     }
 

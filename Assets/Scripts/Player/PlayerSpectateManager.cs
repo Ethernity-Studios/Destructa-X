@@ -1,6 +1,7 @@
 using System.Collections;
 using UnityEngine;
 using Mirror;
+using System.Collections.Generic;
 
 public class PlayerSpectateManager : NetworkBehaviour
 {
@@ -76,7 +77,8 @@ public class PlayerSpectateManager : NetworkBehaviour
         isSpectating = true;
         PlayerCamera.enabled = false;
         ItemCamera.enabled = false;
-        foreach (var player in gameManager.Players)
+        CmdGetPlayers();
+        foreach (var player in players)
         {
             if (player.isLocalPlayer) continue;
             if (player.PlayerTeam != this.player.PlayerTeam) continue;
@@ -89,6 +91,21 @@ public class PlayerSpectateManager : NetworkBehaviour
             uiManager.SpectatingPlayerName.text = player.PlayerName;
             Debug.Log("Currently spectating: " + currentlySpectating);
         }
+    }
+
+    List<Player> players = new();
+    [Command]
+    void CmdGetPlayers()
+    {
+        foreach (var playerID in gameManager.PlayersID)
+        {
+            RpcGetPlayers(NetworkServer.spawned[playerID].GetComponent<Player>());
+        }
+    }
+    [ClientRpc]
+    void RpcGetPlayers(Player player)
+    {
+        players.Add(player);
     }
 
     void spectateBomb()

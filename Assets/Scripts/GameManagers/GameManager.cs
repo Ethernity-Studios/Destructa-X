@@ -1,5 +1,6 @@
 using Mirror;
 using System;
+using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -87,8 +88,11 @@ public class GameManager : NetworkBehaviour
     [SyncVar]
     public int LossStreak = 0;
 
-    readonly public SyncList<Player> Players = new();
+    readonly public SyncList<uint> PlayersID = new();
+    readonly public SyncList<uint> BlueTeamPlayersIDs = new();
+    readonly public SyncList<uint> RedTeamPlayersIDs = new();   
 
+    //readonly public SyncList<Player> Players = new();
     readonly public SyncList<Player> BlueTeam = new();
     readonly public SyncList<Player> RedTeam = new();
 
@@ -114,8 +118,9 @@ public class GameManager : NetworkBehaviour
     {
         int b = 0;
         int r = 0;
-        foreach (var player in Players)
+        foreach (var playerID in PlayersID)
         {
+            Player player = NetworkServer.spawned[playerID].GetComponent<Player>();
             if (player.PlayerTeam == Team.Blue)
             {
                 player.RpcRespawnPlayer(blueSpawnPositions[b].position);
@@ -148,8 +153,9 @@ public class GameManager : NetworkBehaviour
 
     void giveDefaultGun()
     {
-        foreach (var player in Players)
+        foreach (var playerID in PlayersID)
         {
+            Player player = NetworkServer.spawned[playerID].GetComponent<Player>();
             PlayerInventoryManager playerInventory = player.GetComponent<PlayerInventoryManager>();
             playerInventory.CmdGiveGun(gunManager.gunList[0].GunID);
             playerInventory.CmdSwitchItem(Item.Knife);
@@ -198,10 +204,6 @@ public class GameManager : NetworkBehaviour
             CmdSetGameTime(RoundLenght);
             CmdChangeGameState(GameState.Round);
             RpcToggleMOTD(false);
-            foreach (var player in Players)
-            {
-                Debug.Log("Player: " + player);
-            }
         }
         else if (GameState == GameState.PreRound && GameTime <= 0)
         {
@@ -211,10 +213,6 @@ public class GameManager : NetworkBehaviour
             CmdChangeGameState(GameState.Round);
             CmdSetGameTime(RoundLenght);
             RpcToggleMOTD(false);
-            foreach (var player in Players)
-            {
-                Debug.Log("Player: " + player);
-            }
         }
         else if (BombState == BombState.Planted && GameTime <= 0)
         {
@@ -231,14 +229,14 @@ public class GameManager : NetworkBehaviour
             CmdSetGameTime(PostRoundlenght);
             CmdChangeGameState(GameState.PostRound);
         }
-        else if(GameState == GameState.Round && AliveBluePlayers <= 0 && BlueTeam.Count > 0 && Players.Count > 1)
+        else if(GameState == GameState.Round && AliveBluePlayers <= 0 && BlueTeam.Count > 0 && PlayersID.Count > 1)
         {
             //All blue players dead
             Debug.Log("All blue players dead");
             CmdSetGameTime(PostRoundlenght);
             CmdChangeGameState(GameState.PostRound);
         }
-        else if(GameState == GameState.Round && BombState == BombState.NotPlanted && AliveRedPlayers <= 0 && RedTeam.Count > 0 && Players.Count > 1)
+        else if(GameState == GameState.Round && BombState == BombState.NotPlanted && AliveRedPlayers <= 0 && RedTeam.Count > 0 && PlayersID.Count > 1)
         {
             //Bomb not planted and all red players dead
             Debug.Log("Bomb not planted and all red players dead");
@@ -277,8 +275,9 @@ public class GameManager : NetworkBehaviour
         }
         if(BombState == BombState.Exploded ||BombState == BombState.Defused) NetworkServer.Destroy(gameObject.transform.GetChild(0).gameObject);
 
-        foreach (var player in Players)
+        foreach (var playerID in PlayersID)
         {
+            Player player = NetworkServer.spawned[playerID].GetComponent<Player>();
             player.PreviousRoundShield = player.Shield;
             PlayerInventoryManager playerInventory = player.GetComponent<PlayerInventoryManager>();
             if (playerInventory.Bomb != null) NetworkServer.Destroy(playerInventory.Bomb);
@@ -318,8 +317,9 @@ public class GameManager : NetworkBehaviour
     void giveMoney()
     {
         //KILLS
-        foreach (var player in Players)
+        foreach (var playerID in PlayersID)
         {
+            Player player = NetworkServer.spawned[playerID].GetComponent<Player>();
             player.CmdChangeMoney(player.RoundKills * 200);
         }
         //RED TEAM BOMB PLANT
@@ -370,8 +370,9 @@ public class GameManager : NetworkBehaviour
         }
 
         //LOSING TEAM
-        foreach (var player in Players)
+        foreach (var playerID in PlayersID)
         {
+            Player player = NetworkServer.spawned[playerID].GetComponent<Player>();
             player.RoundKills = 0;
             if (player.PlayerTeam == LosingTeam)
             {
@@ -404,8 +405,9 @@ public class GameManager : NetworkBehaviour
 
     void CloseLocalPlayerShopUI()
     {
-        foreach (var player in Players)
+        foreach (var playerID in PlayersID)
         {
+            Player player = NetworkServer.spawned[playerID].GetComponent<Player>();
             player.gameObject.GetComponent<PlayerEconomyManager>().CloseShopUI();
         }
     }

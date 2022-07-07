@@ -6,7 +6,7 @@ public enum ShieldType
 {
     None, Light, Heavy
 }
-public class ShopManager : MonoBehaviour
+public class ShopManager : NetworkBehaviour
 {
     [Header("Guns")]
     [SerializeField] GameObject gunInfo;
@@ -33,23 +33,30 @@ public class ShopManager : MonoBehaviour
     [SerializeField] TMP_Text shieldDescription;
     [SerializeField] Sprite shieldImage;
 
-    PlayerInventoryManager playerInventory;
+    public PlayerInventoryManager playerInventory;
 
     [SerializeField] GameManager gameManager;
 
     private void Start()
     {
-        Invoke("getLocalPlayer", 1f);
+        Invoke("CmdGetLocalPlayer", 1f);
     }
 
-    void getLocalPlayer()
+    [Command(requiresAuthority = false)]
+    void CmdGetLocalPlayer()
     {
-        foreach (var player in gameManager.Players)
+        Debug.Log("CmdgetLocALPlaya");
+        foreach (var playerID in gameManager.PlayersID)
         {
-            if (player.isLocalPlayer)
-                playerInventory = player.GetComponent<PlayerInventoryManager>();
+            RpcGetLocalPlayer(NetworkServer.spawned[playerID]);
         }
     }
+    [ClientRpc]
+    void RpcGetLocalPlayer(NetworkIdentity player)
+    {
+        if (player.isLocalPlayer) playerInventory = player.GetComponent<PlayerInventoryManager>();
+    }
+
     public void ShowGunInfo(Gun gun)
     {
         shieldInfo.SetActive(false);

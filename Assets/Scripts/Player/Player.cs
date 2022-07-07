@@ -67,9 +67,10 @@ public class Player : NetworkBehaviour, IDamageable
         playerInventoryManager = GetComponent<PlayerInventoryManager>();
         playerShootingManager = GetComponent<PlayerShootingManager>();
         playerBombManager = GetComponent<PlayerBombManager>();
+        gameManager = FindObjectOfType<GameManager>();
         uiManager = FindObjectOfType<UIManager>();
         shopManager = FindObjectOfType<ShopManager>();
-        gameManager = FindObjectOfType<GameManager>();
+
         room = FindObjectOfType<NetworkManagerRoom>();
 
         Invoke("setPlayerBody", 2f);
@@ -116,16 +117,19 @@ public class Player : NetworkBehaviour, IDamageable
     public void CmdAddPlayer()
     {
         gameManager = FindObjectOfType<GameManager>();
-        gameManager.Players.Add(this);
+        //gameManager.Players.Add(this);
+        gameManager.PlayersID.Add(netId);
         if (PlayerTeam == Team.Blue)
         {
             gameManager.BlueTeam.Add(this);
             gameManager.AliveBluePlayers++;
+            gameManager.BlueTeamPlayersIDs.Add(netId);
         }
         else if (PlayerTeam == Team.Red) 
         {
             gameManager.RedTeam.Add(this);
             gameManager.AliveRedPlayers++;
+            gameManager.RedTeamPlayersIDs.Add(netId);
         } 
     }
 
