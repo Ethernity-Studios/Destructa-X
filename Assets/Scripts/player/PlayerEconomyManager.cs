@@ -8,8 +8,8 @@ public class PlayerEconomyManager : NetworkBehaviour
     [HideInInspector]public bool IsShopOpen;
     private void Start()
     {
-        if (!isLocalPlayer) return;
         gameManager = FindObjectOfType<GameManager>();
+        if (!isLocalPlayer) return;
     }
     private void Update()
     {
@@ -19,9 +19,8 @@ public class PlayerEconomyManager : NetworkBehaviour
             if (Input.GetKeyDown(KeyCode.B))
             {
 
-                if (gameManager.ShopUI.activeInHierarchy)
+                if (IsShopOpen)
                 {
-                    IsShopOpen = false;
                     CloseShopUI();
                 }
                 else
@@ -38,7 +37,6 @@ public class PlayerEconomyManager : NetworkBehaviour
     {
         IsShopOpen = false;
         Cursor.lockState = CursorLockMode.Locked;
-        gameManager = FindObjectOfType<GameManager>();
         gameManager.ShopUI.SetActive(false);
     }
 }

@@ -53,7 +53,7 @@ public class RoomManager : NetworkBehaviour
     public string SelectedMap;
 
     public Map[] map;
-    Dictionary<string, Map> maps = new();
+    public Dictionary<string, Map> maps = new();
 
     [SerializeField] TMP_Text countdownText;
 

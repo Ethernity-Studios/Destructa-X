@@ -187,7 +187,7 @@ public class ShopManager : MonoBehaviour
             if (localPlayer.Shield != 25 && localPlayer.PreviousRoundShield > 25 && localPlayer.ShieldType != ShieldType.Light)
             {
                 if (localPlayer.ShieldType == ShieldType.Heavy) SellShield("heavy");
-                if(localPlayer.PlayerMoney > 400)
+                if (localPlayer.PlayerMoney > 400)
                 {
                     Debug.Log("Buying light");
                     localPlayer.CmdSetShield(25);

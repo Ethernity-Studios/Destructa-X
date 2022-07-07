@@ -21,7 +21,7 @@ public class GameManager : NetworkBehaviour
 
     public int RoundsPerHalf = 13;
 
-    public float StartGameLenght = 20; //45s
+    public float StartGameLenght = 10; //45s
     public float EndgameLenght = 5; //10s
 
     public float PreRoundLenght = 20; //30s
@@ -34,26 +34,21 @@ public class GameManager : NetworkBehaviour
     public float BombDetonationTime = 15; //40
 
     [SyncVar]
-    public float GameTime;
+    public float GameTime = 5;
 
     [SyncVar]
-    public GameState GameState;
+    public GameState GameState = GameState.StartGame;
     [SyncVar]
-    public BombState BombState;
+    public BombState BombState = BombState.NotPlanted;
 
     [SerializeField] TMP_Text roundTimer;
 
     public Transform BlueUIAgents, RedUIAgents;
 
-    readonly public SyncList<Player> Players = new();
-
-    readonly public SyncList<Player> BlueTeam = new();
-    readonly public SyncList<Player> RedTeam = new();
-
     [SyncVar]
-    public int AliveBluePlayers;
+    public int AliveBluePlayers = 0;
     [SyncVar]
-    public int AliveRedPlayers;
+    public int AliveRedPlayers = 0;
 
     public Slider PlantProgressSlider;
     public Slider DefuseProgressSlider;
@@ -77,35 +72,43 @@ public class GameManager : NetworkBehaviour
     public GameObject BulletHolder;
 
     [SyncVar(hook = nameof(updateBlueTeamScore))]
-    public int BlueTeamScore;
+    public int BlueTeamScore = 0;
     [SyncVar(hook = nameof(updateRedTeamScore))]
-    public int RedTeamScore;
+    public int RedTeamScore = 0;
 
     [SerializeField] TMP_Text BlueTeamScoreText;
     [SerializeField] TMP_Text RedTeamScoreText;
 
     [SyncVar]
-    public bool BombPlanted;
+    public bool BombPlanted = false;
 
     [SyncVar]
-    public Team LosingTeam;
+    public Team LosingTeam = Team.None;
     [SyncVar]
-    public int LossStreak;
+    public int LossStreak = 0;
+
+    readonly public SyncList<Player> Players = new();
+
+    readonly public SyncList<Player> BlueTeam = new();
+    readonly public SyncList<Player> RedTeam = new();
 
     private void Start()
     {
         ShopUI.SetActive(false);
-        BombState = BombState.NotPlanted;
         PlantProgressSlider.gameObject.SetActive(false);
         DefuseProgressSlider.gameObject.SetActive(false);
+    }
+
+    public override void OnStartServer()
+    {
+        Debug.Log("on start server");
         GameTime = StartGameLenght;
-
-
-        if (!isServer) return;
+        BombState = BombState.NotPlanted;
         Invoke("spawnBomb", 1f);
-        Invoke("spawnPlayers", 1f);
-        Invoke("giveDefaultGun", 1.5f);
+        Invoke("spawnPlayers", 1.5f);
+        Invoke("giveDefaultGun", 2f);
         StartRound(GameState.StartGame);
+        base.OnStartServer();
     }
     void spawnPlayers()
     {
@@ -116,15 +119,23 @@ public class GameManager : NetworkBehaviour
             if (player.PlayerTeam == Team.Blue)
             {
                 player.RpcRespawnPlayer(blueSpawnPositions[b].position);
+                setPlayerColor(player,Color.blue);
                 b++;
             }
             else if (player.PlayerTeam == Team.Red)
             {
                 player.RpcRespawnPlayer(redSpawnPositions[r].position);
+                setPlayerColor(player, Color.red);
                 r++;
             }
 
         }
+    }
+
+    [ClientRpc]
+    void setPlayerColor(Player player, Color color)
+    {
+        player.transform.GetChild(0).GetComponent<MeshRenderer>().material.color = color;
     }
 
     private void Update()
@@ -141,6 +152,7 @@ public class GameManager : NetworkBehaviour
         {
             PlayerInventoryManager playerInventory = player.GetComponent<PlayerInventoryManager>();
             playerInventory.CmdGiveGun(gunManager.gunList[0].GunID);
+            playerInventory.CmdSwitchItem(Item.Knife);
             playerInventory.CmdSwitchItem(Item.Secondary);
             playerInventory.CmdSwitchItem(Item.Knife);
         }
@@ -186,6 +198,10 @@ public class GameManager : NetworkBehaviour
             CmdSetGameTime(RoundLenght);
             CmdChangeGameState(GameState.Round);
             RpcToggleMOTD(false);
+            foreach (var player in Players)
+            {
+                Debug.Log("Player: " + player);
+            }
         }
         else if (GameState == GameState.PreRound && GameTime <= 0)
         {
@@ -195,6 +211,10 @@ public class GameManager : NetworkBehaviour
             CmdChangeGameState(GameState.Round);
             CmdSetGameTime(RoundLenght);
             RpcToggleMOTD(false);
+            foreach (var player in Players)
+            {
+                Debug.Log("Player: " + player);
+            }
         }
         else if (BombState == BombState.Planted && GameTime <= 0)
         {
@@ -262,24 +282,23 @@ public class GameManager : NetworkBehaviour
             player.PreviousRoundShield = player.Shield;
             PlayerInventoryManager playerInventory = player.GetComponent<PlayerInventoryManager>();
             if (playerInventory.Bomb != null) NetworkServer.Destroy(playerInventory.Bomb);
-
+            playerInventory.CmdSwitchItem(Item.Knife);
+            Debug.Log("Start new Round, palyer name: "  + player.name);
             if (playerInventory.SecondaryGun == null)
             {
                 Debug.Log("Secondary gun is null");
                 playerInventory.CmdGiveGun(gunManager.gunList[0].GunID);
-                playerInventory.CmdSwitchItem(Item.Secondary);
             }
             if (playerInventory.PrimaryGun != null)
             {
                 Debug.Log("Primary gun is not null");
                 playerInventory.CmdSwitchItem(Item.Primary);
             }
-            else if (playerInventory.SecondaryGun != null && playerInventory.PrimaryGun == null)
+            else if (playerInventory.PrimaryGun == null)
             {
-                Debug.Log("Secondary gun is not null and primary gun is null");
+                Debug.Log("primary gun is null");
                 playerInventory.CmdSwitchItem(Item.Secondary);
             }
-
 
             PlayerSpectateManager playerSpectateManager = player.GetComponent<PlayerSpectateManager>();
             playerSpectateManager.SetPlayerTransform();
@@ -288,6 +307,7 @@ public class GameManager : NetworkBehaviour
             player.Health = 100;
             player.PlayerState = PlayerState.Idle;
         }
+        Debug.Log("new round spawning players");
         spawnPlayers();
 
         BombPlanted = false;

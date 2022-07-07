@@ -586,7 +586,7 @@ MonoBehaviour:
   cameraHolder: {fileID: 2809714701104030514}
   canShoot: 1
   Reloading: 0
-  gunInstance: {fileID: 0}
+  GunInstance: {fileID: 0}
   mask:
     serializedVersion: 2
     m_Bits: 1599
@@ -661,6 +661,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7b0276bdcad19904b9b6021ab72ccd41, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  syncMode: 0
+  syncInterval: 0.1
   deathScreenTime: 2
   playerBody: {fileID: 5224999313321314874}
   itemHolder: {fileID: 399943159590823399}

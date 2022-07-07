@@ -17,7 +17,7 @@ public class PlayerShootingManager : NetworkBehaviour
     [SerializeField] bool canShoot = true;
     public bool Reloading;
 
-    public GunInstance gunInstance;
+    public GunInstance GunInstance;
     private void Start()
     {
         player = GetComponent<Player>();
@@ -33,10 +33,10 @@ public class PlayerShootingManager : NetworkBehaviour
         Debug.DrawRay(cameraHolder.position, cameraHolder.forward, Color.red);
         if (player.IsDead) return;
         if (!isLocalPlayer) return;
-        if (gunInstance == null) return;
+        if (GunInstance == null) return;
         if (playerEconomyManager.IsShopOpen) return;
 
-        if (playerInventory.EqupiedGun != null && playerInventory.gunEqupied && canShoot && gunInstance.Magazine > 0 && !Reloading)
+        if (playerInventory.EqupiedGun != null && playerInventory.gunEqupied && canShoot && GunInstance.Magazine > 0 && !Reloading)
         {
             if (playerInventory.EqupiedGun.LMB.FireMode == FireMode.Manual && Input.GetMouseButtonDown(0))
             {
@@ -48,11 +48,11 @@ public class PlayerShootingManager : NetworkBehaviour
             }
         }
         if (playerInventory.EqupiedGun == null) return;
-        if (gunInstance.Magazine == 0 && gunInstance.Ammo > 0 && !Reloading)
+        if (GunInstance.Magazine == 0 && GunInstance.Ammo > 0 && !Reloading)
         {
             StartCoroutine(Reload());
         }
-        if (gunInstance.Magazine != playerInventory.EqupiedGun.MagazineAmmo && Input.GetKeyDown(KeyCode.R) && gunInstance.Ammo > 0 && !Reloading)
+        if (GunInstance.Magazine != playerInventory.EqupiedGun.MagazineAmmo && Input.GetKeyDown(KeyCode.R) && GunInstance.Ammo > 0 && !Reloading)
         {
             StartCoroutine(Reload());
         }
@@ -69,29 +69,30 @@ public class PlayerShootingManager : NetworkBehaviour
         Reloading = true;
         yield return new WaitForSeconds(playerInventory.EqupiedGun.ReloadTime);
         Reloading = false;
-        if (gunInstance.Ammo >= playerInventory.EqupiedGun.MagazineAmmo)
+        if (GunInstance.Ammo >= playerInventory.EqupiedGun.MagazineAmmo)
         {
-            gunInstance.Ammo -= playerInventory.EqupiedGun.MagazineAmmo - gunInstance.Magazine;
-            gunInstance.Magazine = playerInventory.EqupiedGun.MagazineAmmo;
+            GunInstance.Ammo -= playerInventory.EqupiedGun.MagazineAmmo - GunInstance.Magazine;
+            GunInstance.Magazine = playerInventory.EqupiedGun.MagazineAmmo;
         }
         else
         {
-            gunInstance.Magazine = gunInstance.Ammo;
-            gunInstance.Ammo = 0;
+            GunInstance.Magazine = GunInstance.Ammo;
+            GunInstance.Ammo = 0;
         }
         UpdateUIAmmo();
     }
 
     public void UpdateUIAmmo()
     {
-        uiManager.MaxAmmoText.text = gunInstance.Ammo.ToString();
-        uiManager.MagazineText.text = gunInstance.Magazine.ToString();
+        if (!isLocalPlayer) return;
+        uiManager.MaxAmmoText.text = GunInstance.Ammo.ToString();
+        uiManager.MagazineText.text = GunInstance.Magazine.ToString();
     }
     public void Shoot()
     {
         canShoot = false;
         StartCoroutine(DelayFire());
-        gunInstance.Magazine--;
+        GunInstance.Magazine--;
         UpdateUIAmmo();
         penetrationAmount = playerInventory.EqupiedGun.BulletPenetration;
         CheckPenetration();

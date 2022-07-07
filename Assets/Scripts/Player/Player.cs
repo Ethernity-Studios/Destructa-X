@@ -11,7 +11,7 @@ public enum PlayerState
 public class Player : NetworkBehaviour, IDamageable
 {
     [SyncVar]
-    public string PlayerName;
+    public string PlayerName = "";
     [SyncVar]
     public Team PlayerTeam;
     [SyncVar]
@@ -20,11 +20,11 @@ public class Player : NetworkBehaviour, IDamageable
     [SyncVar(hook = nameof(updateMoneyText))]
     public int PlayerMoney = 800;
     [SyncVar]
-    public int PlayerKills;
+    public int PlayerKills = 0;
     [SyncVar]
-    public int PlayerDeaths;
+    public int PlayerDeaths = 0;
     [SyncVar]
-    public int PlayerAssists;
+    public int PlayerAssists = 0;
 
     [SyncVar]
     public bool IsDead = false;
@@ -55,12 +55,12 @@ public class Player : NetworkBehaviour, IDamageable
     public int PreviousRoundShield = 0;
 
     [SyncVar]
-    public int RoundKills;
+    public int RoundKills = 0;
 
     [SyncVar]
-    public ShieldType ShieldType;
+    public ShieldType ShieldType = ShieldType.None;
 
-    private void Awake()
+    public void Start()
     {
         PlayerState = PlayerState.Idle;
         playerSpectateManager = GetComponent<PlayerSpectateManager>();
@@ -71,22 +71,26 @@ public class Player : NetworkBehaviour, IDamageable
         shopManager = FindObjectOfType<ShopManager>();
         gameManager = FindObjectOfType<GameManager>();
         room = FindObjectOfType<NetworkManagerRoom>();
-    }
 
-    public void Start()
-    {
         Invoke("setPlayerBody", 2f);
         Invoke("spawnUIAgent", .3f);
         if (!isLocalPlayer) return;
-        Invoke("CmdAddPlayer", .3f);
         Cursor.lockState = CursorLockMode.Locked;
         CmdSetPlayerInfo(NicknameManager.DisplayName, RoomManager.PTeam, RoomManager.PAgent);
+    }
+
+    public override void OnStartLocalPlayer()
+    {
+        Invoke("CmdAddPlayer", .3f);
+        base.OnStartLocalPlayer();
     }
 
     void setPlayerBody()
     {
         if (!isLocalPlayer)
+        {
             playerBody.layer = 10;
+        }
     }
 
     void spawnUIAgent()

@@ -12,7 +12,7 @@ EditorBuildSettings:
     path: Assets/Scenes/RoomScene.unity
     guid: fa9382360f634dd41a1a2dbd162d9f45
   - enabled: 1
-    path: Assets/Scenes/Map1.unity
+    path: Assets/Scenes/Quark.unity
     guid: 2fa9db00cef16a44cbf364cc6a170125
   - enabled: 1
     path: Assets/Scenes/Map2.unity
