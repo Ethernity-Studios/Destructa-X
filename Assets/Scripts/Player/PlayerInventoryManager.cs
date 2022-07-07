@@ -96,7 +96,7 @@ public class PlayerInventoryManager : NetworkBehaviour
     {
         PreviousEqupiedItem = EqupiedItem;
         EqupiedItem = item;
-
+        Debug.Log("Switching item: " + item);
         switch (item)
         {
             case Item.Primary:

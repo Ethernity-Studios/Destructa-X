@@ -214,16 +214,21 @@ public class GameManager : NetworkBehaviour
         else if(GameState == GameState.Round && AliveBluePlayers <= 0 && BlueTeam.Count > 0 && Players.Count > 1)
         {
             //All blue players dead
-            startNewRound();
+            Debug.Log("All blue players dead");
+            CmdSetGameTime(PostRoundlenght);
+            CmdChangeGameState(GameState.PostRound);
         }
         else if(GameState == GameState.Round && BombState == BombState.NotPlanted && AliveRedPlayers <= 0 && RedTeam.Count > 0 && Players.Count > 1)
         {
             //Bomb not planted and all red players dead
-            startNewRound();
+            Debug.Log("Bomb not planted and all red players dead");
+            CmdSetGameTime(PostRoundlenght);
+            CmdChangeGameState(GameState.PostRound);
         }
         else if (GameState == GameState.PostRound && GameTime <= 0)
         {
             //time's up
+            Debug.Log("Time's up");
             startNewRound();
         }
     }
@@ -252,7 +257,6 @@ public class GameManager : NetworkBehaviour
         }
         if(BombState == BombState.Exploded ||BombState == BombState.Defused) NetworkServer.Destroy(gameObject.transform.GetChild(0).gameObject);
 
-        spawnPlayers();
         foreach (var player in Players)
         {
             player.PreviousRoundShield = player.Shield;
@@ -261,37 +265,35 @@ public class GameManager : NetworkBehaviour
 
             if (playerInventory.SecondaryGun == null)
             {
+                Debug.Log("Secondary gun is null");
                 playerInventory.CmdGiveGun(gunManager.gunList[0].GunID);
                 playerInventory.CmdSwitchItem(Item.Secondary);
-                playerInventory.CmdSwitchItem(Item.Knife);
             }
-
             if (playerInventory.PrimaryGun != null)
             {
+                Debug.Log("Primary gun is not null");
                 playerInventory.CmdSwitchItem(Item.Primary);
             }
             else if (playerInventory.SecondaryGun != null && playerInventory.PrimaryGun == null)
             {
+                Debug.Log("Secondary gun is not null and primary gun is null");
                 playerInventory.CmdSwitchItem(Item.Secondary);
             }
 
 
             PlayerSpectateManager playerSpectateManager = player.GetComponent<PlayerSpectateManager>();
-            playerSpectateManager.playerBody.transform.localEulerAngles = new Vector3(0, 0, 0);
-            playerSpectateManager.playerBody.transform.localPosition = new Vector3(0, 0, 0);
-            playerSpectateManager.playerBody.GetComponent<CapsuleCollider>().enabled = true;
-            playerSpectateManager.playerBody.transform.parent.GetComponent<CharacterController>().enabled = true;
-            playerSpectateManager.itemHolder.SetActive(true);
-            playerSpectateManager.playerHead.transform.localPosition = new Vector3(0, .6f, 0);
-            playerSpectateManager.playerHead.transform.localEulerAngles = new Vector3(0, 0, 0);
-            playerSpectateManager.playerHands.GetComponent<Renderer>().enabled = true;
+            playerSpectateManager.SetPlayerTransform();
+
             player.IsDead = false;
             player.Health = 100;
             player.PlayerState = PlayerState.Idle;
         }
+        spawnPlayers();
 
         BombPlanted = false;
     }
+
+
 
     void giveMoney()
     {
@@ -312,7 +314,6 @@ public class GameManager : NetworkBehaviour
         //WINNING TEAM
         if (BombState == BombState.Defused)
         {
-            Debug.Log("1");
             BlueTeamScore++;
             foreach (var player in BlueTeam)
             {
@@ -325,7 +326,6 @@ public class GameManager : NetworkBehaviour
         }
         else if (BombState == BombState.Exploded)
         {
-            Debug.Log("2");
             RedTeamScore++;
             foreach (var player in RedTeam)
             {
@@ -338,7 +338,6 @@ public class GameManager : NetworkBehaviour
         }
         else if (BombState == BombState.NotPlanted)
         {
-            Debug.Log("3");
             BlueTeamScore++;
             foreach (var player in BlueTeam)
             {

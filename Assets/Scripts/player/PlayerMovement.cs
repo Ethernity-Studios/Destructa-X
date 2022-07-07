@@ -47,6 +47,7 @@ public class PlayerMovement : NetworkBehaviour
     {
         if (!isLocalPlayer) return;
         if (playerManager.IsDead) return;
+        if (!characterController.enabled) return;
         movePlayer();
         jump();
         crouch();

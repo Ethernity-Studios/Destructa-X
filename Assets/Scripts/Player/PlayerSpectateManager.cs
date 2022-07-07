@@ -1,7 +1,8 @@
 using System.Collections;
 using UnityEngine;
+using Mirror;
 
-public class PlayerSpectateManager : MonoBehaviour
+public class PlayerSpectateManager : NetworkBehaviour
 {
     Player player;
     GameManager gameManager;
@@ -96,5 +97,18 @@ public class PlayerSpectateManager : MonoBehaviour
         PlayerCamera.enabled = false;
         ItemCamera.enabled = false;
         Debug.Log("Currently spectating bomb");
+    }
+
+    [ClientRpc]
+    public void SetPlayerTransform()
+    {
+        playerBody.transform.localEulerAngles = new Vector3(0, 0, 0);
+        playerBody.transform.localPosition = new Vector3(0, 0, 0);
+        playerBody.GetComponent<CapsuleCollider>().enabled = true;
+        playerBody.transform.parent.GetComponent<CharacterController>().enabled = true;
+        itemHolder.SetActive(true);
+        playerHead.transform.localPosition = new Vector3(0, .6f, 0);
+        playerHead.transform.localEulerAngles = new Vector3(0, 0, 0);
+        playerHands.GetComponent<Renderer>().enabled = true;
     }
 }

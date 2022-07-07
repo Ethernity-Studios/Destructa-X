@@ -535,7 +535,9 @@ MonoBehaviour:
   playerBody: {fileID: 5224999313321314874}
   Health: 100
   Shield: 0
-  MaxShield: 50
+  PreviousRoundShield: 0
+  RoundKills: 0
+  ShieldType: 0
 --- !u!114 &1850405224234988842
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -646,7 +648,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   syncMode: 0
   syncInterval: 0.1
-  isShopOpen: 0
+  IsShopOpen: 0
 --- !u!114 &-7474328044268257047
 MonoBehaviour:
   m_ObjectHideFlags: 0
