@@ -604,9 +604,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   syncMode: 0
   syncInterval: 0.1
-  MouseSens: 2
+  MouseSens: 1.7
   playerHead: {fileID: 2809714701104030514}
-  RunSpeed: 7
+  RunSpeed: 6
   WalkSpeed: 4
   JumpForce: 1.3
   groundCheck: {fileID: 3407411654629684022}

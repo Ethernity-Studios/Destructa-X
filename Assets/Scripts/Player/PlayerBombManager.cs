@@ -30,9 +30,9 @@ public class PlayerBombManager : NetworkBehaviour
     }
 
     [SyncVar]
-    public float plantTimeLeft = 0;
+    public float PlantTimeLeft = 0;
     [SyncVar]
-    public float defuseTimeLeft = 0;
+    public float DefuseTimeLeft = 0;
 
     #region Planting
 
@@ -43,7 +43,7 @@ public class PlayerBombManager : NetworkBehaviour
             if (player.PlayerState != PlayerState.Planting) startPlanting();
             if (Input.GetKey(KeyCode.F) || Input.GetMouseButton(0) && player.PlayerState == PlayerState.Planting)
             {
-                if (plantTimeLeft < gameManager.BombPlantTime)
+                if (PlantTimeLeft < gameManager.BombPlantTime)
                 {
                     CmdIncreasePlantTimeLeft();
                     CmdChangePlantSliderValue();
@@ -51,7 +51,7 @@ public class PlayerBombManager : NetworkBehaviour
             }
         }
 
-        if (player.PlayerState == PlayerState.Planting && plantTimeLeft >= gameManager.BombPlantTime)
+        if (player.PlayerState == PlayerState.Planting && PlantTimeLeft >= gameManager.BombPlantTime)
         {
             finishPlanting();
         }
@@ -61,10 +61,10 @@ public class PlayerBombManager : NetworkBehaviour
         }
     }
     [Command]
-    void CmdIncreasePlantTimeLeft() => plantTimeLeft += Time.deltaTime;
+    void CmdIncreasePlantTimeLeft() => PlantTimeLeft += Time.deltaTime;
 
     [Command]
-    void CmdSetPlantTimeLeft(float time) => plantTimeLeft = time;
+    void CmdSetPlantTimeLeft(float time) => PlantTimeLeft = time;
 
     [Command]
     void CmdChangePlantSliderValue() => RpcChangePlantSliderValue();
@@ -72,7 +72,7 @@ public class PlayerBombManager : NetworkBehaviour
     [ClientRpc]
     void RpcChangePlantSliderValue()
     {
-        gameManager.PlantProgressSlider.value = (plantTimeLeft / gameManager.BombPlantTime) * 100;
+        gameManager.PlantProgressSlider.value = (PlantTimeLeft / gameManager.BombPlantTime) * 100;
     }
     [Command]
     void CmdPlantSlider(bool enable)
@@ -168,7 +168,7 @@ public class PlayerBombManager : NetworkBehaviour
             if (player.PlayerState != PlayerState.Defusing) startDefusing();
             if (Input.GetKey(KeyCode.F) && player.PlayerState == PlayerState.Defusing)
             {
-                if (defuseTimeLeft < gameManager.BombDefuseTime)
+                if (DefuseTimeLeft < gameManager.BombDefuseTime)
                 {
                     IncreaseDefuseTimeLeft();
                     CmdChangeDefuseSliderValue();
@@ -176,7 +176,7 @@ public class PlayerBombManager : NetworkBehaviour
             }
         }
 
-        if (player.PlayerState == PlayerState.Defusing && defuseTimeLeft >= gameManager.BombDefuseTime)
+        if (player.PlayerState == PlayerState.Defusing && DefuseTimeLeft >= gameManager.BombDefuseTime)
         {
             finishDefusing();
         }
@@ -192,7 +192,7 @@ public class PlayerBombManager : NetworkBehaviour
     [ClientRpc]
     void RpcChangeDefuseSliderValue()
     {
-        gameManager.DefuseProgressSlider.value = (defuseTimeLeft / gameManager.BombDefuseTime) * 100;
+        gameManager.DefuseProgressSlider.value = (DefuseTimeLeft / gameManager.BombDefuseTime) * 100;
     }
 
     void startDefusing()
@@ -200,7 +200,7 @@ public class PlayerBombManager : NetworkBehaviour
         if (Input.GetKeyDown(KeyCode.F))
         {
             Debug.Log("started defusing");
-            if (defuseTimeLeft >= gameManager.BombDefuseTime / 2) CmdSetDefuseTimeLeft(gameManager.BombDefuseTime / 2);
+            if (DefuseTimeLeft >= gameManager.BombDefuseTime / 2) CmdSetDefuseTimeLeft(gameManager.BombDefuseTime / 2);
             else CmdSetDefuseTimeLeft(0);
 
             player.PlayerState = PlayerState.Defusing;
@@ -215,12 +215,12 @@ public class PlayerBombManager : NetworkBehaviour
     {
         Debug.Log("stopped defusing");
         player.PlayerState = PlayerState.Idle;
-        if (defuseTimeLeft >= gameManager.BombDefuseTime / 2)
+        if (DefuseTimeLeft >= gameManager.BombDefuseTime / 2)
         {
             CmdSetDefuseTimeLeft(gameManager.BombDefuseTime / 2);
             gameManager.DefuseProgressSlider.value = 50;
         }
-        else if (defuseTimeLeft < gameManager.BombDefuseTime / 2)
+        else if (DefuseTimeLeft < gameManager.BombDefuseTime / 2)
         {
             CmdSetDefuseTimeLeft(0);
             gameManager.DefuseProgressSlider.value = 0;
@@ -243,10 +243,10 @@ public class PlayerBombManager : NetworkBehaviour
     }
 
     [Command]
-    void CmdSetDefuseTimeLeft(float time) => defuseTimeLeft = time;
+    void CmdSetDefuseTimeLeft(float time) => DefuseTimeLeft = time;
 
     [Command]
-    void IncreaseDefuseTimeLeft() => defuseTimeLeft += Time.deltaTime;
+    void IncreaseDefuseTimeLeft() => DefuseTimeLeft += Time.deltaTime;
 
     [Command]
     void CmdDefuseSlider(bool enable)

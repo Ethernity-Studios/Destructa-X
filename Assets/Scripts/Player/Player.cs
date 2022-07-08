@@ -117,17 +117,14 @@ public class Player : NetworkBehaviour, IDamageable
     public void CmdAddPlayer()
     {
         gameManager = FindObjectOfType<GameManager>();
-        //gameManager.Players.Add(this);
         gameManager.PlayersID.Add(netId);
         if (PlayerTeam == Team.Blue)
         {
-            gameManager.BlueTeam.Add(this);
             gameManager.AliveBluePlayers++;
             gameManager.BlueTeamPlayersIDs.Add(netId);
         }
         else if (PlayerTeam == Team.Red) 
         {
-            gameManager.RedTeam.Add(this);
             gameManager.AliveRedPlayers++;
             gameManager.RedTeamPlayersIDs.Add(netId);
         } 
@@ -208,10 +205,12 @@ public class Player : NetworkBehaviour, IDamageable
     [TargetRpc]
     void TargetRpcKillPlayer(NetworkConnection conn)
     {
+        dropItems();
         playerBombManager.StopAllCoroutines();
         playerShootingManager.StopAllCoroutines();
         playerInventoryManager.StopAllCoroutines();
-        dropItems();
+        playerShootingManager.CanShoot = true;
+        playerShootingManager.Reloading = false;
         playerSpectateManager.StartCoroutine(playerSpectateManager.PlayerDeathCoroutine());
     }
 
@@ -221,11 +220,13 @@ public class Player : NetworkBehaviour, IDamageable
 
         if (playerInventoryManager.PrimaryGun != null)
         {
+            playerInventoryManager.CmdSwitchItem(Item.Primary);
             playerInventoryManager.CmdDropGun(GunType.Primary);
             playerInventoryManager.CmdDestroyGun(GunType.Secondary);
         }
         else if (playerInventoryManager.PrimaryGun == null && playerInventoryManager.SecondaryGun != null)
         {
+            playerInventoryManager.CmdSwitchItem(Item.Secondary);
             playerInventoryManager.CmdDropGun(GunType.Secondary);
         }
         playerInventoryManager.CmdSwitchItem(Item.Knife);

@@ -56,4 +56,9 @@ public class NetworkManagerRoom : NetworkRoomManager
         }
         base.OnClientSceneChanged();
     }
+
+    public override void OnClientDisconnect()
+    {
+        base.OnClientDisconnect();
+    }
 }

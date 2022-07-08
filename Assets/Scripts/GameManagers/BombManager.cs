@@ -1,5 +1,6 @@
 using UnityEngine;
 using Mirror;
+using System.Collections;
 
 public class BombManager : NetworkBehaviour
 {
@@ -24,5 +25,15 @@ public class BombManager : NetworkBehaviour
         explosion.transform.SetParent(transform);
         explosion.transform.localScale = new Vector3(.1f, .1f, .1f);
         explosion.transform.position = transform.position;
+    }
+    private void Start()
+    {
+        StartCoroutine(startBombTimer());
+    }
+
+    IEnumerator startBombTimer()
+    {
+        yield return new WaitForSeconds(40);
+        CmdDetonateBomb();
     }
 }

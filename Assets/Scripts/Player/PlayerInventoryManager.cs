@@ -34,7 +34,8 @@ public class PlayerInventoryManager : NetworkBehaviour
     PlayerShootingManager playerShootingManager;
     Player player;
 
-    public bool gunEqupied = true;
+    [SyncVar]
+    public bool GunEqupied = true;
 
     private void Start()
     {
@@ -50,10 +51,10 @@ public class PlayerInventoryManager : NetworkBehaviour
     private void Update()
     {
         if (!isLocalPlayer) return;
-        if (Input.GetKeyDown(KeyCode.Alpha1) && PrimaryGun != null && EqupiedItem != Item.Primary) SwitchItem(Item.Primary);
-        if (Input.GetKeyDown(KeyCode.Alpha2) && SecondaryGun != null && EqupiedItem != Item.Secondary) SwitchItem(Item.Secondary);
-        if (Input.GetKeyDown(KeyCode.Alpha3) && EqupiedItem != Item.Knife) SwitchItem(Item.Knife);
-        if (Input.GetKeyDown(KeyCode.Alpha4) && Bomb != null && EqupiedItem != Item.Bomb) SwitchItem(Item.Bomb);
+        if (Input.GetKeyDown(KeyCode.Alpha1) && PrimaryGun != null && EqupiedItem != Item.Primary) switchItem(Item.Primary);
+        if (Input.GetKeyDown(KeyCode.Alpha2) && SecondaryGun != null && EqupiedItem != Item.Secondary) switchItem(Item.Secondary);
+        if (Input.GetKeyDown(KeyCode.Alpha3) && EqupiedItem != Item.Knife) switchItem(Item.Knife);
+        if (Input.GetKeyDown(KeyCode.Alpha4) && Bomb != null && EqupiedItem != Item.Bomb) switchItem(Item.Bomb);
 
         if (Input.GetKeyDown(KeyCode.G)) dropItem();
     }
@@ -67,16 +68,17 @@ public class PlayerInventoryManager : NetworkBehaviour
 
     void dropItem()
     {
+        if (player.IsDead) return;
         if (EqupiedItem == Item.Primary && PrimaryGun != null) CmdDropGun(GunType.Primary);
         if (EqupiedItem == Item.Secondary && SecondaryGun != null) CmdDropGun(GunType.Secondary);
         if (EqupiedItem == Item.Bomb && Bomb != null) CmdDropBomb();
     }
 
-    void SwitchItem(Item item)
+    void switchItem(Item item)
     {
         if (player.PlayerState == PlayerState.Planting || player.PlayerState == PlayerState.Defusing || player.PlayerState == PlayerState.Dead) return;
-        StopCoroutine(toggleEqupiedGun());
-        gunEqupied = false;
+        StopCoroutine("toggleEqupiedGun");
+        if(isLocalPlayer) CmdToggleEqupiedGun(false);
         playerShootingManager.StopAllCoroutines();
         playerShootingManager.Reloading = false;
         CmdSwitchItem(item);
@@ -85,8 +87,10 @@ public class PlayerInventoryManager : NetworkBehaviour
     IEnumerator toggleEqupiedGun()
     {
         yield return new WaitForSeconds(EqupiedGun.EquipTime);
-        gunEqupied = true;
+        CmdToggleEqupiedGun(true);
     }
+    [Command]
+    void CmdToggleEqupiedGun(bool state) => GunEqupied = state;
 
     [Command(requiresAuthority = false)]
     public void CmdSwitchItem(Item item) 
@@ -99,7 +103,8 @@ public class PlayerInventoryManager : NetworkBehaviour
     {
         PreviousEqupiedItem = EqupiedItem;
         EqupiedItem = item;
-        Debug.Log("Player: " + player.PlayerName + " Switching item: " + item);
+        playerShootingManager.CanShoot = true;
+        playerShootingManager.Reloading = false;
         switch (item)
         {
             case Item.Primary:
@@ -111,8 +116,9 @@ public class PlayerInventoryManager : NetworkBehaviour
                 SecondaryGunHolder.SetActive(false);
                 KnifeHolder.SetActive(false);
                 BombHolder.SetActive(false);
+
+                if (!isLocalPlayer) return;
                 StartCoroutine(toggleEqupiedGun());
-                if(isLocalPlayer)
                 playerShootingManager.UpdateUIAmmo();
                 break;
             case Item.Secondary:
@@ -124,8 +130,9 @@ public class PlayerInventoryManager : NetworkBehaviour
                 PrimaryGunHolder.SetActive(false);
                 KnifeHolder.SetActive(false);
                 BombHolder.SetActive(false);
+
+                if (!isLocalPlayer) return;
                 StartCoroutine(toggleEqupiedGun());
-                if(isLocalPlayer)
                 playerShootingManager.UpdateUIAmmo();
                 break;
             case Item.Knife:
@@ -205,7 +212,6 @@ public class PlayerInventoryManager : NetworkBehaviour
     [ClientRpc]
     void RpcPickGun(GameObject gunInstance)
     {
-        Debug.Log("RpcPickGun gunInstance: " + gunInstance + " gunID: " + gunInstance.GetComponent<NetworkIdentity>().netId);
         GunInstance instance = gunInstance.GetComponent<GunInstance>();
         if (!instance.CanBePicked) return;
 
@@ -234,7 +240,8 @@ public class PlayerInventoryManager : NetworkBehaviour
         rb.useGravity = false;
         rb.velocity = Vector3.zero;
         gunInstance.gameObject.transform.GetChild(0).gameObject.layer = 6;
-        setLayerMask(gunInstance.transform.GetChild(1).gameObject, 6);
+        if(isLocalPlayer)
+        setLayerMask(gunInstance, 6);
     }
 
     [Command]
@@ -243,26 +250,28 @@ public class PlayerInventoryManager : NetworkBehaviour
     [ClientRpc]
     void RpcDropGun(GunType gunType)
     {
+        GunEqupied = false;
         playerShootingManager.StopAllCoroutines();
         playerShootingManager.Reloading = false;
+        playerShootingManager.CanShoot = true;
         GameObject gunInstance = null;
         if (gunType == GunType.Primary)
         {
-            if(SecondaryGun != null) SwitchItem(Item.Secondary);
-            else SwitchItem(Item.Knife);
+            if (PrimaryGun == null || PrimaryGunInstance == null) return;
+            if(SecondaryGun != null) switchItem(Item.Secondary);
+            else switchItem(Item.Knife);
 
             gunInstance = PrimaryGunInstance;
-            gunInstance.GetComponent<Rigidbody>();
             PrimaryGunInstance = null;
             PrimaryGun = null;
         }
         else if (gunType == GunType.Secondary)
         {
-            if (PrimaryGun != null) SwitchItem(Item.Primary);
-            else SwitchItem(Item.Knife);
+            if (SecondaryGun == null || SecondaryGunInstance == null) return;
+            if (PrimaryGun != null) switchItem(Item.Primary);
+            else switchItem(Item.Knife);
 
             gunInstance = SecondaryGunInstance;
-            gunInstance.GetComponent<Rigidbody>();
             SecondaryGunInstance = null;
             SecondaryGun = null;
         }
@@ -319,7 +328,7 @@ public class PlayerInventoryManager : NetworkBehaviour
             if (PrimaryGun == null && isLocalPlayer) CmdSwitchItem(Item.Secondary);
         }
         setGunTransform(gunInstance, gun);
-
+        if(isLocalPlayer)
         setLayerMask(gunInstance, 6);
     }
 

@@ -14,7 +14,7 @@ public class PlayerShootingManager : NetworkBehaviour
     GameManager gameManager;
     PlayerEconomyManager playerEconomyManager;
 
-    [SerializeField] bool canShoot = true;
+    public bool CanShoot = true;
     public bool Reloading;
 
     public GunInstance GunInstance;
@@ -36,7 +36,7 @@ public class PlayerShootingManager : NetworkBehaviour
         if (GunInstance == null) return;
         if (playerEconomyManager.IsShopOpen) return;
 
-        if (playerInventory.EqupiedGun != null && playerInventory.gunEqupied && canShoot && GunInstance.Magazine > 0 && !Reloading)
+        if (playerInventory.EqupiedGun != null && playerInventory.GunEqupied && CanShoot && GunInstance.Magazine > 0 && !Reloading)
         {
             if (playerInventory.EqupiedGun.LMB.FireMode == FireMode.Manual && Input.GetMouseButtonDown(0))
             {
@@ -61,7 +61,7 @@ public class PlayerShootingManager : NetworkBehaviour
     public IEnumerator DelayFire()
     {
         yield return new WaitForSeconds(playerInventory.EqupiedGun.LMB.FireDelay);
-        canShoot = true;
+        CanShoot = true;
     }
 
     public IEnumerator Reload()
@@ -90,7 +90,8 @@ public class PlayerShootingManager : NetworkBehaviour
     }
     public void Shoot()
     {
-        canShoot = false;
+        Debug.Log("Shooting!");
+        CanShoot = false;
         StartCoroutine(DelayFire());
         GunInstance.Magazine--;
         UpdateUIAmmo();

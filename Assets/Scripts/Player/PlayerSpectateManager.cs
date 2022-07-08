@@ -67,7 +67,7 @@ public class PlayerSpectateManager : NetworkBehaviour
         else if (player.PlayerTeam == Team.Red) 
         {
             if(gameManager.AliveRedPlayers > 1) spectate();
-            else if(gameManager.AliveRedPlayers == 0 && gameManager.BombPlanted) spectateBomb();
+            //else if(gameManager.AliveRedPlayers == 0 && gameManager.BombPlanted) spectateBomb(); /// REWORK SPECTATE BOMB
         }
         else Debug.Log("No players to spectate");
     }
