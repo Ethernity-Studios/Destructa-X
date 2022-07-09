@@ -6,15 +6,15 @@ using System;
 
 public class PlayerMovement : NetworkBehaviour
 {
-    public float MouseSens = 2f;
+    public float MouseSens = 1.7f;
     float xRotation = 0f;
 
     [SerializeField] Transform playerHead;
 
     CharacterController characterController;
 
-    public float RunSpeed = 7f;
-    public float WalkSpeed = 1f;
+    public float RunSpeed = 5f;
+    public float WalkSpeed = 3f;
     public float JumpForce = 1.3f;
 
     float gravityMultiplier = -30f;
