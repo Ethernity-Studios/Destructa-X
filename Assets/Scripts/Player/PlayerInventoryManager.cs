@@ -103,6 +103,7 @@ public class PlayerInventoryManager : NetworkBehaviour
     {
         PreviousEqupiedItem = EqupiedItem;
         EqupiedItem = item;
+        playerShootingManager.StopAllCoroutines();
         playerShootingManager.CanShoot = true;
         playerShootingManager.Reloading = false;
         switch (item)
