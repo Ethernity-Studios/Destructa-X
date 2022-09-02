@@ -205,8 +205,6 @@ public class PlayerInventoryManager : NetworkBehaviour
     [Command]
     void CmdPickGun(uint GunID) 
     {
-        Debug.Log("CmdPickGun id: " + GunID);
-        Debug.Log("CmdPickGun gameobject: " + NetworkServer.spawned[GunID].gameObject);
         RpcPickGun(NetworkServer.spawned[GunID].gameObject);
     }
 
@@ -215,6 +213,8 @@ public class PlayerInventoryManager : NetworkBehaviour
     {
         GunInstance instance = gunInstance.GetComponent<GunInstance>();
         if (!instance.CanBePicked) return;
+        instance.IsDropped = false;
+        instance.CanBePicked = false;
 
         Gun gun = instance.Gun;
 
@@ -234,8 +234,6 @@ public class PlayerInventoryManager : NetworkBehaviour
             SecondaryGunInstance = gunInstance;
             SecondaryGun = gun;
         }
-        instance.IsDropped = false;
-        instance.CanBePicked = false;
         setGunTransform(gunInstance, gun);
         Rigidbody rb = gunInstance.GetComponent<Rigidbody>();
         rb.useGravity = false;
