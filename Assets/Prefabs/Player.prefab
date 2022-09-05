@@ -604,16 +604,16 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   syncMode: 0
   syncInterval: 0.1
-  MouseSens: 1.7
+  MouseSens: 1.4
   playerHead: {fileID: 2809714701104030514}
-  RunSpeed: 5
+  RunSpeed: 4
   WalkSpeed: 3
   JumpForce: 1.3
   groundCheck: {fileID: 3407411654629684022}
   groundDistance: 0.4
   groundMask:
     serializedVersion: 2
-    m_Bits: 8
+    m_Bits: 2147483647
 --- !u!114 &6021906618316908405
 MonoBehaviour:
   m_ObjectHideFlags: 0
