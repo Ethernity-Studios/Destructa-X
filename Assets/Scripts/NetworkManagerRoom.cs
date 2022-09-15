@@ -1,15 +1,24 @@
 using Mirror;
+using System;
+using System.Collections;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using System.Collections.Generic;
-using System.IO;
 
 public class NetworkManagerRoom : NetworkRoomManager
 {
     RoomManager roomManager;
 
     public string SelectedMap;
+
+    public int LoadedPlayers = 0;
+
+    [SerializeField] GameObject loadingScreen;
+
+    public static event Action OnClientConnected;
+    public static event Action OnClientDisconnected;
+
+    public static event Action<NetworkConnection> OnServerReadied;
 
     public override void OnStartServer() => spawnPrefabs = Resources.LoadAll<GameObject>("SpawnablePrefabs").ToList();
 
@@ -47,18 +56,47 @@ public class NetworkManagerRoom : NetworkRoomManager
         ServerChangeScene(mapName);
     }
 
-    [System.Obsolete]
-    public override void OnClientSceneChanged(NetworkConnection conn)
+    /*public override void OnClientChangeScene(string newSceneName, SceneOperation sceneOperation, bool customHandling)
     {
-        if (SceneManager.GetActiveScene().name.StartsWith("Map"))
+        if (newSceneName == "Quark")
         {
-            Debug.Log("OnClientSceneChanged");
+            Debug.Log("Loading map scene");
+            NetworkClient.isLoadingScene = true;
+            StartCoroutine(LoadScene(newSceneName));
         }
-        base.OnClientSceneChanged();
-    }
 
-    public override void OnClientDisconnect()
+    }*/
+
+    /*IEnumerator LoadScene(string sceneName)
     {
-        base.OnClientDisconnect();
+        Debug.Log("LoadScene");
+        loadingSceneAsync = SceneManager.LoadSceneAsync(sceneName);
+        //loadingSceneAsync.allowSceneActivation = false;
+        //loadingScreen.SetActive(true);
+
+        do
+        {
+            Debug.Log("Loading... " + loadingSceneAsync.progress);
+            yield return null;
+        } while (loadingSceneAsync.progress < 0.9f);
+
+        LoadedPlayers++;
+        Debug.Log("Adding loaded player: " + LoadedPlayers);
+
+        while (LoadedPlayers != roomSlots.Count)
+        {
+            Debug.Log("Waiting for other players!");
+            yield return null;
+        }
+        Debug.Log("Everyone is ready!");
+        loadingSceneAsync.allowSceneActivation = loadingSceneAsync.isDone;
+    }
+    */
+    public override void OnServerReady(NetworkConnection conn)
+    {
+        Debug.Log("OnServerReady");
+        base.OnServerReady(conn);
+
+       OnServerReadied?.Invoke(conn);
     }
 }

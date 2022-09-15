@@ -113,6 +113,7 @@ public class GameManager : NetworkBehaviour
         StartRound(GameState.StartGame);
         base.OnStartServer();
     }
+
     void spawnPlayers()
     {
         int b = 0;
