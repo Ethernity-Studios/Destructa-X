@@ -20,6 +20,8 @@ public class NetworkManagerRoom : NetworkRoomManager
 
     public static event Action<NetworkConnection> OnServerReadied;
 
+    public bool GameReady;
+
     public override void OnStartServer() => spawnPrefabs = Resources.LoadAll<GameObject>("SpawnablePrefabs").ToList();
 
     public override void OnRoomStartServer()

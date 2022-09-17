@@ -45,7 +45,6 @@ public class ShopManager : NetworkBehaviour
     [Command(requiresAuthority = false)]
     void CmdGetLocalPlayer()
     {
-        Debug.Log("CmdgetLocALPlaya");
         foreach (var playerID in gameManager.PlayersID)
         {
             RpcGetLocalPlayer(NetworkServer.spawned[playerID]);

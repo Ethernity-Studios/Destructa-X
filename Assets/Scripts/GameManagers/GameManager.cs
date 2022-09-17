@@ -1,5 +1,6 @@
 using Mirror;
 using System;
+using System.Linq;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -91,9 +92,19 @@ public class GameManager : NetworkBehaviour
     readonly public SyncList<uint> BlueTeamPlayersIDs = new();
     readonly public SyncList<uint> RedTeamPlayersIDs = new();
 
-    //readonly public SyncList<Player> Players = new();
-    //readonly public SyncList<Player> BlueTeam = new();
-    //readonly public SyncList<Player> RedTeam = new();
+    [SerializeField] bool GameReady;
+    [SerializeField] GameObject loadingScreen;
+
+    private NetworkManagerRoom room;
+    private NetworkManagerRoom Room
+    {
+        get
+        {
+            if (room != null) { return room; }
+            return room = NetworkManager.singleton as NetworkManagerRoom;
+        }
+    }
+
 
     private void Start()
     {
@@ -104,16 +115,34 @@ public class GameManager : NetworkBehaviour
 
     public override void OnStartServer()
     {
+        NetworkManagerRoom.OnServerReadied += startGame;
         Debug.Log("on start server");
+    }
+
+    [Server]
+    void startGame(NetworkConnection conn)
+    {
+        if(Room.roomSlots.Count(x => x.connectionToClient.isReady) != Room.roomSlots.Count) { return; }
+
+        Debug.Log("Game ready! starting game in 3 second!");
+
+
+        Invoke("setupGame", 3f);
+    }
+
+    void setupGame()
+    {
+        GameReady = true;
+        Room.GameReady = true;
+        loadingScreen.SetActive(false);
         GameTime = StartGameLenght;
         BombState = BombState.NotPlanted;
         Invoke("spawnBomb", 1f);
         Invoke("spawnPlayers", 1.5f);
         Invoke("giveDefaultGun", 2f);
         StartRound(GameState.StartGame);
-        base.OnStartServer();
     }
-
+    
     void spawnPlayers()
     {
         int b = 0;
@@ -145,6 +174,7 @@ public class GameManager : NetworkBehaviour
 
     private void Update()
     {
+        if (!GameReady) return;
         updateRoundTimer();
         if (isServer) updateGameState();
 
