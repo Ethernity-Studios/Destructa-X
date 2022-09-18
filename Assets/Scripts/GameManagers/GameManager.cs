@@ -133,16 +133,21 @@ public class GameManager : NetworkBehaviour
     void setupGame()
     {
         GameReady = true;
-        Room.GameReady = true;
-        loadingScreen.SetActive(false);
         GameTime = StartGameLenght;
         BombState = BombState.NotPlanted;
+        Invoke("RpcSetupGame",2f);
         Invoke("spawnBomb", 1f);
         Invoke("spawnPlayers", 1.5f);
         Invoke("giveDefaultGun", 2f);
         StartRound(GameState.StartGame);
     }
-    
+
+    [ClientRpc]
+    void RpcSetupGame()
+    {
+        loadingScreen.SetActive(false);
+    }
+
     void spawnPlayers()
     {
         int b = 0;

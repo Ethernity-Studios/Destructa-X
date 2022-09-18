@@ -55,10 +55,11 @@ public class RoomManager : NetworkBehaviour
     public Map[] map;
     public Dictionary<string, Map> maps = new();
 
-    [SerializeField] TMP_Text countdownText;
-
     public static Agent PAgent;
     public static Team PTeam;
+
+    [SerializeField] GameObject AgentsUI;
+    [SerializeField] GameObject LoadingUI;
 
     private void Start()
     {
@@ -82,10 +83,11 @@ public class RoomManager : NetworkBehaviour
 
     public IEnumerator Countdown(int time)
     {
-        countdownText.gameObject.SetActive(true);
+        AgentsUI.SetActive(false);
+        LoadingUI.SetActive(true);
+        backgroundImage.color = Color.white;
         for (int i = time; i >= 0; i--)
         {
-            countdownText.text = "Starting in " + i;
             yield return new WaitForSeconds(1);
         }
         Room.SelectedMap = SelectedMap;
