@@ -157,13 +157,13 @@ public class GameManager : NetworkBehaviour
             Player player = NetworkServer.spawned[playerID].GetComponent<Player>();
             if (player.PlayerTeam == Team.Blue)
             {
-                player.RpcRespawnPlayer(blueSpawnPositions[b].position);
+                player.RpcRespawnPlayer(blueSpawnPositions[b].position, blueSpawnPositions[b].rotation);
                 setPlayerColor(player, Color.blue);
                 b++;
             }
             else if (player.PlayerTeam == Team.Red)
             {
-                player.RpcRespawnPlayer(redSpawnPositions[r].position);
+                player.RpcRespawnPlayer(redSpawnPositions[r].position, redSpawnPositions[r].rotation);
                 setPlayerColor(player, Color.red);
                 r++;
             }

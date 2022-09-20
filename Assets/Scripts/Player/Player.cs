@@ -176,11 +176,12 @@ public class Player : NetworkBehaviour, IDamageable
     public void CmdAddRoundKill() => RoundKills++;
 
     [ClientRpc]
-    public void RpcRespawnPlayer(Vector3 position)
+    public void RpcRespawnPlayer(Vector3 position, Quaternion rotation)
     {
         characterController = GetComponent<CharacterController>();
         characterController.enabled = false;
         transform.position = position;
+        transform.rotation = rotation;
         characterController.enabled = true;
     }
 
