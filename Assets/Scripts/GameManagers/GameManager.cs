@@ -59,8 +59,6 @@ public class GameManager : NetworkBehaviour
 
     [SerializeField] Transform[] blueSpawnPositions, redSpawnPositions;
 
-    [SerializeField] GameObject[] dropdownWalls;
-
     public GameObject BombPrefab;
     public GameObject GunHolder;
     [SerializeField] Transform bombSpawnLocation;
@@ -69,6 +67,7 @@ public class GameManager : NetworkBehaviour
 
     [SerializeField] GunManager gunManager;
     public ShopManager shopManager;
+    [SerializeField] MapController mapController;
 
     public GameObject BulletHolder;
 
@@ -234,7 +233,7 @@ public class GameManager : NetworkBehaviour
         if (GameState == GameState.StartGame && GameTime <= 0)
         {
             //Buy phase - Start
-            RpcDropWalls();
+            mapController.RpcDropWalls();
             closePlayerShopUI();
             CmdSetGameTime(RoundLenght);
             CmdChangeGameState(GameState.Round);
@@ -243,7 +242,7 @@ public class GameManager : NetworkBehaviour
         else if (GameState == GameState.PreRound && GameTime <= 0)
         {
             //Buy phase
-            RpcDropWalls();
+            mapController.RpcDropWalls();
             closePlayerShopUI();
             CmdChangeGameState(GameState.Round);
             CmdSetGameTime(RoundLenght);
@@ -306,7 +305,7 @@ public class GameManager : NetworkBehaviour
 
 
         RpcToggleMOTD(true);
-        RpcResetWalls();
+        mapController.RpcResetWalls();
 
         NetworkServer.Destroy(Bomb);
         spawnBomb();
@@ -491,23 +490,7 @@ public class GameManager : NetworkBehaviour
         }
     }
 
-    [ClientRpc]
-    void RpcDropWalls()
-    {
-        foreach (var wall in dropdownWalls)
-        {
-            wall.SetActive(false);
-        }
-    }
 
-    [ClientRpc]
-    void RpcResetWalls()
-    {
-        foreach (var wall in dropdownWalls)
-        {
-            wall.SetActive(true);
-        }
-    }
 
     [ClientRpc]
     void RpcToggleMOTD(bool statement)
