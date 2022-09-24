@@ -38,11 +38,11 @@ public class PlayerShootingManager : NetworkBehaviour
 
         if (playerInventory.EqupiedGun != null && playerInventory.GunEqupied && CanShoot && GunInstance.Magazine > 0 && !Reloading)
         {
-            if (playerInventory.EqupiedGun.LMB.FireMode == FireMode.Manual && Input.GetMouseButtonDown(0))
+            if (playerInventory.EqupiedGun.PrimaryFire.FireMode == FireMode.Manual && Input.GetMouseButtonDown(0))
             {
                 Shoot();
             }
-            else if (playerInventory.EqupiedGun.LMB.FireMode == FireMode.Automatic && Input.GetMouseButton(0))
+            else if (playerInventory.EqupiedGun.PrimaryFire.FireMode == FireMode.Automatic && Input.GetMouseButton(0))
             {
                 Shoot();
             }
@@ -60,7 +60,7 @@ public class PlayerShootingManager : NetworkBehaviour
 
     public IEnumerator DelayFire()
     {
-        yield return new WaitForSeconds(playerInventory.EqupiedGun.LMB.FireDelay);
+        yield return new WaitForSeconds(playerInventory.EqupiedGun.PrimaryFire.FireDelay);
         CanShoot = true;
     }
 

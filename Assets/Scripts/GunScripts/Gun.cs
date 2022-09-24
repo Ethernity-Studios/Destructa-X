@@ -15,14 +15,21 @@ public class Gun : ScriptableObject
     public GunType Type;
     public GunCategory Category;
     public float BulletPenetration;
+
+    public PrimaryFire PrimaryFire;
+    public SecondaryFire SecondaryFire;
+
+
+    public float Bloom;
+    public float Recoil;
+
     public List<Damages> Damages;
 
     public GameObject GunModel;
 
-    public LMB LMB;
-    public RMB RMB;
-
     public GunStats Stats;
+
+    public Zoom Scope;
 
     public GunTransform GunTransform;
 }

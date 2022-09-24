@@ -1,9 +1,7 @@
 using Mirror;
 using System;
-using System.Collections;
 using System.Linq;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
 public class NetworkManagerRoom : NetworkRoomManager
 {
@@ -15,8 +13,8 @@ public class NetworkManagerRoom : NetworkRoomManager
 
     [SerializeField] GameObject loadingScreen;
 
-    public static event Action OnClientConnected;
-    public static event Action OnClientDisconnected;
+    //public static event Action OnClientConnected;
+    //public static event Action OnClientDisconnected;
 
     public static event Action<NetworkConnection> OnServerReadied;
 
@@ -97,6 +95,6 @@ public class NetworkManagerRoom : NetworkRoomManager
         Debug.Log("OnServerReady");
         base.OnServerReady(conn);
 
-       OnServerReadied?.Invoke(conn);
+        OnServerReadied?.Invoke(conn);
     }
 }

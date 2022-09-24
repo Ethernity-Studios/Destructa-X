@@ -1,75 +1,81 @@
 using System;
 using UnityEngine;
 
+[Serializable]
+public class PrimaryFire
+{
+    public FireMode FireMode;
+    public FireType FireType;
+
+    public float FireDelay;
+    public float BurstDelay;
+}
+
+[Serializable]
+public class SecondaryFire
+{
+    public FireMode FireMode;
+    public FireType FireType;
+
+    public ZoomType ZoomType;
+    public Zoom Zoom; 
+
+    public float FireDelay;
+    public float BurstDelay;
+}
+
+/// <summary>
+/// GunSettings
+/// </summary>
+
 public enum FireType
 {
+    Default,
     Burst,
-    Shotgun,
-    Default
+    Multiple
 }
 
 public enum FireMode
 {
     Automatic,
-    SemiAutomatic,
     Manual
 }
 
-public enum GunMode
+public enum ZoomType
 {
-    Scope,
-    Fire
-}
-
-public enum ScopeType
-{
-    Sniper,
-    RedDot
+    None, Semi, Full
 }
 
 [Serializable]
-public class LMB
+public class Zoom
 {
-    [Header("Type")] public FireType FireType;
-    public FireMode FireMode;
-    public float FireDelay;
-
-    public int AmmoLoss;
-
-    [Header("Damages")] public float LegDamage;
-    public float BodyDamage;
-    public float HeadDamage;
-    public float DamageDrop;
-
-    [Header("AimDiff")] public float Recoil;
-    public float Bloom;
-}
-
-public enum RMBType
-{
-    None,
-    Scope,
-    ScopeFire,
-    Fire
+    public int Amount;
+    public int AmountMultiplier;
 }
 
 [Serializable]
-public class RMB
+public struct Damages
 {
-    public RMBType Type;
-    public Scope Scope;
-    public LMB Fire;
+    public int MinDistance;
+    public int MaxDistance;
+    [Space]
+    public int HeadDamage;
+    public int BodyDamage;
+    public int LegsDamage;
 }
 
-[Serializable]
-public class Scope
-{
-    public float Magnification;
-    public ScopeType ScopeType;
+/// <summary>
+/// other gun settings
+/// </summary>
 
-    public float MoveSpeedModifier;
-    public float BloomModifier;
-    public float RecoilModifier;
+[Serializable]
+public class GunTransform
+{
+    public Vector3 FirstPersonGunPosition;
+    public Vector3 FirstPersonGunRotation;
+
+    public Vector3 ThirdPersonGunPosition;
+    public Vector3 ThirdPersonGunRotation;
 }
 
 public enum GunType
@@ -87,22 +93,4 @@ public enum GunCategory
 public class GunStats
 {
     public float FireRate;
-}
-
-[Serializable]
-public struct Damages
-{
-    public int MinDistance;
-    public int MaxDistance;
-    [Space]
-    public int HeadDamage;
-    public int BodyDamage;
-    public int LegsDamage;
-}
-
-[Serializable]
-public class GunTransform
-{
-    public Vector3 FirstPersonGunPosition;
-    public Vector3 FirstPersonGunRotation;
 }
