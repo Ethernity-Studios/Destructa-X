@@ -171,10 +171,11 @@
       }
     },
     "com.veriorpies.parrelsync": {
-      "version": "file:C:/Users/golby/Downloads/ParrelSync-master/ParrelSync",
+      "version": "https://github.com/VeriorPies/ParrelSync.git?path=/ParrelSync",
       "depth": 0,
-      "source": "local",
-      "dependencies": {}
+      "source": "git",
+      "dependencies": {},
+      "hash": "f45424822189ebd875d864a17d7f03b72eafbff7"
     },
     "com.unity.modules.ai": {
       "version": "1.0.0",
