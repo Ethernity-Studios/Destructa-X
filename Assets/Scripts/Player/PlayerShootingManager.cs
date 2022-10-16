@@ -18,6 +18,7 @@ public class PlayerShootingManager : NetworkBehaviour
     public bool Reloading;
 
     public GunInstance GunInstance;
+    [SerializeField] GameObject BulletImpactDecalPenetrable, BulletImpactDecalNotPenetrable;
     private void Start()
     {
         player = GetComponent<Player>();
@@ -132,6 +133,8 @@ public class PlayerShootingManager : NetworkBehaviour
                 penetrationPoint = penHit.point;
                 endPoint = transform.position + transform.forward * 1000;
 
+
+                CmdInstantiateImpactDecal(true);
                 if (hit.transform.TryGetComponent(out MaterialToughness materialToughness))
                 {
                     penetrationAmount -= Vector3.Distance((Vector3)penetrationPoint, hit.point);
@@ -178,5 +181,24 @@ public class PlayerShootingManager : NetworkBehaviour
             else if (distance >= gun.Damages[2].MinDistance) BulletDamage = gun.Damages[2].BodyDamage;
         }
         return BulletDamage;
+    }
+
+    [Command]
+    void CmdInstantiateImpactDecal(bool canPenetrate)
+    {
+        GameObject bulletImpact;
+        if (canPenetrate)
+            bulletImpact = Instantiate(BulletImpactDecalPenetrable);
+        else bulletImpact = Instantiate(BulletImpactDecalNotPenetrable);
+        NetworkServer.Spawn(bulletImpact);
+        RpcInstantiateImpactDecal(bulletImpact);
+    }
+
+    [ClientRpc]
+    void RpcInstantiateImpactDecal(GameObject bulletImpact)
+    {
+        bulletImpact.transform.position = (Vector3)penetrationPoint;
+        bulletImpact.transform.LookAt(transform.position);
+        Debug.Log("Spawning decal!");
     }
 }

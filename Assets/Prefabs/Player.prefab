@@ -45,6 +45,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7479362796582128191}
   - component: {fileID: 1270561995127500589}
+  - component: {fileID: 2274851941202429463}
   m_Layer: 7
   m_Name: ItemCamera
   m_TagString: Untagged
@@ -110,6 +111,39 @@ Camera:
   m_OcclusionCulling: 1
   m_StereoConvergence: 10
   m_StereoSeparation: 0.022
+--- !u!114 &2274851941202429463
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 658249314918964109}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a79441f348de89743a2939f4d699eac1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_RenderShadows: 1
+  m_RequiresDepthTextureOption: 2
+  m_RequiresOpaqueTextureOption: 2
+  m_CameraType: 0
+  m_Cameras: []
+  m_RendererIndex: -1
+  m_VolumeLayerMask:
+    serializedVersion: 2
+    m_Bits: 1
+  m_VolumeTrigger: {fileID: 0}
+  m_VolumeFrameworkUpdateModeOption: 2
+  m_RenderPostProcessing: 0
+  m_Antialiasing: 0
+  m_AntialiasingQuality: 2
+  m_StopNaN: 0
+  m_Dithering: 0
+  m_ClearDepth: 1
+  m_AllowXRRendering: 1
+  m_RequiresDepthTexture: 0
+  m_RequiresColorTexture: 0
+  m_Version: 2
 --- !u!1 &1399538645188886251
 GameObject:
   m_ObjectHideFlags: 0
@@ -587,6 +621,8 @@ MonoBehaviour:
   CanShoot: 1
   Reloading: 0
   GunInstance: {fileID: 0}
+  BulletImpactDecalPenetrable: {fileID: 6071705189317625677, guid: aeffaea663eb17147b647894e18ee251, type: 3}
+  BulletImpactDecalNotPenetrable: {fileID: 6071705189317625677, guid: aeffaea663eb17147b647894e18ee251, type: 3}
   mask:
     serializedVersion: 2
     m_Bits: 1599
@@ -798,6 +834,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2809714701104030514}
   - component: {fileID: 8837322168990955401}
+  - component: {fileID: 4965213868233451414}
   m_Layer: 7
   m_Name: Head
   m_TagString: Untagged
@@ -866,6 +903,39 @@ Camera:
   m_OcclusionCulling: 1
   m_StereoConvergence: 10
   m_StereoSeparation: 0.022
+--- !u!114 &4965213868233451414
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6906543326731332664}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a79441f348de89743a2939f4d699eac1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_RenderShadows: 1
+  m_RequiresDepthTextureOption: 2
+  m_RequiresOpaqueTextureOption: 2
+  m_CameraType: 0
+  m_Cameras: []
+  m_RendererIndex: -1
+  m_VolumeLayerMask:
+    serializedVersion: 2
+    m_Bits: 1
+  m_VolumeTrigger: {fileID: 0}
+  m_VolumeFrameworkUpdateModeOption: 2
+  m_RenderPostProcessing: 0
+  m_Antialiasing: 0
+  m_AntialiasingQuality: 2
+  m_StopNaN: 0
+  m_Dithering: 0
+  m_ClearDepth: 1
+  m_AllowXRRendering: 1
+  m_RequiresDepthTexture: 0
+  m_RequiresColorTexture: 0
+  m_Version: 2
 --- !u!1 &7027019306345824847
 GameObject:
   m_ObjectHideFlags: 0
