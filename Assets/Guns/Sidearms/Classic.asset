@@ -22,6 +22,22 @@ MonoBehaviour:
   Type: 1
   Category: 0
   BulletPenetration: 3
+  PrimaryFire:
+    FireMode: 0
+    FireType: 0
+    FireDelay: 0.1
+    BurstDelay: 0
+  SecondaryFire:
+    FireMode: 0
+    FireType: 0
+    ZoomType: 0
+    Zoom:
+      Amount: 0
+      AmountMultiplier: 0
+    FireDelay: 0
+    BurstDelay: 0
+  Bloom: 0
+  Recoil: 0
   Damages:
   - MinDistance: 0
     MaxDistance: 30
@@ -34,38 +50,13 @@ MonoBehaviour:
     BodyDamage: 22
     LegsDamage: 18
   GunModel: {fileID: 1298712114125637990, guid: fc1456374dc984243a838362139fd483, type: 3}
-  LMB:
-    FireType: 2
-    FireMode: 2
-    FireDelay: 0.15
-    AmmoLoss: 1
-    LegDamage: 50
-    BodyDamage: 50
-    HeadDamage: 50
-    DamageDrop: 50
-    Recoil: 1
-    Bloom: 1
-  RMB:
-    Type: 3
-    Scope:
-      Magnification: 0
-      ScopeType: 0
-      MoveSpeedModifier: 0
-      BloomModifier: 0
-      RecoilModifier: 0
-    Fire:
-      FireType: 1
-      FireMode: 1
-      FireDelay: 1
-      AmmoLoss: 3
-      LegDamage: 50
-      BodyDamage: 50
-      HeadDamage: 50
-      DamageDrop: 50
-      Recoil: 1
-      Bloom: 1
   Stats:
     FireRate: 0
+  Scope:
+    Amount: 0
+    AmountMultiplier: 0
   GunTransform:
     FirstPersonGunPosition: {x: 0.45, y: -0.25, z: 0.48}
     FirstPersonGunRotation: {x: 0, y: 80, z: 0}
+    ThirdPersonGunPosition: {x: 0, y: 0, z: 0}
+    ThirdPersonGunRotation: {x: 0, y: 0, z: 0}

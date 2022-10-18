@@ -622,7 +622,7 @@ MonoBehaviour:
   Reloading: 0
   GunInstance: {fileID: 0}
   BulletImpactDecalPenetrable: {fileID: 6071705189317625677, guid: aeffaea663eb17147b647894e18ee251, type: 3}
-  BulletImpactDecalNotPenetrable: {fileID: 6071705189317625677, guid: aeffaea663eb17147b647894e18ee251, type: 3}
+  BulletImpactDecalNotPenetrable: {fileID: 6071705189317625677, guid: 3c428bab6c0c4694aa239f13ef2a6e9b, type: 3}
   mask:
     serializedVersion: 2
     m_Bits: 1599
