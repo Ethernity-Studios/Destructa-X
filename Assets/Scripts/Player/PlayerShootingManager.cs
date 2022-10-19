@@ -31,7 +31,7 @@ public class PlayerShootingManager : NetworkBehaviour
     }
     void Update()
     {
-        Debug.DrawRay(cameraHolder.position, cameraHolder.forward, Color.red);
+        Debug.DrawRay(cameraHolder.position, cameraHolder.forward*2, Color.green);
         if (player.IsDead) return;
         if (!isLocalPlayer) return;
         if (GunInstance == null) return;
@@ -126,20 +126,22 @@ public class PlayerShootingManager : NetworkBehaviour
                         player.CmdAddRoundKill();
                     }
             }
-
             impactPoint = hit.point;
+            Debug.Log("hit.point"+hit.point);
+            Debug.Log("ray.direction"+ray.direction);
+            Debug.Log("pen amount"+penetrationAmount);
+            Debug.Log("-ray dir"+-ray.direction);
             Ray penRay = new Ray(hit.point + ray.direction * penetrationAmount, -ray.direction);
+            //Ray penRay = new Ray(hit.point , -ray.direction);
             RaycastHit penHit;
-            if (hit.collider.Raycast(penRay, out penHit, penetrationAmount))
+            if (hit.collider.Raycast(penRay, out penHit,penetrationAmount))
             {
                 penetrationPoint = penHit.point;
-                //CmdInstantiateImpactDecal(true, penHit.point, penHit.normal);
                 endPoint = transform.position + transform.forward * 1000;
                 if (hit.transform.TryGetComponent(out MaterialToughness materialToughness))
                 {
-                    CmdInstantiateImpactDecal(true, penHit.point, penHit.normal);
-                    Debug.Log("LOcation: " + penHit.point);
-                    CmdInstantiateImpactDecal(true, hit.point, hit.normal);
+                    CmdInstantiateImpactDecal(true, hit.point, hit.normal); // first point
+                    CmdInstantiateImpactDecal(true, penHit.point, penHit.normal); //second point
                     penetrationAmount -= Vector3.Distance((Vector3)penetrationPoint, hit.point);
                     penetrationAmount -= materialToughness.ToughnessAmount;
                     CheckPenetration();
@@ -191,10 +193,8 @@ public class PlayerShootingManager : NetworkBehaviour
     [Command]
     void CmdInstantiateImpactDecal(bool canPenetrate, Vector3 position, Vector3 rotation)
     {
-        Debug.Log("SPawning decal");
         GameObject bulletImpact;
-        if (canPenetrate)
-            bulletImpact = Instantiate(BulletImpactDecalPenetrable);
+        if (canPenetrate) bulletImpact = Instantiate(BulletImpactDecalPenetrable);
         else bulletImpact = Instantiate(BulletImpactDecalNotPenetrable);
         NetworkServer.Spawn(bulletImpact);
         RpcInstantiateImpactDecal(bulletImpact, position, rotation);
@@ -205,6 +205,5 @@ public class PlayerShootingManager : NetworkBehaviour
     {
         bulletImpact.transform.position = position;
         bulletImpact.transform.rotation = Quaternion.LookRotation(rotation);
-        Debug.Log("Spawning decal!");
     }
 }
