@@ -97,7 +97,7 @@ public class PlayerShootingManager : NetworkBehaviour
         GunInstance.Magazine--;
         UpdateUIAmmo();
         penetrationAmount = playerInventory.EqupiedGun.BulletPenetration;
-        CheckPenetration();
+        CheckPenetration(cameraHolder.position);
     }
 
     [SerializeField] LayerMask mask;
@@ -108,11 +108,11 @@ public class PlayerShootingManager : NetworkBehaviour
     bool canPenetrate;
     float penetrationAmount;
 
-    public void CheckPenetration()
+    public void CheckPenetration(Vector3 originPosition)
     {
-        Ray ray = new Ray(cameraHolder.position, transform.forward + cameraHolder.transform.forward);
+        Ray ray = new Ray(originPosition, transform.forward + cameraHolder.transform.forward);
         RaycastHit hit;
-        if (Physics.Raycast(cameraHolder.position, cameraHolder.forward, out hit, Mathf.Infinity, layerMask: mask))
+        if (Physics.Raycast(originPosition, cameraHolder.forward, out hit, Mathf.Infinity, layerMask: mask))
         {
             if (hit.transform.parent.gameObject.TryGetComponent(out IDamageable entity))
             {
@@ -127,7 +127,7 @@ public class PlayerShootingManager : NetworkBehaviour
                     }
             }
             impactPoint = hit.point;
-            Ray penRay = new Ray(hit.point + ray.direction, -ray.direction);
+            Ray penRay = new Ray(hit.point + ray.direction * penetrationAmount, -ray.direction);
             RaycastHit penHit;
             if (hit.collider.Raycast(penRay, out penHit,penetrationAmount))
             {
@@ -139,7 +139,7 @@ public class PlayerShootingManager : NetworkBehaviour
                     CmdInstantiateImpactDecal(true, penHit.point, penHit.normal); //second point
                     penetrationAmount -= Vector3.Distance((Vector3)penetrationPoint, hit.point);
                     penetrationAmount -= materialToughness.ToughnessAmount;
-                    CheckPenetration();
+                    CheckPenetration(hit.point);
                 }
                 else
                 {
@@ -193,11 +193,19 @@ public class PlayerShootingManager : NetworkBehaviour
         else bulletImpact = Instantiate(BulletImpactDecalNotPenetrable);
         NetworkServer.Spawn(bulletImpact);
         RpcInstantiateImpactDecal(bulletImpact, position, rotation);
+        StartCoroutine(destroyDecal(bulletImpact));
+    }
+
+    IEnumerator destroyDecal(GameObject bulletImpact)
+    {
+        yield return new WaitForSeconds(7);
+        NetworkServer.Destroy(bulletImpact);
     }
 
     [ClientRpc]
     void RpcInstantiateImpactDecal(GameObject bulletImpact, Vector3 position, Vector3 rotation)
     {
+        Debug.Log("Spawning decal at: " + position);
         bulletImpact.transform.position = position;
         bulletImpact.transform.rotation = Quaternion.LookRotation(rotation);
     }
