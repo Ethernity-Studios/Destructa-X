@@ -110,7 +110,7 @@ public class PlayerShootingManager : NetworkBehaviour
 
     public void CheckPenetration()
     {
-        Ray ray = new Ray(transform.position + new Vector3(0, 0, transform.localScale.z), transform.forward);
+        Ray ray = new Ray(cameraHolder.position, transform.forward + cameraHolder.transform.forward);
         RaycastHit hit;
         if (Physics.Raycast(cameraHolder.position, cameraHolder.forward, out hit, Mathf.Infinity, layerMask: mask))
         {
@@ -127,12 +127,7 @@ public class PlayerShootingManager : NetworkBehaviour
                     }
             }
             impactPoint = hit.point;
-            Debug.Log("hit.point"+hit.point);
-            Debug.Log("ray.direction"+ray.direction);
-            Debug.Log("pen amount"+penetrationAmount);
-            Debug.Log("-ray dir"+-ray.direction);
-            Ray penRay = new Ray(hit.point + ray.direction * penetrationAmount, -ray.direction);
-            //Ray penRay = new Ray(hit.point , -ray.direction);
+            Ray penRay = new Ray(hit.point + ray.direction, -ray.direction);
             RaycastHit penHit;
             if (hit.collider.Raycast(penRay, out penHit,penetrationAmount))
             {
