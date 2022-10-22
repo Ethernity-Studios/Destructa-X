@@ -178,11 +178,11 @@ public class Player : NetworkBehaviour, IDamageable
     [ClientRpc]
     public void RpcRespawnPlayer(Vector3 position, Quaternion rotation)
     {
-        characterController = GetComponent<CharacterController>();
-        characterController.enabled = false;
+        //characterController = GetComponent<CharacterController>();
+        //characterController.enabled = false;
         transform.position = position;
         transform.rotation = rotation;
-        characterController.enabled = true;
+        //characterController.enabled = true;
     }
 
     [Command(requiresAuthority = false)]

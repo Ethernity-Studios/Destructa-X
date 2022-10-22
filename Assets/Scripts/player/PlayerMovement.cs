@@ -1,44 +1,55 @@
-using UnityEngine;
 using Mirror;
-using System;
+using UnityEngine;
 
-
+enum MovementState
+{
+    Idle, Walking, Sprinting, Jumping
+}
 
 public class PlayerMovement : NetworkBehaviour
 {
+    [SerializeField] Transform playerHead;
+
+    Player playerManager;
+    Rigidbody rb;
+
+    [SerializeField] MovementState state;
+
+    [Header("Mouse sens")]
     public float MouseSens = 1.7f;
     float xRotation = 0f;
 
-    [SerializeField] Transform playerHead;
+    [Header("Movement")]
+    float horizontalInput;
+    float verticalInput;
 
-    CharacterController characterController;
+    Vector3 moveDirection;
 
-    public float RunSpeed = 5f;
-    public float WalkSpeed = 3f;
-    public float JumpForce = 1.3f;
+    [SerializeField] float sprintSpeed = 5f;
+    [SerializeField] float walkSpeed = 3f;
+    float moveSpeed;
 
-    float gravityMultiplier = -30f;
+    [Header("Jump")]
+    [SerializeField] float groundDrag;
+    [SerializeField] bool grounded;
 
-    [SerializeField]Transform groundCheck;
-    [SerializeField]float groundDistance = 0.4f;
-    [SerializeField]LayerMask groundMask;
+    [SerializeField] float jumpForce;
+    [SerializeField] float jumpCooldown;
+    [SerializeField] float airMultiplier;
+    bool readyToJump = true;
+    float jumpEnergy;
 
-    Vector3 velocity;
-    bool isGrounded;
-
-    Player playerManager;
-    PlayerInventoryManager playerInventoryManager;
     void Start()
     {
-        playerInventoryManager = GetComponent<PlayerInventoryManager>();
-        if (isLocalPlayer) 
+        rb = GetComponent<Rigidbody>();
+        if (isLocalPlayer)
         {
             playerManager = GetComponent<Player>();
             playerManager.PlayerState = PlayerState.Idle;
+            rb.freezeRotation = true;
             //cameraTransform = Camera.main.transform;
             //cameraTransform.SetParent(transform.GetChild(0));
             //cameraTransform.position = new Vector3(transform.position.x, transform.position.y, transform.position.z);
-            characterController = GetComponent<CharacterController>();
         }
     }
 
@@ -47,72 +58,105 @@ public class PlayerMovement : NetworkBehaviour
     {
         if (!isLocalPlayer) return;
         if (playerManager.IsDead) return;
-        if (!characterController.enabled) return;
+        speedControl();
+        getInput();
+        stateHandler();
+
+        grounded = Physics.Raycast(origin: transform.position, direction: Vector3.down, maxDistance: .7f/*, layerMask: groundMask*/);
+
+        if (grounded) rb.drag = groundDrag;
+        else rb.drag = 0;
+    }
+
+    private void FixedUpdate()
+    {
+        if (!isLocalPlayer) return;
+        if (playerManager.IsDead) return;
+
         movePlayer();
-        jump();
-        crouch();
     }
 
     void LateUpdate()
     {
         if (!isLocalPlayer) return;
-        if(playerManager.IsDead) return;
+        if (playerManager.IsDead) return;
         rotateHead();
+    }
+
+    void stateHandler()
+    {
+        if (grounded && rb.velocity == Vector3.zero) state = MovementState.Idle;
+        else if (grounded && Input.GetKey(KeyCode.LeftShift))
+        {
+            moveSpeed = walkSpeed;
+            state = MovementState.Walking;
+        }
+        else if (grounded)
+        {
+            state = MovementState.Sprinting;
+            moveSpeed = sprintSpeed;
+        }
+        else
+        {
+            state = MovementState.Jumping;
+        }
     }
 
     void rotateHead()
     {
         if (GetComponent<PlayerEconomyManager>().IsShopOpen) return;
-        float mouseX = Input.GetAxis("Mouse X") * MouseSens*100 * Time.fixedDeltaTime;
-        float mouseY = Input.GetAxis("Mouse Y") * MouseSens*100 * Time.fixedDeltaTime;
+        float mouseX = Input.GetAxis("Mouse X") * MouseSens * 100 * Time.fixedDeltaTime;
+        float mouseY = Input.GetAxis("Mouse Y") * MouseSens * 100 * Time.fixedDeltaTime;
         xRotation -= mouseY;
         xRotation = Mathf.Clamp(xRotation, -90f, 90f);
         playerHead.localRotation = Quaternion.Euler(xRotation, 0f, 0f);
         transform.Rotate(Vector3.up * mouseX);
     }
 
+    void getInput()
+    {
+        horizontalInput = Input.GetAxisRaw("Horizontal");
+        verticalInput = Input.GetAxisRaw("Vertical");
+
+        if (Input.GetKeyDown(KeyCode.Space) && readyToJump && grounded)
+        {
+            readyToJump = false;
+            jump();
+            Invoke("resetJump", jumpCooldown);
+        }
+    }
+
     void movePlayer()
     {
-        if (playerManager.PlayerState == PlayerState.Planting || playerManager.PlayerState == PlayerState.Defusing) return;
-        float speed = 7;
-        float x = Input.GetAxis("Horizontal");
-        float z = Input.GetAxis("Vertical");
-        Vector3 move = transform.right * x + transform.forward * z;
+        moveDirection = transform.forward * verticalInput + transform.right * horizontalInput;
 
-        if (Input.GetKey(KeyCode.LeftShift))
-        {
-            speed = WalkSpeed;
-        }
-        else if(Input.GetKeyUp(KeyCode.LeftShift))
-        {
-            speed = RunSpeed;
-        }
+        if (grounded)
+            rb.AddForce(moveDirection.normalized * moveSpeed * 10f, ForceMode.Force);
+        else
+            rb.AddForce(moveDirection.normalized * moveSpeed * 10f * airMultiplier, ForceMode.Force);
+    }
 
-        characterController.Move(move * speed * Time.deltaTime);
+    private void speedControl()
+    {
+        Vector3 flatVel = new Vector3(rb.velocity.x, 0f, rb.velocity.z);
+        Debug.Log(flatVel.magnitude);
+        if (flatVel.magnitude > moveSpeed)
+        {
+            Vector3 limitedVel = flatVel.normalized * moveSpeed;
+            rb.velocity = new Vector3(limitedVel.x, rb.velocity.y, limitedVel.z);
+        }
     }
 
     void jump()
     {
-        isGrounded = Physics.CheckSphere(groundCheck.position, groundDistance, groundMask);
-        if (isGrounded && velocity.y < 0)
-        {
-            velocity.y = -2f;
-        }
-        if (Input.GetButtonDown("Jump") && isGrounded)
-        {
-            velocity.y = Mathf.Sqrt(JumpForce * -2f * gravityMultiplier);
-        }
-        
-        velocity.y += gravityMultiplier * Time.deltaTime;
-        characterController.Move(velocity * Time.deltaTime);
+        rb.velocity = new Vector3(rb.velocity.x, 0f, rb.velocity.z);
+
+        rb.AddForce(transform.up * jumpForce, ForceMode.Impulse);
     }
 
-    void crouch()
+    void resetJump()
     {
-        if (Input.GetKeyDown(KeyCode.LeftControl) && playerManager.PlayerState != PlayerState.Jump)
-        {
-            
-        }
+        readyToJump = true;
     }
 
 }
