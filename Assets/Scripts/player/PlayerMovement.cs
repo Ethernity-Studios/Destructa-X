@@ -139,7 +139,6 @@ public class PlayerMovement : NetworkBehaviour
     private void speedControl()
     {
         Vector3 flatVel = new Vector3(rb.velocity.x, 0f, rb.velocity.z);
-        Debug.Log(flatVel.magnitude);
         if (flatVel.magnitude > moveSpeed)
         {
             Vector3 limitedVel = flatVel.normalized * moveSpeed;
