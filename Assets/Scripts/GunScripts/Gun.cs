@@ -2,11 +2,13 @@
 using UnityEngine.UI;
 using System.Collections.Generic;
 
+
 [CreateAssetMenu]
 public class Gun : ScriptableObject
 {
     public int GunID;
     public string Name;
+    public GameObject GunModel;
     public int Price;
     public int MagazineAmmo;
     public int Ammo;
@@ -25,11 +27,12 @@ public class Gun : ScriptableObject
 
     public List<Damages> Damages;
 
-    public GameObject GunModel;
 
     public GunStats Stats;
 
     public Zoom Scope;
 
     public GunTransform GunTransform;
+
+
 }

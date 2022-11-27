@@ -30,7 +30,7 @@ public class SecondaryFire
 
 public enum FireType
 {
-    Default,
+    Single,
     Burst,
     Multiple
 }
