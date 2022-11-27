@@ -19,6 +19,7 @@ public class Gun : ScriptableObject
     public float BulletPenetration;
 
     public PrimaryFire PrimaryFire;
+    public bool HasSecondaryFire;
     public SecondaryFire SecondaryFire;
 
 

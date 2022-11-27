@@ -12,40 +12,41 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2797a7e7978d4fa3bf4d76869be850f0, type: 3}
   m_Name: Ares
   m_EditorClassIdentifier: 
+  GunID: 0
   Name: 
-  MagazineSize: 0
-  MaxAmmo: 0
-  ReloadTime: 0
-  Type: 0
   GunModel: {fileID: 0}
-  GunIcon: {fileID: 0}
-  LMB:
-    FireType: 0
+  Price: 0
+  MagazineAmmo: 0
+  Ammo: 0
+  ReloadTime: 0
+  EquipTime: 0
+  Type: 0
+  Category: 0
+  BulletPenetration: 0
+  PrimaryFire:
     FireMode: 0
+    FireType: 0
     FireDelay: 0
-    AmmoLoss: 0
-    LegDamage: 0
-    BodyDamage: 0
-    HeadDamage: 0
-    DamageDrop: 0
-    Recoil: 0
-    Bloom: 0
-  RMB:
-    Type: 0
-    Scope:
-      Magnification: 0
-      ScopeType: 0
-      MoveSpeedModifier: 0
-      BloomModifier: 0
-      RecoilModifier: 0
-    Fire:
-      FireType: 0
-      FireMode: 0
-      FireDelay: 0
-      AmmoLoss: 0
-      LegDamage: 0
-      BodyDamage: 0
-      HeadDamage: 0
-      DamageDrop: 0
-      Recoil: 0
-      Bloom: 0
+    BurstDelay: 0
+  SecondaryFire:
+    FireMode: 0
+    FireType: 0
+    ZoomType: 0
+    Zoom:
+      Amount: 0
+      AmountMultiplier: 0
+    FireDelay: 0
+    BurstDelay: 0
+  Bloom: 0
+  Recoil: 0
+  Damages: []
+  Stats:
+    FireRate: 0
+  Scope:
+    Amount: 0
+    AmountMultiplier: 0
+  GunTransform:
+    FirstPersonGunPosition: {x: 0, y: 0, z: 0}
+    FirstPersonGunRotation: {x: 0, y: 0, z: 0}
+    ThirdPersonGunPosition: {x: 0, y: 0, z: 0}
+    ThirdPersonGunRotation: {x: 0, y: 0, z: 0}

@@ -2,7 +2,7 @@ using System;
 using UnityEngine;
 
 [Serializable]
-public class PrimaryFire
+public struct PrimaryFire
 {
     public FireMode FireMode;
     public FireType FireType;
