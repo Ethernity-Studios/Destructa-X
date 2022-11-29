@@ -2,13 +2,15 @@ using System;
 using UnityEngine;
 
 [Serializable]
-public struct PrimaryFire
+public class PrimaryFire
 {
     public FireMode FireMode;
     public FireType FireType;
 
     public float FireDelay;
     public float BurstDelay;
+
+    public float BulletsPerFire;
 }
 
 [Serializable]
@@ -22,6 +24,8 @@ public class SecondaryFire
 
     public float FireDelay;
     public float BurstDelay;
+
+    public float BulletsPerFire;
 }
 
 /// <summary>

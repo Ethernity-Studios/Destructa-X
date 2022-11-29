@@ -28,6 +28,8 @@ MonoBehaviour:
     FireType: 0
     FireDelay: 0
     BurstDelay: 0
+    BulletsPerFire: 0
+  HasSecondaryFire: 0
   SecondaryFire:
     FireMode: 0
     FireType: 0
@@ -37,6 +39,7 @@ MonoBehaviour:
       AmountMultiplier: 0
     FireDelay: 0
     BurstDelay: 0
+    BulletsPerFire: 0
   Bloom: 0
   Recoil: 0
   Damages: []

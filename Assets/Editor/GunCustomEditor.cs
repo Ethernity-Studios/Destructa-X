@@ -33,7 +33,9 @@ public class GunCustomEditor : Editor
     {
         gun.GunID = (int)EditorGUILayout.IntField("GunID", gun.GunID);
         gun.Name = (string)EditorGUILayout.TextField("Name", gun.Name);
+        EditorGUILayout.BeginHorizontal();
         gun.GunModel = (GameObject)EditorGUILayout.ObjectField("GunModel", gun.GunModel, typeof(GameObject), true);
+        EditorGUILayout.EndHorizontal();
         gun.Price = (int)EditorGUILayout.IntField("Price", gun.Price);
         gun.MagazineAmmo = (int)EditorGUILayout.IntField("MagazineAmmo", gun.MagazineAmmo);
         gun.Ammo = (int)EditorGUILayout.IntField("Ammo", gun.Ammo);
@@ -56,5 +58,7 @@ public class GunCustomEditor : Editor
         serializedObject.ApplyModifiedProperties();
     }
 }
+
+
 
 #endif
