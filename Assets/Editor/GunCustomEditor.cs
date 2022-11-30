@@ -21,11 +21,11 @@ public class GunCustomEditor : Editor
 
         primaryFire = serializedObject.FindProperty("PrimaryFire");
         secondaryFire = serializedObject.FindProperty("SecondaryFire");
-        damagesList = serializedObject.FindProperty("Damages");
+        //damagesList = serializedObject.FindProperty("Damages");
 
-        stats = serializedObject.FindProperty("Stats");
-        scope = serializedObject.FindProperty("Scope");
-        gunTransform = serializedObject.FindProperty("GunTransform");
+        //stats = serializedObject.FindProperty("Stats");
+        //scope = serializedObject.FindProperty("Scope");
+        //gunTransform = serializedObject.FindProperty("GunTransform");
 
     }
 
@@ -50,14 +50,28 @@ public class GunCustomEditor : Editor
         EditorGUILayout.PropertyField(secondaryFire, new GUIContent("SecondaryFire"));
         gun.Bloom = (float)EditorGUILayout.FloatField("Bloom", gun.Bloom);
         gun.Recoil = (float)EditorGUILayout.FloatField("Recoil", gun.Recoil);
-        EditorGUILayout.PropertyField(damagesList, new GUIContent("Damages"));
-        EditorGUILayout.PropertyField(stats, new GUIContent("Stats"));
-        EditorGUILayout.PropertyField(scope, new GUIContent("Scope"));
-        EditorGUILayout.PropertyField(gunTransform, new GUIContent("GunTransform"));
+        //EditorGUILayout.PropertyField(damagesList, new GUIContent("Damages"));
+        //EditorGUILayout.PropertyField(stats, new GUIContent("Stats"));
+        //EditorGUILayout.PropertyField(scope, new GUIContent("Scope"));
+        //EditorGUILayout.PropertyField(gunTransform, new GUIContent("GunTransform"));
 
         serializedObject.ApplyModifiedProperties();
     }
 }
+
+[CustomEditor(typeof(Gun)), CanEditMultipleObjects]
+public class PrimaryFireCustomEditor : Editor
+{
+    PrimaryFire primaryFire;
+
+    private void OnEnable()
+    {
+
+    }
+
+
+}
+
 
 
 
