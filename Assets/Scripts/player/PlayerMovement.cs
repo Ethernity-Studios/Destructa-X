@@ -126,6 +126,7 @@ public class PlayerMovement : NetworkBehaviour
         }
     }
 
+
     void movePlayer()
     {
         moveDirection = transform.forward * verticalInput + transform.right * horizontalInput;
