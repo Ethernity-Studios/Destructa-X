@@ -188,6 +188,12 @@
         "com.unity.render-pipelines.core": "12.1.7"
       }
     },
+    "com.veriorpies.parrelsync": {
+      "version": "file:D:/Downloads/ParrelSync-master/ParrelSync",
+      "depth": 0,
+      "source": "local",
+      "dependencies": {}
+    },
     "com.unity.modules.ai": {
       "version": "1.0.0",
       "depth": 0,
