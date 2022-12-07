@@ -328,7 +328,7 @@ public class PlayerInventoryManager : NetworkBehaviour
             if (PrimaryGun == null && isLocalPlayer) CmdSwitchItem(Item.Secondary);
         }
         setGunTransform(gunInstance, gun);
-        if(isLocalPlayer)
+        //if(isLocalPlayer)
         setLayerMask(gunInstance, 6);
     }
 
