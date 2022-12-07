@@ -91,6 +91,7 @@ public class GameManager : NetworkBehaviour
     readonly public SyncList<uint> BlueTeamPlayersIDs = new();
     readonly public SyncList<uint> RedTeamPlayersIDs = new();
 
+    [SyncVar]
     [SerializeField] bool GameReady;
     [SerializeField] GameObject loadingScreen;
 
@@ -129,7 +130,7 @@ public class GameManager : NetworkBehaviour
         Invoke("setupGame", 3f);
     }
 
-    void setupGame()
+    void cmdSetupGame()
     {
         GameReady = true;
         GameTime = StartGameLenght;
