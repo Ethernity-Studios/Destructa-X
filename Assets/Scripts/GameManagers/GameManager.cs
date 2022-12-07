@@ -130,9 +130,9 @@ public class GameManager : NetworkBehaviour
         Invoke("setupGame", 3f);
     }
 
-    void cmdSetupGame()
+    void setupGame()
     {
-        GameReady = true;
+        cmdSetGameReady();
         GameTime = StartGameLenght;
         BombState = BombState.NotPlanted;
         Invoke("RpcSetupGame",2f);
@@ -140,6 +140,11 @@ public class GameManager : NetworkBehaviour
         Invoke("spawnPlayers", 1.5f);
         Invoke("giveDefaultGun", 2f);
         StartRound(GameState.StartGame);
+    }
+    [Command]
+    void cmdSetGameReady()
+    {
+        GameReady = true;
     }
 
     [ClientRpc]
