@@ -31,7 +31,7 @@ public class PlayerShootingManager : NetworkBehaviour
     }
     void Update()
     {
-        Debug.DrawRay(cameraHolder.position, cameraHolder.forward*2, Color.green);
+        Debug.DrawRay(cameraHolder.position, cameraHolder.forward * 2, Color.green);
         if (player.IsDead) return;
         if (!isLocalPlayer) return;
         if (GunInstance == null) return;
@@ -114,29 +114,36 @@ public class PlayerShootingManager : NetworkBehaviour
         RaycastHit hit;
         if (Physics.Raycast(originPosition, cameraHolder.forward, out hit, Mathf.Infinity, layerMask: mask))
         {
-            if (hit.transform.parent.gameObject.TryGetComponent(out IDamageable entity))
+            Debug.Log("hit " + hit.collider.name);
+            if (hit.collider.transform.parent != null)
             {
-
-                Player hittedPlayer = hit.transform.parent.gameObject.GetComponent<Player>();
-                ///// Cannot hit dummy -- need rework
-                if (hittedPlayer.PlayerTeam != player.PlayerTeam && !hittedPlayer.IsDead)
-                    if (entity.TakeDamage(calculateDamage(hit.point)))
-                    {
-                        player.CmdAddKill();
-                        player.CmdAddRoundKill();
-                    }
+                if (hit.collider.transform.parent.TryGetComponent(out IDamageable entity))
+                {
+                    Debug.Log("hitting player!");
+                    Player hittedPlayer = hit.collider.transform.parent.gameObject.GetComponent<Player>();
+                    if (hittedPlayer.PlayerTeam != player.PlayerTeam && !hittedPlayer.IsDead)
+                        if (entity.TakeDamage(calculateDamage(hit.point)))
+                        {
+                            player.CmdAddKill();
+                            player.CmdAddRoundKill();
+                        }
+                }
             }
+
             impactPoint = hit.point;
             Ray penRay = new Ray(hit.point + ray.direction * penetrationAmount, -ray.direction);
             RaycastHit penHit;
-            if (hit.collider.Raycast(penRay, out penHit,penetrationAmount))
+            if (hit.collider.Raycast(penRay, out penHit, penetrationAmount))
             {
                 penetrationPoint = penHit.point;
                 endPoint = transform.position + transform.forward * 1000;
-                if (hit.transform.TryGetComponent(out MaterialToughness materialToughness))
+                if (hit.collider.transform.TryGetComponent(out MaterialToughness materialToughness))
                 {
+
                     CmdInstantiateImpactDecal(true, hit.point, hit.normal); // first point
                     CmdInstantiateImpactDecal(true, penHit.point, penHit.normal); //second point
+
+
                     penetrationAmount -= Vector3.Distance((Vector3)penetrationPoint, hit.point);
                     penetrationAmount -= materialToughness.ToughnessAmount;
                     CheckPenetration(hit.point);
@@ -144,6 +151,7 @@ public class PlayerShootingManager : NetworkBehaviour
                 else
                 {
                     CmdInstantiateImpactDecal(false, hit.point, hit.normal);
+
                     return;
                 }
             }

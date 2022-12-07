@@ -44,7 +44,6 @@ public class PlayerSpectateManager : NetworkBehaviour
         playerBody.transform.localEulerAngles = new Vector3(90, 0, 0);
         playerBody.transform.localPosition = new Vector3(0, -1.5f, 0);
         playerBody.GetComponent<CapsuleCollider>().enabled = false;
-        playerBody.transform.parent.GetComponent<CharacterController>().enabled = false;
         itemHolder.SetActive(false);
         playerHead.transform.localPosition = new Vector3(0, 2, 0);
         playerHead.transform.localEulerAngles = new Vector3(90, 0, 0);
@@ -122,7 +121,6 @@ public class PlayerSpectateManager : NetworkBehaviour
         playerBody.transform.localEulerAngles = new Vector3(0, 0, 0);
         playerBody.transform.localPosition = new Vector3(0, 0, 0);
         playerBody.GetComponent<CapsuleCollider>().enabled = true;
-        playerBody.transform.parent.GetComponent<CharacterController>().enabled = true;
         itemHolder.SetActive(true);
         playerHead.transform.localPosition = new Vector3(0, .6f, 0);
         playerHead.transform.localEulerAngles = new Vector3(0, 0, 0);
