@@ -42,6 +42,15 @@
       },
       "url": "https://packages.unity.com"
     },
+    "com.unity.ide.rider": {
+      "version": "3.0.17",
+      "depth": 0,
+      "source": "registry",
+      "dependencies": {
+        "com.unity.ext.nunit": "1.0.6"
+      },
+      "url": "https://packages.unity.com"
+    },
     "com.unity.ide.visualstudio": {
       "version": "2.0.16",
       "depth": 0,
@@ -189,10 +198,11 @@
       }
     },
     "com.veriorpies.parrelsync": {
-      "version": "file:D:/Downloads/ParrelSync-master/ParrelSync",
+      "version": "https://github.com/VeriorPies/ParrelSync.git?path=/ParrelSync",
       "depth": 0,
-      "source": "local",
-      "dependencies": {}
+      "source": "git",
+      "dependencies": {},
+      "hash": "f45424822189ebd875d864a17d7f03b72eafbff7"
     },
     "com.unity.modules.ai": {
       "version": "1.0.0",
