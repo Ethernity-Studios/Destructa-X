@@ -8,3 +8,6 @@ by insane EternityStudios **O***M*~~E~~G`A`~~L~~*U***L**
 
 [![100%notarickroll](https://i.ytimg.com/vi/A24F1eHwdjw/maxresdefault.jpg)](https://www.youtube.com/watch?v=fC7oUOUEEi4)
 [![yeees](https://cdn.arstechnica.net/wp-content/uploads/2017/01/8391859530_aefbe96f68_b-800x533.jpg)](https://tenor.com/view/stickbug-stick-bugged-femboy-femboyd-gif-18352768)
+
+# UwU
+ja jsem vasa :3
