@@ -91,7 +91,6 @@ public class PlayerShootingManager : NetworkBehaviour
     }
     public void Shoot()
     {
-        Debug.Log("Shooting!");
         CanShoot = false;
         StartCoroutine(DelayFire());
         GunInstance.Magazine--;
@@ -114,12 +113,10 @@ public class PlayerShootingManager : NetworkBehaviour
         RaycastHit hit;
         if (Physics.Raycast(originPosition, cameraHolder.forward, out hit, Mathf.Infinity, layerMask: mask))
         {
-            Debug.Log("hit " + hit.collider.name);
             if (hit.collider.transform.parent != null)
             {
                 if (hit.collider.transform.parent.TryGetComponent(out IDamageable entity))
                 {
-                    Debug.Log("hitting player!");
                     Player hittedPlayer = hit.collider.transform.parent.gameObject.GetComponent<Player>();
                     if (hittedPlayer.PlayerTeam != player.PlayerTeam && !hittedPlayer.IsDead)
                         if (entity.TakeDamage(calculateDamage(hit.point)))
@@ -213,7 +210,6 @@ public class PlayerShootingManager : NetworkBehaviour
     [ClientRpc]
     void RpcInstantiateImpactDecal(GameObject bulletImpact, Vector3 position, Vector3 rotation)
     {
-        Debug.Log("Spawning decal at: " + position);
         bulletImpact.transform.position = position;
         bulletImpact.transform.rotation = Quaternion.LookRotation(rotation);
     }

@@ -92,7 +92,6 @@ public class NetworkManagerRoom : NetworkRoomManager
     */
     public override void OnServerReady(NetworkConnection conn)
     {
-        Debug.Log("OnServerReady");
         base.OnServerReady(conn);
 
         OnServerReadied?.Invoke(conn);

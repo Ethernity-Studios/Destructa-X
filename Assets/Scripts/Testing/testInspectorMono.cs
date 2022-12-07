@@ -9,6 +9,6 @@ public class testInspectorMono : MonoBehaviour
 
     private void Start()
     {
-        Debug.Log(test.Gej.testttttt);
+
     }
 }
