@@ -141,7 +141,7 @@ public class GameManager : NetworkBehaviour
         Invoke("giveDefaultGun", 2f);
         StartRound(GameState.StartGame);
     }
-    [Command]
+    [Command(requiresAuthority = false)]
     void cmdSetGameReady()
     {
         GameReady = true;
