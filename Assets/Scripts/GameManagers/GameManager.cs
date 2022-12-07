@@ -115,12 +115,13 @@ public class GameManager : NetworkBehaviour
 
     public override void OnStartServer()
     {
-        NetworkManagerRoom.OnServerReadied += startGame;
         Debug.Log("on start server");
+        startGame();
+        //NetworkManagerRoom.OnServerReadied += startGame;
     }
 
     [Server]
-    void startGame(NetworkConnection conn)
+    void startGame(/*NetworkConnection conn*/)
     {
         if(Room.roomSlots.Count(x => x.connectionToClient.isReady) != Room.roomSlots.Count) { return; }
 
@@ -132,6 +133,7 @@ public class GameManager : NetworkBehaviour
 
     void setupGame()
     {
+        Debug.Log("setupGame");
         cmdSetGameReady();
         GameTime = StartGameLenght;
         BombState = BombState.NotPlanted;
@@ -206,7 +208,6 @@ public class GameManager : NetworkBehaviour
 
     void spawnBomb()
     {
-        Debug.Log("spawnBomb");
         GameObject bombInstance = Instantiate(BombPrefab);
         NetworkServer.Spawn(bombInstance);
         RpcSpawnBomb(bombInstance);
@@ -215,7 +216,6 @@ public class GameManager : NetworkBehaviour
     [ClientRpc]
     void RpcSpawnBomb(GameObject bombInstance)
     {
-        Debug.Log("RpcSpawnBomb");
         Bomb = bombInstance;
         Bomb.transform.SetParent(gameObject.transform);
         Bomb.transform.position = bombSpawnLocation.position;
@@ -293,9 +293,9 @@ public class GameManager : NetworkBehaviour
 
     void startNewRound()
     {
+        addScore();
         AliveBluePlayers = BlueTeamPlayersIDs.Count;
         AliveRedPlayers = RedTeamPlayersIDs.Count;
-        addScore();
         giveMoney();
 
         if (BombState == BombState.Exploded || BombState == BombState.Defused)
@@ -400,34 +400,41 @@ public class GameManager : NetworkBehaviour
 
     void addScore()
     {
+        Debug.Log("addScore");
         Team tempTeam = LosingTeam;
         if (BombState == BombState.NotPlanted && AliveBluePlayers == 0)
         {
+            Debug.Log("losing1");
             RedTeamScore++;
             LosingTeam = Team.Blue;
         }
         else if(BombState == BombState.NotPlanted && AliveRedPlayers == 0)
         {
+            Debug.Log("losing2");
             BlueTeamScore++;
             LosingTeam = Team.Red;
         }
         else if(BombState == BombState.Defused)
         {
+            Debug.Log("losing3");
             BlueTeamScore++;
             LosingTeam = Team.Red;
         }
         else if(BombState == BombState.Exploded)
         {
+            Debug.Log("losing4");
             RedTeamScore++;
             LosingTeam = Team.Blue;
         }
 
         if(LosingTeam == tempTeam)
         {
+            Debug.Log("adding loss streak for team: " + tempTeam);
             LossStreak++;
         }
         else if(LosingTeam != tempTeam)
         {
+            Debug.Log("reseting loss streak");
             LossStreak = 0;
         }
 

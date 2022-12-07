@@ -284,9 +284,10 @@ public class PlayerInventoryManager : NetworkBehaviour
         instance.CanBeSelled = false;
         instance.IsDropped = true;
         instance.Invoke("SetPickStatus", .5f);
+        setLayerMask(gunInstance, 0);
         gunInstance.gameObject.transform.GetChild(0).gameObject.layer = 8;
-        setLayerMask(gunInstance.transform.GetChild(1).gameObject, 8);
         Rigidbody rb = gunInstance.GetComponent<Rigidbody>();
+        rb.isKinematic = false;
         rb.useGravity = true;
         rb.constraints = RigidbodyConstraints.None;
         rb.AddForce(transform.GetChild(0).transform.TransformDirection(new Vector3(0, 0, 400))); // Camera
@@ -328,7 +329,7 @@ public class PlayerInventoryManager : NetworkBehaviour
             if (PrimaryGun == null && isLocalPlayer) CmdSwitchItem(Item.Secondary);
         }
         setGunTransform(gunInstance, gun);
-        //if(isLocalPlayer)
+        if(isLocalPlayer)
         setLayerMask(gunInstance, 6);
     }
 
@@ -336,8 +337,10 @@ public class PlayerInventoryManager : NetworkBehaviour
     {
         gunInstance.transform.localPosition = Vector3.zero;
         gunInstance.transform.localEulerAngles = Vector3.zero;
-        gunInstance.GetComponent<Rigidbody>().constraints = RigidbodyConstraints.FreezeAll;
-        gunInstance.GetComponent<Rigidbody>().velocity = Vector3.zero;
+        Rigidbody rb = gunInstance.GetComponent<Rigidbody>();   
+        rb.constraints = RigidbodyConstraints.FreezeAll;
+        rb.velocity = Vector3.zero;
+        rb.isKinematic = true;
         gunInstance.transform.GetChild(0).GetComponent<BoxCollider>().enabled = false;
         gunInstance.transform.GetComponent<SphereCollider>().enabled = false;
         gunInstance.transform.localScale = new Vector3(1f, 1f, 1.5f);
