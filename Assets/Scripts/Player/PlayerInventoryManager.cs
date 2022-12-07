@@ -279,6 +279,7 @@ public class PlayerInventoryManager : NetworkBehaviour
         gunInstance.transform.localEulerAngles += new Vector3(30, 0, 0);
         gunInstance.transform.SetParent(gameManager.GunHolder.transform);
         gunInstance.transform.GetChild(0).GetComponent<BoxCollider>().enabled = true;
+        gunInstance.transform.GetComponent<SphereCollider>().enabled = true;
         GunInstance instance = gunInstance.GetComponent<GunInstance>();
         instance.CanBeSelled = false;
         instance.IsDropped = true;
@@ -338,6 +339,7 @@ public class PlayerInventoryManager : NetworkBehaviour
         gunInstance.GetComponent<Rigidbody>().constraints = RigidbodyConstraints.FreezeAll;
         gunInstance.GetComponent<Rigidbody>().velocity = Vector3.zero;
         gunInstance.transform.GetChild(0).GetComponent<BoxCollider>().enabled = false;
+        gunInstance.transform.GetComponent<SphereCollider>().enabled = false;
         gunInstance.transform.localScale = new Vector3(1f, 1f, 1.5f);
         gunInstance.transform.localPosition = gun.GunTransform.FirstPersonGunPosition;
         gunInstance.transform.localEulerAngles = gun.GunTransform.FirstPersonGunRotation;

@@ -62,7 +62,7 @@ public class PlayerMovement : NetworkBehaviour
         getInput();
         stateHandler();
 
-        grounded = Physics.Raycast(origin: transform.position, direction: Vector3.down, maxDistance: .7f/*, layerMask: groundMask*/);
+        grounded = Physics.Raycast(origin: transform.position, direction: Vector3.down, maxDistance: 1.2f/*, layerMask: groundMask*/);
 
         if (grounded) rb.drag = groundDrag;
         else rb.drag = 0;
