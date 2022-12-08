@@ -125,28 +125,24 @@ public class GameManager : NetworkBehaviour
     public override void OnStartServer()
     {
         Debug.Log("on start server");
-        startGame();
+        
+        if(Room.roomSlots.Count(x => x.connectionToClient.isReady) != Room.roomSlots.Count) { return; }
+
+        Debug.Log("Game ready! starting game in 3 second!");
+
+        Invoke("setupGame", 3f);
         //NetworkManagerRoom.OnServerReadied += startGame;
     }
     
     #region Server
 
     [Server]
-    void startGame(/*NetworkConnection conn*/)
-    {
-        if(Room.roomSlots.Count(x => x.connectionToClient.isReady) != Room.roomSlots.Count) { return; }
-
-        Debug.Log("Game ready! starting game in 3 second!");
-
-
-        Invoke("setupGame", 3f);
-    }
-    
-    [Server]
     void setupGame()
     {
         Debug.Log("setupGame");
-        cmdSetGameReady();
+        
+        GameReady = true;
+        
         GameTime = StartGameLenght;
         BombState = BombState.NotPlanted;
         Invoke("RpcSetupGame",2f);
@@ -155,13 +151,7 @@ public class GameManager : NetworkBehaviour
         Invoke("giveDefaultGun", 2f);
         StartRound(GameState.StartGame);
     }
-    
-    [Server]
-    void cmdSetGameReady()
-    {
-        GameReady = true;
-    }
-    
+
     [Server]
     void updateGameState()
     {
@@ -343,18 +333,12 @@ public class GameManager : NetworkBehaviour
         Round++;
         GameState = gameState;
     }
-    
-    [Server]
-    public void CmdSetGameTime(float time) => GameTime = time;
-
-    [Server]
-    public void CmdChangeGameState(GameState gameState) => GameState = gameState;
 
     [Server]
     void updateRoundTimer()
     {
         var sec = Convert.ToInt32(GameTime % 60).ToString("00");
-        var min = (Mathf.Floor(GameTime / 60) % 60).ToString("00");
+        var min = (Mathf.Floor(MyRegionGameTime / 60) % 60).ToString("00");
         roundTimer.text = min + ":" + sec;
         if (GameTime <= 0) roundTimer.text = "00:00";
     }
@@ -469,6 +453,16 @@ public class GameManager : NetworkBehaviour
         }
     }
     
+    #endregion
+
+    #region unsafe
+
+    [Command(requiresAuthority = false)]
+    public void CmdSetGameTime(float time) => GameTime = time;
+    
+    [Command(requiresAuthority = false)]
+    public void CmdChangeGameState(GameState gameState) => GameState = gameState;
+
     #endregion
 
     #region rpcs

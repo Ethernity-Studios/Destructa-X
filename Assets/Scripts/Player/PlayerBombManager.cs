@@ -12,8 +12,13 @@ public class PlayerBombManager : NetworkBehaviour
     PlayerInventoryManager playerInventoryManager;
 
     [SerializeField] GameObject bombPrefab;
-
+    
     [SerializeField] float bombPlantOffset;
+    
+    [SyncVar]
+    public float PlantTimeLeft = 0;
+    [SyncVar]
+    public float DefuseTimeLeft = 0;
 
     private void Awake()
     {
@@ -28,11 +33,6 @@ public class PlayerBombManager : NetworkBehaviour
         if (player.PlayerTeam == Team.Red) plantBomb();
         if (player.PlayerTeam == Team.Blue) defuseBomb();
     }
-
-    [SyncVar]
-    public float PlantTimeLeft = 0;
-    [SyncVar]
-    public float DefuseTimeLeft = 0;
 
     #region Planting
 
@@ -59,46 +59,6 @@ public class PlayerBombManager : NetworkBehaviour
         {
             stopPlanting();
         }
-    }
-    [Command]
-    void CmdIncreasePlantTimeLeft() => PlantTimeLeft += Time.deltaTime;
-
-    [Command]
-    void CmdSetPlantTimeLeft(float time) => PlantTimeLeft = time;
-
-    [Command]
-    void CmdChangePlantSliderValue() => RpcChangePlantSliderValue();
-
-    [ClientRpc]
-    void RpcChangePlantSliderValue()
-    {
-        gameManager.PlantProgressSlider.value = (PlantTimeLeft / gameManager.BombPlantTime) * 100;
-    }
-    [Command]
-    void CmdPlantSlider(bool enable)
-    {
-        foreach (var playerID in gameManager.PlayersID)
-        {
-            Player player = NetworkServer.spawned[playerID].GetComponent<Player>();
-            if (player.PlayerTeam == Team.Red)
-            {
-                GameObject plantProgressSlider = gameManager.PlantProgressSlider.gameObject;
-                if (plantProgressSlider.activeInHierarchy)
-                {
-                    RpcPlantSlider((NetworkConnectionToClient)player.connectionToClient, enable);
-                }
-                else
-                {
-                    RpcPlantSlider((NetworkConnectionToClient)player.connectionToClient, enable);
-                }
-            }
-        }
-    }
-
-    [TargetRpc]
-    void RpcPlantSlider(NetworkConnection conn, bool enable)
-    {
-        gameManager.PlantProgressSlider.gameObject.SetActive(enable);
     }
     void startPlanting()
     {
@@ -142,21 +102,6 @@ public class PlayerBombManager : NetworkBehaviour
         CmdInstantiateBomb();
     }
 
-    [Command]
-    void CmdInstantiateBomb()
-    {
-        GameObject bomb = Instantiate(bombPrefab);
-        NetworkServer.Spawn(bomb);
-        RpcSetupBomb(bomb);
-    }
-    [ClientRpc]
-    void RpcSetupBomb(GameObject bomb)
-    {
-        bomb.transform.SetParent(gameManager.transform);
-        bomb.transform.position = new Vector3(transform.position.x, transform.position.y - bombPlantOffset, transform.position.z);
-        bomb.transform.rotation = transform.rotation;
-    }
-
     #endregion
 
     #region Defusing
@@ -184,15 +129,6 @@ public class PlayerBombManager : NetworkBehaviour
         {
             stopDefusing();
         }
-    }
-
-    [Command]
-    void CmdChangeDefuseSliderValue() => RpcChangeDefuseSliderValue();
-
-    [ClientRpc]
-    void RpcChangeDefuseSliderValue()
-    {
-        gameManager.DefuseProgressSlider.value = (DefuseTimeLeft / gameManager.BombDefuseTime) * 100;
     }
 
     void startDefusing()
@@ -237,33 +173,10 @@ public class PlayerBombManager : NetworkBehaviour
     {
         Debug.Log("finished defusing");
         gameManager.CmdChangeBombState(BombState.Defused);
+        // SUS
         gameManager.CmdSetGameTime(gameManager.PostRoundlenght);
         gameManager.CmdChangeGameState(GameState.PostRound);
         stopDefusing();
-    }
-
-    [Command]
-    void CmdSetDefuseTimeLeft(float time) => DefuseTimeLeft = time;
-
-    [Command]
-    void IncreaseDefuseTimeLeft() => DefuseTimeLeft += Time.deltaTime;
-
-    [Command]
-    void CmdDefuseSlider(bool enable)
-    {
-        foreach (var playerID in gameManager.BlueTeamPlayersIDs)
-        {
-            Player player = NetworkServer.spawned[playerID].GetComponent<Player>();
-            RpcDefuseSlider((NetworkConnectionToClient)player.connectionToClient, enable);
-
-        }
-    }
-
-    [TargetRpc]
-    void RpcDefuseSlider(NetworkConnection conn, bool enable)
-    {
-        gameManager.DefuseProgressSlider.gameObject.SetActive(enable);
-        gameManager.DefuseProgressSlider.transform.parent.GetChild(1).gameObject.SetActive(enable);
     }
 
     #endregion
@@ -288,5 +201,122 @@ public class PlayerBombManager : NetworkBehaviour
 
         if (other.gameObject.CompareTag("Bomb")) isInBombArea = false;
     }
+
+    #region server
+
+    
+
+    #endregion
+
+    #region client
+
+    
+
+    #endregion
+
+    #region rpcs
+
+    [ClientRpc]
+    void RpcChangeDefuseSliderValue()
+    {
+        gameManager.DefuseProgressSlider.value = (DefuseTimeLeft / gameManager.BombDefuseTime) * 100;
+    }
+    
+    [TargetRpc]
+    void RpcDefuseSlider(NetworkConnection conn, bool enable)
+    {
+        gameManager.DefuseProgressSlider.gameObject.SetActive(enable);
+        gameManager.DefuseProgressSlider.transform.parent.GetChild(1).gameObject.SetActive(enable);
+    }
+    
+    [ClientRpc]
+    void RpcSetupBomb(GameObject bomb)
+    {
+        bomb.transform.SetParent(gameManager.transform);
+        bomb.transform.position = new Vector3(transform.position.x, transform.position.y - bombPlantOffset, transform.position.z);
+        bomb.transform.rotation = transform.rotation;
+    }
+    
+    [TargetRpc]
+    void RpcPlantSlider(NetworkConnection conn, bool enable)
+    {
+        gameManager.PlantProgressSlider.gameObject.SetActive(enable);
+    }
+    
+    [ClientRpc]
+    void RpcChangePlantSliderValue()
+    {
+        gameManager.PlantProgressSlider.value = (PlantTimeLeft / gameManager.BombPlantTime) * 100;
+    }
+
+    #endregion
+
+    #region syncCallbacks
+
+    
+
+    #endregion
+
+    #region commands
+
+    [Command]
+    void CmdDefuseSlider(bool enable)
+    {
+        foreach (var playerID in gameManager.BlueTeamPlayersIDs)
+        {
+            Player player = NetworkServer.spawned[playerID].GetComponent<Player>();
+            RpcDefuseSlider((NetworkConnectionToClient)player.connectionToClient, enable);
+
+        }
+    }
+    
+    [Command]
+    void CmdChangeDefuseSliderValue() => RpcChangeDefuseSliderValue();
+    
+    [Command]
+    void CmdSetDefuseTimeLeft(float time) => DefuseTimeLeft = time;
+
+    [Command]
+    void IncreaseDefuseTimeLeft() => DefuseTimeLeft += Time.deltaTime;
+    
+    [Command]
+    void CmdInstantiateBomb()
+    {
+        GameObject bomb = Instantiate(bombPrefab);
+        NetworkServer.Spawn(bomb);
+        RpcSetupBomb(bomb);
+    }
+    
+    [Command]
+    void CmdPlantSlider(bool enable)
+    {
+        foreach (var playerID in gameManager.PlayersID)
+        {
+            Player player = NetworkServer.spawned[playerID].GetComponent<Player>();
+            if (player.PlayerTeam == Team.Red)
+            {
+                GameObject plantProgressSlider = gameManager.PlantProgressSlider.gameObject;
+                if (plantProgressSlider.activeInHierarchy)
+                {
+                    RpcPlantSlider((NetworkConnectionToClient)player.connectionToClient, enable);
+                }
+                else
+                {
+                    RpcPlantSlider((NetworkConnectionToClient)player.connectionToClient, enable);
+                }
+            }
+        }
+    }
+    
+    [Command]
+    void CmdIncreasePlantTimeLeft() => PlantTimeLeft += Time.deltaTime;
+
+    [Command]
+    void CmdSetPlantTimeLeft(float time) => PlantTimeLeft = time;
+
+    [Command]
+    void CmdChangePlantSliderValue() => RpcChangePlantSliderValue();
+
+    #endregion
 
 }
