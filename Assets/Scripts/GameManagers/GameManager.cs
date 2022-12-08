@@ -338,7 +338,7 @@ public class GameManager : NetworkBehaviour
     void updateRoundTimer()
     {
         var sec = Convert.ToInt32(GameTime % 60).ToString("00");
-        var min = (Mathf.Floor(MyRegionGameTime / 60) % 60).ToString("00");
+        var min = (Mathf.Floor(GameTime / 60) % 60).ToString("00");
         roundTimer.text = min + ":" + sec;
         if (GameTime <= 0) roundTimer.text = "00:00";
     }
