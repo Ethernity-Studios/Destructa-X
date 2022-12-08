@@ -130,7 +130,8 @@ public class GameManager : NetworkBehaviour
 
         Invoke("setupGame", 3f);
     }
-
+    
+    [Server]
     void setupGame()
     {
         Debug.Log("setupGame");
@@ -143,7 +144,7 @@ public class GameManager : NetworkBehaviour
         Invoke("giveDefaultGun", 2f);
         StartRound(GameState.StartGame);
     }
-    [Command(requiresAuthority = false)]
+    [Server]
     void cmdSetGameReady()
     {
         GameReady = true;
@@ -233,7 +234,7 @@ public class GameManager : NetworkBehaviour
     void updateBlueTeamScore(int _, int newValue) => BlueTeamScoreText.text = newValue.ToString();
     void updateRedTeamScore(int _, int newValue) => RedTeamScoreText.text = newValue.ToString();
 
-
+    [Server]
     void updateGameState()
     {
         if (GameState == GameState.StartGame && GameTime <= 0)
@@ -290,7 +291,8 @@ public class GameManager : NetworkBehaviour
             startNewRound();
         }
     }
-
+    
+    [Server]
     void startNewRound()
     {
         addScore();
@@ -398,6 +400,7 @@ public class GameManager : NetworkBehaviour
         }
     }
 
+    [Server]
     void addScore()
     {
         Debug.Log("addScore");
@@ -528,10 +531,10 @@ public class GameManager : NetworkBehaviour
         GameState = gameState;
     }
 
-    [Command(requiresAuthority = false)]
+    [Server]
     public void CmdSetGameTime(float time) => GameTime = time;
 
-    [Command(requiresAuthority = false)]
+    [Server]
     public void CmdChangeGameState(GameState gameState) => GameState = gameState;
 
     [Command(requiresAuthority = false)]
