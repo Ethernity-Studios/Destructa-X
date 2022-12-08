@@ -121,6 +121,8 @@ public class ShopManager : NetworkBehaviour
 
     public void BuyGun(Gun gun)
     {
+        // FIXME sus?
+        if (gun.GunModel == null) return;
         Player localPlayer = playerInventory.GetComponent<Player>();
         if (localPlayer.PlayerMoney >= gun.Price)
         {

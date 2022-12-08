@@ -112,6 +112,15 @@ public class GameManager : NetworkBehaviour
         PlantProgressSlider.gameObject.SetActive(false);
         DefuseProgressSlider.gameObject.SetActive(false);
     }
+    
+    private void Update()
+    {
+        if (!GameReady) return;
+        updateRoundTimer();
+        if (isServer) updateGameState();
+
+        if (GameTime > 0) GameTime -= Time.deltaTime;
+    }
 
     public override void OnStartServer()
     {
@@ -119,6 +128,8 @@ public class GameManager : NetworkBehaviour
         startGame();
         //NetworkManagerRoom.OnServerReadied += startGame;
     }
+    
+    #region Server
 
     [Server]
     void startGame(/*NetworkConnection conn*/)
@@ -144,96 +155,13 @@ public class GameManager : NetworkBehaviour
         Invoke("giveDefaultGun", 2f);
         StartRound(GameState.StartGame);
     }
+    
     [Server]
     void cmdSetGameReady()
     {
         GameReady = true;
     }
-
-    [ClientRpc]
-    void RpcSetupGame()
-    {
-        loadingScreen.SetActive(false);
-    }
-
-    void spawnPlayers()
-    {
-        int b = 0;
-        int r = 0;
-        foreach (var playerID in PlayersID)
-        {
-            Player player = NetworkServer.spawned[playerID].GetComponent<Player>();
-            if (player.PlayerTeam == Team.Blue)
-            {
-                player.RpcRespawnPlayer(blueSpawnPositions[b].position, blueSpawnPositions[b].rotation);
-                setPlayerColor(player, Color.blue);
-                b++;
-            }
-            else if (player.PlayerTeam == Team.Red)
-            {
-                player.RpcRespawnPlayer(redSpawnPositions[r].position, redSpawnPositions[r].rotation);
-                setPlayerColor(player, Color.red);
-                r++;
-            }
-
-        }
-    }
-
-    [ClientRpc]
-    void setPlayerColor(Player player, Color color)
-    {
-        player.transform.GetChild(0).GetComponent<MeshRenderer>().material.color = color;
-    }
-
-    private void Update()
-    {
-        if (!GameReady) return;
-        updateRoundTimer();
-        if (isServer) updateGameState();
-
-        if (GameTime > 0) GameTime -= Time.deltaTime;
-    }
-
-    void giveDefaultGun()
-    {
-        foreach (var playerID in PlayersID)
-        {
-            Player player = NetworkServer.spawned[playerID].GetComponent<Player>();
-            PlayerInventoryManager playerInventory = player.GetComponent<PlayerInventoryManager>();
-            playerInventory.CmdGiveGun(gunManager.gunList[0].GunID);
-            playerInventory.CmdSwitchItem(Item.Knife);
-            playerInventory.CmdSwitchItem(Item.Secondary);
-            playerInventory.CmdSwitchItem(Item.Knife);
-        }
-    }
-
-    void spawnBomb()
-    {
-        GameObject bombInstance = Instantiate(BombPrefab);
-        NetworkServer.Spawn(bombInstance);
-        RpcSpawnBomb(bombInstance);
-    }
-
-    [ClientRpc]
-    void RpcSpawnBomb(GameObject bombInstance)
-    {
-        Bomb = bombInstance;
-        Bomb.transform.SetParent(gameObject.transform);
-        Bomb.transform.position = bombSpawnLocation.position;
-    }
-
-    #region RoundManagement
-    void updateRoundTimer()
-    {
-        var sec = Convert.ToInt32(GameTime % 60).ToString("00");
-        var min = (Mathf.Floor(GameTime / 60) % 60).ToString("00");
-        roundTimer.text = min + ":" + sec;
-        if (GameTime <= 0) roundTimer.text = "00:00";
-    }
-
-    void updateBlueTeamScore(int _, int newValue) => BlueTeamScoreText.text = newValue.ToString();
-    void updateRedTeamScore(int _, int newValue) => RedTeamScoreText.text = newValue.ToString();
-
+    
     [Server]
     void updateGameState()
     {
@@ -366,40 +294,7 @@ public class GameManager : NetworkBehaviour
 
         BombPlanted = false;
     }
-    [ClientRpc]
-    void RpcSetDefaultPlayerSettings(Player player)
-    {
-        PlayerShootingManager playerShootingManager = player.GetComponent<PlayerShootingManager>();
-        playerShootingManager.CanShoot = true;
-        playerShootingManager.Reloading = false;
-
-        PlayerBombManager playerBombmanager = player.GetComponent<PlayerBombManager>();
-        playerBombmanager.DefuseTimeLeft = 0;
-        playerBombmanager.PlantTimeLeft = 0;
-
-        PlantProgressSlider.value = 0;
-        DefuseProgressSlider.value = 0;
-        DefuseProgressSlider.enabled = false;
-        PlantProgressSlider.enabled = false;
-    }
-    [ClientRpc]
-    void RpcGiveAmmo(Player player)
-    {
-        PlayerInventoryManager playerInventoryManager = player.GetComponent<PlayerInventoryManager>();
-        if(playerInventoryManager.PrimaryGun != null)
-        {
-            GunInstance gunInstance = playerInventoryManager.PrimaryGunInstance.GetComponent<GunInstance>();
-            gunInstance.Ammo = gunInstance.Gun.Ammo;
-            gunInstance.Magazine = gunInstance.Gun.MagazineAmmo;
-        }
-        if(playerInventoryManager.SecondaryGun != null)
-        {
-            GunInstance gunInstance = playerInventoryManager.SecondaryGunInstance.GetComponent<GunInstance>();
-            gunInstance.Ammo = gunInstance.Gun.Ammo;
-            gunInstance.Magazine = gunInstance.Gun.MagazineAmmo;
-        }
-    }
-
+    
     [Server]
     void addScore()
     {
@@ -440,9 +335,31 @@ public class GameManager : NetworkBehaviour
             Debug.Log("reseting loss streak");
             LossStreak = 0;
         }
-
     }
+    
+    [Server]
+    public void StartRound(GameState gameState)
+    {
+        Round++;
+        GameState = gameState;
+    }
+    
+    [Server]
+    public void CmdSetGameTime(float time) => GameTime = time;
 
+    [Server]
+    public void CmdChangeGameState(GameState gameState) => GameState = gameState;
+
+    [Server]
+    void updateRoundTimer()
+    {
+        var sec = Convert.ToInt32(GameTime % 60).ToString("00");
+        var min = (Mathf.Floor(GameTime / 60) % 60).ToString("00");
+        roundTimer.text = min + ":" + sec;
+        if (GameTime <= 0) roundTimer.text = "00:00";
+    }
+    
+    [Server]
     void giveMoney()
     {
         //KILLS
@@ -505,15 +422,143 @@ public class GameManager : NetworkBehaviour
             }
         }
     }
+    
+    [Server]
+    void spawnBomb()
+    {
+        GameObject bombInstance = Instantiate(BombPrefab);
+        NetworkServer.Spawn(bombInstance);
+        RpcSpawnBomb(bombInstance);
+    }
+    
+    [Server]
+    void giveDefaultGun()
+    {
+        foreach (var playerID in PlayersID)
+        {
+            Player player = NetworkServer.spawned[playerID].GetComponent<Player>();
+            PlayerInventoryManager playerInventory = player.GetComponent<PlayerInventoryManager>();
+            playerInventory.CmdGiveGun(gunManager.gunList[0].GunID);
+            playerInventory.CmdSwitchItem(Item.Knife);
+            playerInventory.CmdSwitchItem(Item.Secondary);
+            playerInventory.CmdSwitchItem(Item.Knife);
+        }
+    }
+    
+    [Server]
+    void spawnPlayers()
+    {
+        int b = 0;
+        int r = 0;
+        foreach (var playerID in PlayersID)
+        {
+            Player player = NetworkServer.spawned[playerID].GetComponent<Player>();
+            if (player.PlayerTeam == Team.Blue)
+            {
+                player.RpcRespawnPlayer(blueSpawnPositions[b].position, blueSpawnPositions[b].rotation);
+                setPlayerColor(player, Color.blue);
+                b++;
+            }
+            else if (player.PlayerTeam == Team.Red)
+            {
+                player.RpcRespawnPlayer(redSpawnPositions[r].position, redSpawnPositions[r].rotation);
+                setPlayerColor(player, Color.red);
+                r++;
+            }
 
+        }
+    }
+    
+    #endregion
 
+    #region rpcs
 
+    [ClientRpc]
+    void RpcSetupGame()
+    {
+        loadingScreen.SetActive(false);
+    }
+    
+    [ClientRpc]
+    void setPlayerColor(Player player, Color color)
+    {
+        player.transform.GetChild(0).GetComponent<MeshRenderer>().material.color = color;
+    }
+
+    [ClientRpc]
+    void RpcSpawnBomb(GameObject bombInstance)
+    {
+        Bomb = bombInstance;
+        Bomb.transform.SetParent(gameObject.transform);
+        Bomb.transform.position = bombSpawnLocation.position;
+    }
+    
+    [ClientRpc]
+    void RpcSetDefaultPlayerSettings(Player player)
+    {
+        PlayerShootingManager playerShootingManager = player.GetComponent<PlayerShootingManager>();
+        playerShootingManager.CanShoot = true;
+        playerShootingManager.Reloading = false;
+
+        PlayerBombManager playerBombmanager = player.GetComponent<PlayerBombManager>();
+        playerBombmanager.DefuseTimeLeft = 0;
+        playerBombmanager.PlantTimeLeft = 0;
+
+        PlantProgressSlider.value = 0;
+        DefuseProgressSlider.value = 0;
+        DefuseProgressSlider.enabled = false;
+        PlantProgressSlider.enabled = false;
+    }
+    [ClientRpc]
+    void RpcGiveAmmo(Player player)
+    {
+        PlayerInventoryManager playerInventoryManager = player.GetComponent<PlayerInventoryManager>();
+        if(playerInventoryManager.PrimaryGun != null)
+        {
+            GunInstance gunInstance = playerInventoryManager.PrimaryGunInstance.GetComponent<GunInstance>();
+            gunInstance.Ammo = gunInstance.Gun.Ammo;
+            gunInstance.Magazine = gunInstance.Gun.MagazineAmmo;
+        }
+        if(playerInventoryManager.SecondaryGun != null)
+        {
+            GunInstance gunInstance = playerInventoryManager.SecondaryGunInstance.GetComponent<GunInstance>();
+            gunInstance.Ammo = gunInstance.Gun.Ammo;
+            gunInstance.Magazine = gunInstance.Gun.MagazineAmmo;
+        }
+    }
+    
     [ClientRpc]
     void RpcToggleMOTD(bool statement)
     {
         MOTD.SetActive(statement);
     }
+    
+    [ClientRpc]
+    void RpcClosePlayerShopUI(Player player) => player.gameObject.GetComponent<PlayerEconomyManager>().CloseShopUI();
+    
+    #endregion
 
+    #region commands
+
+    [Command(requiresAuthority = false)]
+    public void CmdChangeBombState(BombState bombState) => BombState = bombState;
+
+    [Command(requiresAuthority = false)]
+    public void CmdSetBombPlanted() => BombPlanted = true;
+
+    #endregion
+
+    #region syncCallbacks
+
+    void updateBlueTeamScore(int _, int newValue) => BlueTeamScoreText.text = newValue.ToString();
+    
+    void updateRedTeamScore(int _, int newValue) => RedTeamScoreText.text = newValue.ToString();
+
+    #endregion
+
+    #region client
+
+    [Client]
     void closePlayerShopUI()
     {
         foreach (var playerID in PlayersID)
@@ -521,27 +566,6 @@ public class GameManager : NetworkBehaviour
             RpcClosePlayerShopUI(NetworkServer.spawned[playerID].GetComponent<Player>());
         }
     }
-    [ClientRpc]
-    void RpcClosePlayerShopUI(Player player) => player.gameObject.GetComponent<PlayerEconomyManager>().CloseShopUI();
-
-    [Server]
-    public void StartRound(GameState gameState)
-    {
-        Round++;
-        GameState = gameState;
-    }
-
-    [Server]
-    public void CmdSetGameTime(float time) => GameTime = time;
-
-    [Server]
-    public void CmdChangeGameState(GameState gameState) => GameState = gameState;
-
-    [Command(requiresAuthority = false)]
-    public void CmdChangeBombState(BombState bombState) => BombState = bombState;
-
-    [Command(requiresAuthority = false)]
-    public void CmdSetBombPlanted() => BombPlanted = true;
 
     #endregion
 }
