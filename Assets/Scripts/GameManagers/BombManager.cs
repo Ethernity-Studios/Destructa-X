@@ -7,10 +7,12 @@ public class BombManager : NetworkBehaviour
     [SerializeField] GameObject bombExplosion;
 
     [SerializeField] bool detonating;
+    [SyncVar] public bool canBoom = true;
 
     [Command(requiresAuthority = false)]
     public void CmdDetonateBomb()
     {
+        if (!canBoom) return;
         if (!detonating)
         {
             detonating = true;
@@ -22,6 +24,7 @@ public class BombManager : NetworkBehaviour
     [ClientRpc]
     void RpcSetupExplosion(GameObject explosion)
     {
+        
         explosion.transform.SetParent(transform);
         explosion.transform.localScale = new Vector3(.1f, .1f, .1f);
         explosion.transform.position = transform.position;
@@ -35,5 +38,11 @@ public class BombManager : NetworkBehaviour
     {
         yield return new WaitForSeconds(40);
         CmdDetonateBomb();
+    }
+
+    [ClientRpc]
+    public void noBoomPwease()
+    {
+        StopAllCoroutines();
     }
 }

@@ -62,7 +62,7 @@ public class GameManager : NetworkBehaviour
     public GameObject BombPrefab;
     public GameObject GunHolder;
     [SerializeField] Transform bombSpawnLocation;
-
+    [SyncVar]
     public GameObject Bomb;
 
     [SerializeField] GunManager gunManager;
@@ -146,7 +146,7 @@ public class GameManager : NetworkBehaviour
         GameTime = StartGameLenght;
         BombState = BombState.NotPlanted;
         Invoke("RpcSetupGame",2f);
-        Invoke("spawnBomb", 1f);
+        Invoke("ServerSpawnBomb", 1f);
         Invoke("spawnPlayers", 1.5f);
         Invoke("giveDefaultGun", 2f);
         StartRound(GameState.StartGame);
@@ -234,7 +234,7 @@ public class GameManager : NetworkBehaviour
         mapController.ResetWalls();
 
         NetworkServer.Destroy(Bomb);
-        spawnBomb();
+        ServerSpawnBomb();
         if (GunHolder.transform.childCount > 0)
         {
             foreach (Transform gun in GunHolder.transform)
@@ -399,7 +399,7 @@ public class GameManager : NetworkBehaviour
     }
     
     [Server]
-    void spawnBomb()
+    void ServerSpawnBomb()
     {
         GameObject bombInstance = Instantiate(BombPrefab);
         NetworkServer.Spawn(bombInstance);
@@ -444,6 +444,29 @@ public class GameManager : NetworkBehaviour
         }
     }
     
+    [Server]
+    public void ServerSetPlantedState()
+    {
+        if (GameState == GameState.PostRound || GameState == GameState.EndGame) return;
+        
+        BombPlanted = true;
+        GameTime = BombDetonationTime;
+        BombState = BombState.Planted;
+    }
+
+    [Server]
+    public void ServerSetDefusedState()
+    {
+        BombState = BombState.Defused;
+        GameTime = PostRoundlenght;
+        GameState = GameState.PostRound;
+        var bombManager = Bomb.GetComponent<BombManager>();
+        bombManager.canBoom = false;
+        bombManager.StopAllCoroutines();
+        bombManager.noBoomPwease();
+        RpcFuckOfBoom();
+    }
+
     #endregion
 
     #region unsafe
@@ -453,6 +476,12 @@ public class GameManager : NetworkBehaviour
     
     [Command(requiresAuthority = false)]
     public void CmdChangeGameState(GameState gameState) => GameState = gameState;
+    
+    [Command(requiresAuthority = false)]
+    public void CmdChangeBombState(BombState bombState) => BombState = bombState;
+
+    [Command(requiresAuthority = false)]
+    public void CmdSetBombPlanted() => BombPlanted = true;
 
     #endregion
 
@@ -476,6 +505,15 @@ public class GameManager : NetworkBehaviour
         Bomb = bombInstance;
         Bomb.transform.SetParent(gameObject.transform);
         Bomb.transform.position = bombSpawnLocation.position;
+    }
+
+    [ClientRpc]
+    void RpcFuckOfBoom()
+    {
+        var bombManager = Bomb.GetComponent<BombManager>();
+        bombManager.canBoom = false;
+        bombManager.StopAllCoroutines();
+        bombManager.noBoomPwease();
     }
     
     [ClientRpc]
@@ -501,14 +539,29 @@ public class GameManager : NetworkBehaviour
         if(playerInventoryManager.PrimaryGun != null)
         {
             GunInstance gunInstance = playerInventoryManager.PrimaryGunInstance.GetComponent<GunInstance>();
-            gunInstance.Ammo = gunInstance.Gun.Ammo;
-            gunInstance.Magazine = gunInstance.Gun.MagazineAmmo;
+            // FIXME
+            if (gunInstance == null)
+            {
+                playerInventoryManager.PrimaryGun = null;
+            }
+            else
+            {
+                gunInstance.Ammo = gunInstance.Gun.Ammo;
+                gunInstance.Magazine = gunInstance.Gun.MagazineAmmo;
+            }
         }
         if(playerInventoryManager.SecondaryGun != null)
         {
             GunInstance gunInstance = playerInventoryManager.SecondaryGunInstance.GetComponent<GunInstance>();
-            gunInstance.Ammo = gunInstance.Gun.Ammo;
-            gunInstance.Magazine = gunInstance.Gun.MagazineAmmo;
+            if (gunInstance == null)
+            {
+                playerInventoryManager.SecondaryGun = null;
+            }
+            else
+            {
+                gunInstance.Ammo = gunInstance.Gun.Ammo;
+                gunInstance.Magazine = gunInstance.Gun.MagazineAmmo;
+            }
         }
     }
     
@@ -524,12 +577,6 @@ public class GameManager : NetworkBehaviour
     #endregion
 
     #region commands
-
-    [Command(requiresAuthority = false)]
-    public void CmdChangeBombState(BombState bombState) => BombState = bombState;
-
-    [Command(requiresAuthority = false)]
-    public void CmdSetBombPlanted() => BombPlanted = true;
 
     #endregion
 

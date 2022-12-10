@@ -68,10 +68,11 @@ public class RoomManager : NetworkBehaviour
         {
             mapSelect.SetActive(true);
         }
-
+        
         foreach (var item in map)
         {
             maps.Add(item.MapName, item);
+            mapDropdown.options.Add(new TMP_Dropdown.OptionData(item.MapName));
         }
     }
 
@@ -90,8 +91,8 @@ public class RoomManager : NetworkBehaviour
         {
             yield return new WaitForSeconds(1);
         }
-        Room.SelectedMap = SelectedMap;
-        Room.StartGame(SelectedMap);
+        Room.SelectedMap = maps[SelectedMap].SceneName;
+        Room.StartGame(Room.SelectedMap);
     }
 
     private void Update()

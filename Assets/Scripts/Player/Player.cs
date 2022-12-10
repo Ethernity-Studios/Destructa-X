@@ -42,6 +42,7 @@ public class Player : NetworkBehaviour, IDamageable
     CharacterController characterController;
     NetworkManagerRoom room;
 
+    // TODO maybe syncVar
     public PlayerState PlayerState;
 
     [SerializeField] GameObject playerBody;
@@ -60,6 +61,12 @@ public class Player : NetworkBehaviour, IDamageable
     [SyncVar]
     public ShieldType ShieldType = ShieldType.None;
 
+    [TargetRpc]
+    public void RpcSetState(PlayerState state)
+    {
+        PlayerState = state;
+    }
+    
     public void Start()
     {
         PlayerState = PlayerState.Idle;

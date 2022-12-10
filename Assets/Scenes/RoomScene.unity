@@ -5696,11 +5696,7 @@ MonoBehaviour:
   m_ItemImage: {fileID: 0}
   m_Value: 0
   m_Options:
-    m_Options:
-    - m_Text: Quark
-      m_Image: {fileID: 21300000, guid: 6dd52d86e7b33f849853672f0900975a, type: 3}
-    - m_Text: Map2
-      m_Image: {fileID: 21300000, guid: c926299487d114a4aaa76db0449e1140, type: 3}
+    m_Options: []
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls:
@@ -6654,6 +6650,7 @@ MonoBehaviour:
   map:
   - {fileID: 11400000, guid: 30f9970de49282845966c84a90fd658c, type: 2}
   - {fileID: 11400000, guid: 070598ed05103de4194bb07203f01458, type: 2}
+  - {fileID: 11400000, guid: 2d033754c929c16f58db7b7c01d00da5, type: 2}
   AgentsUI: {fileID: 1757040940}
   LoadingUI: {fileID: 1847220392}
 --- !u!1 &2138225429

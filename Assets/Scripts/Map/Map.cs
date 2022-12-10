@@ -6,8 +6,7 @@ using UnityEngine.UI;
 public class Map : ScriptableObject
 {
     public string MapName;
-
-    public string MapScene;
+    public string SceneName;
 
     public Sprite LobbyMapBackground;
 }

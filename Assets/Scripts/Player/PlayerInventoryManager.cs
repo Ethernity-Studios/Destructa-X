@@ -27,6 +27,7 @@ public class PlayerInventoryManager : NetworkBehaviour
     public GameObject PrimaryGunInstance;
     public GameObject SecondaryGunInstance;
 
+    [SyncVar]
     public GameObject Bomb;
 
     GameManager gameManager;
@@ -99,7 +100,7 @@ public class PlayerInventoryManager : NetworkBehaviour
     } 
 
     [ClientRpc]
-    void RpcSwitchItem(Item item)
+    public void RpcSwitchItem(Item item)
     {
         PreviousEqupiedItem = EqupiedItem;
         EqupiedItem = item;
@@ -158,8 +159,10 @@ public class PlayerInventoryManager : NetworkBehaviour
 
     private void OnTriggerStay(Collider other)
     {
-        gameManager = FindObjectOfType<GameManager>();
         if (!isLocalPlayer) return;
+        // not sure why this is here
+        // gameManager = FindObjectOfType<GameManager>();
+        // if (!gameManager) return;
         if (gameManager.Bomb == null) return;
         if (other.gameObject == gameManager.Bomb.transform.GetChild(0).gameObject && other.gameObject.layer != 6 && player.PlayerTeam == Team.Red && !player.IsDead) CmdPickBomb();
 
