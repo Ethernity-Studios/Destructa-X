@@ -13,5 +13,5 @@ MonoBehaviour:
   m_Name: Map2
   m_EditorClassIdentifier: 
   MapName: Map2
-  MapScene: map_2
+  SceneName: Map2
   LobbyMapBackground: {fileID: 21300000, guid: c926299487d114a4aaa76db0449e1140, type: 3}

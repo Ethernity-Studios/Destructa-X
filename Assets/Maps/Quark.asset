@@ -13,5 +13,5 @@ MonoBehaviour:
   m_Name: Quark
   m_EditorClassIdentifier: 
   MapName: Quark
-  MapScene: map_1
+  SceneName: Quark
   LobbyMapBackground: {fileID: 21300000, guid: 6dd52d86e7b33f849853672f0900975a, type: 3}
