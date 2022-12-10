@@ -18,8 +18,14 @@ public class NetworkManagerRoom : NetworkRoomManager
 
     public static event Action<NetworkConnection> OnServerReadied;
 
-    public override void OnStartServer() => spawnPrefabs = Resources.LoadAll<GameObject>("SpawnablePrefabs").ToList();
+    public override void OnStartServer()
+    {
+        spawnPrefabs = Resources.LoadAll<GameObject>("SpawnablePrefabs").ToList();
+        // probably unnecessary but few sanity checks
+        base.OnStartServer();
+    }
 
+    // IDE hints its unused
     public override void OnRoomStartServer()
     {
         base.OnRoomStartServer();
@@ -28,7 +34,8 @@ public class NetworkManagerRoom : NetworkRoomManager
     public override void OnStartClient()
     {
         var spawnablePrefabs = Resources.LoadAll<GameObject>("SpawnablePrefabs");
-
+        
+        
         foreach (var prefab in spawnablePrefabs)
         {
             NetworkClient.RegisterPrefab(prefab);
@@ -47,6 +54,8 @@ public class NetworkManagerRoom : NetworkRoomManager
     {
         roomManager = FindObjectOfType<RoomManager>();
         roomManager.RpcCountdown(1);
+        
+        base.OnRoomServerPlayersReady();
     }
 
     public void StartGame(string mapName)

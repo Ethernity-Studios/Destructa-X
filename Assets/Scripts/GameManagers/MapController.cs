@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using Mirror;
 
@@ -6,20 +7,34 @@ public class MapController : NetworkBehaviour
     [SerializeField] GameObject[] dropdownWalls;
 
     [ClientRpc]
-    public void RpcDropWalls()
+    void RpcDropWalls()
     {
         foreach (var wall in dropdownWalls)
         {
+            if (wall == null) continue;
             wall.SetActive(false);
         }
     }
 
     [ClientRpc]
-    public void RpcResetWalls()
+    void RpcResetWalls()
     {
         foreach (var wall in dropdownWalls)
         {
+            if (wall == null) continue;
             wall.SetActive(true);
         }
+    }
+
+    [Server]
+    public void DropWalls()
+    {
+        RpcDropWalls();
+    }
+    
+    [Server]
+    public void ResetWalls()
+    {
+        RpcResetWalls();
     }
 }

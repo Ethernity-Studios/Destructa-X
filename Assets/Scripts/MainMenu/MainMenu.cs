@@ -24,6 +24,7 @@ public class MainMenu : MonoBehaviour
     public void HostLobby()
     {
         if (string.IsNullOrEmpty(NetworkAdressInputField.text)) return;
+        networkManagerLobby.StopClient();
         networkManagerLobby.StartHost();
     }
 
@@ -35,6 +36,6 @@ public class MainMenu : MonoBehaviour
 
     public void Vassa(string name)
     {
-
+        // SUS
     }
 }

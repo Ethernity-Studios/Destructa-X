@@ -34,7 +34,7 @@ public class GameManager : NetworkBehaviour
     public float BombDefuseTime = 10;
     public float BombDetonationTime = 15; //40
 
-    [SyncVar]
+    [SyncVar(hook = nameof(DrawRoundTimer))]
     public float GameTime = 5;
 
     [SyncVar]
@@ -115,9 +115,9 @@ public class GameManager : NetworkBehaviour
     
     private void Update()
     {
-        if (!GameReady) return;
-        updateRoundTimer();
-        if (isServer) updateGameState();
+        if (!isServer) return;
+        // updateRoundTimer();
+        updateGameState();
 
         if (GameTime > 0) GameTime -= Time.deltaTime;
     }
@@ -158,7 +158,7 @@ public class GameManager : NetworkBehaviour
         if (GameState == GameState.StartGame && GameTime <= 0)
         {
             //Buy phase - Start
-            mapController.RpcDropWalls();
+            mapController.DropWalls();
             closePlayerShopUI();
             CmdSetGameTime(RoundLenght);
             CmdChangeGameState(GameState.Round);
@@ -167,7 +167,7 @@ public class GameManager : NetworkBehaviour
         else if (GameState == GameState.PreRound && GameTime <= 0)
         {
             //Buy phase
-            mapController.RpcDropWalls();
+            mapController.DropWalls();
             closePlayerShopUI();
             CmdChangeGameState(GameState.Round);
             CmdSetGameTime(RoundLenght);
@@ -231,7 +231,7 @@ public class GameManager : NetworkBehaviour
 
 
         RpcToggleMOTD(true);
-        mapController.RpcResetWalls();
+        mapController.ResetWalls();
 
         NetworkServer.Destroy(Bomb);
         spawnBomb();
@@ -334,15 +334,6 @@ public class GameManager : NetworkBehaviour
         GameState = gameState;
     }
 
-    [Server]
-    void updateRoundTimer()
-    {
-        var sec = Convert.ToInt32(GameTime % 60).ToString("00");
-        var min = (Mathf.Floor(GameTime / 60) % 60).ToString("00");
-        roundTimer.text = min + ":" + sec;
-        if (GameTime <= 0) roundTimer.text = "00:00";
-    }
-    
     [Server]
     void giveMoney()
     {
@@ -547,6 +538,15 @@ public class GameManager : NetworkBehaviour
     void updateBlueTeamScore(int _, int newValue) => BlueTeamScoreText.text = newValue.ToString();
     
     void updateRedTeamScore(int _, int newValue) => RedTeamScoreText.text = newValue.ToString();
+    
+    [Client]
+    void DrawRoundTimer(float _, float newValue)
+    {
+        var sec = Convert.ToInt32(newValue % 60).ToString("00");
+        var min = (Mathf.Floor(newValue / 60) % 60).ToString("00");
+        roundTimer.text = min + ":" + sec;
+        if (newValue <= 0) roundTimer.text = "00:00";
+    }
 
     #endregion
 
