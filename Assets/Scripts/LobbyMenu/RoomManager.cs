@@ -129,7 +129,7 @@ public class RoomManager : NetworkBehaviour
         {
             if (player.isLocalPlayer)
             {
-                LobbyPlayer localPlayer = player.GetComponent<LobbyPlayer>();
+                var localPlayer = player.GetComponent<LobbyPlayer>();
                 if (teamIndex == 1 && BlueTeamSize < 5)
                 {
                     localPlayer.CmdJoinTeam(Team.Blue);

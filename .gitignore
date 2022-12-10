@@ -57,8 +57,14 @@ sysinfo.txt
 *.unitypackage
 
 # Crashlytics generated file
-crashlytics-build.properties
+crashlytics-build.properties*
 
 # User setting
 /UserSettings
 /UserSettings/*
+UserSettings/*
+UserSettings/EditorUserSettings.asset
+UserSettings/Layouts/CurrentMaximizeLayout.dwlt
+UserSettings/Layouts/default-2021.dwlt
+UserSettings/Layouts/*
+/UserSettings/Layouts
