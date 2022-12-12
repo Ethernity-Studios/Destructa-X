@@ -1,9 +1,10 @@
+using System;
 using Mirror;
 using UnityEngine;
 
 public class PlayerBombManager : NetworkBehaviour
 {
-    [SyncVar(hook = nameof(sanityMinus))]
+    [SyncVar]
     public bool isInPlantableArea;
     [SyncVar]
     public bool isInBombArea;
@@ -14,34 +15,23 @@ public class PlayerBombManager : NetworkBehaviour
 
     [SerializeField] GameObject bombPrefab;
     [SerializeField] float bombPlantOffset;
-    
-    [SyncVar]
-    public float PlantTimeLeft;
-    [SyncVar]
-    public float DefuseTimeLeft;
-
-    [SyncVar] public bool isPlanting;
-    [SyncVar] public bool isDefusing;
-
-    void sanityMinus(bool _, bool newValue)
-    {
-        Debug.Log($"idk state {newValue}");
-    }
 
     private void Awake()
     {
         player = GetComponent<Player>();
-        gameManager = FindObjectOfType<GameManager>();
+        // if (isServer) gameManager = FindObjectOfType<GameManager>();
         playerInventoryManager = GetComponent<PlayerInventoryManager>();
     }
+
+    private void Start()
+    {
+        if (isServer) gameManager = FindObjectOfType<GameManager>();
+    }
+
     void Update()
     {
-        
         if (isServer) ServerUpdate();
         if (!isLocalPlayer) return;
-        
-        gameManager.PlantProgressSlider.value = (PlantTimeLeft / gameManager.BombPlantTime) * 100;
-        gameManager.DefuseProgressSlider.value = (DefuseTimeLeft / gameManager.BombDefuseTime) * 100;
 
         switch (player.PlayerTeam)
         {
@@ -54,42 +44,6 @@ public class PlayerBombManager : NetworkBehaviour
         }
     }
 
-    #region Planting
-
-    [Client]
-    void ClientHandlePlanting()
-    {
-        if (!canPlant()) return;
-
-        if (Input.GetKey(KeyCode.F) || playerInventoryManager.EqupiedItem == Item.Bomb && Input.GetMouseButton(0))
-        {
-            if (!isPlanting) CmdStartPlanting();
-        }
-        else
-        {
-            if (isPlanting) CmdStopPlanting();
-        }
-    }
-
-    [Client]
-    void ClientHandleDefusing()
-    {
-        if(!canDefuse()) return;
-        
-        if (Input.GetKey(KeyCode.F))
-        {
-            if (!isDefusing) CmdStartDefusing();
-        }
-        else
-        {
-            if (isDefusing) CmdStopDefusing();
-        }
-    }
-
-    #endregion
-
-    #region Defusing
-
     bool canPlant()
     {
         return isInPlantableArea && playerInventoryManager.Bomb != null && player.PlayerTeam == Team.Red && !player.IsDead &&
@@ -100,10 +54,7 @@ public class PlayerBombManager : NetworkBehaviour
     {
         return isInBombArea && player.PlayerTeam == Team.Blue && !player.IsDead && gameManager.BombState == BombState.Planted;
     }
-    
 
-    #endregion
-    
     private void OnTriggerEnter(Collider other)
     {
         // FIXME would this work?
@@ -149,8 +100,8 @@ public class PlayerBombManager : NetworkBehaviour
     [Server]
     void ServerUpdate()
     {
-        if (isDefusing) ServerHandleDefusing();
-        else if (isPlanting) ServerHandlePlanting();
+        if (gameManager.isDefusing) ServerHandleDefusing();
+        else if (gameManager.isPlanting) ServerHandlePlanting();
     }
 
     [Server]
@@ -162,9 +113,9 @@ public class PlayerBombManager : NetworkBehaviour
             return;
         }
         player.RpcSetState(PlayerState.Defusing);
-        if (DefuseTimeLeft < gameManager.BombDefuseTime)
+        if (gameManager.DefuseTimeLeft < gameManager.BombDefuseTime)
         {
-            DefuseTimeLeft += Time.deltaTime;
+            gameManager.DefuseTimeLeft += Time.deltaTime;
         }
         else
         {
@@ -189,11 +140,11 @@ public class PlayerBombManager : NetworkBehaviour
             return;
         }
         player.RpcSetState(PlayerState.Planting);
-        if (PlantTimeLeft < gameManager.BombPlantTime)
+        if (gameManager.PlantTimeLeft < gameManager.BombPlantTime)
         {
-            PlantTimeLeft += Time.deltaTime;
+            gameManager.PlantTimeLeft += Time.deltaTime;
         }
-        else if (PlantTimeLeft >= gameManager.BombPlantTime)
+        else if (gameManager.PlantTimeLeft >= gameManager.BombPlantTime)
         {
             ServerPlantBomb();
         }
@@ -222,9 +173,9 @@ public class PlayerBombManager : NetworkBehaviour
     {
         Debug.Log("ServerCancelPlanting");
         player.PlayerState = PlayerState.Idle;
-        isPlanting = false;
+        gameManager.isPlanting = false;
         
-        PlantTimeLeft = 0;
+        gameManager.PlantTimeLeft = 0;
         ServerSetPlantSlider(false);
     }
 
@@ -233,95 +184,20 @@ public class PlayerBombManager : NetworkBehaviour
     {
         Debug.Log("ServerCancelDefusing");
         player.PlayerState = PlayerState.Idle;
-        isDefusing = false;
+        gameManager.isDefusing = false;
         
-        if (DefuseTimeLeft >= gameManager.BombHalfDefuseTime)
+        if (gameManager.DefuseTimeLeft >= gameManager.BombHalfDefuseTime)
         {
-            DefuseTimeLeft = gameManager.BombHalfDefuseTime;
+            gameManager.DefuseTimeLeft = gameManager.BombHalfDefuseTime;
         }
         else
         {
-            DefuseTimeLeft = 0;
+            gameManager.DefuseTimeLeft = 0;
         }
         
         ServerSetDefuseSlider(false);
     }
-
-    #endregion
-
-    #region client
-
     
-
-    #endregion
-
-    #region rpcs
-
-    [ClientRpc]
-    void RpcChangeDefuseSliderValue()
-    {
-        gameManager.DefuseProgressSlider.value = (DefuseTimeLeft / gameManager.BombDefuseTime) * 100;
-    }
-    
-    [TargetRpc]
-    void RpcDefuseSlider(NetworkConnection conn, bool enable)
-    {
-        gameManager.DefuseProgressSlider.gameObject.SetActive(enable);
-        gameManager.DefuseProgressSlider.transform.parent.GetChild(1).gameObject.SetActive(enable);
-    }
-
-    [ClientRpc]
-    void RpcSpawnBomb(GameObject bomb, Vector3 position, Quaternion rotation)
-    {
-        bomb.transform.SetParent(gameManager.transform);
-        bomb.transform.position = position;
-        bomb.transform.rotation = rotation;
-    }
-    
-    [TargetRpc]
-    void RpcPlantSlider(NetworkConnection conn, bool enable)
-    {
-        gameManager.PlantProgressSlider.gameObject.SetActive(enable);
-    }
-    
-    [ClientRpc]
-    void RpcChangePlantSliderValue()
-    {
-        gameManager.PlantProgressSlider.value = (PlantTimeLeft / gameManager.BombPlantTime) * 100;
-    }
-
-    #endregion
-
-    #region syncCallbacks
-
-    #endregion
-
-    #region commands
-
-    [Command]
-    void CmdPlantSlider(bool enable)
-    {
-        foreach (var playerID in gameManager.PlayersID)
-        {
-            Player player = NetworkServer.spawned[playerID].GetComponent<Player>();
-            if (player.PlayerTeam == Team.Red)
-            {
-                RpcPlantSlider((NetworkConnectionToClient)player.connectionToClient, enable);
-                //GameObject plantProgressSlider = gameManager.PlantProgressSlider.gameObject;
-                /*
-                if (plantProgressSlider.activeInHierarchy)
-                {
-                    RpcPlantSlider((NetworkConnectionToClient)player.connectionToClient, enable);
-                }
-                else
-                {
-                    RpcPlantSlider((NetworkConnectionToClient)player.connectionToClient, enable);
-                }
-                */
-            }
-        }
-    }
-
     [Server]
     void ServerSetPlantSlider(bool enable)
     {
@@ -330,7 +206,7 @@ public class PlayerBombManager : NetworkBehaviour
             var player = NetworkServer.spawned[playerID].GetComponent<Player>();
             if (player.PlayerTeam == Team.Red)
             {
-                RpcPlantSlider((NetworkConnectionToClient)player.connectionToClient, enable);
+                // RpcPlantSlider((NetworkConnectionToClient)player.connectionToClient, enable);
             }
         }
     }
@@ -341,24 +217,85 @@ public class PlayerBombManager : NetworkBehaviour
         foreach (var playerID in gameManager.BlueTeamPlayersIDs)
         {
             Player player = NetworkServer.spawned[playerID].GetComponent<Player>();
-            RpcDefuseSlider((NetworkConnectionToClient)player.connectionToClient, enable);
+            // RpcDefuseSlider((NetworkConnectionToClient)player.connectionToClient, enable);
         }
     }
 
-    [Command]
-    void CmdSetPlantTimeLeft(float time) => PlantTimeLeft = time;
+    #endregion
 
-    [Command]
-    void CmdChangePlantSliderValue() => RpcChangePlantSliderValue();
+    #region client
+
+    [Client]
+    void ClientHandlePlanting()
+    {
+        if (!canPlant()) return;
+
+        if (Input.GetKeyDown(KeyCode.F) || playerInventoryManager.EqupiedItem == Item.Bomb && Input.GetMouseButtonDown(0))
+        {
+            CmdStartPlanting();
+        }
+        if (Input.GetKeyUp(KeyCode.F) || playerInventoryManager.EqupiedItem == Item.Bomb && Input.GetMouseButtonUp(0))
+        {
+            CmdStopPlanting();
+        }
+    }
+
+    [Client]
+    void ClientHandleDefusing()
+    {
+        if(!canDefuse()) return;
+        
+        if (Input.GetKeyDown(KeyCode.F))
+        { 
+            CmdStartDefusing();
+        }
+        if (Input.GetKeyUp(KeyCode.F))
+        { 
+            CmdStopDefusing();
+        }
+    }
+
+    #endregion
+
+    #region rpcs
+
+    /*
+    [TargetRpc]
+    void RpcDefuseSlider(NetworkConnection conn, bool enable)
+    {
+        // gameManager.DefuseProgressSlider.gameObject.SetActive(enable);
+        // gameManager.DefuseProgressSlider.transform.parent.GetChild(1).gameObject.SetActive(enable);
+    }
+    */
+
+    [ClientRpc]
+    void RpcSpawnBomb(GameObject bomb, Vector3 position, Quaternion rotation)
+    {
+        bomb.transform.SetParent(gameManager.transform);
+        bomb.transform.position = position;
+        bomb.transform.rotation = rotation;
+    }
+    
+    /*
+    [TargetRpc]
+    void RpcPlantSlider(NetworkConnection conn, bool enable)
+    {
+        // gameManager.PlantProgressSlider.gameObject.SetActive(enable);
+    }
+    */
+
+    #endregion
+
+    #region commands
 
     [Command]
     void CmdStartPlanting()
     {
         // this is still unsafe bcs playerInventoryManager.Bomb is controled by client 
-        if (!canPlant()) return;
+        if (!canPlant() || gameManager.isPlanting) return;
         Debug.Log("CmdStartPlanting");
         player.PlayerState = PlayerState.Planting;
-        isPlanting = true;
+        gameManager.isPlanting = true;
         ServerSetPlantSlider(true);
     }
 
@@ -368,10 +305,10 @@ public class PlayerBombManager : NetworkBehaviour
     [Command]
     void CmdStartDefusing()
     {
-        if (!canDefuse()) return;
+        if (!canDefuse() || gameManager.isDefusing) return;
         Debug.Log("CmdStartDefusing");
         player.PlayerState = PlayerState.Defusing;
-        isDefusing = true;
+        gameManager.isDefusing = true;
 
         ServerSetDefuseSlider(true);
     }
@@ -380,5 +317,4 @@ public class PlayerBombManager : NetworkBehaviour
     void CmdStopDefusing() => ServerCancelDefusing();
 
     #endregion
-
 }

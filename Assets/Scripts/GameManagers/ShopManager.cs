@@ -39,7 +39,8 @@ public class ShopManager : NetworkBehaviour
 
     private void Start()
     {
-        Invoke("CmdGetLocalPlayer", 1f);
+        // Invoke("CmdGetLocalPlayer", 1f);
+        CmdGetLocalPlayer();
     }
 
     [Command(requiresAuthority = false)]

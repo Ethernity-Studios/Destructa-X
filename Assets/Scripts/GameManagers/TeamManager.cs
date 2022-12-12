@@ -4,6 +4,7 @@ using UnityEngine;
 using TMPro;
 using Mirror;
 
+// TODO get the f out
 public class TeamManager : NetworkBehaviour
 {
     [SyncVar]
