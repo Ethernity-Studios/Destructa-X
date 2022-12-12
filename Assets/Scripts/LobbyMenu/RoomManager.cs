@@ -10,6 +10,7 @@ public enum Team
     None, Blue, Red
 }
 
+// FIXME just fucking fix me :)
 public class RoomManager : NetworkBehaviour
 {
     [SyncVar(hook = nameof(CmdUpdateTeamSizeUI))]
@@ -198,6 +199,7 @@ public class RoomManager : NetworkBehaviour
                 if (localPlayer.PlayerPreselectedAgent != Agent.None)
                 {
                     PAgent = localPlayer.PlayerPreselectedAgent;
+                    // null exception
                     localPlayer.CmdSelectAgent(localPlayer.PlayerPreselectedAgent);
                     localPlayer.transform.GetChild(2).GetComponent<TMP_Text>().text = agentManager.GetAgentMeta(localPlayer.PlayerSelectedAgent).Name;
                     foreach (var agentBtn in agentButtons)

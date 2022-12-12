@@ -4,7 +4,7 @@ using System.Linq;
 
 public class GunManager : MonoBehaviour
 {
-    public List<Gun> gunList = new List<Gun>();
+    public List<Gun> gunList = new();
     Dictionary<int, Gun> guns = new();
     private void Start()
     {
@@ -13,7 +13,6 @@ public class GunManager : MonoBehaviour
             guns.Add(i,gunList[i]);
         }
     }
-
     public Gun GetGunByID(int id)
     {
         return guns.GetValueOrDefault(id);
