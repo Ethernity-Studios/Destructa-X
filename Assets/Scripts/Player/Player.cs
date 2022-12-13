@@ -74,7 +74,7 @@ public class Player : NetworkBehaviour, IDamageable
     {
         if (isServer)
         {
-            
+            gameManager = FindObjectOfType<GameManager>();
         }
         if (isLocalPlayer)
         {

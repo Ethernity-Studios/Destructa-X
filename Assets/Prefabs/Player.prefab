@@ -480,6 +480,7 @@ GameObject:
   - component: {fileID: 6021906618316908405}
   - component: {fileID: 4591204699662543079}
   - component: {fileID: -7474328044268257047}
+  - component: {fileID: 6774817143896442879}
   - component: {fileID: 6336609987163348861}
   - component: {fileID: 3516282345566254277}
   - component: {fileID: 5070754395047204269}
@@ -637,8 +638,6 @@ MonoBehaviour:
   isInBombArea: 0
   bombPrefab: {fileID: 2536634434620783955, guid: fb7c4534d6e00f34e9795d56e2cf49b4, type: 3}
   bombPlantOffset: 1
-  PlantTimeLeft: 0
-  DefuseTimeLeft: 0
 --- !u!114 &4591204699662543079
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -676,6 +675,20 @@ MonoBehaviour:
   PlayerCamera: {fileID: 8837322168990955401}
   ItemCamera: {fileID: 1270561995127500589}
   currentlySpectating: {fileID: 0}
+--- !u!114 &6774817143896442879
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6720852769967137176}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 05799a14162b499da358ce9038ba1114, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncMode: 0
+  syncInterval: 0.1
 --- !u!54 &6336609987163348861
 Rigidbody:
   m_ObjectHideFlags: 0

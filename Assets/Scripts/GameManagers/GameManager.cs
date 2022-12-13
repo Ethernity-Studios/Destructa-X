@@ -49,9 +49,9 @@ public class GameManager : NetworkBehaviour
 
     public Transform BlueUIAgents, RedUIAgents;
 
-    [SyncVar]
+    // [SyncVar]
     public int AliveBluePlayers = 0;
-    [SyncVar]
+    // [SyncVar]
     public int AliveRedPlayers = 0;
 
     // public Slider PlantProgressSlider;
@@ -88,9 +88,9 @@ public class GameManager : NetworkBehaviour
     public int LossStreak = 0;
 
     // FIXME edited with unsafe cmd
-    public readonly List<uint> PlayersID = new();
-    public readonly List<uint> BlueTeamPlayersIDs = new();
-    public readonly List<uint> RedTeamPlayersIDs = new();
+    public List<uint> PlayersID = new();
+    public List<uint> BlueTeamPlayersIDs = new();
+    public List<uint> RedTeamPlayersIDs = new();
     public bool isEveryoneFuckingReady;
 
     // [SyncVar]
@@ -231,7 +231,8 @@ public class GameManager : NetworkBehaviour
     void setupGame()
     {
         Debug.Log("setupGame");
-        
+        AliveBluePlayers = BlueTeamPlayersIDs.Count;
+        AliveRedPlayers = RedTeamPlayersIDs.Count;   
         GameReady = true;
         
         GameTime = StartGameLenght;

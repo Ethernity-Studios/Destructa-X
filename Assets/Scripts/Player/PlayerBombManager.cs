@@ -5,9 +5,13 @@ using UnityEngine;
 public class PlayerBombManager : NetworkBehaviour
 {
     [SyncVar]
-    public bool isInPlantableArea;
+    bool isInPlantableArea;
     [SyncVar]
-    public bool isInBombArea;
+    bool isInBombArea;
+    [SyncVar] 
+    private GameState gameState;
+    [SyncVar] 
+    private BombState bombState;
 
     GameManager gameManager;
     Player player;
@@ -41,18 +45,48 @@ public class PlayerBombManager : NetworkBehaviour
             case Team.Blue:
                 ClientHandleDefusing();
                 break;
+            case Team.None:
+                throw new Exception("FUCK ME");
         }
     }
 
     bool canPlant()
     {
-        return isInPlantableArea && playerInventoryManager.Bomb != null && player.PlayerTeam == Team.Red && !player.IsDead &&
-               (gameManager.GameState == GameState.Round || gameManager.GameState == GameState.PostRound);
+        /*
+        return isInPlantableArea
+               && playerInventoryManager.Bomb != null
+               && player.PlayerTeam == Team.Red 
+               && !player.IsDead 
+               && (gameState == GameState.Round || gameState == GameState.PostRound);
+        */
+
+        if (!isInPlantableArea)
+        {
+            Debug.Log("not in planable area");
+            return false;
+        }
+        if (playerInventoryManager.Bomb == null)
+        {
+            Debug.Log("player inventory manager bomb null");
+            return false;
+        }
+        if (player.PlayerTeam != Team.Red)
+        {
+            Debug.Log("player is dead");
+            return false;
+        }
+        if (gameState != GameState.Round && gameState != GameState.PostRound)
+        {
+            Debug.Log("invalid game state");
+            return false;
+        }
+
+        return true;
     }
     
     bool canDefuse()
     {
-        return isInBombArea && player.PlayerTeam == Team.Blue && !player.IsDead && gameManager.BombState == BombState.Planted;
+        return isInBombArea && player.PlayerTeam == Team.Blue && !player.IsDead && bombState == BombState.Planted;
     }
 
     private void OnTriggerEnter(Collider other)
@@ -100,6 +134,8 @@ public class PlayerBombManager : NetworkBehaviour
     [Server]
     void ServerUpdate()
     {
+        gameState = gameManager.GameState;
+        bombState = gameManager.BombState;
         if (gameManager.isDefusing) ServerHandleDefusing();
         else if (gameManager.isPlanting) ServerHandlePlanting();
     }
@@ -228,9 +264,8 @@ public class PlayerBombManager : NetworkBehaviour
     [Client]
     void ClientHandlePlanting()
     {
-        if (!canPlant()) return;
-
-        if (Input.GetKeyDown(KeyCode.F) || playerInventoryManager.EqupiedItem == Item.Bomb && Input.GetMouseButtonDown(0))
+        if ((Input.GetKeyDown(KeyCode.F) ||
+             playerInventoryManager.EqupiedItem == Item.Bomb && Input.GetMouseButtonDown(0)) && canPlant())
         {
             CmdStartPlanting();
         }
@@ -300,7 +335,10 @@ public class PlayerBombManager : NetworkBehaviour
     }
 
     [Command]
-    void CmdStopPlanting() => ServerCancelPlanting();
+    void CmdStopPlanting() {
+        Debug.Log("CmdStopPlanting");
+        ServerCancelPlanting();
+    }
 
     [Command]
     void CmdStartDefusing()
