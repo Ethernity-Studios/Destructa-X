@@ -67,7 +67,8 @@ public class Player : NetworkBehaviour, IDamageable
 
     public override void OnStartClient()
     {
-        CmdSetPlayerInfo(NicknameManager.DisplayName, RoomManager.PTeam, RoomManager.PAgent);
+        // FIXME
+        // CmdSetPlayerInfo(NicknameManager.DisplayName, RoomManager.PTeam, RoomManager.PAgent);
     }
 
     public void Start()
@@ -79,14 +80,14 @@ public class Player : NetworkBehaviour, IDamageable
         if (isLocalPlayer)
         {
             Cursor.lockState = CursorLockMode.Locked;
-            CmdSetPlayerInfo(NicknameManager.DisplayName, RoomManager.PTeam, RoomManager.PAgent);
+            // FIXME
+            // CmdSetPlayerInfo(NicknameManager.DisplayName, RoomManager.PTeam, RoomManager.PAgent);
         }
         PlayerState = PlayerState.Idle;
         playerSpectateManager = GetComponent<PlayerSpectateManager>();
         playerInventoryManager = GetComponent<PlayerInventoryManager>();
         playerShootingManager = GetComponent<PlayerShootingManager>();
         playerBombManager = GetComponent<PlayerBombManager>();
-        gameManager = FindObjectOfType<GameManager>();
         uiManager = FindObjectOfType<UIManager>();
         shopManager = FindObjectOfType<ShopManager>();
         agentManager = FindObjectOfType<AgentManager>();

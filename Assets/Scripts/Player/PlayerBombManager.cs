@@ -239,7 +239,7 @@ public class PlayerBombManager : NetworkBehaviour
     {
         foreach (var playerID in gameManager.PlayersID)
         {
-            var player = NetworkServer.spawned[playerID].GetComponent<Player>();
+            var player = gameManager.getPlayer(playerID);
             if (player.PlayerTeam == Team.Red)
             {
                 // RpcPlantSlider((NetworkConnectionToClient)player.connectionToClient, enable);
@@ -252,7 +252,7 @@ public class PlayerBombManager : NetworkBehaviour
     {
         foreach (var playerID in gameManager.BlueTeamPlayersIDs)
         {
-            Player player = NetworkServer.spawned[playerID].GetComponent<Player>();
+            Player player = gameManager.getPlayer(playerID);
             // RpcDefuseSlider((NetworkConnectionToClient)player.connectionToClient, enable);
         }
     }

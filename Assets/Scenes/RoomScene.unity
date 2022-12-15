@@ -6613,6 +6613,9 @@ MonoBehaviour:
   syncInterval: 0.1
   BlueTeamSize: 0
   RedTeamSize: 0
+  SelectedMap: Quark
+  bluePlayers: 
+  redPlayers: 
   TeamSelectUI: {fileID: 1434751635}
   AgentSelectUI: {fileID: 1757040940}
   BlueTeamHolder: {fileID: 279694818}
@@ -6621,6 +6624,8 @@ MonoBehaviour:
   RedTeamSizeText: {fileID: 1731656046}
   PreselectedAgentGO: {fileID: 417007452}
   PreselectedAgentImg: {fileID: 417007455}
+  LoadingUI: {fileID: 1847220392}
+  AgentsUI: {fileID: 1757040940}
   agentButtons:
   - {fileID: 1962677246}
   - {fileID: 5185680}
@@ -6646,13 +6651,10 @@ MonoBehaviour:
   mapDropdown: {fileID: 1904561898}
   mapText: {fileID: 1315334527}
   backgroundImage: {fileID: 44238254}
-  SelectedMap: Quark
   map:
-  - {fileID: 11400000, guid: 30f9970de49282845966c84a90fd658c, type: 2}
   - {fileID: 11400000, guid: 070598ed05103de4194bb07203f01458, type: 2}
+  - {fileID: 11400000, guid: 30f9970de49282845966c84a90fd658c, type: 2}
   - {fileID: 11400000, guid: 2d033754c929c16f58db7b7c01d00da5, type: 2}
-  AgentsUI: {fileID: 1757040940}
-  LoadingUI: {fileID: 1847220392}
 --- !u!1 &2138225429
 GameObject:
   m_ObjectHideFlags: 0

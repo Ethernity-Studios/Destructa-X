@@ -41,7 +41,6 @@ namespace GameManagers
         [Server]
         void ServerUpdate()
         {
-            if (gameManager == null) return;
             GameTime = gameManager.GameTime;
             blueScore = gameManager.BlueTeamScore;
             redScore = gameManager.RedTeamScore;

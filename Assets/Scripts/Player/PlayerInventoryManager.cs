@@ -191,7 +191,7 @@ public class PlayerInventoryManager : NetworkBehaviour
                 // RpcPickBomb();
             }
         }
-        
+
         if (other.gameObject.TryGetComponent(out GunInstance instance)) if (instance.CanBePicked && instance.IsDropped && !player.IsDead) 
             RpcPickGun(NetworkServer.spawned[instance.GetComponent<NetworkIdentity>().netId].gameObject);
             // CmdPickGun(instance.GetComponent<NetworkIdentity>().netId);

@@ -48,7 +48,7 @@ public class ShopManager : NetworkBehaviour
     {
         foreach (var playerID in gameManager.PlayersID)
         {
-            RpcGetLocalPlayer(NetworkServer.spawned[playerID]);
+            RpcGetLocalPlayer(gameManager.getPlayer(playerID).netIdentity);
         }
     }
     [ClientRpc]

@@ -1,3 +1,4 @@
+
 using Mirror;
 using System;
 using System.Linq;
@@ -25,9 +26,9 @@ public class NetworkManagerRoom : NetworkRoomManager
 
     public override void OnServerDisconnect(NetworkConnection conn)
     {
-        var connection = NetworkClient.connection;
-        roomManager.connectionDisconnect(connection);
-        base.OnServerDisconnect();
+        roomManager = FindObjectOfType<RoomManager>();
+        roomManager.PlayerDisconnect(conn);
+        base.OnServerDisconnect(conn);
     }
 
     public override void OnStartClient()
@@ -50,6 +51,7 @@ public class NetworkManagerRoom : NetworkRoomManager
 
     public override void OnRoomServerPlayersReady()
     {
+        Debug.Log("all ready");
         roomManager = FindObjectOfType<RoomManager>();
         roomManager.RpcCountdown(1);
 
