@@ -72,6 +72,7 @@ public class GameManager : NetworkBehaviour
     public ShopManager shopManager;
     private PlayerStateManger playerStateManger;
     [SerializeField] MapController mapController;
+    private RoomManager roomManager;
 
     public GameObject BulletHolder;
 
@@ -88,9 +89,9 @@ public class GameManager : NetworkBehaviour
     public int LossStreak = 0;
 
     // FIXME edited with unsafe cmd
-    public List<uint> PlayersID = new();
-    public List<uint> BlueTeamPlayersIDs = new();
-    public List<uint> RedTeamPlayersIDs = new();
+    public List<int> PlayersID = new();
+    public List<int> BlueTeamPlayersIDs = new();
+    public List<int> RedTeamPlayersIDs = new();
     public bool isEveryoneFuckingReady;
 
     // [SyncVar]
@@ -121,7 +122,9 @@ public class GameManager : NetworkBehaviour
     private void Start()
     {
         playerStateManger = FindObjectOfType<PlayerStateManger>();
+        roomManager = FindObjectOfType<RoomManager>();
         return;
+        /*
         ShopUI.SetActive(false);
         // PlantProgressSlider.gameObject.SetActive(false);
         // DefuseProgressSlider.gameObject.SetActive(false);
@@ -142,6 +145,7 @@ public class GameManager : NetworkBehaviour
                 throw new Exception($"{p.name} player team is none");
             }
         }
+        */
     }
 
     private void Update()
@@ -160,6 +164,16 @@ public class GameManager : NetworkBehaviour
         }
     }
 
+    [Server]
+    void InitializePlayer(int id)
+    {
+        var player = getPlayer(id);
+        player.PlayerName = roomManager.playerNameMapping[id];
+        player.PlayerAgent = roomManager.agentMapping[id];
+        player.PlayerTeam = roomManager.bluePlayers.Contains(id) ? Team.Blue : Team.Red;
+    }
+
+    [Server]
     private void onPlayersLoaded()
     {
         Debug.Log("Game ready! starting game in 3 second!");
@@ -171,20 +185,16 @@ public class GameManager : NetworkBehaviour
         
         foreach (var con in NetworkServer.connections)
         {
-            var p = con.Value.identity.GetComponent<Player>();
-            PlayersID.Add(con.Value.identity.netId);
-            if (p.PlayerTeam == Team.Blue)
+            if (roomManager.bluePlayers.Contains(con.Key))
             {
-                BlueTeamPlayersIDs.Add(con.Value.identity.netId);
+                BlueTeamPlayersIDs.Add(con.Key);
             }
-            else if (p.PlayerTeam == Team.Red)
+            else if (roomManager.redPlayers.Contains(con.Key))
             {
-                RedTeamPlayersIDs.Add(con.Value.identity.netId);
+                RedTeamPlayersIDs.Add(con.Key);
             }
-            else
-            {
-                throw new Exception($"{p.name} player team is none");
-            }
+            PlayersID.Add(con.Key);
+            InitializePlayer(con.Key);
         }
         
         setupGame();
@@ -207,24 +217,6 @@ public class GameManager : NetworkBehaviour
     }
     */
 
-    [Server]
-    public Player getLocalPlayer()
-    {
-        Debug.Log($"player ids {PlayersID}");
-        foreach (var player in PlayersID)
-        {
-            Debug.Log($"player id {player}");
-            var x = NetworkServer.spawned[player];
-            if (x.isLocalPlayer)
-            {
-                Debug.Log("its local player");
-                return x.GetComponent<Player>();
-            }
-        }
-
-        return null;
-    }
-    
     #region Server
 
     [Server]
@@ -307,6 +299,18 @@ public class GameManager : NetworkBehaviour
     }
     
     [Server]
+    public Player getPlayer(int id)
+    {
+        var player = NetworkServer.connections[id].identity.GetComponent<Player>();
+        if (player == null)
+        {
+            Debug.LogWarning($"player is null Fuck {id} {NetworkServer.connections.Keys}");
+        }
+
+        return player;
+    }
+    
+    [Server]
     void startNewRound()
     {
         addScore();
@@ -343,7 +347,7 @@ public class GameManager : NetworkBehaviour
 
         foreach (var playerID in PlayersID)
         {
-            Player player = NetworkServer.spawned[playerID].GetComponent<Player>();
+            Player player = getPlayer(playerID);
             player.PreviousRoundShield = player.Shield;
             PlayerInventoryManager playerInventory = player.GetComponent<PlayerInventoryManager>();
             playerStateManger.RpcSetDefaultPlayerSettings(player);
@@ -436,7 +440,7 @@ public class GameManager : NetworkBehaviour
         //KILLS
         foreach (var playerID in PlayersID)
         {
-            Player player = NetworkServer.spawned[playerID].GetComponent<Player>();
+            Player player = getPlayer(playerID);
             player.CmdChangeMoney(player.RoundKills * 200);
         }
         //RED TEAM BOMB PLANT
@@ -444,7 +448,7 @@ public class GameManager : NetworkBehaviour
         {
             foreach (var playerID in RedTeamPlayersIDs)
             {
-                Player player = NetworkServer.spawned[playerID].GetComponent<Player>();
+                Player player = getPlayer(playerID);
                 player.CmdChangeMoney(300);
             }
         }
@@ -454,7 +458,7 @@ public class GameManager : NetworkBehaviour
         {
             foreach (var playerID in BlueTeamPlayersIDs)
             {
-                Player player = NetworkServer.spawned[playerID].GetComponent<Player>();
+                Player player = getPlayer(playerID);
                 player.CmdChangeMoney(3000);
             }
         }
@@ -462,7 +466,7 @@ public class GameManager : NetworkBehaviour
         {
             foreach (var playerID in RedTeamPlayersIDs)
             {
-                Player player = NetworkServer.spawned[playerID].GetComponent<Player>();
+                Player player = getPlayer(playerID);
                 player.CmdChangeMoney(3000);
             }
         }
@@ -470,7 +474,7 @@ public class GameManager : NetworkBehaviour
         {
             foreach (var playerID in BlueTeamPlayersIDs)
             {
-                Player player = NetworkServer.spawned[playerID].GetComponent<Player>();
+                Player player = getPlayer(playerID);
                 player.CmdChangeMoney(3000);
             }
         }
@@ -478,7 +482,7 @@ public class GameManager : NetworkBehaviour
         //LOSING TEAM
         foreach (var playerID in PlayersID)
         {
-            Player player = NetworkServer.spawned[playerID].GetComponent<Player>();
+            Player player = getPlayer(playerID);
             player.RoundKills = 0;
             if (player.PlayerTeam == LosingTeam)
             {
@@ -501,6 +505,7 @@ public class GameManager : NetworkBehaviour
         // bombInstance.transform.SetParent(gameObject.transform);
         bombInstance.transform.position = bombSpawnLocation.position;
         NetworkServer.Spawn(bombInstance);
+        Debug.Log("bomb has been spawned :3");
         Bomb = bombInstance;
     }
     
@@ -509,7 +514,7 @@ public class GameManager : NetworkBehaviour
     {
         foreach (var playerID in PlayersID)
         {
-            Player player = NetworkServer.spawned[playerID].GetComponent<Player>();
+            Player player = getPlayer(playerID);
             PlayerInventoryManager playerInventory = player.GetComponent<PlayerInventoryManager>();
             playerInventory.CmdGiveGun(gunManager.gunList[0].GunID);
             playerInventory.CmdSwitchItem(Item.Knife);
@@ -525,7 +530,7 @@ public class GameManager : NetworkBehaviour
         int r = 0;
         foreach (var playerID in PlayersID)
         {
-            Player player = NetworkServer.spawned[playerID].GetComponent<Player>();
+            Player player = getPlayer(playerID);
             if (player.PlayerTeam == Team.Blue)
             {
                 player.RpcRespawnPlayer(blueSpawnPositions[b].position, blueSpawnPositions[b].rotation);
@@ -572,7 +577,7 @@ public class GameManager : NetworkBehaviour
     {
         foreach (var playerID in PlayersID)
         {
-            RpcClosePlayerShopUI(NetworkServer.spawned[playerID].GetComponent<Player>());
+            RpcClosePlayerShopUI(getPlayer(playerID));
         }
     }
     */

@@ -1,12 +1,9 @@
 using System;
-using Mirror;
 using System.Collections;
 using System.Collections.Generic;
-using System.Data.Common;
+using Mirror;
 using TMPro;
-using UnityEditor.MemoryProfiler;
 using UnityEngine;
-using UnityEngine.Networking.Types;
 using UnityEngine.UI;
 
 public enum Team
@@ -17,16 +14,17 @@ public enum Team
 // FIXME just fucking fix me :)
 public class RoomManager : NetworkBehaviour
 {
-    [SyncVar(hook = nameof(CmdUpdateTeamSizeUI))]
+    [SyncVar(hook = nameof(SyncBlueTeamSizeUI))]
     public int BlueTeamSize;
-    [SyncVar(hook = nameof(CmdUpdateTeamSizeUI))]
+    [SyncVar(hook = nameof(SyncRedTeamSizeUI))]
     public int RedTeamSize;
     [SyncVar]
     public string SelectedMap;
     
-    SyncDictionary<int, Agent> agentMapping = new();
-    SyncList<int> bluePlayers = new();
-    SyncList<int> redPlayers = new();
+    public Dictionary<int, Agent> agentMapping = new();
+    public Dictionary<int, string> playerNameMapping = new();
+    public List<int> bluePlayers = new();
+    public List<int> redPlayers = new();
 
     [SerializeField] GameObject TeamSelectUI;
     [SerializeField] GameObject AgentSelectUI;
@@ -67,19 +65,42 @@ public class RoomManager : NetworkBehaviour
         }
     }
 
+    void OnRedTeamSize(int _, int newValue)
+    {
+        
+    }
+    
+    void OnBlueTeamSize(int _, int newValue)
+    {
+        
+    }
+
     private void Start()
     {
+        DontDestroyOnLoad(this);
+        BlueTeamHolder = GameObject.Find("BlueTeam").transform;
+        RedTeamHolder = GameObject.Find("RedTeam").transform;
+        
+        agentManager = FindObjectOfType<AgentManager>();
         mapText.text = SelectedMap;
         if (isServer)
         {
             mapSelect.SetActive(true);
         }
-        
+
         foreach (var item in map)
         {
             maps.Add(item.MapName, item);
             mapDropdown.options.Add(new TMP_Dropdown.OptionData(item.MapName));
         }
+
+        SelectedMap = map[0].MapName;
+    }
+    
+    private void Update()
+    {
+        mapText.text = SelectedMap;
+        backgroundImage.sprite = GetMapMeta(SelectedMap).LobbyMapBackground;
     }
 
     [ClientRpc]
@@ -99,12 +120,6 @@ public class RoomManager : NetworkBehaviour
         }
         Room.SelectedMap = maps[SelectedMap].SceneName;
         Room.StartGame(Room.SelectedMap);
-    }
-
-    private void Update()
-    {
-        mapText.text = SelectedMap;
-        backgroundImage.sprite = GetMapMeta(SelectedMap).LobbyMapBackground;
     }
 
     #region MapManagement
@@ -132,6 +147,10 @@ public class RoomManager : NetworkBehaviour
     #region TeamManagement
     public void JoinTeam(int teamIndex)
     {
+        var team = teamIndex == 1 ? Team.Blue : Team.Red;
+        CmdSelectTeam(team, NicknameManager.DisplayName);
+        return;
+        /*
         foreach (var player in Room.roomSlots)
         {
             if (!player.isLocalPlayer) continue;
@@ -153,32 +172,62 @@ public class RoomManager : NetworkBehaviour
                 AgentSelectUI.SetActive(true);
             }
         }
+        */
     }
 
+    [TargetRpc]
+    void SwitchToChampSelectState(NetworkConnection conn)
+    {
+        TeamSelectUI.SetActive(false);
+        AgentSelectUI.SetActive(true);
+    }
+    /*
     [Command(requiresAuthority = false)]
     public void CmdUpdateTeamSize(int b, int r)
     {
         BlueTeamSize += b;
         RedTeamSize += r;
     }
+    */
 
     [Command(requiresAuthority = false)]
     void CmdUpdateTeamSizeUI(int _, int newValue)
     {
         RpcUpdateTeamSizeUI();
     }
+    
+    void SyncRedTeamSizeUI(int _, int newValue)
+    {
+        RedTeamSizeText.text = newValue.ToString();
+    }
+    
+    void SyncBlueTeamSizeUI(int _, int newValue)
+    {
+        BlueTeamSizeText.text = newValue.ToString();
+    }
+    
     [ClientRpc]
     public void RpcUpdateTeamSizeUI()
     {
         BlueTeamSizeText.text = BlueTeamSize.ToString();
         RedTeamSizeText.text = RedTeamSize.ToString();
     }
+    
+    [ClientRpc]
+    public void RpcUpdateTeamSizeUINew()
+    {
+        BlueTeamSizeText.text = bluePlayers.Count.ToString();
+        RedTeamSizeText.text = redPlayers.Count.ToString();
+    }
+    
     #endregion
 
     #region AgentManagement
 
     public void PreselectAgent(string agentName)
     {
+        CmdPreSelectAgent(agentManager.GetAgentByName(agentName));
+        return;
         agentManager = FindObjectOfType<AgentManager>();
         foreach (var player in Room.roomSlots)
         {
@@ -194,7 +243,9 @@ public class RoomManager : NetworkBehaviour
 
     public void SelectAgent()
     {
-        agentManager = FindObjectOfType<AgentManager>();
+        // agentManager = FindObjectOfType<AgentManager>();
+        CmdSelectAgent();
+        return;
         foreach (var player in Room.roomSlots)
         {
             if (player.isLocalPlayer)
@@ -215,69 +266,116 @@ public class RoomManager : NetworkBehaviour
         }
     }
 
-    [Command]
-    public void CmdSelectTeam(Team team)
+    [Command(requiresAuthority = false)]
+    void CmdSelectTeam(Team team, string playerName, NetworkConnectionToClient sender = null)
     {
         if (team == Team.None) return;
-
-        var player = connectionToClient.identity.GetComponent<LobbyPlayer>();
-        if (player.PlayerTeam != Team.None) return;
+        
+        var player = sender.identity.GetComponent<LobbyPlayer>();
+        if (player.PlayerTeam != Team.None)
+        {
+            Debug.Log("client already selected team");
+            return;
+        }
 
         switch (team)
         {
             case Team.Blue:
                 if (bluePlayers.Count < 5)
                 {
+                    player.transform.SetParent(BlueTeamHolder);
                     player.PlayerTeam = Team.Blue;
-                    bluePlayers.Add(connectionToClient.connectionId);
+                    player.PlayerName = playerName;
+                    bluePlayers.Add(sender.connectionId);
+                    playerNameMapping[sender.connectionId] = playerName;
+                    BlueTeamSize++;
                 }
                 break;
             case Team.Red:
                 if (redPlayers.Count < 5)
                 {
+                    player.transform.SetParent(RedTeamHolder);
                     player.PlayerTeam = Team.Red;
-                    redPlayers.Add(connectionToClient.connectionId);
+                    player.PlayerName = playerName;
+                    redPlayers.Add(sender.connectionId);
+                    playerNameMapping[sender.connectionId] = playerName;
+                    RedTeamSize++;
                 }
                 break;
             default:
                 throw new ArgumentOutOfRangeException(nameof(team), team, null);
         }
+        
+        // RpcUpdateTeamSizeUINew();
+        // player.RpcSetTeamUI(team);
+        SwitchToChampSelectState(sender);
+        // ServerSyncAllUI();
         // TODO update state ui
     }
 
-    [Command]
-    public void CmdPreSelectAgent(Agent agent)
+    [Command(requiresAuthority = false)]
+    public void CmdPreSelectAgent(Agent agent, NetworkConnectionToClient sender = null)
     {
-        var player = connectionToClient.identity.GetComponent<LobbyPlayer>();
-        if (!canSelectAgent(agent, player.PlayerTeam)) return;
-
+        var player = sender.identity.GetComponent<LobbyPlayer>();
+        if (!canSelectAgent(agent, player.PlayerTeam) || player.PlayerSelectedAgent != Agent.None) return;
+        Debug.Log($"agent preselected {agent}");
         player.PlayerPreselectedAgent = agent;
+        // ServerSyncAllUI();
+        // player.preSelectChampUI();
         // TODO update state ui
     }
 
-    [Command]
-    public void CmdSelectAgent()
+    [Command(requiresAuthority = false)]
+    public void CmdSelectAgent(NetworkConnectionToClient sender = null)
     {
-        var player = connectionToClient.identity.GetComponent<LobbyPlayer>();
+        var player = sender.identity.GetComponent<LobbyPlayer>();
         // TODO maybe set his agent to null to indicate its already picked
-        if (player.PlayerPreselectedAgent == Agent.None || !canSelectAgent(player.PlayerPreselectedAgent, player.PlayerTeam)) return;
-
+        if (player.PlayerPreselectedAgent == Agent.None || !canSelectAgent(player.PlayerPreselectedAgent, player.PlayerTeam) || player.PlayerSelectedAgent != Agent.None) return;
         player.PlayerSelectedAgent = player.PlayerPreselectedAgent;
-        agentMapping[connectionToClient.connectionId] = player.PlayerSelectedAgent;
-        AgentSelectedState();
+        agentMapping[sender.connectionId] = player.PlayerSelectedAgent;
+        player.CmdChangeReadyState(true);
+        // player.readyToBegin = true;
+        // room.ReadyStatusChanged();
+        // ServerSyncAllUI();
+        // AgentSelectedState();
+        // player.selectChampUI();
         // TODO update state ui
+    }
+
+    [Server]
+    void ServerSyncAllUI()
+    {
+        foreach (var con in Room.roomSlots)
+        {
+            var player = con.GetComponent<LobbyPlayer>();
+            player.syncUI();
+        }
     }
 
     bool canSelectAgent(Agent agent, Team team)
     {
         if (team == Team.None) return false;
-        
-        foreach (var player in room.roomSlots)
+
+        if (team == Team.Blue)
         {
-            var lp = player.GetComponent<LobbyPlayer>();
-            if (lp.PlayerTeam == team && lp.PlayerSelectedAgent == agent)
+            foreach (var p in bluePlayers)
             {
-                return false;
+                if (!agentMapping.ContainsKey(p)) continue;
+                if (agentMapping[p] == agent)
+                {
+                    return false;
+                }
+            }
+        }
+        else
+        {
+            foreach (var p in redPlayers)
+            {
+                if (!agentMapping.ContainsKey(p)) continue;
+                if (agentMapping[p] == agent)
+                {
+                    return false;
+                }
             }
         }
 
@@ -298,10 +396,13 @@ public class RoomManager : NetworkBehaviour
     #endregion
 
     [Server]
-    public void connectionDisconnect(NetworkConnection connection)
+    public void PlayerDisconnect(NetworkConnection connection)
     {
+        Debug.Log("nekdo se disconnectnul");
+        Debug.Log($"blue {BlueTeamSize} red {RedTeamSize}");
         // reclaim agent + team slot
         agentMapping.Remove(connection.connectionId);
+        playerNameMapping.Remove(connection.connectionId);
         var team = connection.identity.GetComponent<LobbyPlayer>().PlayerTeam;
         switch (team)
         {
@@ -309,12 +410,15 @@ public class RoomManager : NetworkBehaviour
                 break;
             case Team.Blue:
                 bluePlayers.Remove(connection.connectionId);
+                BlueTeamSize--;
                 break;
             case Team.Red:
                 redPlayers.Remove(connection.connectionId);
+                RedTeamSize--;
                 break;
             default:
                 throw new ArgumentOutOfRangeException();
         }
+        Debug.Log($"blue {BlueTeamSize} red {RedTeamSize}");
     }
 }

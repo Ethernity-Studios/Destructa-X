@@ -1,6 +1,7 @@
 using System;
 using GameManagers;
 using Mirror;
+using UnityEngine;
 
 namespace player
 {
@@ -9,13 +10,20 @@ namespace player
         private GameManager gameManager;
         private Player player;
         private GameStateUi gameStateUi;
-        [SyncVar(hook = nameof(DrawPlant))] private float PlantTimeLeft;
-        [SyncVar(hook = nameof(DrawDefuse))] private float DefuseTimeLeft;
-        [SyncVar(hook = nameof(DrawDefuseSlider))] private bool ShowDefuseSlider;
-        [SyncVar(hook = nameof(DrawPlantSlider))] private bool ShowPlantSlider;
+        [SyncVar(hook = nameof(DrawPlant))]
+        private float PlantTimeLeft = 0;
+        [SyncVar(hook = nameof(DrawDefuse))]
+        private float DefuseTimeLeft = 0;
+        [SyncVar(hook = nameof(DrawDefuseSlider))] 
+        private bool ShowDefuseSlider = false;
+        [SyncVar(hook = nameof(DrawPlantSlider))] 
+        private bool ShowPlantSlider = false;
         
         private void Start()
         {
+            gameStateUi = FindObjectOfType<GameStateUi>();
+            gameStateUi.DefuseProgressSlider.transform.parent.gameObject.SetActive(false);
+            gameStateUi.PlantProgressSlider.transform.parent.gameObject.SetActive(false);
             if (!isServer) return;
             gameStateUi = FindObjectOfType<GameStateUi>();
             gameManager = FindObjectOfType<GameManager>();
@@ -41,22 +49,28 @@ namespace player
         
         void DrawPlantSlider(bool _, bool newValue)
         {
-            gameStateUi.PlantProgressSlider.gameObject.SetActive(newValue);
+            Debug.Log("DrawPlantSlider");
+            gameStateUi.PlantProgressSlider.transform.parent.gameObject.SetActive(newValue);
+            // gameStateUi.PlantProgressSlider.gameObject.SetActive(newValue);
         }
         
         void DrawDefuseSlider(bool _, bool newValue)
         {
-            gameStateUi.DefuseProgressSlider.gameObject.SetActive(newValue);
+            Debug.Log("DrawDefuseSlider");
+            gameStateUi.DefuseProgressSlider.transform.parent.gameObject.SetActive(newValue);
+            // gameStateUi.DefuseProgressSlider.gameObject.SetActive(newValue);
         }
 
         void DrawPlant(float _, float newValue)
         {
+            Debug.Log("DrawPlant");
             gameStateUi.PlantProgressSlider.value = newValue;
         }
 
         void DrawDefuse(float _, float newValue)
         {
-            gameStateUi.DefuseProgressSlider.value = newValue;   
+            Debug.Log("DrawDefuse");
+            gameStateUi.DefuseProgressSlider.value = newValue;
         }
     }
 }

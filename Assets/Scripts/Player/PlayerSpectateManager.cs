@@ -98,7 +98,7 @@ public class PlayerSpectateManager : NetworkBehaviour
     {
         foreach (var playerID in gameManager.PlayersID)
         {
-            RpcGetPlayers(NetworkServer.spawned[playerID].GetComponent<Player>());
+            RpcGetPlayers(gameManager.getPlayer(playerID));
         }
     }
     [ClientRpc]
