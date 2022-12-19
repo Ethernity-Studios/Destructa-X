@@ -6,7 +6,32 @@ ModelImporter:
   - first:
       74: -623603649343465320
     second: Scene
-  externalObjects: {}
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: container_1_blue
+    second: {fileID: 2100000, guid: cbc70b7cebf218c4db7717dc0ac651d9, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: container_1_cyan
+    second: {fileID: 2100000, guid: 0db1c064e0cc7864299ad48670ab37ec, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: container_1_light_gray
+    second: {fileID: 2100000, guid: 39674cf813230e64cacbc3b8436e93ea, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: container_1_orange
+    second: {fileID: 2100000, guid: 79384f876a1d04949bd20078f275267d, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: container_1_yellow
+    second: {fileID: 2100000, guid: dd3a6cbecd1e85342b06ad6895413775, type: 2}
   materials:
     materialImportMode: 2
     materialName: 0
