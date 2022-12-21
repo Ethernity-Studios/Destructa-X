@@ -166,16 +166,15 @@ public class PlayerInventoryManager : NetworkBehaviour
 
     private void OnTriggerStay(Collider other)
     {
-        // if (!isLocalPlayer) return;
-        if (isServer) ServerOnTriggerStay(other);
-        return;
+        if (!isLocalPlayer) return;
+
         if (gameManager.Bomb == null) return;
         if (other.gameObject == gameManager.Bomb.transform.GetChild(0).gameObject && other.gameObject.layer != 6 && player.PlayerTeam == Team.Red && !player.IsDead) CmdPickBomb();
 
         if (other.gameObject.TryGetComponent(out GunInstance instance)) if (instance.CanBePicked && instance.IsDropped && !player.IsDead) CmdPickGun(instance.GetComponent<NetworkIdentity>().netId);
     }
 
-    [Server]
+    /*[Server]
     void ServerOnTriggerStay(Collider other)
     {
         // Debug.Log($"gameManager Bomb {gameManager.Bomb}");
@@ -194,11 +193,11 @@ public class PlayerInventoryManager : NetworkBehaviour
         }
 
         if (other.gameObject.TryGetComponent(out GunInstance instance)) if (instance.CanBePicked && instance.IsDropped && !player.IsDead) 
-            RpcPickGun(NetworkServer.spawned[instance.GetComponent<NetworkIdentity>().netId].gameObject);
+            RpcPickGun(instance.gameObject);
             // CmdPickGun(instance.GetComponent<NetworkIdentity>().netId);
-    }
+    }*/
 
-    [ClientRpc]
+    /*[ClientRpc]
     void BombPick(GameObject bomb)
     {
         bomb.transform.GetChild(0).gameObject.layer = 6;
@@ -207,7 +206,7 @@ public class PlayerInventoryManager : NetworkBehaviour
         bomb.transform.localPosition = new Vector3(0, -.5f, .7f);
         bomb.GetComponent<Rigidbody>().constraints = RigidbodyConstraints.FreezeAll;
         bomb.GetComponent<BoxCollider>().enabled = false;
-    }
+    }*/
 
     [Command]
     void CmdPickBomb() => RpcPickBomb();
@@ -228,15 +227,14 @@ public class PlayerInventoryManager : NetworkBehaviour
     [Command]
     public void CmdDropBomb() => RpcDropBomb();
 
-
     [ClientRpc]
     void RpcDropBomb()
     {
         if (isLocalPlayer) CmdSwitchItem(PreviousEqupiedItem);
         Bomb.transform.localPosition = new Vector3(0, .6f, .5f);
         Bomb.transform.SetParent(gameManager.gameObject.transform);
-        // Invoke("setBombLayer", .5f);
-        setBombLayer();
+        Invoke("setBombLayer", .5f);
+        //setBombLayer();
         Rigidbody rb = Bomb.GetComponent<Rigidbody>();
         rb.constraints = RigidbodyConstraints.None;
         Bomb.GetComponent<BoxCollider>().enabled = true;
@@ -244,7 +242,7 @@ public class PlayerInventoryManager : NetworkBehaviour
         Bomb = null;
     }
 
-    void setBombLayer() => gameManager.Bomb.transform.GetChild(0).gameObject.layer = 0;
+    void setBombLayer() => gameManager.Bomb.transform.GetChild(0).gameObject.layer = 8;
 
     [Command]
     void CmdPickGun(uint GunID) 
@@ -255,6 +253,7 @@ public class PlayerInventoryManager : NetworkBehaviour
     [ClientRpc]
     void RpcPickGun(GameObject gunInstance)
     {
+        Debug.Log("Rpc pick gun");
         GunInstance instance = gunInstance.GetComponent<GunInstance>();
         if (!instance.CanBePicked) return;
         instance.IsDropped = false;
@@ -327,8 +326,8 @@ public class PlayerInventoryManager : NetworkBehaviour
         GunInstance instance = gunInstance.GetComponent<GunInstance>();
         instance.CanBeSelled = false;
         instance.IsDropped = true;
-        // instance.Invoke("SetPickStatus", .5f);
-        instance.SetPickStatus();
+        instance.Invoke("SetPickStatus", .5f);
+        //instance.SetPickStatus();
         setLayerMask(gunInstance, 0);
         gunInstance.gameObject.transform.GetChild(0).gameObject.layer = 8;
         Rigidbody rb = gunInstance.GetComponent<Rigidbody>();

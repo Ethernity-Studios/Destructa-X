@@ -176,7 +176,6 @@ public class GameManager : NetworkBehaviour
     [Server]
     private void onPlayersLoaded()
     {
-        Debug.Log("Game ready! starting game in 3 second!");
         // ShopUI.SetActive(false);
         
         PlayersID.Clear();
@@ -198,7 +197,6 @@ public class GameManager : NetworkBehaviour
         }
         
         setupGame();
-        Debug.Log("everything is ready LESSSSSS GOOOOOOOOOOOO");
     }
 
     /*
@@ -222,7 +220,6 @@ public class GameManager : NetworkBehaviour
     [Server]
     void setupGame()
     {
-        Debug.Log("setupGame");
         AliveBluePlayers = BlueTeamPlayersIDs.Count;
         AliveRedPlayers = RedTeamPlayersIDs.Count;   
         GameReady = true;
@@ -301,11 +298,9 @@ public class GameManager : NetworkBehaviour
     [Server]
     public Player getPlayer(int id)
     {
-        Debug.Log($"size is {NetworkServer.connections.Count}");
         var player = NetworkServer.connections[id].identity.GetComponent<Player>();
         if (player == null)
         {
-            Debug.LogWarning($"player is null Fuck {id} {NetworkServer.connections.Keys}");
         }
 
         return player;
@@ -321,7 +316,6 @@ public class GameManager : NetworkBehaviour
 
         if (BombState == BombState.Exploded || BombState == BombState.Defused)
         {
-            Debug.Log("Destroying planted bomb");
             NetworkServer.Destroy(gameObject.transform.GetChild(0).gameObject);
         }
 
@@ -506,7 +500,6 @@ public class GameManager : NetworkBehaviour
         // bombInstance.transform.SetParent(gameObject.transform);
         bombInstance.transform.position = bombSpawnLocation.position;
         NetworkServer.Spawn(bombInstance);
-        Debug.Log("bomb has been spawned :3");
         Bomb = bombInstance;
     }
     

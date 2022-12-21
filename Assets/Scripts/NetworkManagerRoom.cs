@@ -51,7 +51,6 @@ public class NetworkManagerRoom : NetworkRoomManager
 
     public override void OnRoomServerPlayersReady()
     {
-        Debug.Log("all ready");
         roomManager = FindObjectOfType<RoomManager>();
         roomManager.RpcCountdown(1);
 

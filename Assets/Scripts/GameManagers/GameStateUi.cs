@@ -24,11 +24,9 @@ namespace GameManagers
 
         private void Start()
         {
-            Debug.Log("gooooooooooooofy ahhhhhhhhhhhhhhhhhhhh");
             if (isServer)
             {
                 gameManager = FindObjectOfType<GameManager>();
-                Debug.Log($"game manger {gameManager}");
                 // player = gameManager.getLocalPlayer();
             }
         }

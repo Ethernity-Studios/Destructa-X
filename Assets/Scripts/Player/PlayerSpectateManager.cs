@@ -27,6 +27,9 @@ public class PlayerSpectateManager : NetworkBehaviour
         player = GetComponent<Player>();
         gameManager = FindObjectOfType<GameManager>();
         uiManager = FindObjectOfType<UIManager>();
+        if (!isLocalPlayer) return;
+        PlayerCamera.enabled = true;
+        ItemCamera.enabled = true;
     }
 
     private void Update()

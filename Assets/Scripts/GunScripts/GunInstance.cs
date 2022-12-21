@@ -1,20 +1,23 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Mirror;
 
-public class GunInstance : MonoBehaviour
+public class GunInstance : NetworkBehaviour
 {
+    //[SyncVar]
     public Player GunOwner;
-
+    //[SyncVar]
     public Gun Gun;
-
+    //[SyncVar]
     public bool CanBeSelled = false;
-
+    //[SyncVar]
     public bool IsDropped = false;
-
+    //[SyncVar]
     public bool CanBePicked = false;
-
+    //[SyncVar]
     public int Ammo;
+    //[SyncVar]
     public int Magazine;
 
     private void OnCollisionEnter(Collision collision)
@@ -28,6 +31,7 @@ public class GunInstance : MonoBehaviour
 
     public void SetPickStatus()
     {
+        Debug.Log("Setting gun pick status");
         CanBePicked = true;
     }
 

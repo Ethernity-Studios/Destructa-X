@@ -37,7 +37,6 @@ public class LobbyPlayer : NetworkRoomPlayer
     public override void OnStartClient()
     {
         // if (!isLocalPlayer) return;
-        Debug.Log("UwU");
         // syncUI();
         // PlayerPreselectedAgent = Agent.None;
         // PlayerSelectedAgent = Agent.None;
@@ -279,7 +278,7 @@ public class LobbyPlayer : NetworkRoomPlayer
 
     void SyncTeamUI(Team _, Team newValue)
     {
-        Debug.Log("SyncTeamUI");
+
         switch (newValue)
         {
             case Team.None:
@@ -302,7 +301,6 @@ public class LobbyPlayer : NetworkRoomPlayer
     
     void SyncPreselectAgentUI(Agent _, Agent newValue)
     {
-        Debug.Log("SyncPreselectAgentUI");
         // if (PlayerSelectedAgent != Agent.None) return;
         var localPlayerImage = transform.GetChild(1).GetComponent<Image>();
         var agentName = transform.GetChild(2).GetComponent<TMP_Text>();
@@ -314,7 +312,6 @@ public class LobbyPlayer : NetworkRoomPlayer
     
     void SyncSelectedAgentUI(Agent _, Agent newValue)
     {
-        Debug.Log("SyncSelectedAgentUI");
         var localPlayerImage = transform.GetChild(1).GetComponent<Image>();
         var agentName = transform.GetChild(2).GetComponent<TMP_Text>();
 
@@ -327,7 +324,6 @@ public class LobbyPlayer : NetworkRoomPlayer
     {
         BlueTeamHolder = GameObject.Find("BlueTeam").transform;
         RedTeamHolder = GameObject.Find("RedTeam").transform;
-        Debug.Log("SyncPlayerName");
         transform.GetChild(0).GetComponent<TMP_Text>().text = newValue;
     }
     

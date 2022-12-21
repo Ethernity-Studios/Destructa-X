@@ -5,6 +5,7 @@ using Mirror;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public enum Team
 {
@@ -99,6 +100,7 @@ public class RoomManager : NetworkBehaviour
     
     private void Update()
     {
+        if (SceneManager.GetActiveScene().buildIndex != 0) return;
         mapText.text = SelectedMap;
         backgroundImage.sprite = GetMapMeta(SelectedMap).LobbyMapBackground;
     }
@@ -318,7 +320,6 @@ public class RoomManager : NetworkBehaviour
     {
         var player = sender.identity.GetComponent<LobbyPlayer>();
         if (!canSelectAgent(agent, player.PlayerTeam) || player.PlayerSelectedAgent != Agent.None) return;
-        Debug.Log($"agent preselected {agent}");
         player.PlayerPreselectedAgent = agent;
         // ServerSyncAllUI();
         // player.preSelectChampUI();

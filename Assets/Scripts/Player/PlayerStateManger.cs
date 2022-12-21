@@ -8,7 +8,6 @@ namespace player
         [ClientRpc]
         public void RpcSetupGame()
         {
-            Debug.Log("RpcSetupGame");
             // loadingScreen.SetActive(false);
         }
 
@@ -32,7 +31,6 @@ namespace player
         [ClientRpc]
         public void RpcSetDefaultPlayerSettings(Player player)
         {
-            Debug.Log("RpcSetDefaultPlayerSettings");
             PlayerShootingManager playerShootingManager = player.GetComponent<PlayerShootingManager>();
             playerShootingManager.CanShoot = true;
             playerShootingManager.Reloading = false;
