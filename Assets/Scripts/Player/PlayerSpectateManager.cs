@@ -86,7 +86,7 @@ public class PlayerSpectateManager : NetworkBehaviour
             if (player.PlayerTeam != this.player.PlayerTeam) continue;
             if (player == currentlySpectating) continue;
             PlayerSpectateManager playerSpectateManager = player.GetComponent<PlayerSpectateManager>();
-            playerSpectateManager.PlayerCamera.enabled = true;
+          playerSpectateManager.PlayerCamera.enabled = true;
             playerSpectateManager.ItemCamera.enabled = true;
             currentlySpectating = player;
             uiManager.SpectatingUI.SetActive(true);
@@ -113,7 +113,7 @@ public class PlayerSpectateManager : NetworkBehaviour
     void spectateBomb()
     {
         isSpectating = true;
-        PlayerCamera.enabled = false;
+       PlayerCamera.enabled = false;
         ItemCamera.enabled = false;
         Debug.Log("Currently spectating bomb");
     }

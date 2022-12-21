@@ -208,6 +208,7 @@ public class PlayerBombManager : NetworkBehaviour
     void ServerCancelPlanting()
     {
         Debug.Log("ServerCancelPlanting");
+        player.RpcSetState(PlayerState.Idle);
         player.PlayerState = PlayerState.Idle;
         gameManager.isPlanting = false;
         
@@ -219,7 +220,7 @@ public class PlayerBombManager : NetworkBehaviour
     void ServerCancelDefusing()
     {
         Debug.Log("ServerCancelDefusing");
-        player.PlayerState = PlayerState.Idle;
+        player.RpcSetState(PlayerState.Idle);
         gameManager.isDefusing = false;
         
         if (gameManager.DefuseTimeLeft >= gameManager.BombHalfDefuseTime)
@@ -307,7 +308,7 @@ public class PlayerBombManager : NetworkBehaviour
     void RpcSpawnBomb(GameObject bomb, Vector3 position, Quaternion rotation)
     {
         bomb.transform.SetParent(gameManager.transform);
-        bomb.transform.position = position;
+        bomb.transform.position = position + new Vector3(0,-1,0);
         bomb.transform.rotation = rotation;
     }
     

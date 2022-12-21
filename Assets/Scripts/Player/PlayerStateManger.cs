@@ -5,6 +5,8 @@ namespace player
 {
     public class PlayerStateManger : NetworkBehaviour
     {
+        [SerializeField] UIManager uiManager;
+
         [ClientRpc]
         public void RpcSetupGame()
         {
@@ -75,6 +77,7 @@ namespace player
         [ClientRpc]
         public void RpcToggleMOTD(bool statement)
         {
+            uiManager.MOTD.SetActive(statement);
             /*
             MOTD.SetActive(statement);
             */

@@ -39,6 +39,15 @@ public class PlayerMovement : NetworkBehaviour
     bool readyToJump = true;
     float jumpEnergy;
 
+    GameManager gameManager;
+
+    float mouseX;
+    float mouseY;
+    private void Awake()
+    {
+        gameManager = FindObjectOfType<GameManager>();
+    }
+
     void Start()
     {
         rb = GetComponent<Rigidbody>();
@@ -66,14 +75,19 @@ public class PlayerMovement : NetworkBehaviour
 
         if (grounded) rb.drag = groundDrag;
         else rb.drag = 0;
+        if (playerManager.PlayerState == PlayerState.Planting) return;
+        if (playerManager.PlayerState == PlayerState.Defusing) return;
+
     }
 
     private void FixedUpdate()
     {
         if (!isLocalPlayer) return;
         if (playerManager.IsDead) return;
-
+        if (playerManager.PlayerState == PlayerState.Planting) return;
+        if (playerManager.PlayerState == PlayerState.Defusing) return;
         movePlayer();
+
     }
 
     void LateUpdate()
@@ -105,8 +119,7 @@ public class PlayerMovement : NetworkBehaviour
     void rotateHead()
     {
         if (GetComponent<PlayerEconomyManager>().IsShopOpen) return;
-        float mouseX = Input.GetAxis("Mouse X") * MouseSens * 100 * Time.fixedDeltaTime;
-        float mouseY = Input.GetAxis("Mouse Y") * MouseSens * 100 * Time.fixedDeltaTime;
+
         xRotation -= mouseY;
         xRotation = Mathf.Clamp(xRotation, -90f, 90f);
         playerHead.localRotation = Quaternion.Euler(xRotation, 0f, 0f);
@@ -118,12 +131,15 @@ public class PlayerMovement : NetworkBehaviour
         horizontalInput = Input.GetAxisRaw("Horizontal");
         verticalInput = Input.GetAxisRaw("Vertical");
 
-        if (Input.GetKeyDown(KeyCode.Space) && readyToJump && grounded)
+        if (Input.GetKeyDown(KeyCode.Space) && readyToJump && grounded && playerManager.PlayerState != PlayerState.Planting && playerManager.PlayerState != PlayerState.Defusing)
         {
             readyToJump = false;
             jump();
             Invoke("resetJump", jumpCooldown);
         }
+
+        mouseX = Input.GetAxis("Mouse X") * MouseSens * 100 * Time.fixedDeltaTime;
+        mouseY = Input.GetAxis("Mouse Y") * MouseSens * 100 * Time.fixedDeltaTime;
     }
 
 

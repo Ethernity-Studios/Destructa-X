@@ -52,7 +52,7 @@ public class LobbyPlayer : NetworkRoomPlayer
         agentManager = FindObjectOfType<AgentManager>();
     }
 
-    public override void OnClientEnterRoom()
+    /*public override void OnClientEnterRoom()
     {
         return;
         BlueTeamHolder = GameObject.Find("BlueTeam").transform;
@@ -100,7 +100,7 @@ public class LobbyPlayer : NetworkRoomPlayer
             }
         }
         base.OnClientEnterRoom();
-    }
+    }*/
 
     public override void OnClientExitRoom()
     {
@@ -283,7 +283,7 @@ public class LobbyPlayer : NetworkRoomPlayer
         {
             case Team.None:
                 throw new Exception("SyncTeamUI team None");
-                break;
+                //break;
             case Team.Blue:
                 transform.SetParent(BlueTeamHolder);
                 GetComponent<Image>().color = new Color(0f / 255f, 203f / 255f, 255f / 255f, 1f);

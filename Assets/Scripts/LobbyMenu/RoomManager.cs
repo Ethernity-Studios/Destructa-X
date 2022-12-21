@@ -229,7 +229,7 @@ public class RoomManager : NetworkBehaviour
     public void PreselectAgent(string agentName)
     {
         CmdPreSelectAgent(agentManager.GetAgentByName(agentName));
-        return;
+        /*return;
         agentManager = FindObjectOfType<AgentManager>();
         foreach (var player in Room.roomSlots)
         {
@@ -240,14 +240,14 @@ public class RoomManager : NetworkBehaviour
                 PreselectedAgentImg.sprite = agentManager.GetAgentMeta(agentManager.GetAgentByName(agentName)).Meta.Icon;
                 PreselectedAgentImg.color = Color.white;
             }
-        }
+        }*/
     }
 
     public void SelectAgent()
     {
         // agentManager = FindObjectOfType<AgentManager>();
         CmdSelectAgent();
-        return;
+        /*return;
         foreach (var player in Room.roomSlots)
         {
             if (player.isLocalPlayer)
@@ -265,7 +265,7 @@ public class RoomManager : NetworkBehaviour
                     }
                 }
             }
-        }
+        }*/
     }
 
     [Command(requiresAuthority = false)]

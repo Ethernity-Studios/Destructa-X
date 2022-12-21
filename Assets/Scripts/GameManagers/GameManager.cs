@@ -118,7 +118,6 @@ public class GameManager : NetworkBehaviour
     // [SyncVar]
     public bool isDefusing;
 
-
     private void Start()
     {
         playerStateManger = FindObjectOfType<PlayerStateManger>();
@@ -181,6 +180,8 @@ public class GameManager : NetworkBehaviour
         PlayersID.Clear();
         BlueTeamPlayersIDs.Clear();
         RedTeamPlayersIDs.Clear();
+
+        
         
         foreach (var con in NetworkServer.connections)
         {
@@ -527,13 +528,13 @@ public class GameManager : NetworkBehaviour
             Player player = getPlayer(playerID);
             if (player.PlayerTeam == Team.Blue)
             {
-                player.RpcRespawnPlayer(blueSpawnPositions[b].position, blueSpawnPositions[b].rotation);
+                player.RpcRespawnPlayer(new Vector3(blueSpawnPositions[b].position.x, blueSpawnPositions[b].position.y + 1, blueSpawnPositions[b].position.z), blueSpawnPositions[b].rotation);
                 playerStateManger.setPlayerColor(player, Color.blue);
                 b++;
             }
             else if (player.PlayerTeam == Team.Red)
             {
-                player.RpcRespawnPlayer(redSpawnPositions[r].position, redSpawnPositions[r].rotation);
+                player.RpcRespawnPlayer(new Vector3(redSpawnPositions[b].position.x, redSpawnPositions[b].position.y + 1, redSpawnPositions[b].position.z), redSpawnPositions[b].rotation);
                 playerStateManger.setPlayerColor(player, Color.red);
                 r++;
             }

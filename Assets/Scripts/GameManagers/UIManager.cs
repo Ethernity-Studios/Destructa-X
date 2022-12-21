@@ -14,4 +14,6 @@ public class UIManager : MonoBehaviour
 
     public GameObject SpectatingUI;
     public TMP_Text SpectatingPlayerName;
+
+    public GameObject MOTD;
 }
