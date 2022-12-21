@@ -1,6 +1,5 @@
-using System;
-using UnityEngine;
 using Mirror;
+using UnityEngine;
 
 public class MapController : NetworkBehaviour
 {

@@ -16,7 +16,6 @@ public class Player : NetworkBehaviour, IDamageable
     public Team PlayerTeam;
     [SyncVar]
     public Agent PlayerAgent;
-
     [SyncVar(hook = nameof(updateMoneyText))]
     public int PlayerMoney = 800;
     [SyncVar]
@@ -25,7 +24,6 @@ public class Player : NetworkBehaviour, IDamageable
     public int PlayerDeaths = 0;
     [SyncVar]
     public int PlayerAssists = 0;
-
     [SyncVar]
     public bool IsDead = false;
 
@@ -66,30 +64,46 @@ public class Player : NetworkBehaviour, IDamageable
     {
         PlayerState = state;
     }
-    
+
+    public override void OnStartClient()
+    {
+        // FIXME
+        // CmdSetPlayerInfo(NicknameManager.DisplayName, RoomManager.PTeam, RoomManager.PAgent);
+    }
+
     public void Start()
     {
+        if (isServer)
+        {
+            gameManager = FindObjectOfType<GameManager>();
+        }
+        if (isLocalPlayer)
+        {
+            Cursor.lockState = CursorLockMode.Locked;
+            // FIXME
+            // CmdSetPlayerInfo(NicknameManager.DisplayName, RoomManager.PTeam, RoomManager.PAgent);
+        }
         PlayerState = PlayerState.Idle;
         playerSpectateManager = GetComponent<PlayerSpectateManager>();
         playerInventoryManager = GetComponent<PlayerInventoryManager>();
         playerShootingManager = GetComponent<PlayerShootingManager>();
         playerBombManager = GetComponent<PlayerBombManager>();
-        gameManager = FindObjectOfType<GameManager>();
         uiManager = FindObjectOfType<UIManager>();
         shopManager = FindObjectOfType<ShopManager>();
+        agentManager = FindObjectOfType<AgentManager>();
 
         room = FindObjectOfType<NetworkManagerRoom>();
-
-        Invoke("setPlayerBody", 2f);
-        Invoke("spawnUIAgent", .3f);
-        if (!isLocalPlayer) return;
-        Cursor.lockState = CursorLockMode.Locked;
-        CmdSetPlayerInfo(NicknameManager.DisplayName, RoomManager.PTeam, RoomManager.PAgent);
+        
+        // Invoke("setPlayerBody", 2f);
+        setPlayerBody();
+        // Invoke("spawnUIAgent", .3f);
+        // spawnUIAgent();
     }
 
     public override void OnStartLocalPlayer()
     {
-        Invoke("CmdAddPlayer", .3f);
+        //Invoke("CmdAddPlayer", .3f);
+        // CmdAddPlayer();
         base.OnStartLocalPlayer();
     }
 
@@ -103,8 +117,6 @@ public class Player : NetworkBehaviour, IDamageable
 
     void spawnUIAgent()
     {
-        gameManager = FindObjectOfType<GameManager>();
-        agentManager = FindObjectOfType<AgentManager>();
         GameObject UIAgent = Instantiate(this.UIAgent);
         UIAgent.name = PlayerName;
         UIAgent.transform.GetChild(0).GetComponent<Image>().sprite = agentManager.GetAgentMeta(PlayerAgent).Meta.Icon;
@@ -120,8 +132,9 @@ public class Player : NetworkBehaviour, IDamageable
         UIAgent.GetComponent<RectTransform>().localScale = Vector3.one;
     }
 
+    /*
     [Command]
-    public void CmdAddPlayer()
+    void CmdAddPlayer()
     {
         gameManager = FindObjectOfType<GameManager>();
         gameManager.PlayersID.Add(netId);
@@ -136,6 +149,7 @@ public class Player : NetworkBehaviour, IDamageable
             gameManager.RedTeamPlayersIDs.Add(netId);
         } 
     }
+    */
 
     [Command]
     public void CmdSetPlayerInfo(string name, Team team, Agent agent)

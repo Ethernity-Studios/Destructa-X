@@ -6966,10 +6966,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 924b02bff0b9fba4f883d920e12bab8e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  syncMode: 0
-  syncInterval: 0.1
-  blueTeamScoreText: {fileID: 1597456852}
-  redTeamScoreText: {fileID: 85132037}
 --- !u!114 &461774264
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -12479,9 +12475,9 @@ MonoBehaviour:
   syncInterval: 0.1
   Round: 0
   RoundsPerHalf: 13
-  StartGameLenght: 30
+  StartGameLenght: 8
   EndgameLenght: 5
-  PreRoundLenght: 30
+  PreRoundLenght: 8
   RoundLenght: 500
   PostRoundlenght: 5
   BombPlantTime: 5
@@ -12496,8 +12492,6 @@ MonoBehaviour:
   RedUIAgents: {fileID: 1539574436}
   AliveBluePlayers: 0
   AliveRedPlayers: 0
-  PlantProgressSlider: {fileID: 308350159}
-  DefuseProgressSlider: {fileID: 1190775424}
   ShopUI: {fileID: 1049830186}
   MOTD: {fileID: 438295298}
   blueSpawnPositions:
@@ -12522,13 +12516,19 @@ MonoBehaviour:
   BulletHolder: {fileID: 446060248}
   BlueTeamScore: 0
   RedTeamScore: 0
-  BlueTeamScoreText: {fileID: 1597456852}
-  RedTeamScoreText: {fileID: 85132037}
   BombPlanted: 0
   LosingTeam: 0
   LossStreak: 0
+  PlayersID: 
+  BlueTeamPlayersIDs: 
+  RedTeamPlayersIDs: 
+  isEveryoneFuckingReady: 0
   GameReady: 0
   loadingScreen: {fileID: 1577046284}
+  PlantTimeLeft: 0
+  DefuseTimeLeft: 0
+  isPlanting: 0
+  isDefusing: 0
 --- !u!4 &814328177
 Transform:
   m_ObjectHideFlags: 0
@@ -24040,7 +24040,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &1577046285
 RectTransform:
   m_ObjectHideFlags: 0

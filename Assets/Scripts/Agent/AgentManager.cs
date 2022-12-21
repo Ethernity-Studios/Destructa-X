@@ -19,7 +19,7 @@ public class AgentManager : MonoBehaviour
     public void Start()
     {
         DontDestroyOnLoad(gameObject);
-        int _temp = 0;
+        var _temp = 0;
         foreach (Agent item in (Agent[])Enum.GetValues(typeof(Agent)))
         {
             agents.Add(item.ToString(), item);

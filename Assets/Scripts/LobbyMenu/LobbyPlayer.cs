@@ -1,3 +1,4 @@
+using System;
 using Mirror;
 using TMPro;
 using UnityEngine;
@@ -18,13 +19,13 @@ public class LobbyPlayer : NetworkRoomPlayer
             return room = NetworkManager.singleton as NetworkManagerRoom;
         }
     }
-    [SyncVar]
+    [SyncVar(hook = nameof(SyncPlayerName))]
     public string PlayerName;
-    [SyncVar]
+    [SyncVar(hook = nameof(SyncTeamUI))]
     public Team PlayerTeam;
-    [SyncVar]
+    [SyncVar(hook = nameof(SyncPreselectAgentUI))]
     public Agent PlayerPreselectedAgent = Agent.None;
-    [SyncVar]
+    [SyncVar(hook = nameof(SyncSelectedAgentUI))]
     public Agent PlayerSelectedAgent = Agent.None;
 
     public Image AgentIcon;
@@ -35,24 +36,34 @@ public class LobbyPlayer : NetworkRoomPlayer
 
     public override void OnStartClient()
     {
-        if (!isLocalPlayer) return;
-        PlayerPreselectedAgent = Agent.None;
-        PlayerSelectedAgent = Agent.None;
-        CmdSetNickname(NicknameManager.DisplayName);
+        // if (!isLocalPlayer) return;
+        Debug.Log("UwU");
+        // syncUI();
+        // PlayerPreselectedAgent = Agent.None;
+        // PlayerSelectedAgent = Agent.None;
+        // CmdSetNickname(NicknameManager.DisplayName);
 
         base.OnStartClient();
     }
 
+    private void Awake()
+    {
+        BlueTeamHolder = GameObject.Find("BlueTeam").transform;
+        RedTeamHolder = GameObject.Find("RedTeam").transform;
+        agentManager = FindObjectOfType<AgentManager>();
+    }
+
     public override void OnClientEnterRoom()
     {
+        return;
         BlueTeamHolder = GameObject.Find("BlueTeam").transform;
         RedTeamHolder = GameObject.Find("RedTeam").transform;
         agentManager = FindObjectOfType<AgentManager>();
 
         foreach (var player in Room.roomSlots)
         {
-            LobbyPlayer localPlayer = player.GetComponent<LobbyPlayer>();
-            Team localPlayerTeam = localPlayer.PlayerTeam;
+            var localPlayer = player.GetComponent<LobbyPlayer>();
+            var localPlayerTeam = localPlayer.PlayerTeam;
             switch (localPlayerTeam)
             {
                 case Team.None:
@@ -94,6 +105,8 @@ public class LobbyPlayer : NetworkRoomPlayer
 
     public override void OnClientExitRoom()
     {
+        return;
+        /*
         roomManager = FindObjectOfType<RoomManager>();
         if (SceneManager.GetActiveScene().name == "RoomScene" && isServer && roomManager != null)
         {
@@ -119,7 +132,7 @@ public class LobbyPlayer : NetworkRoomPlayer
                 }
             }
         }
-        base.OnClientExitRoom();
+        */
     }
 
     #region Command Sync
@@ -161,8 +174,6 @@ public class LobbyPlayer : NetworkRoomPlayer
     [ClientRpc]
     public void RpcSetTeamUI(Team team)
     {
-        BlueTeamHolder = GameObject.Find("BlueTeam").transform;
-        RedTeamHolder = GameObject.Find("RedTeam").transform;
         if (team == Team.Blue)
         {
             transform.SetParent(BlueTeamHolder);
@@ -180,6 +191,20 @@ public class LobbyPlayer : NetworkRoomPlayer
     [ClientRpc]
     public void RpcPreselectAgent(Agent agent)
     {
+        if (PlayerTeam == Team.Blue)
+        {
+            transform.SetParent(BlueTeamHolder);
+            GetComponent<Image>().color = new Color(0f / 255f, 203f / 255f, 255f / 255f, 1f);
+        }
+        else if (PlayerTeam == Team.Red)
+        {
+            transform.SetParent(RedTeamHolder);
+            GetComponent<Image>().color = new Color(195f / 255f, 63f / 255f, 63f / 255f, 1f);
+        }
+        GetComponent<RectTransform>().localScale = Vector3.one;
+        transform.GetChild(0).GetComponent<TMP_Text>().text = PlayerName;
+        
+        AgentIcon.color = Color.gray;
         agentManager = FindObjectOfType<AgentManager>();
         AgentIcon.sprite = agentManager.GetAgentMeta(agent).Meta.Icon;
     }
@@ -187,9 +212,200 @@ public class LobbyPlayer : NetworkRoomPlayer
     [ClientRpc]
     public void RpcSelectAgent(Agent agent)
     {
+        if (PlayerTeam == Team.Blue)
+        {
+            transform.SetParent(BlueTeamHolder);
+            GetComponent<Image>().color = new Color(0f / 255f, 203f / 255f, 255f / 255f, 1f);
+        }
+        else if (PlayerTeam == Team.Red)
+        {
+            transform.SetParent(RedTeamHolder);
+            GetComponent<Image>().color = new Color(195f / 255f, 63f / 255f, 63f / 255f, 1f);
+        }
+        GetComponent<RectTransform>().localScale = Vector3.one;
+        transform.GetChild(0).GetComponent<TMP_Text>().text = PlayerName;
+        
+        
         AgentIcon.color = Color.white;
+        agentManager = FindObjectOfType<AgentManager>();
         agentText.text = agentManager.GetAgentMeta(agent).Name;
     }
 
     #endregion
+
+
+    [ClientRpc]
+    public void setupUI()
+    {
+        switch (PlayerTeam)
+        {
+            case Team.None:
+                break;
+            case Team.Blue:
+                transform.SetParent(BlueTeamHolder);
+                GetComponent<Image>().color = new Color(0f / 255f, 203f / 255f, 255f / 255f, 1f);
+                break;
+            case Team.Red:
+                transform.SetParent(RedTeamHolder);
+                GetComponent<Image>().color = new Color(195f / 255f, 63f / 255f, 63f / 255f, 1f);
+                break;
+            default:
+                throw new ArgumentOutOfRangeException();
+            
+        }
+        GetComponent<RectTransform>().localScale = Vector3.one;
+        transform.GetChild(0).GetComponent<TMP_Text>().text = PlayerName;
+    }
+
+    [ClientRpc]
+    public void preSelectChampUI()
+    {
+        var localPlayerImage = transform.GetChild(1).GetComponent<Image>();
+        if (PlayerPreselectedAgent == Agent.None) return;
+        localPlayerImage.sprite = agentManager.GetAgentMeta(PlayerPreselectedAgent).Meta.Icon;
+        localPlayerImage.color = Color.gray;
+        transform.GetChild(2).GetComponent<TMP_Text>().text = agentManager.GetAgentMeta(PlayerPreselectedAgent).Name;
+    }
+
+    [ClientRpc]
+    public void selectChampUI()
+    {
+        var localPlayerImage = transform.GetChild(1).GetComponent<Image>();
+        if (PlayerSelectedAgent == Agent.None) return;
+        localPlayerImage.sprite = agentManager.GetAgentMeta(PlayerSelectedAgent).Meta.Icon;
+        localPlayerImage.color = Color.white;
+        transform.GetChild(2).GetComponent<TMP_Text>().text = agentManager.GetAgentMeta(PlayerSelectedAgent).Name;
+    }
+
+    void SyncTeamUI(Team _, Team newValue)
+    {
+        Debug.Log("SyncTeamUI");
+        switch (newValue)
+        {
+            case Team.None:
+                throw new Exception("SyncTeamUI team None");
+                break;
+            case Team.Blue:
+                transform.SetParent(BlueTeamHolder);
+                GetComponent<Image>().color = new Color(0f / 255f, 203f / 255f, 255f / 255f, 1f);
+                break;
+            case Team.Red:
+                transform.SetParent(RedTeamHolder);
+                GetComponent<Image>().color = new Color(195f / 255f, 63f / 255f, 63f / 255f, 1f);
+                break;
+            default:
+                throw new ArgumentOutOfRangeException();
+            
+        }
+        GetComponent<RectTransform>().localScale = Vector3.one;
+    }
+    
+    void SyncPreselectAgentUI(Agent _, Agent newValue)
+    {
+        Debug.Log("SyncPreselectAgentUI");
+        // if (PlayerSelectedAgent != Agent.None) return;
+        var localPlayerImage = transform.GetChild(1).GetComponent<Image>();
+        var agentName = transform.GetChild(2).GetComponent<TMP_Text>();
+
+        localPlayerImage.sprite = agentManager.GetAgentMeta(newValue).Meta.Icon;
+        // localPlayerImage.color = Color.gray;
+        agentName.text = agentManager.GetAgentMeta(newValue).Name;
+    }
+    
+    void SyncSelectedAgentUI(Agent _, Agent newValue)
+    {
+        Debug.Log("SyncSelectedAgentUI");
+        var localPlayerImage = transform.GetChild(1).GetComponent<Image>();
+        var agentName = transform.GetChild(2).GetComponent<TMP_Text>();
+
+        localPlayerImage.sprite = agentManager.GetAgentMeta(newValue).Meta.Icon;
+        localPlayerImage.color = Color.white;
+        agentName.text = agentManager.GetAgentMeta(newValue).Name;
+    }
+
+    void SyncPlayerName(string _, string newValue)
+    {
+        BlueTeamHolder = GameObject.Find("BlueTeam").transform;
+        RedTeamHolder = GameObject.Find("RedTeam").transform;
+        Debug.Log("SyncPlayerName");
+        transform.GetChild(0).GetComponent<TMP_Text>().text = newValue;
+    }
+    
+    void SyncAgentUI(Agent _, Agent newValue)
+    {
+        var player = this;
+        switch (player.PlayerTeam)
+        {
+            case Team.None:
+                break;
+            case Team.Blue:
+                player.transform.SetParent(BlueTeamHolder);
+                player.GetComponent<Image>().color = new Color(0f / 255f, 203f / 255f, 255f / 255f, 1f);
+                break;
+            case Team.Red:
+                player.transform.SetParent(RedTeamHolder);
+                player.GetComponent<Image>().color = new Color(195f / 255f, 63f / 255f, 63f / 255f, 1f);
+                break;
+            default:
+                throw new ArgumentOutOfRangeException();
+            
+        }
+        player.GetComponent<RectTransform>().localScale = Vector3.one;
+        player.transform.GetChild(0).GetComponent<TMP_Text>().text = PlayerName;
+        var localPlayerImage = player.transform.GetChild(1).GetComponent<Image>();
+        var agentName = player.transform.GetChild(2).GetComponent<TMP_Text>();
+
+        if (player.PlayerSelectedAgent != Agent.None)
+        {
+            localPlayerImage.sprite = agentManager.GetAgentMeta(PlayerSelectedAgent).Meta.Icon;
+            localPlayerImage.color = Color.white;
+            agentName.text = agentManager.GetAgentMeta(PlayerSelectedAgent).Name;
+            return;
+        }
+        if (player.PlayerPreselectedAgent == Agent.None) return;
+            
+        localPlayerImage.sprite = agentManager.GetAgentMeta(PlayerPreselectedAgent).Meta.Icon;
+        localPlayerImage.color = Color.gray;
+        agentName.text = agentManager.GetAgentMeta(player.PlayerPreselectedAgent).Name;
+    }
+
+
+    [ClientRpc]
+    public void syncUI()
+    {
+        var player = this;
+        switch (player.PlayerTeam)
+        {
+            case Team.None:
+                break;
+            case Team.Blue:
+                player.transform.SetParent(BlueTeamHolder);
+                player.GetComponent<Image>().color = new Color(0f / 255f, 203f / 255f, 255f / 255f, 1f);
+                break;
+            case Team.Red:
+                player.transform.SetParent(RedTeamHolder);
+                player.GetComponent<Image>().color = new Color(195f / 255f, 63f / 255f, 63f / 255f, 1f);
+                break;
+            default:
+                throw new ArgumentOutOfRangeException();
+            
+        }
+        player.GetComponent<RectTransform>().localScale = Vector3.one;
+        player.transform.GetChild(0).GetComponent<TMP_Text>().text = PlayerName;
+        var localPlayerImage = player.transform.GetChild(1).GetComponent<Image>();
+        var agentName = player.transform.GetChild(2).GetComponent<TMP_Text>();
+
+        if (player.PlayerSelectedAgent != Agent.None)
+        {
+            localPlayerImage.sprite = agentManager.GetAgentMeta(PlayerSelectedAgent).Meta.Icon;
+            localPlayerImage.color = Color.white;
+            agentName.text = agentManager.GetAgentMeta(PlayerSelectedAgent).Name;
+            return;
+        }
+        if (player.PlayerPreselectedAgent == Agent.None) return;
+            
+        localPlayerImage.sprite = agentManager.GetAgentMeta(PlayerPreselectedAgent).Meta.Icon;
+        localPlayerImage.color = Color.gray;
+        agentName.text = agentManager.GetAgentMeta(player.PlayerPreselectedAgent).Name;
+    }
 }

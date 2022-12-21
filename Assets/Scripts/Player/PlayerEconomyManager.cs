@@ -4,17 +4,30 @@ using Mirror;
 public class PlayerEconomyManager : NetworkBehaviour
 {
     GameManager gameManager;
-
+    [SyncVar] 
+    bool CanBeOpen;
     [HideInInspector]public bool IsShopOpen;
     private void Start()
     {
+        if (isServer) ServerSetup();
+    }
+
+    [Server]
+    void ServerUpdate()
+    {
+        CanBeOpen = gameManager.GameState == GameState.PreRound || gameManager.GameState == GameState.StartGame;
+    }
+
+    [Server]
+    void ServerSetup()
+    {
         gameManager = FindObjectOfType<GameManager>();
-        if (!isLocalPlayer) return;
     }
     private void Update()
     {
+        if (isServer) ServerUpdate();
         if (!isLocalPlayer) return;
-        if (gameManager.GameState == GameState.PreRound || gameManager.GameState == GameState.StartGame)
+        if (CanBeOpen)
         {
             if (Input.GetKeyDown(KeyCode.B))
             {
@@ -30,6 +43,10 @@ public class PlayerEconomyManager : NetworkBehaviour
                     Cursor.lockState = CursorLockMode.None;
                 } 
             }
+        }
+        else if (IsShopOpen)
+        {
+            CloseShopUI();
         }
     }
 

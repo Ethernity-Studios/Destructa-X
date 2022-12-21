@@ -39,7 +39,8 @@ public class ShopManager : NetworkBehaviour
 
     private void Start()
     {
-        Invoke("CmdGetLocalPlayer", 1f);
+        // Invoke("CmdGetLocalPlayer", 1f);
+        CmdGetLocalPlayer();
     }
 
     [Command(requiresAuthority = false)]
@@ -47,7 +48,7 @@ public class ShopManager : NetworkBehaviour
     {
         foreach (var playerID in gameManager.PlayersID)
         {
-            RpcGetLocalPlayer(NetworkServer.spawned[playerID]);
+            RpcGetLocalPlayer(gameManager.getPlayer(playerID).netIdentity);
         }
     }
     [ClientRpc]
