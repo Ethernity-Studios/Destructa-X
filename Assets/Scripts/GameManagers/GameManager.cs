@@ -301,6 +301,7 @@ public class GameManager : NetworkBehaviour
     [Server]
     public Player getPlayer(int id)
     {
+        Debug.Log($"size is {NetworkServer.connections.Count}");
         var player = NetworkServer.connections[id].identity.GetComponent<Player>();
         if (player == null)
         {
