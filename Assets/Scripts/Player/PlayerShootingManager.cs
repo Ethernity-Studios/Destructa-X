@@ -19,7 +19,7 @@ public class PlayerShootingManager : NetworkBehaviour
 
     public GunInstance GunInstance;
     [SerializeField] GameObject BulletImpactDecalPenetrable, BulletImpactDecalNotPenetrable;
-    private void Start()
+    private void Awake()
     {
         player = GetComponent<Player>();
         gameManager = FindObjectOfType<GameManager>();

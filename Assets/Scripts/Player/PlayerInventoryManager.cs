@@ -110,6 +110,7 @@ public class PlayerInventoryManager : NetworkBehaviour
     {
         PreviousEqupiedItem = EqupiedItem;
         EqupiedItem = item;
+        playerShootingManager = GetComponent<PlayerShootingManager>();
         playerShootingManager.StopAllCoroutines();
         playerShootingManager.CanShoot = true;
         playerShootingManager.Reloading = false;
@@ -349,6 +350,7 @@ public class PlayerInventoryManager : NetworkBehaviour
     public void RpcGiveGun(int gunID, NetworkIdentity gunNetworkIdentity)
     {
         GameObject gunInstance = gunNetworkIdentity.gameObject;
+        gunManager = FindObjectOfType<GunManager>();
         Gun gun = gunManager.GetGunByID(gunID);
         gunInstance.AddComponent<GunInstance>();
         GunInstance spawnedGun = gunInstance.GetComponent<GunInstance>();
