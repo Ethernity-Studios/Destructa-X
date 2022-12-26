@@ -16,20 +16,23 @@ public class PlayerSpectateManager : NetworkBehaviour
     public GameObject playerHands;
     public GameObject playerHead;
 
-    public Camera PlayerCamera;
-    public Camera ItemCamera;
+    //public Camera PlayerCamera;
+    //public Camera ItemCamera;
 
     [SerializeField] Player currentlySpectating = null;
 
     bool isSpectating;
+
+    GameObject mainCamera;
     private void Start()
     {
         player = GetComponent<Player>();
         gameManager = FindObjectOfType<GameManager>();
         uiManager = FindObjectOfType<UIManager>();
         if (!isLocalPlayer) return;
-        PlayerCamera.enabled = true;
-        ItemCamera.enabled = true;
+        mainCamera = Camera.main.gameObject;
+        //PlayerCamera.enabled = true;
+        //ItemCamera.enabled = true;
     }
 
     private void Update()
@@ -77,8 +80,8 @@ public class PlayerSpectateManager : NetworkBehaviour
     void spectate()
     {
         isSpectating = true;
-        PlayerCamera.enabled = false;
-        ItemCamera.enabled = false;
+        //PlayerCamera.enabled = false;
+        //ItemCamera.enabled = false;
         CmdGetPlayers();
         foreach (var player in players)
         {
@@ -86,8 +89,8 @@ public class PlayerSpectateManager : NetworkBehaviour
             if (player.PlayerTeam != this.player.PlayerTeam) continue;
             if (player == currentlySpectating) continue;
             PlayerSpectateManager playerSpectateManager = player.GetComponent<PlayerSpectateManager>();
-          playerSpectateManager.PlayerCamera.enabled = true;
-            playerSpectateManager.ItemCamera.enabled = true;
+          //playerSpectateManager.PlayerCamera.enabled = true;
+            //playerSpectateManager.ItemCamera.enabled = true;
             currentlySpectating = player;
             uiManager.SpectatingUI.SetActive(true);
             uiManager.SpectatingPlayerName.text = player.PlayerName;
@@ -113,8 +116,8 @@ public class PlayerSpectateManager : NetworkBehaviour
     void spectateBomb()
     {
         isSpectating = true;
-       PlayerCamera.enabled = false;
-        ItemCamera.enabled = false;
+       //PlayerCamera.enabled = false;
+        //ItemCamera.enabled = false;
         Debug.Log("Currently spectating bomb");
     }
 
@@ -128,5 +131,8 @@ public class PlayerSpectateManager : NetworkBehaviour
         playerHead.transform.localPosition = new Vector3(0, .6f, 0);
         playerHead.transform.localEulerAngles = new Vector3(0, 0, 0);
         playerHands.GetComponent<Renderer>().enabled = true;
+        Debug.Log("");
     }
 }
+
+

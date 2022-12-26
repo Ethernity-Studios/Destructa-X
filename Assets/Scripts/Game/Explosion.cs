@@ -24,8 +24,8 @@ public class Explosion : MonoBehaviour
         if (transform.localScale.x >= explosionSize)
         {
             exploded = true;
-            // Invoke("canDecrease", 4f);
-            canDecrease();
+            Invoke("canDecrease", 4f);
+            //canDecrease();
         }
         if (transform.localScale.x > 0 && decrease)
         {

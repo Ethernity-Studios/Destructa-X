@@ -28251,6 +28251,7 @@ MonoBehaviour:
   Money: {fileID: 234212383}
   SpectatingUI: {fileID: 466994839}
   SpectatingPlayerName: {fileID: 143250591}
+  MOTD: {fileID: 0}
 --- !u!1 &1934109852
 GameObject:
   m_ObjectHideFlags: 0

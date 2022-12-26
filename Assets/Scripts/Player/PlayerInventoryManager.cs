@@ -224,6 +224,7 @@ public class PlayerInventoryManager : NetworkBehaviour
         Bomb.GetComponent<BoxCollider>().enabled = false;
     }
 
+    // ReSharper disable Unity.PerformanceAnalysis
     [Command]
     public void CmdDropBomb() => RpcDropBomb();
 
@@ -233,7 +234,7 @@ public class PlayerInventoryManager : NetworkBehaviour
         if (isLocalPlayer) CmdSwitchItem(PreviousEqupiedItem);
         Bomb.transform.localPosition = new Vector3(0, .6f, .5f);
         Bomb.transform.SetParent(gameManager.gameObject.transform);
-        Invoke("setBombLayer", .5f);
+        Invoke(nameof(setBombLayer), .5f);
         //setBombLayer();
         Rigidbody rb = Bomb.GetComponent<Rigidbody>();
         rb.constraints = RigidbodyConstraints.None;
@@ -282,13 +283,13 @@ public class PlayerInventoryManager : NetworkBehaviour
         rb.useGravity = false;
         rb.velocity = Vector3.zero;
         gunInstance.gameObject.transform.GetChild(0).gameObject.layer = 6;
-        if(isLocalPlayer)
-        setLayerMask(gunInstance, 6);
+        if (isLocalPlayer) setLayerMask(gunInstance, 6);
     }
 
     [Command]
     public void CmdDropGun(GunType gunType) => RpcDropGun(gunType);
 
+    // ReSharper disable Unity.PerformanceAnalysis
     [ClientRpc]
     void RpcDropGun(GunType gunType)
     {
@@ -326,11 +327,11 @@ public class PlayerInventoryManager : NetworkBehaviour
         GunInstance instance = gunInstance.GetComponent<GunInstance>();
         instance.CanBeSelled = false;
         instance.IsDropped = true;
-        instance.Invoke("SetPickStatus", .5f);
+        instance.Invoke(nameof(GunInstance.SetPickStatus), .5f);
         //instance.SetPickStatus();
         setLayerMask(gunInstance, 0);
         gunInstance.gameObject.transform.GetChild(0).gameObject.layer = 8;
-        Rigidbody rb = gunInstance.GetComponent<Rigidbody>();
+        var rb = gunInstance.GetComponent<Rigidbody>();
         rb.isKinematic = false;
         rb.useGravity = true;
         rb.constraints = RigidbodyConstraints.None;
@@ -345,8 +346,9 @@ public class PlayerInventoryManager : NetworkBehaviour
         RpcGiveGun(gunID, gunInstance.GetComponent<NetworkIdentity>());
     }
 
+    // ReSharper disable Unity.PerformanceAnalysis
     [ClientRpc]
-    public void RpcGiveGun(int gunID, NetworkIdentity gunNetworkIdentity)
+    private void RpcGiveGun(int gunID, NetworkIdentity gunNetworkIdentity)
     {
         GameObject gunInstance = gunNetworkIdentity.gameObject;
         gunManager = FindObjectOfType<GunManager>();
@@ -374,8 +376,7 @@ public class PlayerInventoryManager : NetworkBehaviour
             if (PrimaryGun == null && isLocalPlayer) CmdSwitchItem(Item.Secondary);
         }
         setGunTransform(gunInstance, gun);
-        if(isLocalPlayer)
-        setLayerMask(gunInstance, 6);
+        if(isLocalPlayer) setLayerMask(gunInstance, 6);
     }
 
     void setGunTransform(GameObject gunInstance, Gun gun)

@@ -1,7 +1,5 @@
 using Mirror;
 using UnityEngine;
-using UnityEngine.UI;
-using System;
 
 public enum PlayerState
 {
@@ -19,18 +17,17 @@ public class Player : NetworkBehaviour, IDamageable
     [SyncVar(hook = nameof(updateMoneyText))]
     public int PlayerMoney = 800;
     [SyncVar]
-    public int PlayerKills = 0;
+    public int PlayerKills;
     [SyncVar]
-    public int PlayerDeaths = 0;
+    public int PlayerDeaths;
     [SyncVar]
-    public int PlayerAssists = 0;
+    public int PlayerAssists;
     [SyncVar]
-    public bool IsDead = false;
+    public bool IsDead;
 
     [SerializeField] GameObject UIAgent;
 
     GameManager gameManager;
-    ShopManager shopManager;
     AgentManager agentManager;
     PlayerSpectateManager playerSpectateManager;
     PlayerInventoryManager playerInventoryManager;
@@ -38,7 +35,6 @@ public class Player : NetworkBehaviour, IDamageable
     PlayerBombManager playerBombManager;
     UIManager uiManager;
     CharacterController characterController;
-    NetworkManagerRoom room;
 
     // TODO maybe syncVar
     public PlayerState PlayerState;
@@ -68,7 +64,7 @@ public class Player : NetworkBehaviour, IDamageable
     public override void OnStartClient()
     {
         // FIXME
-        // CmdSetPlayerInfo(NicknameManager.DisplayName, RoomManager.PTeam, RoomManager.PAgent);
+        // CmdSetPlayerInfo(NicknameManager.DisplayName, RoomManager.PTeam, RoomManager.PAgent);                           
     }
 
     public void Start()
@@ -89,22 +85,14 @@ public class Player : NetworkBehaviour, IDamageable
         playerShootingManager = GetComponent<PlayerShootingManager>();
         playerBombManager = GetComponent<PlayerBombManager>();
         uiManager = FindObjectOfType<UIManager>();
-        shopManager = FindObjectOfType<ShopManager>();
         agentManager = FindObjectOfType<AgentManager>();
 
-        room = FindObjectOfType<NetworkManagerRoom>();
+        FindObjectOfType<NetworkManagerRoom>();
         
         // Invoke("setPlayerBody", 2f);
         setPlayerBody();
         // Invoke("spawnUIAgent", .3f);
         // spawnUIAgent();
-    }
-
-    public override void OnStartLocalPlayer()
-    {
-        //Invoke("CmdAddPlayer", .3f);
-        // CmdAddPlayer();
-        base.OnStartLocalPlayer();
     }
 
     void setPlayerBody()
@@ -115,7 +103,7 @@ public class Player : NetworkBehaviour, IDamageable
         }
     }
 
-    void spawnUIAgent()
+    /*void spawnUIAgent()
     {
         GameObject UIAgent = Instantiate(this.UIAgent);
         UIAgent.name = PlayerName;
@@ -130,7 +118,7 @@ public class Player : NetworkBehaviour, IDamageable
                 break;
         }
         UIAgent.GetComponent<RectTransform>().localScale = Vector3.one;
-    }
+    }*/
 
     /*
     [Command]
@@ -173,7 +161,7 @@ public class Player : NetworkBehaviour, IDamageable
     } 
 
     [Command(requiresAuthority = false)]
-    public void CmdTakeDamage(int damage)
+    private void CmdTakeDamage(int damage)
     {
         Debug.Log(this + " Taking damage");
         Health -= damage;
@@ -184,7 +172,7 @@ public class Player : NetworkBehaviour, IDamageable
     }
 
     [Command]
-    public void CmdAddHealth(int health) => Health += health;
+    private void CmdAddHealth(int health) => Health += health;
 
     [Command]
     public void CmdSetShield(int shield) => Shield = shield;
@@ -203,6 +191,7 @@ public class Player : NetworkBehaviour, IDamageable
         //characterController.enabled = false;
         transform.position = position;
         transform.rotation = rotation;
+        Camera.main.transform.rotation = rotation;
         //characterController.enabled = true;
     }
 
