@@ -84,7 +84,7 @@ public class PlayerMovement : NetworkBehaviour
         if (playerManager.IsDead) return;
         getInput();
         moveCamera();
-        rotateHead();
+
         stateHandler();
 
 
@@ -110,6 +110,7 @@ public class PlayerMovement : NetworkBehaviour
     {
         if (!isLocalPlayer) return;
         if (playerManager.IsDead) return;
+        rotateHead();
     }
 
     void stateHandler()
@@ -127,8 +128,9 @@ public class PlayerMovement : NetworkBehaviour
         }
         else
         {
-            state = MovementState.Jumping;
+            state = MovementState.Jumping; 
         }
+    
     }
 
     void rotateHead()
@@ -198,5 +200,4 @@ public class PlayerMovement : NetworkBehaviour
     {
         readyToJump = true;
     }
-
 }
