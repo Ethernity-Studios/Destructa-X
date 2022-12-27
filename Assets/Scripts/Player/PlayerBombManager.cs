@@ -5,7 +5,7 @@ using UnityEngine;
 public class PlayerBombManager : NetworkBehaviour
 {
     [SyncVar]
-    bool isInPlantableArea;
+    bool isInPlantAbleArea;
     [SyncVar]
     bool isInBombArea;
     [SyncVar] 
@@ -18,7 +18,6 @@ public class PlayerBombManager : NetworkBehaviour
     PlayerInventoryManager playerInventoryManager;
 
     [SerializeField] GameObject bombPrefab;
-    [SerializeField] float bombPlantOffset;
 
     private void Awake()
     {
@@ -60,9 +59,9 @@ public class PlayerBombManager : NetworkBehaviour
                && (gameState == GameState.Round || gameState == GameState.PostRound);
         */
 
-        if (!isInPlantableArea)
+        if (!isInPlantAbleArea)
         {
-            Debug.Log("not in planable area");
+            Debug.Log("not in plant able area");
             return false;
         }
         if (playerInventoryManager.Bomb == null)
@@ -110,7 +109,7 @@ public class PlayerBombManager : NetworkBehaviour
     [Server]
     private void checkCollisionEnterServer(Collider other)
     {
-        if (other.gameObject.CompareTag("PlantArea")) isInPlantableArea = true;
+        if (other.gameObject.CompareTag("PlantArea")) isInPlantAbleArea = true;
 
         if (other.gameObject.CompareTag("Bomb")) isInBombArea = true;
     }
@@ -118,7 +117,7 @@ public class PlayerBombManager : NetworkBehaviour
     [Server]
     private void checkCollisionExitServer(Collider other)
     {
-        if (other.gameObject.CompareTag("PlantArea")) isInPlantableArea = false;
+        if (other.gameObject.CompareTag("PlantArea")) isInPlantAbleArea = false;
 
         if (other.gameObject.CompareTag("Bomb")) isInBombArea = false;
     }
@@ -126,7 +125,7 @@ public class PlayerBombManager : NetworkBehaviour
     [Server]
     private void checkCollisionStayServer(Collider other)
     {
-        if (other.gameObject.CompareTag("PlantArea")) isInPlantableArea = true;
+        if (other.gameObject.CompareTag("PlantArea")) isInPlantAbleArea = true;
         
         if (other.gameObject.CompareTag("Bomb")) isInBombArea = true;
     }
@@ -196,7 +195,7 @@ public class PlayerBombManager : NetworkBehaviour
         
         ServerCancelPlanting();
         playerInventoryManager.Bomb = null;
-        playerInventoryManager.RpcSwitchItem(playerInventoryManager.PreviousEqupiedItem);
+        playerInventoryManager.RpcSwitchItem(playerInventoryManager.PreviousEquippedItem);
         
         GameObject bomb = Instantiate(bombPrefab);
         NetworkServer.Spawn(bomb);
@@ -266,11 +265,11 @@ public class PlayerBombManager : NetworkBehaviour
     void ClientHandlePlanting()
     {
         if ((Input.GetKeyDown(KeyCode.F) ||
-             playerInventoryManager.EqupiedItem == Item.Bomb && Input.GetMouseButtonDown(0)) && canPlant())
+             playerInventoryManager.EquippedItem == Item.Bomb && Input.GetMouseButtonDown(0)) && canPlant())
         {
             CmdStartPlanting();
         }
-        if (Input.GetKeyUp(KeyCode.F) || playerInventoryManager.EqupiedItem == Item.Bomb && Input.GetMouseButtonUp(0))
+        if (Input.GetKeyUp(KeyCode.F) || playerInventoryManager.EquippedItem == Item.Bomb && Input.GetMouseButtonUp(0))
         {
             CmdStopPlanting();
         }

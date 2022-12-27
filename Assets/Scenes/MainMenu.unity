@@ -1701,8 +1701,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   networkManagerLobby: {fileID: 1284530661}
-  MainMenuUI: {fileID: 385963384}
-  NetworkAdressInputField: {fileID: 1235186389}
+  NetworkAddressInputField: {fileID: 1235186389}
 --- !u!1 &782628375
 GameObject:
   m_ObjectHideFlags: 0
@@ -2389,7 +2388,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 724439840}
         m_TargetAssemblyTypeName: MainMenu, Assembly-CSharp
-        m_MethodName: SetNetworkAdress
+        m_MethodName: SetNetworkAddress
         m_Mode: 0
         m_Arguments:
           m_ObjectArgument: {fileID: 0}

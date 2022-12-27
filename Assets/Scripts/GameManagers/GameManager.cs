@@ -1,11 +1,9 @@
 using Mirror;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using player;
 using TMPro;
 using UnityEngine;
-using UnityEngine.UI;
 
 public enum GameState
 {
@@ -29,7 +27,7 @@ public class GameManager : NetworkBehaviour
 
     public float PreRoundLenght = 20; //30s
     public float RoundLenght = 10; //1m 40s
-    public float PostRoundlenght = 5; //5s
+    public float PostRoundLength = 5; //5s
 
     public float BombPlantTime = 5;
     public float BombHalfDefuseTime = 5;
@@ -93,9 +91,7 @@ public class GameManager : NetworkBehaviour
     public List<int> BlueTeamPlayersIDs = new();
     public List<int> RedTeamPlayersIDs = new();
     public bool isEveryoneFuckingReady;
-
-    // [SyncVar]
-    [SerializeField] bool GameReady;
+    
     [SerializeField] GameObject loadingScreen;
 
     private NetworkManagerRoom room;
@@ -122,7 +118,6 @@ public class GameManager : NetworkBehaviour
     {
         playerStateManger = FindObjectOfType<PlayerStateManger>();
         roomManager = FindObjectOfType<RoomManager>();
-        return;
         /*
         ShopUI.SetActive(false);
         // PlantProgressSlider.gameObject.SetActive(false);
@@ -222,9 +217,8 @@ public class GameManager : NetworkBehaviour
     void setupGame()
     {
         AliveBluePlayers = BlueTeamPlayersIDs.Count;
-        AliveRedPlayers = RedTeamPlayersIDs.Count;   
-        GameReady = true;
-        
+        AliveRedPlayers = RedTeamPlayersIDs.Count;
+
         GameTime = StartGameLenght;
         BombState = BombState.NotPlanted;
         // Invoke("RpcSetupGame",2f);
@@ -265,27 +259,27 @@ public class GameManager : NetworkBehaviour
             //BombManager bombManager = FindObjectOfType<BombManager>();
             //bombManager.CmdDetonateBomb();
             BombState = BombState.Exploded;
-            GameTime = PostRoundlenght;
+            GameTime = PostRoundLength;
             GameState = GameState.PostRound;
         }
         else if (GameState == GameState.Round && GameTime <= 0)
         {
             //end round
-            GameTime = PostRoundlenght;
+            GameTime = PostRoundLength;
             GameState = GameState.PostRound;
         }
         else if (GameState == GameState.Round && AliveBluePlayers <= 0 && BlueTeamPlayersIDs.Count > 0 && PlayersID.Count > 1)
         {
             //All blue players dead
             Debug.Log("All blue players dead");
-            GameTime = PostRoundlenght;
+            GameTime = PostRoundLength;
             GameState = GameState.PostRound;
         }
         else if (GameState == GameState.Round && BombState == BombState.NotPlanted && AliveRedPlayers <= 0 && RedTeamPlayersIDs.Count > 0 && PlayersID.Count > 1)
         {
             //Bomb not planted and all red players dead
             Debug.Log("Bomb not planted and all red players dead");
-            GameTime = PostRoundlenght;
+            GameTime = PostRoundLength;
             GameState = GameState.PostRound;
         }
         else if (GameState == GameState.PostRound && GameTime <= 0)
@@ -299,7 +293,7 @@ public class GameManager : NetworkBehaviour
     [Server]
     public Player getPlayer(int id)
     {
-        var player = NetworkServer.connections[id].identity.GetComponent<Player>();
+        Player player = NetworkServer.connections[id].identity.GetComponent<Player>();
         if (player == null)
         {
         }
@@ -335,15 +329,14 @@ public class GameManager : NetworkBehaviour
         {
             foreach (Transform gun in GunHolder.transform)
             {
-                Debug.Log("Destroyingh gun: " + gun.name);
+                Debug.Log("Destroying gun: " + gun.name);
                 NetworkServer.Destroy(gun.gameObject);
             }
         }
 
 
-        foreach (var playerID in PlayersID)
+        foreach (Player player in PlayersID.Select(getPlayer))
         {
-            Player player = getPlayer(playerID);
             player.PreviousRoundShield = player.Shield;
             PlayerInventoryManager playerInventory = player.GetComponent<PlayerInventoryManager>();
             playerStateManger.RpcSetDefaultPlayerSettings(player);
@@ -386,29 +379,28 @@ public class GameManager : NetworkBehaviour
     {
         Debug.Log("addScore");
         Team tempTeam = LosingTeam;
-        if (BombState == BombState.NotPlanted && AliveBluePlayers == 0)
+        switch (BombState)
         {
-            Debug.Log("losing1");
-            RedTeamScore++;
-            LosingTeam = Team.Blue;
-        }
-        else if(BombState == BombState.NotPlanted && AliveRedPlayers == 0)
-        {
-            Debug.Log("losing2");
-            BlueTeamScore++;
-            LosingTeam = Team.Red;
-        }
-        else if(BombState == BombState.Defused)
-        {
-            Debug.Log("losing3");
-            BlueTeamScore++;
-            LosingTeam = Team.Red;
-        }
-        else if(BombState == BombState.Exploded)
-        {
-            Debug.Log("losing4");
-            RedTeamScore++;
-            LosingTeam = Team.Blue;
+            case BombState.NotPlanted when AliveBluePlayers == 0:
+                Debug.Log("losing1");
+                RedTeamScore++;
+                LosingTeam = Team.Blue;
+                break;
+            case BombState.NotPlanted when AliveRedPlayers == 0:
+                Debug.Log("losing2");
+                BlueTeamScore++;
+                LosingTeam = Team.Red;
+                break;
+            case BombState.Defused:
+                Debug.Log("losing3");
+                BlueTeamScore++;
+                LosingTeam = Team.Red;
+                break;
+            case BombState.Exploded:
+                Debug.Log("losing4");
+                RedTeamScore++;
+                LosingTeam = Team.Blue;
+                break;
         }
 
         if(LosingTeam == tempTeam)
@@ -418,13 +410,13 @@ public class GameManager : NetworkBehaviour
         }
         else if(LosingTeam != tempTeam)
         {
-            Debug.Log("reseting loss streak");
+            Debug.Log("resetting loss streak");
             LossStreak = 0;
         }
     }
     
     [Server]
-    public void StartRound(GameState gameState)
+    private void StartRound(GameState gameState)
     {
         Round++;
         GameState = gameState;
@@ -434,61 +426,75 @@ public class GameManager : NetworkBehaviour
     void giveMoney()
     {
         //KILLS
-        foreach (var playerID in PlayersID)
+        foreach (Player player in PlayersID.Select(getPlayer))
         {
-            Player player = getPlayer(playerID);
             player.CmdChangeMoney(player.RoundKills * 200);
         }
         //RED TEAM BOMB PLANT
         if (BombPlanted)
         {
-            foreach (var playerID in RedTeamPlayersIDs)
+            foreach (Player player in RedTeamPlayersIDs.Select(getPlayer))
             {
-                Player player = getPlayer(playerID);
                 player.CmdChangeMoney(300);
             }
         }
 
-        //WINNING TEAM
-        if (BombState == BombState.Defused && GameState == GameState.PostRound)
+        switch (BombState)
         {
-            foreach (var playerID in BlueTeamPlayersIDs)
+            //WINNING TEAM
+            case BombState.Defused when GameState == GameState.PostRound:
             {
-                Player player = getPlayer(playerID);
-                player.CmdChangeMoney(3000);
+                foreach (Player player in BlueTeamPlayersIDs.Select(getPlayer))
+                {
+                    player.CmdChangeMoney(3000);
+                }
+
+                break;
             }
-        }
-        else if (BombState == BombState.Exploded && GameState == GameState.PostRound)
-        {
-            foreach (var playerID in RedTeamPlayersIDs)
+            case BombState.Exploded when GameState == GameState.PostRound:
             {
-                Player player = getPlayer(playerID);
-                player.CmdChangeMoney(3000);
+                foreach (Player player in RedTeamPlayersIDs.Select(getPlayer))
+                {
+                    player.CmdChangeMoney(3000);
+                }
+
+                break;
             }
-        }
-        else if (BombState == BombState.NotPlanted)
-        {
-            foreach (var playerID in BlueTeamPlayersIDs)
+            case BombState.NotPlanted:
             {
-                Player player = getPlayer(playerID);
-                player.CmdChangeMoney(3000);
+                foreach (Player player in BlueTeamPlayersIDs.Select(getPlayer))
+                {
+                    player.CmdChangeMoney(3000);
+                }
+
+                break;
             }
         }
 
         //LOSING TEAM
-        foreach (var playerID in PlayersID)
+        foreach (Player player in PlayersID.Select(getPlayer))
         {
-            Player player = getPlayer(playerID);
             player.RoundKills = 0;
-            if (player.PlayerTeam == LosingTeam)
+            if (player.PlayerTeam != LosingTeam) continue;
+            switch (player.PlayerTeam)
             {
-                if (player.PlayerTeam == Team.Red && !BombPlanted && !player.IsDead) player.CmdChangeMoney(1000);
-                else if (player.PlayerTeam == Team.Blue && BombState == BombState.Exploded && !player.IsDead) player.CmdChangeMoney(1000);
-                else
+                case Team.Red when !BombPlanted && !player.IsDead:
+                case Team.Blue when BombState == BombState.Exploded && !player.IsDead:
+                    player.CmdChangeMoney(1000);
+                    break;
+                default:
                 {
                     player.CmdChangeMoney(1900);
-                    if (LossStreak == 2) player.CmdChangeMoney(500);
-                    else if (LossStreak >= 3) player.CmdChangeMoney(1000);
+                    switch (LossStreak)
+                    {
+                        case 2:
+                            player.CmdChangeMoney(500);
+                            break;
+                        case >= 3:
+                            player.CmdChangeMoney(1000);
+                            break;
+                    }
+                    break;
                 }
             }
         }
@@ -497,7 +503,7 @@ public class GameManager : NetworkBehaviour
     [Server]
     void ServerSpawnBomb()
     {
-        var bombInstance = Instantiate(BombPrefab);
+        GameObject bombInstance = Instantiate(BombPrefab);
         // bombInstance.transform.SetParent(gameObject.transform);
         bombInstance.transform.position = bombSpawnLocation.position;
         NetworkServer.Spawn(bombInstance);
@@ -507,10 +513,8 @@ public class GameManager : NetworkBehaviour
     [Server]
     void giveDefaultGun()
     {
-        foreach (var playerID in PlayersID)
+        foreach (PlayerInventoryManager playerInventory in PlayersID.Select(getPlayer).Select(player => player.GetComponent<PlayerInventoryManager>()))
         {
-            Player player = getPlayer(playerID);
-            PlayerInventoryManager playerInventory = player.GetComponent<PlayerInventoryManager>();
             playerInventory.CmdGiveGun(gunManager.gunList[0].GunID);
             playerInventory.CmdSwitchItem(Item.Knife);
             playerInventory.CmdSwitchItem(Item.Secondary);
@@ -523,29 +527,28 @@ public class GameManager : NetworkBehaviour
     {
         int b = 0;
         int r = 0;
-        foreach (var playerID in PlayersID)
+        foreach (Player player in PlayersID.Select(getPlayer))
         {
-            Player player = getPlayer(playerID);
-            if (player.PlayerTeam == Team.Blue)
+            switch (player.PlayerTeam)
             {
-                player.RpcRespawnPlayer(new Vector3(blueSpawnPositions[b].position.x, blueSpawnPositions[b].position.y + 1, blueSpawnPositions[b].position.z), blueSpawnPositions[b].rotation);
-                playerStateManger.setPlayerColor(player, Color.blue);
-                b++;
+                case Team.Blue:
+                    player.RpcRespawnPlayer(new Vector3(blueSpawnPositions[b].position.x, blueSpawnPositions[b].position.y + 1, blueSpawnPositions[b].position.z), blueSpawnPositions[b].rotation);
+                    playerStateManger.setPlayerColor(player, Color.blue);
+                    b++;
+                    break;
+                case Team.Red:
+                    player.RpcRespawnPlayer(new Vector3(redSpawnPositions[r].position.x, redSpawnPositions[r].position.y + 1, redSpawnPositions[r].position.z), redSpawnPositions[r].rotation);
+                    playerStateManger.setPlayerColor(player, Color.red);
+                    r++;
+                    break;
             }
-            else if (player.PlayerTeam == Team.Red)
-            {
-                player.RpcRespawnPlayer(new Vector3(redSpawnPositions[b].position.x, redSpawnPositions[b].position.y + 1, redSpawnPositions[b].position.z), redSpawnPositions[b].rotation);
-                playerStateManger.setPlayerColor(player, Color.red);
-                r++;
-            }
-
         }
     }
     
     [Server]
     public void ServerSetPlantedState()
     {
-        if (GameState == GameState.PostRound || GameState == GameState.EndGame) return;
+        if (GameState is GameState.PostRound or GameState.EndGame) return;
         
         BombPlanted = true;
         GameTime = BombDetonationTime;
@@ -556,13 +559,13 @@ public class GameManager : NetworkBehaviour
     public void ServerSetDefusedState()
     {
         BombState = BombState.Defused;
-        GameTime = PostRoundlenght;
+        GameTime = PostRoundLength;
         GameState = GameState.PostRound;
         // is null??
-        var bombManager = Bomb.GetComponent<BombManager>();
+        BombManager bombManager = Bomb.GetComponent<BombManager>();
         bombManager.canBoom = false;
         bombManager.StopAllCoroutines();
-        bombManager.noBoomPwease();
+        bombManager.StopExplosion();
         playerStateManger.RpcFuckOfBoom();
     }
     

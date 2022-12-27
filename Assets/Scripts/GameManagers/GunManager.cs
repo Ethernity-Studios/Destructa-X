@@ -5,7 +5,7 @@ using System.Linq;
 public class GunManager : MonoBehaviour
 {
     public List<Gun> gunList = new();
-    Dictionary<int, Gun> guns = new();
+    readonly Dictionary<int, Gun> guns = new();
 
     private void Start()
     {

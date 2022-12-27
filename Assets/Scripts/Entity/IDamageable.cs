@@ -1,7 +1,6 @@
-using Mirror;
 public interface IDamageable
 {
-    public abstract bool TakeDamage(int damage);
-    public abstract void AddHealth(int health);
+    public bool TakeDamage(int damage);
+    public void AddHealth(int health);
 }
 

@@ -29,19 +29,16 @@ public class PlayerEconomyManager : NetworkBehaviour
         if (!isLocalPlayer) return;
         if (CanBeOpen)
         {
-            if (Input.GetKeyDown(KeyCode.B))
+            if (!Input.GetKeyDown(KeyCode.B)) return;
+            if (IsShopOpen)
             {
-
-                if (IsShopOpen)
-                {
-                    CloseShopUI();
-                }
-                else
-                {
-                    IsShopOpen = true;
-                    gameManager.ShopUI.gameObject.SetActive(true);
-                    Cursor.lockState = CursorLockMode.None;
-                } 
+                CloseShopUI();
+            }
+            else
+            {
+                IsShopOpen = true;
+                gameManager.ShopUI.gameObject.SetActive(true);
+                Cursor.lockState = CursorLockMode.None;
             }
         }
         else if (IsShopOpen)

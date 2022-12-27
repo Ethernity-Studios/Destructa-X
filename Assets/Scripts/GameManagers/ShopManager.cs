@@ -39,14 +39,14 @@ public class ShopManager : NetworkBehaviour
 
     private void Start()
     {
-        Invoke("CmdGetLocalPlayer", 1f);
+        Invoke(nameof(CmdGetLocalPlayer), 1f);
         //CmdGetLocalPlayer();
     }
 
     [Command(requiresAuthority = false)]
     void CmdGetLocalPlayer()
     {
-        foreach (var playerID in gameManager.PlayersID)
+        foreach (int playerID in gameManager.PlayersID)
         {
             RpcGetLocalPlayer(gameManager.getPlayer(playerID).netIdentity);
         }
@@ -95,29 +95,26 @@ public class ShopManager : NetworkBehaviour
 
     public string ConvertGunCategoryToString(GunCategory cat)
     {
-        switch (cat)
+        return cat switch
         {
-            case GunCategory.MachineGun:
-                return "Machine gun";
-            case GunCategory.Rifle:
-                return "Rifle";
-            case GunCategory.Shotgun:
-                return "Shotgun";
-            case GunCategory.Sidearm:
-                return "Sidearm";
-            case GunCategory.SMG:
-                return "SMG";
-            case GunCategory.SniperRifle:
-                return "Sniper rifle";
-        }
-        return "";
+            GunCategory.MachineGun => "Machine gun",
+            GunCategory.Rifle => "Rifle",
+            GunCategory.Shotgun => "Shotgun",
+            GunCategory.Sidearm => "Sidearm",
+            GunCategory.SMG => "SMG",
+            GunCategory.SniperRifle => "Sniper rifle",
+            _ => ""
+        };
     }
 
     public string ConvertGunTypeToString(GunType type)
     {
-        if (type == GunType.Primary) return "Primary Fire";
-        else if (type == GunType.Secondary) return "Secondary Fire";
-        return "";
+        return type switch
+        {
+            GunType.Primary => "Primary Fire",
+            GunType.Secondary => "Secondary Fire",
+            _ => ""
+        };
     }
 
     public void BuyGun(Gun gun)
@@ -139,82 +136,83 @@ public class ShopManager : NetworkBehaviour
                 playerInventory.CmdGiveGun(gun.GunID);
                 if (playerInventory.PrimaryGun == null) playerInventory.CmdSwitchItem(Item.Secondary);
             }
-            return;
         }
         else if (playerInventory.PrimaryGun != null && gun.Type == GunType.Primary)
         {
             Debug.Log("trying tzo buy primary gun with gun and money!");
             if (localPlayer.PlayerMoney + playerInventory.PrimaryGun.Price < gun.Price) return;
             Debug.Log(playerInventory.PrimaryGun.Price + "Gun price");
-            Debug.Log("buying primary gun with moeny and primary gun");
+            Debug.Log("buying primary gun with money and primary gun");
             SellGun(playerInventory.PrimaryGun);
-            if (playerInventory.PrimaryGun == null && gun.Type == GunType.Primary)
-            {
-                localPlayer.CmdChangeMoney(-gun.Price);
-                playerInventory.CmdGiveGun(gun.GunID);
-            }
-            return;
+            if (playerInventory.PrimaryGun != null || gun.Type != GunType.Primary) return;
+            localPlayer.CmdChangeMoney(-gun.Price);
+            playerInventory.CmdGiveGun(gun.GunID);
         }
         else if (playerInventory.SecondaryGun != null && gun.Type == GunType.Secondary)
         {
             Debug.Log("trying tzo buy secondary gun with gun and money!");
             if (localPlayer.PlayerMoney + playerInventory.SecondaryGun.Price < gun.Price) return;
             Debug.Log(playerInventory.SecondaryGun.Price + "Gun price");
-            Debug.Log("buying secondary gun with moeny and primary gun");
+            Debug.Log("buying secondary gun with money and primary gun");
             SellGun(playerInventory.SecondaryGun);
-            if (playerInventory.SecondaryGun == null && gun.Type == GunType.Secondary)
-            {
-                localPlayer.CmdChangeMoney(-gun.Price);
-                playerInventory.CmdGiveGun(gun.GunID);
-            }
-            return;
+            if (playerInventory.SecondaryGun != null || gun.Type != GunType.Secondary) return;
+            localPlayer.CmdChangeMoney(-gun.Price);
+            playerInventory.CmdGiveGun(gun.GunID);
         }
     }
 
     public void SellGun(Gun gun)
     {
         Player localPlayer = playerInventory.GetComponent<Player>();
-        if (gun.Type == GunType.Primary && playerInventory.PrimaryGun == gun && playerInventory.PrimaryGunInstance.GetComponent<GunInstance>().CanBeSelled)
+        switch (gun.Type)
         {
-            Debug.Log("selling primary gun");
-            localPlayer.CmdChangeMoney(gun.Price);
-            playerInventory.CmdSellGun(playerInventory.PrimaryGunInstance.GetComponent<NetworkIdentity>().netId, gun);
-        }
-        else if (gun.Type == GunType.Secondary && playerInventory.SecondaryGun == gun && playerInventory.SecondaryGunInstance.GetComponent<GunInstance>().CanBeSelled)
-        {
-            Debug.Log("selling secodnary gun");
-            localPlayer.CmdChangeMoney(gun.Price);
-            playerInventory.CmdSellGun(playerInventory.SecondaryGunInstance.GetComponent<NetworkIdentity>().netId, gun);
+            case GunType.Primary when playerInventory.PrimaryGun == gun && playerInventory.PrimaryGunInstance.GetComponent<GunInstance>().CanBeSold:
+                Debug.Log("selling primary gun");
+                localPlayer.CmdChangeMoney(gun.Price);
+                playerInventory.CmdSellGun(playerInventory.PrimaryGunInstance.GetComponent<NetworkIdentity>().netId, gun);
+                break;
+            case GunType.Secondary when playerInventory.SecondaryGun == gun && playerInventory.SecondaryGunInstance.GetComponent<GunInstance>().CanBeSold:
+                Debug.Log("selling secondary gun");
+                localPlayer.CmdChangeMoney(gun.Price);
+                playerInventory.CmdSellGun(playerInventory.SecondaryGunInstance.GetComponent<NetworkIdentity>().netId, gun);
+                break;
         }
     }
 
     public void BuyShield(string shieldType)
     {
         Player localPlayer = playerInventory.GetComponent<Player>();
-        if (shieldType == "light")
+        switch (shieldType)
         {
-            if (localPlayer.Shield != 25 && localPlayer.PreviousRoundShield > 25 && localPlayer.ShieldType != ShieldType.Light)
+            case "light":
             {
-                if (localPlayer.ShieldType == ShieldType.Heavy) SellShield("heavy");
-                if (localPlayer.PlayerMoney > 400)
+                if (localPlayer.Shield != 25 && localPlayer.PreviousRoundShield > 25 && localPlayer.ShieldType != ShieldType.Light)
                 {
-                    Debug.Log("Buying light");
-                    localPlayer.CmdSetShield(25);
-                    localPlayer.CmdSetShieldType(ShieldType.Light);
+                    if (localPlayer.ShieldType == ShieldType.Heavy) SellShield("heavy");
+                    if (localPlayer.PlayerMoney > 400)
+                    {
+                        Debug.Log("Buying light");
+                        localPlayer.CmdSetShield(25);
+                        localPlayer.CmdSetShieldType(ShieldType.Light);
+                    }
                 }
+
+                break;
             }
-        }
-        else if (shieldType == "heavy")
-        {
-            if (localPlayer.Shield != 50 && localPlayer.PreviousRoundShield != 50 && localPlayer.ShieldType != ShieldType.Heavy)
+            case "heavy":
             {
-                if (localPlayer.ShieldType == ShieldType.Light) SellShield("light");
-                if (localPlayer.PlayerMoney > 1000)
+                if (localPlayer.Shield != 50 && localPlayer.PreviousRoundShield != 50 && localPlayer.ShieldType != ShieldType.Heavy)
                 {
-                    Debug.Log("Buying heavy");
-                    localPlayer.CmdSetShield(50);
-                    localPlayer.CmdSetShieldType(ShieldType.Heavy);
+                    if (localPlayer.ShieldType == ShieldType.Light) SellShield("light");
+                    if (localPlayer.PlayerMoney > 1000)
+                    {
+                        Debug.Log("Buying heavy");
+                        localPlayer.CmdSetShield(50);
+                        localPlayer.CmdSetShieldType(ShieldType.Heavy);
+                    }
                 }
+
+                break;
             }
         }
     }
@@ -225,8 +223,15 @@ public class ShopManager : NetworkBehaviour
         localPlayer.CmdSetShield(localPlayer.PreviousRoundShield);
         localPlayer.CmdSetShieldType(ShieldType.None);
         Debug.Log("Selling shield: " + shieldType);
-        if (shieldType == "light") localPlayer.CmdChangeMoney(400);
-        else if (shieldType == "heavy") localPlayer.CmdChangeMoney(1000);
+        switch (shieldType)
+        {
+            case "light":
+                localPlayer.CmdChangeMoney(400);
+                break;
+            case "heavy":
+                localPlayer.CmdChangeMoney(1000);
+                break;
+        }
     }
 
     private void Update()

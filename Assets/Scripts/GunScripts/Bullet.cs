@@ -37,19 +37,17 @@ public class Bullet : MonoBehaviour
 
     private void FixedUpdate()
     {
-        rb.MovePosition(transform.position + transform.forward * Time.fixedDeltaTime * bulletSpeed);
+        rb.MovePosition(transform.position + transform.forward * (Time.fixedDeltaTime * bulletSpeed));
     }
 
     public void CheckPenetration()
     {
         Ray ray = new Ray(this.transform.position+new Vector3(0,0,transform.localScale.z), this.transform.forward);
-        RaycastHit hit;
-        if (Physics.Raycast(ray, out hit))
+        if (Physics.Raycast(ray, out RaycastHit hit))
         {
             impactPoint = hit.point;
             Ray penRay = new Ray(hit.point + ray.direction * PenetrationAmount, -ray.direction);
-            RaycastHit penHit;
-            if (hit.collider.Raycast(penRay, out penHit, PenetrationAmount))
+            if (hit.collider.Raycast(penRay, out RaycastHit penHit, PenetrationAmount))
             {
                 penetrationPoint = penHit.point;
                 endPoint = this.transform.position + this.transform.forward * 1000;

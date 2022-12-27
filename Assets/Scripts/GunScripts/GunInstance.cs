@@ -1,5 +1,4 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using Mirror;
 
@@ -10,7 +9,7 @@ public class GunInstance : NetworkBehaviour
     //[SyncVar]
     public Gun Gun;
     //[SyncVar]
-    public bool CanBeSelled = false;
+    public bool CanBeSold = false;
     //[SyncVar]
     public bool IsDropped = false;
     //[SyncVar]

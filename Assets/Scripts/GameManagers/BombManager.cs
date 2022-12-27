@@ -10,16 +10,14 @@ public class BombManager : NetworkBehaviour
     [SyncVar] public bool canBoom = true;
 
     [Command(requiresAuthority = false)]
-    public void CmdDetonateBomb()
+    private void CmdDetonateBomb()
     {
         if (!canBoom) return;
-        if (!detonating)
-        {
-            detonating = true;
-            GameObject explosion = Instantiate(bombExplosion);
-            NetworkServer.Spawn(explosion);
-            RpcSetupExplosion(explosion);
-        }
+        if (detonating) return;
+        detonating = true;
+        GameObject explosion = Instantiate(bombExplosion);
+        NetworkServer.Spawn(explosion);
+        RpcSetupExplosion(explosion);
     }
     [ClientRpc]
     void RpcSetupExplosion(GameObject explosion)
@@ -41,7 +39,7 @@ public class BombManager : NetworkBehaviour
     }
 
     [ClientRpc]
-    public void noBoomPwease()
+    public void StopExplosion()
     {
         StopAllCoroutines();
     }

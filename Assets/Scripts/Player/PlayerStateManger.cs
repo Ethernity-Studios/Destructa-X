@@ -36,8 +36,7 @@ namespace player
             PlayerShootingManager playerShootingManager = player.GetComponent<PlayerShootingManager>();
             playerShootingManager.CanShoot = true;
             playerShootingManager.Reloading = false;
-
-            PlayerBombManager playerBombmanager = player.GetComponent<PlayerBombManager>();
+            
         }
 
         [ClientRpc]

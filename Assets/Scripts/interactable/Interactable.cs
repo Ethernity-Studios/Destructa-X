@@ -7,5 +7,5 @@ public abstract class Interactable : MonoBehaviour
     public string InteractionDescription;
     // TODO accept only specific player/team ?
 
-    public abstract void Interact(GameObject initiater);
+    public abstract void Interact(GameObject sus);
 }

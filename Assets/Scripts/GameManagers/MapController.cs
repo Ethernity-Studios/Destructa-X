@@ -8,7 +8,7 @@ public class MapController : NetworkBehaviour
     [ClientRpc]
     void RpcDropWalls()
     {
-        foreach (var wall in dropdownWalls)
+        foreach (GameObject wall in dropdownWalls)
         {
             if (wall == null) continue;
             wall.SetActive(false);
@@ -18,7 +18,7 @@ public class MapController : NetworkBehaviour
     [ClientRpc]
     void RpcResetWalls()
     {
-        foreach (var wall in dropdownWalls)
+        foreach (GameObject wall in dropdownWalls)
         {
             if (wall == null) continue;
             wall.SetActive(true);

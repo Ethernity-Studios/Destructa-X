@@ -25,10 +25,9 @@ public class Player : NetworkBehaviour, IDamageable
     [SyncVar]
     public bool IsDead;
 
-    [SerializeField] GameObject UIAgent;
+    //[SerializeField] GameObject UIAgent;
 
     GameManager gameManager;
-    AgentManager agentManager;
     PlayerSpectateManager playerSpectateManager;
     PlayerInventoryManager playerInventoryManager;
     PlayerShootingManager playerShootingManager;
@@ -54,6 +53,13 @@ public class Player : NetworkBehaviour, IDamageable
 
     [SyncVar]
     public ShieldType ShieldType = ShieldType.None;
+
+    private new Camera camera;
+
+    private void Awake()
+    {
+        camera = Camera.main;
+    }
 
     [TargetRpc]
     public void RpcSetState(PlayerState state)
@@ -85,7 +91,7 @@ public class Player : NetworkBehaviour, IDamageable
         playerShootingManager = GetComponent<PlayerShootingManager>();
         playerBombManager = GetComponent<PlayerBombManager>();
         uiManager = FindObjectOfType<UIManager>();
-        agentManager = FindObjectOfType<AgentManager>();
+        FindObjectOfType<AgentManager>();
 
         FindObjectOfType<NetworkManagerRoom>();
         
@@ -160,6 +166,7 @@ public class Player : NetworkBehaviour, IDamageable
         if (PlayerMoney > 9000) PlayerMoney = 9000;
     } 
 
+    // ReSharper disable Unity.PerformanceAnalysis
     [Command(requiresAuthority = false)]
     private void CmdTakeDamage(int damage)
     {
@@ -191,7 +198,7 @@ public class Player : NetworkBehaviour, IDamageable
         //characterController.enabled = false;
         transform.position = position;
         transform.rotation = rotation;
-        Camera.main.transform.rotation = rotation;
+        camera!.transform.rotation = rotation;
         //characterController.enabled = true;
     }
 
@@ -201,8 +208,10 @@ public class Player : NetworkBehaviour, IDamageable
         Debug.Log("Killing player: " + PlayerName);
         IsDead = true;
         PlayerState = PlayerState.Dead;
-        if (PlayerTeam == Team.Blue) gameManager.AliveBluePlayers--;
-        else if(PlayerTeam == Team.Red) gameManager.AliveRedPlayers--;
+        if (PlayerTeam == Team.Blue)
+            gameManager.AliveBluePlayers--;
+        else if (PlayerTeam == Team.Red) gameManager.AliveRedPlayers--;
+
         RpcKillPlayer();
         TargetRpcKillPlayer(connectionToClient);
     }

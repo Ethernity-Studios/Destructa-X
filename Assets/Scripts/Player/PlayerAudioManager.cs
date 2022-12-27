@@ -15,7 +15,7 @@ namespace player
         }
 
         [Command]
-        public void PlaySmthing()
+        public void PlaySomething()
         {
         }
 

@@ -1,9 +1,8 @@
 using Mirror;
-using System.Collections;
 using System.Diagnostics.CodeAnalysis;
 using UnityEngine;
 
-enum MovementState
+public enum MovementState
 {
     Idle, Walking, Sprinting, Jumping
 }
@@ -16,7 +15,7 @@ public class PlayerMovement : NetworkBehaviour
     Player playerManager;
     Rigidbody rb;
 
-    [SerializeField] MovementState state;
+    public MovementState state;
 
     [Header("Mouse sens")]
     public float MouseSens = 1.7f;
@@ -42,8 +41,6 @@ public class PlayerMovement : NetworkBehaviour
     bool readyToJump = true;
     float jumpEnergy;
 
-    GameManager gameManager;
-
     [SerializeField] float mouseX;
     [SerializeField] float mouseY;
     [SerializeField] float rotX;
@@ -51,14 +48,10 @@ public class PlayerMovement : NetworkBehaviour
     GameObject mainCamera;
 
     Vector3 cameraRotation;
-    private void Awake()
-    {
-        gameManager = FindObjectOfType<GameManager>();
-    }
 
     public override void OnStartLocalPlayer()
     {
-        mainCamera = Camera.main.gameObject;
+        mainCamera = Camera.main!.gameObject;
         mainCamera.transform.position = transform.position + new Vector3(0, .6f, 0);
         mainCamera.transform.eulerAngles = new Vector3(playerHead.rotation.x, transform.rotation.y, 0);
     }
@@ -66,15 +59,13 @@ public class PlayerMovement : NetworkBehaviour
     void Start()
     {
         rb = GetComponent<Rigidbody>();
-        if (isLocalPlayer)
-        {
-            playerManager = GetComponent<Player>();
-            playerManager.PlayerState = PlayerState.Idle;
-            rb.freezeRotation = true;
-            //cameraTransform = Camera.main.transform;
-            //cameraTransform.SetParent(transform.GetChild(0));
-            //cameraTransform.position = new Vector3(transform.position.x, transform.position.y, transform.position.z);
-        }
+        if (!isLocalPlayer) return;
+        playerManager = GetComponent<Player>();
+        playerManager.PlayerState = PlayerState.Idle;
+        rb.freezeRotation = true;
+        //cameraTransform = Camera.main.transform;
+        //cameraTransform.SetParent(transform.GetChild(0));
+        //cameraTransform.position = new Vector3(transform.position.x, transform.position.y, transform.position.z);
     }
 
 
@@ -98,12 +89,10 @@ public class PlayerMovement : NetworkBehaviour
     {
         if (!isLocalPlayer) return;
         if (playerManager.IsDead) return;
-        if (playerManager.PlayerState == PlayerState.Planting) return;
-        if (playerManager.PlayerState == PlayerState.Defusing) return;
+        if (playerManager.PlayerState is PlayerState.Planting or PlayerState.Defusing) return;
+
         speedControl();
         movePlayer();
-
-
     }
 
     void LateUpdate()
@@ -115,22 +104,23 @@ public class PlayerMovement : NetworkBehaviour
 
     void stateHandler()
     {
-        if (grounded && rb.velocity == Vector3.zero) state = MovementState.Idle;
-        else if (grounded && Input.GetKey(KeyCode.LeftShift))
+        switch (grounded)
         {
-            moveSpeed = walkSpeed;
-            state = MovementState.Walking;
+            case true when rb.velocity == Vector3.zero:
+                state = MovementState.Idle;
+                break;
+            case true when Input.GetKey(KeyCode.LeftShift):
+                moveSpeed = walkSpeed;
+                state = MovementState.Walking;
+                break;
+            case true:
+                state = MovementState.Sprinting;
+                moveSpeed = sprintSpeed;
+                break;
+            default:
+                state = MovementState.Jumping;
+                break;
         }
-        else if (grounded)
-        {
-            state = MovementState.Sprinting;
-            moveSpeed = sprintSpeed;
-        }
-        else
-        {
-            state = MovementState.Jumping; 
-        }
-    
     }
 
     void rotateHead()
@@ -160,7 +150,7 @@ public class PlayerMovement : NetworkBehaviour
         {
             readyToJump = false;
             jump();
-            Invoke("resetJump", jumpCooldown);
+            Invoke(nameof(resetJump), jumpCooldown);
         }
 
         mouseX = Input.GetAxis("Mouse X") * MouseSens;
@@ -182,11 +172,9 @@ public class PlayerMovement : NetworkBehaviour
     private void speedControl()
     {
         Vector3 flatVel = new Vector3(rb.velocity.x, 0f, rb.velocity.z);
-        if (flatVel.magnitude > moveSpeed)
-        {
-            Vector3 limitedVel = flatVel.normalized * moveSpeed;
-            rb.velocity = new Vector3(limitedVel.x, rb.velocity.y, limitedVel.z);
-        }
+        if (!(flatVel.magnitude > moveSpeed)) return;
+        Vector3 limitedVel = flatVel.normalized * moveSpeed;
+        rb.velocity = new Vector3(limitedVel.x, rb.velocity.y, limitedVel.z);
     }
 
     void jump()

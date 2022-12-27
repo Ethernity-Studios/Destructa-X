@@ -2,7 +2,6 @@ using System;
 using Mirror;
 using TMPro;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class LobbyPlayer : NetworkRoomPlayer
@@ -33,17 +32,6 @@ public class LobbyPlayer : NetworkRoomPlayer
 
     Transform BlueTeamHolder;
     Transform RedTeamHolder;
-
-    public override void OnStartClient()
-    {
-        // if (!isLocalPlayer) return;
-        // syncUI();
-        // PlayerPreselectedAgent = Agent.None;
-        // PlayerSelectedAgent = Agent.None;
-        // CmdSetNickname(NicknameManager.DisplayName);
-
-        base.OnStartClient();
-    }
 
     private void Awake()
     {
@@ -104,7 +92,6 @@ public class LobbyPlayer : NetworkRoomPlayer
 
     public override void OnClientExitRoom()
     {
-        return;
         /*
         roomManager = FindObjectOfType<RoomManager>();
         if (SceneManager.GetActiveScene().name == "RoomScene" && isServer && roomManager != null)
@@ -329,7 +316,7 @@ public class LobbyPlayer : NetworkRoomPlayer
     
     void SyncAgentUI(Agent _, Agent newValue)
     {
-        var player = this;
+        LobbyPlayer player = this;
         switch (player.PlayerTeam)
         {
             case Team.None:

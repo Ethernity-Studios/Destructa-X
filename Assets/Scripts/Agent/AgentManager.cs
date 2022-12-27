@@ -11,15 +11,15 @@ public enum Agent
 
 public class AgentManager : MonoBehaviour
 {
-    Dictionary<string, Agent> agents = new();
+    readonly Dictionary<string, Agent> agents = new();
 
     public List<AgentScriptableObject> agentScriptableObjects = new();
-    Dictionary<Agent, AgentScriptableObject> agentsMeta = new();
+    readonly Dictionary<Agent, AgentScriptableObject> agentsMeta = new();
 
     public void Start()
     {
         DontDestroyOnLoad(gameObject);
-        var _temp = 0;
+        int _temp = 0;
         foreach (Agent item in (Agent[])Enum.GetValues(typeof(Agent)))
         {
             agents.Add(item.ToString(), item);

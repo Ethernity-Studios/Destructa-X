@@ -14,7 +14,14 @@ public class ShieldButtonClick : MonoBehaviour, IPointerClickHandler
 
     public void OnPointerClick(PointerEventData eventData)
     {
-        if (eventData.button == PointerEventData.InputButton.Left) shopManager.BuyShield(shield);
-        if (eventData.button == PointerEventData.InputButton.Right) shopManager.SellShield(shield);
+        switch (eventData.button)
+        {
+            case PointerEventData.InputButton.Left:
+                shopManager.BuyShield(shield);
+                break;
+            case PointerEventData.InputButton.Right:
+                shopManager.SellShield(shield);
+                break;
+        }
     }
 }

@@ -2,18 +2,12 @@ using UnityEngine;
 
 public class Explosion : MonoBehaviour
 {
-    BombManager bombManager;
-
     bool exploded = false;
 
     bool decrease = false;
 
     [SerializeField] float explosionSize;
     [SerializeField] float increaseSize;
-    private void Start()
-    {
-        bombManager = FindObjectOfType<BombManager>();
-    }
     private void Update()
     {
         if (transform.localScale.x < explosionSize && !exploded)
@@ -24,7 +18,7 @@ public class Explosion : MonoBehaviour
         if (transform.localScale.x >= explosionSize)
         {
             exploded = true;
-            Invoke("canDecrease", 4f);
+            Invoke(nameof(canDecrease), 4f);
             //canDecrease();
         }
         if (transform.localScale.x > 0 && decrease)

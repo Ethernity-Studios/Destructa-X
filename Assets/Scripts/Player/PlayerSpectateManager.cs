@@ -2,6 +2,7 @@ using System.Collections;
 using UnityEngine;
 using Mirror;
 using System.Collections.Generic;
+using System.Linq;
 
 public class PlayerSpectateManager : NetworkBehaviour
 {
@@ -30,7 +31,7 @@ public class PlayerSpectateManager : NetworkBehaviour
         gameManager = FindObjectOfType<GameManager>();
         uiManager = FindObjectOfType<UIManager>();
         if (!isLocalPlayer) return;
-        mainCamera = Camera.main.gameObject;
+        mainCamera = Camera.main!.gameObject;
         //PlayerCamera.enabled = true;
         //ItemCamera.enabled = true;
     }
@@ -65,16 +66,23 @@ public class PlayerSpectateManager : NetworkBehaviour
         playerHead.transform.localPosition = new Vector3(0, 2, 0);
         playerHead.transform.localEulerAngles = new Vector3(90, 0, 0);
         yield return new WaitForSeconds(deathScreenTime);
-        if (player.PlayerTeam == Team.Blue)
+        switch (player.PlayerTeam)
         {
-            if (gameManager.AliveBluePlayers > 1) spectate();
+            case Team.Blue:
+            {
+                if (gameManager.AliveBluePlayers > 1) spectate();
+                break;
+            }
+            case Team.Red:
+            {
+                if(gameManager.AliveRedPlayers > 1) spectate();
+                //else if(gameManager.AliveRedPlayers == 0 && gameManager.BombPlanted) spectateBomb(); /// REWORK SPECTATE BOMB
+                break;
+            }
+            default:
+                Debug.Log("No players to spectate");
+                break;
         }
-        else if (player.PlayerTeam == Team.Red) 
-        {
-            if(gameManager.AliveRedPlayers > 1) spectate();
-            //else if(gameManager.AliveRedPlayers == 0 && gameManager.BombPlanted) spectateBomb(); /// REWORK SPECTATE BOMB
-        }
-        else Debug.Log("No players to spectate");
     }
 
     void spectate()
@@ -83,13 +91,9 @@ public class PlayerSpectateManager : NetworkBehaviour
         //PlayerCamera.enabled = false;
         //ItemCamera.enabled = false;
         CmdGetPlayers();
-        foreach (var player in players)
+        foreach (Player player in from player in players where !player.isLocalPlayer where player.PlayerTeam == this.player.PlayerTeam where player != currentlySpectating let playerSpectateManager = player.GetComponent<PlayerSpectateManager>() select player)
         {
-            if (player.isLocalPlayer) continue;
-            if (player.PlayerTeam != this.player.PlayerTeam) continue;
-            if (player == currentlySpectating) continue;
-            PlayerSpectateManager playerSpectateManager = player.GetComponent<PlayerSpectateManager>();
-          //playerSpectateManager.PlayerCamera.enabled = true;
+            //playerSpectateManager.PlayerCamera.enabled = true;
             //playerSpectateManager.ItemCamera.enabled = true;
             currentlySpectating = player;
             uiManager.SpectatingUI.SetActive(true);
@@ -98,11 +102,11 @@ public class PlayerSpectateManager : NetworkBehaviour
         }
     }
 
-    List<Player> players = new();
+    readonly List<Player> players = new();
     [Command]
     void CmdGetPlayers()
     {
-        foreach (var playerID in gameManager.PlayersID)
+        foreach (int playerID in gameManager.PlayersID)
         {
             RpcGetPlayers(gameManager.getPlayer(playerID));
         }

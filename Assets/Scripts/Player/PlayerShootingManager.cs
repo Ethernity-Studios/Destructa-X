@@ -4,14 +4,12 @@ using UnityEngine;
 
 public class PlayerShootingManager : NetworkBehaviour
 {
-    [SerializeField] GameObject bullet;
     [SerializeField] PlayerInventoryManager playerInventory;
     Player player;
     [SerializeField] UIManager uiManager;
 
     [SerializeField] Transform cameraHolder;
 
-    GameManager gameManager;
     PlayerEconomyManager playerEconomyManager;
 
     public bool CanShoot = true;
@@ -22,7 +20,7 @@ public class PlayerShootingManager : NetworkBehaviour
     private void Awake()
     {
         player = GetComponent<Player>();
-        gameManager = FindObjectOfType<GameManager>();
+        FindObjectOfType<GameManager>();
         uiManager = FindObjectOfType<UIManager>();
         playerEconomyManager = GetComponent<PlayerEconomyManager>();
         if (!isLocalPlayer) return;
@@ -37,43 +35,43 @@ public class PlayerShootingManager : NetworkBehaviour
         if (GunInstance == null) return;
         if (playerEconomyManager.IsShopOpen) return;
 
-        if (playerInventory.EqupiedGun != null && playerInventory.GunEqupied && CanShoot && GunInstance.Magazine > 0 && !Reloading)
+        if (playerInventory.EquippedGun != null && playerInventory.GunEquipped && CanShoot && GunInstance.Magazine > 0 && !Reloading)
         {
-            if (playerInventory.EqupiedGun.PrimaryFire.FireMode == FireMode.Manual && Input.GetMouseButtonDown(0))
+            if (playerInventory.EquippedGun.PrimaryFire.FireMode == FireMode.Manual && Input.GetMouseButtonDown(0))
             {
                 Shoot();
             }
-            else if (playerInventory.EqupiedGun.PrimaryFire.FireMode == FireMode.Automatic && Input.GetMouseButton(0))
+            else if (playerInventory.EquippedGun.PrimaryFire.FireMode == FireMode.Automatic && Input.GetMouseButton(0))
             {
                 Shoot();
             }
         }
-        if (playerInventory.EqupiedGun == null) return;
+        if (playerInventory.EquippedGun == null) return;
         if (GunInstance.Magazine == 0 && GunInstance.Ammo > 0 && !Reloading)
         {
             StartCoroutine(Reload());
         }
-        if (GunInstance.Magazine != playerInventory.EqupiedGun.MagazineAmmo && Input.GetKeyDown(KeyCode.R) && GunInstance.Ammo > 0 && !Reloading)
+        if (GunInstance.Magazine != playerInventory.EquippedGun.MagazineAmmo && Input.GetKeyDown(KeyCode.R) && GunInstance.Ammo > 0 && !Reloading)
         {
             StartCoroutine(Reload());
         }
     }
 
-    public IEnumerator DelayFire()
+    private IEnumerator DelayFire()
     {
-        yield return new WaitForSeconds(playerInventory.EqupiedGun.PrimaryFire.FireDelay);
+        yield return new WaitForSeconds(playerInventory.EquippedGun.PrimaryFire.FireDelay);
         CanShoot = true;
     }
 
-    public IEnumerator Reload()
+    private IEnumerator Reload()
     {
         Reloading = true;
-        yield return new WaitForSeconds(playerInventory.EqupiedGun.ReloadTime);
+        yield return new WaitForSeconds(playerInventory.EquippedGun.ReloadTime);
         Reloading = false;
-        if (GunInstance.Ammo >= playerInventory.EqupiedGun.MagazineAmmo)
+        if (GunInstance.Ammo >= playerInventory.EquippedGun.MagazineAmmo)
         {
-            GunInstance.Ammo -= playerInventory.EqupiedGun.MagazineAmmo - GunInstance.Magazine;
-            GunInstance.Magazine = playerInventory.EqupiedGun.MagazineAmmo;
+            GunInstance.Ammo -= playerInventory.EquippedGun.MagazineAmmo - GunInstance.Magazine;
+            GunInstance.Magazine = playerInventory.EquippedGun.MagazineAmmo;
         }
         else
         {
@@ -89,13 +87,14 @@ public class PlayerShootingManager : NetworkBehaviour
         uiManager.MaxAmmoText.text = GunInstance.Ammo.ToString();
         uiManager.MagazineText.text = GunInstance.Magazine.ToString();
     }
-    public void Shoot()
+
+    private void Shoot()
     {
         CanShoot = false;
         StartCoroutine(DelayFire());
         GunInstance.Magazine--;
         UpdateUIAmmo();
-        penetrationAmount = playerInventory.EqupiedGun.BulletPenetration;
+        penetrationAmount = playerInventory.EquippedGun.BulletPenetration;
         CheckPenetration(cameraHolder.position);
     }
 
@@ -107,85 +106,93 @@ public class PlayerShootingManager : NetworkBehaviour
     bool canPenetrate;
     float penetrationAmount;
 
-    public void CheckPenetration(Vector3 originPosition)
+    private void CheckPenetration(Vector3 originPosition)
     {
-        Ray ray = new Ray(originPosition, transform.forward + cameraHolder.transform.forward);
-        RaycastHit hit;
-        if (Physics.Raycast(originPosition, cameraHolder.forward, out hit, Mathf.Infinity, layerMask: mask))
+        while (true)
         {
-            if (hit.collider.transform.parent != null)
+            Ray ray = new Ray(originPosition, transform.forward + cameraHolder.transform.forward);
+            if (Physics.Raycast(originPosition, cameraHolder.forward, out RaycastHit hit, Mathf.Infinity, layerMask: mask))
             {
-                if (hit.collider.transform.parent.TryGetComponent(out IDamageable entity))
+                if (hit.collider.transform.parent != null)
                 {
-                    Player hittedPlayer = hit.collider.transform.parent.gameObject.GetComponent<Player>();
-                    if (hittedPlayer.PlayerTeam != player.PlayerTeam && !hittedPlayer.IsDead)
-                        if (entity.TakeDamage(calculateDamage(hit.point)))
-                        {
-                            player.CmdAddKill();
-                            player.CmdAddRoundKill();
-                        }
+                    if (hit.collider.transform.parent.TryGetComponent(out IDamageable entity))
+                    {
+                        Player hitPlayer = hit.collider.transform.parent.gameObject.GetComponent<Player>();
+                        if (hitPlayer.PlayerTeam != player.PlayerTeam && !hitPlayer.IsDead)
+                            if (entity.TakeDamage(calculateDamage(hit.point)))
+                            {
+                                player.CmdAddKill();
+                                player.CmdAddRoundKill();
+                            }
+                    }
                 }
-            }
 
-            impactPoint = hit.point;
-            Ray penRay = new Ray(hit.point + ray.direction * penetrationAmount, -ray.direction);
-            RaycastHit penHit;
-            if (hit.collider.Raycast(penRay, out penHit, penetrationAmount))
-            {
-                penetrationPoint = penHit.point;
-                endPoint = transform.position + transform.forward * 1000;
-                if (hit.collider.transform.TryGetComponent(out MaterialToughness materialToughness))
+                impactPoint = hit.point;
+                Ray penRay = new Ray(hit.point + ray.direction * penetrationAmount, -ray.direction);
+                if (hit.collider.Raycast(penRay, out RaycastHit penHit, penetrationAmount))
                 {
+                    penetrationPoint = penHit.point;
+                    endPoint = transform.position + transform.forward * 1000;
+                    if (hit.collider.transform.TryGetComponent(out MaterialToughness materialToughness))
+                    {
+                        CmdInstantiateImpactDecal(true, hit.point, hit.normal); // first point
+                        CmdInstantiateImpactDecal(true, penHit.point, penHit.normal); //second point
 
-                    CmdInstantiateImpactDecal(true, hit.point, hit.normal); // first point
-                    CmdInstantiateImpactDecal(true, penHit.point, penHit.normal); //second point
 
-
-                    penetrationAmount -= Vector3.Distance((Vector3)penetrationPoint, hit.point);
-                    penetrationAmount -= materialToughness.ToughnessAmount;
-                    CheckPenetration(hit.point);
+                        penetrationAmount -= Vector3.Distance((Vector3)penetrationPoint, hit.point);
+                        penetrationAmount -= materialToughness.ToughnessAmount;
+                        originPosition = hit.point;
+                        continue;
+                    }
+                    else
+                    {
+                        CmdInstantiateImpactDecal(false, hit.point, hit.normal);
+                    }
                 }
                 else
                 {
                     CmdInstantiateImpactDecal(false, hit.point, hit.normal);
-
-                    return;
+                    endPoint = impactPoint.Value + ray.direction * penetrationAmount;
+                    penetrationPoint = endPoint;
                 }
             }
             else
             {
-                CmdInstantiateImpactDecal(false, hit.point, hit.normal);
-                endPoint = impactPoint.Value + ray.direction * penetrationAmount;
-                penetrationPoint = endPoint;
-                return;
+                endPoint = transform.position + transform.forward * 1000;
+                penetrationPoint = null;
+                impactPoint = null;
             }
-        }
-        else
-        {
-            endPoint = transform.position + transform.forward * 1000;
-            penetrationPoint = null;
-            impactPoint = null;
+
+            break;
         }
     }
 
     int calculateDamage(Vector3 entityPosition)
     {
-        Gun gun = playerInventory.EqupiedGun;
+        Gun gun = playerInventory.EquippedGun;
         float distance = Vector3.Distance(entityPosition, cameraHolder.position);
-        if (gun.Damages.Count == 1)
+        switch (gun.Damages.Count)
         {
-            BulletDamage = gun.Damages[0].BodyDamage;
-        }
-        else if (gun.Damages.Count == 2)
-        {
-            if (distance <= gun.Damages[0].MaxDistance) BulletDamage = gun.Damages[0].BodyDamage;
-            else if (distance >= gun.Damages[1].MinDistance) BulletDamage = gun.Damages[1].BodyDamage;
-        }
-        else if (gun.Damages.Count == 3)
-        {
-            if (distance <= gun.Damages[0].MaxDistance) BulletDamage = gun.Damages[0].BodyDamage;
-            else if (distance >= gun.Damages[1].MinDistance && distance <= gun.Damages[1].MaxDistance) BulletDamage = gun.Damages[1].BodyDamage;
-            else if (distance >= gun.Damages[2].MinDistance) BulletDamage = gun.Damages[2].BodyDamage;
+            case 1:
+            case 2 when distance <= gun.Damages[0].MaxDistance:
+                BulletDamage = gun.Damages[0].BodyDamage;
+                break;
+            case 2:
+            {
+                if (distance >= gun.Damages[1].MinDistance) BulletDamage = gun.Damages[1].BodyDamage;
+                break;
+            }
+            case 3 when distance <= gun.Damages[0].MaxDistance:
+                BulletDamage = gun.Damages[0].BodyDamage;
+                break;
+            case 3 when distance >= gun.Damages[1].MinDistance && distance <= gun.Damages[1].MaxDistance:
+                BulletDamage = gun.Damages[1].BodyDamage;
+                break;
+            case 3:
+            {
+                if (distance >= gun.Damages[2].MinDistance) BulletDamage = gun.Damages[2].BodyDamage;
+                break;
+            }
         }
         return BulletDamage;
     }
@@ -193,9 +200,7 @@ public class PlayerShootingManager : NetworkBehaviour
     [Command]
     void CmdInstantiateImpactDecal(bool canPenetrate, Vector3 position, Vector3 rotation)
     {
-        GameObject bulletImpact;
-        if (canPenetrate) bulletImpact = Instantiate(BulletImpactDecalPenetrable);
-        else bulletImpact = Instantiate(BulletImpactDecalNotPenetrable);
+        GameObject bulletImpact = Instantiate(canPenetrate ? BulletImpactDecalPenetrable : BulletImpactDecalNotPenetrable);
         NetworkServer.Spawn(bulletImpact);
         RpcInstantiateImpactDecal(bulletImpact, position, rotation);
         StartCoroutine(destroyDecal(bulletImpact));

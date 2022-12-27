@@ -4,38 +4,29 @@ using TMPro;
 public class MainMenu : MonoBehaviour
 {
     [SerializeField] NetworkManagerRoom networkManagerLobby;
-    [SerializeField] GameObject MainMenuUI;
 
-    [SerializeField] TMP_InputField NetworkAdressInputField;
-
-    public static string CustomNetworkAdress;
+    [SerializeField] TMP_InputField NetworkAddressInputField;
 
     private void Start()
     {
-        NetworkAdressInputField.text = "localhost";
+        NetworkAddressInputField.text = "localhost";
     }
 
-    public void SetNetworkAdress(string adress)
+    public void SetNetworkAddress(string address)
     {
-        CustomNetworkAdress = adress;
-        networkManagerLobby.networkAddress = adress;
+        networkManagerLobby.networkAddress = address;
     }
 
     public void HostLobby()
     {
-        if (string.IsNullOrEmpty(NetworkAdressInputField.text)) return;
+        if (string.IsNullOrEmpty(NetworkAddressInputField.text)) return;
         networkManagerLobby.StopClient();
         networkManagerLobby.StartHost();
     }
 
     public void JoinLobby()
     {
-        if (string.IsNullOrEmpty(NetworkAdressInputField.text)) return;
+        if (string.IsNullOrEmpty(NetworkAddressInputField.text)) return;
         networkManagerLobby.StartClient();
-    }
-
-    public void Vassa(string name)
-    {
-        // SUS
     }
 }
