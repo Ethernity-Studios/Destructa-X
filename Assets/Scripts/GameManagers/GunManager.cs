@@ -9,16 +9,13 @@ public class GunManager : MonoBehaviour
 
     private void Start()
     {
-        for (int i = 0; i < gunList.Count; i++)
-        {
-            guns.Add(i,gunList[i]);
-        }
+addGuns();
     }
     public Gun GetGunByID(int id)
     {
         if (guns.Count == 0)
         {
-            Start();
+            addGuns();
         }
         return guns.GetValueOrDefault(id);
     }
@@ -26,5 +23,13 @@ public class GunManager : MonoBehaviour
     public int GetGunIdByGun(Gun gun)
     {
         return guns.FirstOrDefault(x => x.Value == gun).Key;
+    }
+
+    void addGuns()
+    {
+        for (int i = 0; i < gunList.Count; i++)
+        {
+            guns.Add(i,gunList[i]);
+        }
     }
 }

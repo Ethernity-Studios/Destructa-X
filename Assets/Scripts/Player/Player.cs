@@ -1,5 +1,6 @@
 using Mirror;
 using UnityEngine;
+using UnityEngine.UI;
 
 public enum PlayerState
 {
@@ -70,7 +71,7 @@ public class Player : NetworkBehaviour, IDamageable
     public override void OnStartClient()
     {
         // FIXME
-        // CmdSetPlayerInfo(NicknameManager.DisplayName, RoomManager.PTeam, RoomManager.PAgent);                           
+                                
     }
 
     public void Start()
@@ -82,6 +83,7 @@ public class Player : NetworkBehaviour, IDamageable
         if (isLocalPlayer)
         {
             Cursor.lockState = CursorLockMode.Locked;
+            CmdSetPlayerInfo(NicknameManager.DisplayName, RoomManager.PTeam, RoomManager.PAgent);   
             // FIXME
             // CmdSetPlayerInfo(NicknameManager.DisplayName, RoomManager.PTeam, RoomManager.PAgent);
         }

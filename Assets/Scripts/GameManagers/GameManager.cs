@@ -147,25 +147,23 @@ public class GameManager : NetworkBehaviour
         if (!isServer) return;
         if (!isEveryoneFuckingReady && Room.roomSlots.Count(x => x.connectionToClient.isReady) == Room.roomSlots.Count)
         {
-            onPlayersLoaded();
             isEveryoneFuckingReady = true;
+            onPlayersLoaded();
         }
 
-        if (isEveryoneFuckingReady)
-        {
-            updateGameState();
-            if (GameTime > 0) GameTime -= Time.deltaTime;   
-        }
+        if (!isEveryoneFuckingReady) return;
+        updateGameState();
+        if (GameTime > 0) GameTime -= Time.deltaTime;
     }
 
-    [Server]
+    /*[Server]
     void InitializePlayer(int id)
     {
-        var player = getPlayer(id);
+        Player player = getPlayer(id);
         player.PlayerName = roomManager.playerNameMapping[id];
         player.PlayerAgent = roomManager.agentMapping[id];
         player.PlayerTeam = roomManager.bluePlayers.Contains(id) ? Team.Blue : Team.Red;
-    }
+    }*/
 
     [Server]
     private void onPlayersLoaded()
@@ -178,7 +176,7 @@ public class GameManager : NetworkBehaviour
 
         
         
-        foreach (var con in NetworkServer.connections)
+        foreach (KeyValuePair<int, NetworkConnectionToClient> con in NetworkServer.connections)
         {
             if (roomManager.bluePlayers.Contains(con.Key))
             {
@@ -189,7 +187,7 @@ public class GameManager : NetworkBehaviour
                 RedTeamPlayersIDs.Add(con.Key);
             }
             PlayersID.Add(con.Key);
-            InitializePlayer(con.Key);
+            //InitializePlayer(con.Key);
         }
         
         setupGame();
@@ -225,74 +223,85 @@ public class GameManager : NetworkBehaviour
         playerStateManger.RpcSetupGame();
         // Invoke("ServerSpawnBomb", 1f);
         ServerSpawnBomb();
-        // Invoke("spawnPlayers", 1.5f);
-        spawnPlayers();
-        // Invoke("giveDefaultGun", 2f);
-        giveDefaultGun();
+        Invoke(nameof(spawnPlayers), 1.5f);
+        //spawnPlayers(); 
+        Invoke(nameof(giveDefaultGun), 1f); // maybe fix me later ^^
+        //giveDefaultGun();
         StartRound(GameState.StartGame);
     }
 
     [Server]
     void updateGameState()
     {
-        if (GameState == GameState.StartGame && GameTime <= 0)
+        switch (GameState)
         {
-            //Buy phase - Start
-            mapController.DropWalls();
-            // closePlayerShopUI();
-            GameTime = RoundLenght;
-            GameState = GameState.Round;
-            playerStateManger.RpcToggleMOTD(false);
-        }
-        else if (GameState == GameState.PreRound && GameTime <= 0)
-        {
-            //Buy phase
-            mapController.DropWalls();
-            // closePlayerShopUI();
-            GameState = GameState.Round;
-            GameTime = RoundLenght;
-            playerStateManger.RpcToggleMOTD(false);
-        }
-        else if (BombState == BombState.Planted && GameTime <= 0)
-        {
-            //Bomb explosion
-            //BombManager bombManager = FindObjectOfType<BombManager>();
-            //bombManager.CmdDetonateBomb();
-            BombState = BombState.Exploded;
-            GameTime = PostRoundLength;
-            GameState = GameState.PostRound;
-        }
-        else if (GameState == GameState.Round && GameTime <= 0)
-        {
-            //end round
-            GameTime = PostRoundLength;
-            GameState = GameState.PostRound;
-        }
-        else if (GameState == GameState.Round && AliveBluePlayers <= 0 && BlueTeamPlayersIDs.Count > 0 && PlayersID.Count > 1)
-        {
-            //All blue players dead
-            Debug.Log("All blue players dead");
-            GameTime = PostRoundLength;
-            GameState = GameState.PostRound;
-        }
-        else if (GameState == GameState.Round && BombState == BombState.NotPlanted && AliveRedPlayers <= 0 && RedTeamPlayersIDs.Count > 0 && PlayersID.Count > 1)
-        {
-            //Bomb not planted and all red players dead
-            Debug.Log("Bomb not planted and all red players dead");
-            GameTime = PostRoundLength;
-            GameState = GameState.PostRound;
-        }
-        else if (GameState == GameState.PostRound && GameTime <= 0)
-        {
-            //time's up
-            Debug.Log("Time's up");
-            startNewRound();
+            case GameState.StartGame when GameTime <= 0:
+                //Buy phase - Start
+                mapController.DropWalls();
+                // closePlayerShopUI();
+                GameTime = RoundLenght;
+                GameState = GameState.Round;
+                playerStateManger.RpcToggleMOTD(false);
+                break;
+            case GameState.PreRound when GameTime <= 0:
+                //Buy phase
+                mapController.DropWalls();
+                // closePlayerShopUI();
+                GameState = GameState.Round;
+                GameTime = RoundLenght;
+                playerStateManger.RpcToggleMOTD(false);
+                break;
+            default:
+            {
+                switch (BombState)
+                {
+                    case BombState.Planted when GameTime <= 0:
+                        //Bomb explosion
+                        //BombManager bombManager = FindObjectOfType<BombManager>();
+                        //bombManager.CmdDetonateBomb();
+                        BombState = BombState.Exploded;
+                        GameTime = PostRoundLength;
+                        GameState = GameState.PostRound;
+                        break;
+                    default:
+                        switch (GameState)
+                        {
+                            case GameState.Round when GameTime <= 0:
+                                //end round
+                                GameTime = PostRoundLength;
+                                GameState = GameState.PostRound;
+                                break;
+                            case GameState.Round when AliveBluePlayers <= 0 && BlueTeamPlayersIDs.Count > 0 && PlayersID.Count > 1:
+                                //All blue players dead
+                                Debug.Log("All blue players dead");
+                                GameTime = PostRoundLength;
+                                GameState = GameState.PostRound;
+                                break;
+                            case GameState.Round when BombState == BombState.NotPlanted && AliveRedPlayers <= 0 && RedTeamPlayersIDs.Count > 0 && PlayersID.Count > 1:
+                                //Bomb not planted and all red players dead
+                                Debug.Log("Bomb not planted and all red players dead");
+                                GameTime = PostRoundLength;
+                                GameState = GameState.PostRound;
+                                break;
+                            case GameState.PostRound when GameTime <= 0:
+                                //time's up
+                                Debug.Log("Time's up");
+                                startNewRound();
+                                break;
+                        }
+
+                        break;
+                }
+
+                break;
+            }
         }
     }
     
     [Server]
     public Player getPlayer(int id)
     {
+        if (NetworkServer.connections[id] == null) return null;
         Player player = NetworkServer.connections[id].identity.GetComponent<Player>();
         if (player == null)
         {
@@ -309,7 +318,7 @@ public class GameManager : NetworkBehaviour
         AliveRedPlayers = RedTeamPlayersIDs.Count;
         giveMoney();
 
-        if (BombState == BombState.Exploded || BombState == BombState.Defused)
+        if (BombState is BombState.Exploded or BombState.Defused)
         {
             NetworkServer.Destroy(gameObject.transform.GetChild(0).gameObject);
         }

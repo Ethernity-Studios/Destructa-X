@@ -43,18 +43,12 @@ public class PlayerInventoryManager : NetworkBehaviour
         player = GetComponent<Player>();
         gunManager = FindObjectOfType<GunManager>();
         playerShootingManager = GetComponent<PlayerShootingManager>();
-        if (isServer) ServerSetup();
+        gameManager = FindObjectOfType<GameManager>();
 
         if (!isLocalPlayer) return;
         setLayerMask(KnifeHolder.transform.GetChild(0).gameObject, 6);
     }
-
-    [Server]
-    void ServerSetup()
-    {
-        gameManager = FindObjectOfType<GameManager>();
-    }
-
+    
     private void Update()
     {
         if (!isLocalPlayer) return;

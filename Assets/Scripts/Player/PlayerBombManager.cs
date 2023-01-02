@@ -19,17 +19,14 @@ public class PlayerBombManager : NetworkBehaviour
 
     [SerializeField] GameObject bombPrefab;
 
-    private void Awake()
-    {
-        player = GetComponent<Player>();
-        // if (isServer) gameManager = FindObjectOfType<GameManager>();
-        playerInventoryManager = GetComponent<PlayerInventoryManager>();
-    }
-
     private void Start()
     {
-        if (isServer) gameManager = FindObjectOfType<GameManager>();
+        if (!isLocalPlayer) return;
+        player = GetComponent<Player>();
+        playerInventoryManager = GetComponent<PlayerInventoryManager>();
+        gameManager = FindObjectOfType<GameManager>();
     }
+
 
     void Update()
     {
@@ -44,8 +41,6 @@ public class PlayerBombManager : NetworkBehaviour
             case Team.Blue:
                 ClientHandleDefusing();
                 break;
-            case Team.None:
-                throw new Exception("FUCK ME");
         }
     }
 
@@ -133,6 +128,7 @@ public class PlayerBombManager : NetworkBehaviour
     [Server]
     void ServerUpdate()
     {
+        gameManager = FindObjectOfType<GameManager>();
         gameState = gameManager.GameState;
         bombState = gameManager.BombState;
         if (gameManager.isDefusing) ServerHandleDefusing();

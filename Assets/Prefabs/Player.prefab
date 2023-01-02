@@ -271,6 +271,37 @@ CapsuleCollider:
   m_Height: 2
   m_Direction: 1
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!1 &5438451239397848903
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 5213068622261368090}
+  m_Layer: 7
+  m_Name: Orientation
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &5213068622261368090
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5438451239397848903}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 6619985994803407870}
+  m_RootOrder: 3
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &5903658972895255663
 GameObject:
   m_ObjectHideFlags: 0
@@ -431,6 +462,7 @@ Transform:
   - {fileID: 6377724403748821300}
   - {fileID: 4352409384218206237}
   - {fileID: 2809714701104030514}
+  - {fileID: 5213068622261368090}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -456,7 +488,6 @@ MonoBehaviour:
   PlayerDeaths: 0
   PlayerAssists: 0
   IsDead: 0
-  UIAgent: {fileID: 6857847130121847309, guid: bb195f3f46f5b824097ff8cb2ed6b2d1, type: 3}
   PlayerState: 0
   playerBody: {fileID: 5224999313321314874}
   Health: 100
@@ -482,16 +513,16 @@ MonoBehaviour:
   BombHolder: {fileID: 1399538645188886251}
   PrimaryGunHolder: {fileID: 3359892195781031145}
   SecondaryGunHolder: {fileID: 7027019306345824847}
-  EqupiedItem: 1
-  PreviousEqupiedItem: 2
-  EqupiedGun: {fileID: 0}
-  EqupiedGunInstance: {fileID: 0}
+  EquippedItem: 1
+  PreviousEquippedItem: 2
+  EquippedGun: {fileID: 0}
+  EquippedGunInstance: {fileID: 0}
   PrimaryGun: {fileID: 0}
   SecondaryGun: {fileID: 0}
   PrimaryGunInstance: {fileID: 0}
   SecondaryGunInstance: {fileID: 0}
   Bomb: {fileID: 0}
-  GunEqupied: 1
+  GunEquipped: 1
 --- !u!114 &4148336677826501266
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -506,7 +537,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   syncMode: 0
   syncInterval: 0.1
-  bullet: {fileID: 8144868883611176391, guid: d12f1c5bb2236e24aa152a6361c0fb5c, type: 3}
   playerInventory: {fileID: 1850405224234988842}
   uiManager: {fileID: 0}
   cameraHolder: {fileID: 2809714701104030514}
@@ -534,7 +564,6 @@ MonoBehaviour:
   syncInterval: 0.1
   playerHead: {fileID: 2809714701104030514}
   state: 0
-  MouseSens: 1.4
   sprintSpeed: 5
   walkSpeed: 3
   groundDrag: 5
@@ -542,9 +571,7 @@ MonoBehaviour:
   jumpForce: 6
   jumpCooldown: 0.25
   airMultiplier: 0.4
-  mouseX: 0
-  mouseY: 0
-  rotX: 0
+  orientation: {fileID: 5213068622261368090}
 --- !u!114 &6021906618316908405
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -560,7 +587,6 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0.01
   bombPrefab: {fileID: 2536634434620783955, guid: fb7c4534d6e00f34e9795d56e2cf49b4, type: 3}
-  bombPlantOffset: 1
 --- !u!114 &4591204699662543079
 MonoBehaviour:
   m_ObjectHideFlags: 0

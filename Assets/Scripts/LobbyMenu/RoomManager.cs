@@ -150,9 +150,9 @@ public class RoomManager : NetworkBehaviour
     public void JoinTeam(int teamIndex)
     {
         var team = teamIndex == 1 ? Team.Blue : Team.Red;
-        CmdSelectTeam(team, NicknameManager.DisplayName);
-        return;
-        /*
+        //CmdSelectTeam(team, NicknameManager.DisplayName);
+        //return;
+
         foreach (var player in Room.roomSlots)
         {
             if (!player.isLocalPlayer) continue;
@@ -174,7 +174,7 @@ public class RoomManager : NetworkBehaviour
                 AgentSelectUI.SetActive(true);
             }
         }
-        */
+        
     }
 
     [TargetRpc]
@@ -183,14 +183,14 @@ public class RoomManager : NetworkBehaviour
         TeamSelectUI.SetActive(false);
         AgentSelectUI.SetActive(true);
     }
-    /*
+    
     [Command(requiresAuthority = false)]
     public void CmdUpdateTeamSize(int b, int r)
     {
         BlueTeamSize += b;
         RedTeamSize += r;
     }
-    */
+    
 
     [Command(requiresAuthority = false)]
     void CmdUpdateTeamSizeUI(int _, int newValue)
@@ -228,8 +228,8 @@ public class RoomManager : NetworkBehaviour
 
     public void PreselectAgent(string agentName)
     {
-        CmdPreSelectAgent(agentManager.GetAgentByName(agentName));
-        /*return;
+        //CmdPreSelectAgent(agentManager.GetAgentByName(agentName));
+        //return;
         agentManager = FindObjectOfType<AgentManager>();
         foreach (var player in Room.roomSlots)
         {
@@ -240,14 +240,14 @@ public class RoomManager : NetworkBehaviour
                 PreselectedAgentImg.sprite = agentManager.GetAgentMeta(agentManager.GetAgentByName(agentName)).Meta.Icon;
                 PreselectedAgentImg.color = Color.white;
             }
-        }*/
+        }
     }
 
     public void SelectAgent()
     {
-        // agentManager = FindObjectOfType<AgentManager>();
+        //agentManager = FindObjectOfType<AgentManager>();
         CmdSelectAgent();
-        /*return;
+        //return;
         foreach (var player in Room.roomSlots)
         {
             if (player.isLocalPlayer)
@@ -265,7 +265,7 @@ public class RoomManager : NetworkBehaviour
                     }
                 }
             }
-        }*/
+        }
     }
 
     [Command(requiresAuthority = false)]
@@ -291,6 +291,7 @@ public class RoomManager : NetworkBehaviour
                     bluePlayers.Add(sender.connectionId);
                     playerNameMapping[sender.connectionId] = playerName;
                     BlueTeamSize++;
+                    PTeam = Team.Blue;
                 }
                 break;
             case Team.Red:
@@ -302,6 +303,7 @@ public class RoomManager : NetworkBehaviour
                     redPlayers.Add(sender.connectionId);
                     playerNameMapping[sender.connectionId] = playerName;
                     RedTeamSize++;
+                    PTeam = Team.Red;
                 }
                 break;
             default:
@@ -333,7 +335,8 @@ public class RoomManager : NetworkBehaviour
         // TODO maybe set his agent to null to indicate its already picked
         if (player.PlayerPreselectedAgent == Agent.None || !canSelectAgent(player.PlayerPreselectedAgent, player.PlayerTeam) || player.PlayerSelectedAgent != Agent.None) return;
         player.PlayerSelectedAgent = player.PlayerPreselectedAgent;
-        agentMapping[sender.connectionId] = player.PlayerSelectedAgent;
+        //agentMapping[sender.connectionId] = player.PlayerSelectedAgent;
+        //PAgent = player.PlayerPreselectedAgent;
         player.CmdChangeReadyState(true);
         // player.readyToBegin = true;
         // room.ReadyStatusChanged();
