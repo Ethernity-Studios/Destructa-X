@@ -13,11 +13,11 @@ namespace player
             // loadingScreen.SetActive(false);
         }
 
-        [ClientRpc]
+        /*[ClientRpc]
         public void setPlayerColor(Player player, Color color)
         {
             player.transform.GetChild(0).GetComponent<MeshRenderer>().material.color = color;
-        }
+        }*/
 
         [ClientRpc]
         public void RpcFuckOfBoom()

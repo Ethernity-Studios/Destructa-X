@@ -1,7 +1,6 @@
 using Mirror;
-using Unity.Mathematics;
 using UnityEngine;
-using Quaternion = System.Numerics.Quaternion;
+using UnityEngine.InputSystem;
 
 public enum MovementState
 {
@@ -45,6 +44,19 @@ public class PlayerMovement : NetworkBehaviour
 
     [SerializeField] private Transform orientation;
 
+    [SerializeField] private Transform body;
+
+    private PlayerInput playerInput;
+
+    [SerializeField] private LayerMask groundMask;
+
+    public override void OnStartLocalPlayer()
+    {
+        playerInput = new PlayerInput();
+        
+        playerInput.Player.Jump.performed += Jump;
+    }
+
     void Start()
     {
         rb = GetComponent<Rigidbody>();
@@ -53,16 +65,22 @@ public class PlayerMovement : NetworkBehaviour
         mainCamera.transform.parent.position = transform.position + new Vector3(0, .6f, 0);
         mainCamera.transform.parent.eulerAngles = new Vector3(playerHead.rotation.x, transform.rotation.y, 0);
         mainCamera.GetComponent<CameraRotate>().orientation = orientation;
+        mainCamera.GetComponent<CameraRotate>().body = body;
         mainCamera.GetComponent<CameraRotate>().PlayerEconomyManager = GetComponent<PlayerEconomyManager>();
         mainCamera.transform.parent.GetComponent<CameraMove>().cameraPosition = playerHead;
         playerManager = GetComponent<Player>();
         playerManager.PlayerState = PlayerState.Idle;
         rb.freezeRotation = true;
+
+        playerInput.Player.Enable();
         //cameraTransform = Camera.main.transform;
         //cameraTransform.SetParent(transform.GetChild(0));
         //cameraTransform.position = new Vector3(transform.position.x, transform.position.y, transform.position.z);
     }
-
+    private void OnDisable()
+    {
+        playerInput.Player.Disable();
+    }
 
     private void Update()
     {
@@ -70,10 +88,11 @@ public class PlayerMovement : NetworkBehaviour
         if (playerManager.IsDead) return;
         getInput();
         stateHandler();
-        rotateHead();
+        rotatePlayer();
+
 
         grounded = Physics.Raycast(origin: transform.position, direction: Vector3.down,
-            maxDistance: 1.2f /*, layerMask: groundMask*/);
+            maxDistance: 1.2f , layerMask: groundMask);
 
         if (grounded) rb.drag = groundDrag;
         else rb.drag = 0;
@@ -110,21 +129,18 @@ public class PlayerMovement : NetworkBehaviour
         }
     }
 
-    void rotateHead()
+    void rotatePlayer()
     {
         playerHead.rotation = mainCamera.transform.rotation;
     }
 
+
     void getInput()
     {
-        horizontalInput = Input.GetAxisRaw("Horizontal");
-        verticalInput = Input.GetAxisRaw("Vertical");
-
-        if (!Input.GetKeyDown(KeyCode.Space) || !readyToJump || !grounded ||
-            playerManager.PlayerState is PlayerState.Planting or PlayerState.Defusing) return;
-        readyToJump = false;
-        jump();
-        Invoke(nameof(resetJump), jumpCooldown);
+        horizontalInput = playerInput.Player.Movement.ReadValue<Vector2>().x;
+        verticalInput = playerInput.Player.Movement.ReadValue<Vector2>().y;
+        //horizontalInput = Input.GetAxisRaw("Horizontal");
+        //verticalInput = Input.GetAxisRaw("Vertical");
     }
 
 
@@ -146,8 +162,12 @@ public class PlayerMovement : NetworkBehaviour
         rb.velocity = new Vector3(limitedVel.x, rb.velocity.y, limitedVel.z);
     }
 
-    void jump()
+    public void Jump(InputAction.CallbackContext context)
     {
+        if (!readyToJump || !grounded || playerManager.PlayerState is PlayerState.Planting or PlayerState.Defusing) return;
+        if (!context.performed) return;
+        readyToJump = false;
+        Invoke(nameof(resetJump), jumpCooldown);
         rb.velocity = new Vector3(rb.velocity.x, 0f, rb.velocity.z);
 
         rb.AddForce(transform.up * jumpForce, ForceMode.Impulse);

@@ -15,7 +15,7 @@ GameObject:
   - component: {fileID: 4216314358207263062}
   - component: {fileID: 4216314358207263052}
   - component: {fileID: -1326994965412263137}
-  m_Layer: 8
+  m_Layer: 0
   m_Name: PickableBomb
   m_TagString: Bomb
   m_Icon: {fileID: 0}
@@ -178,7 +178,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4216314358759659763}
   - component: {fileID: 4216314358759659756}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: BombTrigger
   m_TagString: Untagged
   m_Icon: {fileID: 0}

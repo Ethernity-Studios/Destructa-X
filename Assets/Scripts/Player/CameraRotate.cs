@@ -5,6 +5,7 @@ public class CameraRotate : MonoBehaviour
     public float MouseSensitivity;
 
     public Transform orientation;
+    public Transform body;
 
     private float xRotation;
     private float yRotation;
@@ -36,5 +37,6 @@ public class CameraRotate : MonoBehaviour
 
         transform.rotation = Quaternion.Euler(xRotation, yRotation, 0);
         orientation.rotation = Quaternion.Euler(0,yRotation,0);
+        body.rotation = Quaternion.Euler(0, yRotation, 0);
     }
 }

@@ -84,6 +84,7 @@ public class Player : NetworkBehaviour, IDamageable
         {
             Cursor.lockState = CursorLockMode.Locked;
             CmdSetPlayerInfo(NicknameManager.DisplayName, RoomManager.PTeam, RoomManager.PAgent);   
+            //hideBody();
             // FIXME
             // CmdSetPlayerInfo(NicknameManager.DisplayName, RoomManager.PTeam, RoomManager.PAgent);
         }
@@ -97,7 +98,7 @@ public class Player : NetworkBehaviour, IDamageable
 
         FindObjectOfType<NetworkManagerRoom>();
         
-        // Invoke("setPlayerBody", 2f);
+        //Invoke("setPlayerBody", 1f);
         setPlayerBody();
         // Invoke("spawnUIAgent", .3f);
         // spawnUIAgent();
@@ -108,6 +109,14 @@ public class Player : NetworkBehaviour, IDamageable
         if (!isLocalPlayer)
         {
             playerBody.layer = 10;
+        }
+    }
+
+    void hideBody()
+    {
+        foreach (Transform c in playerBody.GetComponentsInChildren<Transform>())
+        {
+            c.gameObject.SetActive(false);
         }
     }
 

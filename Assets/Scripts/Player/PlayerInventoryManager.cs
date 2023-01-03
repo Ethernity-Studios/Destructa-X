@@ -166,7 +166,9 @@ public class PlayerInventoryManager : NetworkBehaviour
         if (!isLocalPlayer) return;
 
         if (gameManager.Bomb == null) return;
-        if (other.gameObject == gameManager.Bomb.transform.GetChild(0).gameObject && other.gameObject.layer != 6 && player.PlayerTeam == Team.Red && !player.IsDead) CmdPickBomb();
+        Debug.Log(other.gameObject);
+
+        if (other.gameObject == gameManager.Bomb.transform.GetChild(0).gameObject && other.gameObject.layer == 8 && player.PlayerTeam == Team.Red && !player.IsDead) CmdPickBomb();
 
         if (!other.gameObject.TryGetComponent(out GunInstance instance)) return;
         if (instance.CanBePicked && instance.IsDropped && !player.IsDead) CmdPickGun(instance.GetComponent<NetworkIdentity>().netId);
@@ -215,6 +217,7 @@ public class PlayerInventoryManager : NetworkBehaviour
         Debug.Log("RPc pick bomb");
         Bomb = gameManager.Bomb;
         Bomb.transform.GetChild(0).gameObject.layer = 6;
+        if (isLocalPlayer) setLayerMask(Bomb, 6);
         Bomb.transform.SetParent(BombHolder.transform);
         Bomb.transform.localEulerAngles = Vector3.zero;
         Bomb.transform.localPosition = new Vector3(0, -.5f, .7f);
@@ -232,8 +235,8 @@ public class PlayerInventoryManager : NetworkBehaviour
         if (isLocalPlayer) CmdSwitchItem(PreviousEquippedItem);
         Bomb.transform.localPosition = new Vector3(0, .6f, .5f);
         Bomb.transform.SetParent(gameManager.gameObject.transform);
+        setLayerMask(Bomb, 0);
         Invoke(nameof(setBombLayer), .5f);
-        //setBombLayer();
         Rigidbody rb = Bomb.GetComponent<Rigidbody>();
         rb.constraints = RigidbodyConstraints.None;
         Bomb.GetComponent<BoxCollider>().enabled = true;

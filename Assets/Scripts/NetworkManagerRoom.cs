@@ -20,14 +20,13 @@ public class NetworkManagerRoom : NetworkRoomManager
     public override void OnStartServer()
     {
         spawnPrefabs = Resources.LoadAll<GameObject>("SpawnablePrefabs").ToList();
-        // probably unnecessary but few sanity checks
-        base.OnStartServer();
     }
 
     public override void OnServerDisconnect(NetworkConnection conn)
     {
         roomManager = FindObjectOfType<RoomManager>();
-        roomManager.PlayerDisconnect(conn);
+        if(roomManager != null)
+            roomManager.PlayerDisconnect(conn);
         base.OnServerDisconnect(conn);
     }
 
@@ -53,8 +52,7 @@ public class NetworkManagerRoom : NetworkRoomManager
     {
         roomManager = FindObjectOfType<RoomManager>();
         roomManager.RpcCountdown(1);
-
-        base.OnRoomServerPlayersReady();
+        
     }
 
     public void StartGame(string mapName)
