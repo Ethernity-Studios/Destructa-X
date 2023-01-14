@@ -54,7 +54,7 @@ public class PlayerMovement : NetworkBehaviour
     {
         playerInput = new PlayerInput();
         
-        playerInput.Player.Jump.performed += Jump;
+        playerInput.PlayerMovement.Jump.performed += Jump;
     }
 
     void Start()
@@ -72,14 +72,14 @@ public class PlayerMovement : NetworkBehaviour
         playerManager.PlayerState = PlayerState.Idle;
         rb.freezeRotation = true;
 
-        playerInput.Player.Enable();
+        playerInput.PlayerMovement.Enable();
         //cameraTransform = Camera.main.transform;
         //cameraTransform.SetParent(transform.GetChild(0));
         //cameraTransform.position = new Vector3(transform.position.x, transform.position.y, transform.position.z);
     }
     private void OnDisable()
     {
-        playerInput.Player.Disable();
+        playerInput.PlayerMovement.Disable();
     }
 
     private void Update()
@@ -137,8 +137,8 @@ public class PlayerMovement : NetworkBehaviour
 
     void getInput()
     {
-        horizontalInput = playerInput.Player.Movement.ReadValue<Vector2>().x;
-        verticalInput = playerInput.Player.Movement.ReadValue<Vector2>().y;
+        horizontalInput = playerInput.PlayerMovement.Movement.ReadValue<Vector2>().x;
+        verticalInput = playerInput.PlayerMovement.Movement.ReadValue<Vector2>().y;
         //horizontalInput = Input.GetAxisRaw("Horizontal");
         //verticalInput = Input.GetAxisRaw("Vertical");
     }

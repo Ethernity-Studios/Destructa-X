@@ -1,6 +1,5 @@
 using Mirror;
 using UnityEngine;
-using UnityEngine.UI;
 
 public enum PlayerState
 {
@@ -55,13 +54,6 @@ public class Player : NetworkBehaviour, IDamageable
     [SyncVar]
     public ShieldType ShieldType = ShieldType.None;
 
-    private new Camera camera;
-
-    private void Awake()
-    {
-        camera = Camera.main;
-    }
-
     [TargetRpc]
     public void RpcSetState(PlayerState state)
     {
@@ -112,13 +104,13 @@ public class Player : NetworkBehaviour, IDamageable
         }
     }
 
-    void hideBody()
+    /*void hideBody()
     {
         foreach (Transform c in playerBody.GetComponentsInChildren<Transform>())
         {
             c.gameObject.SetActive(false);
         }
-    }
+    }*/
 
     /*void spawnUIAgent()
     {
@@ -203,13 +195,15 @@ public class Player : NetworkBehaviour, IDamageable
     public void CmdAddRoundKill() => RoundKills++;
 
     [ClientRpc]
-    public void RpcRespawnPlayer(Vector3 position, Quaternion rotation)
+    public void RpcRespawnPlayer(Vector3 position, Vector3 rotation)
     {
         //characterController = GetComponent<CharacterController>();
         //characterController.enabled = false;
         transform.position = position;
-        transform.rotation = rotation;
-        camera!.transform.rotation = rotation;
+        transform.rotation = UnityEngine.Quaternion.Euler(rotation);
+        // ReSharper disable once Unity.PerformanceCriticalCodeCameraMain
+        Camera.main!.transform.GetComponent<CameraRotate>().RotateCamera(rotation);
+        //GetComponent<Camera>()!.transform.rotation = rotation;
         //characterController.enabled = true;
     }
 

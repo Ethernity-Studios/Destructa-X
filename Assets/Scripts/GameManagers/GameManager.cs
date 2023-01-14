@@ -541,12 +541,12 @@ public class GameManager : NetworkBehaviour
             switch (player.PlayerTeam)
             {
                 case Team.Blue:
-                    player.RpcRespawnPlayer(new Vector3(blueSpawnPositions[b].position.x, blueSpawnPositions[b].position.y + 1, blueSpawnPositions[b].position.z), blueSpawnPositions[b].rotation);
+                    player.RpcRespawnPlayer(new Vector3(blueSpawnPositions[b].position.x, blueSpawnPositions[b].position.y + 1, blueSpawnPositions[b].position.z), blueSpawnPositions[b].transform.eulerAngles);
                     //playerStateManger.setPlayerColor(player, Color.blue);
                     b++;
                     break;
                 case Team.Red:
-                    player.RpcRespawnPlayer(new Vector3(redSpawnPositions[r].position.x, redSpawnPositions[r].position.y + 1, redSpawnPositions[r].position.z), redSpawnPositions[r].rotation);
+                    player.RpcRespawnPlayer(new Vector3(redSpawnPositions[r].position.x, redSpawnPositions[r].position.y + 1, redSpawnPositions[r].position.z), redSpawnPositions[r].transform.eulerAngles);
                     //playerStateManger.setPlayerColor(player, Color.red);
                     r++;
                     break;
