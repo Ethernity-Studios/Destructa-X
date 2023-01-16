@@ -14,6 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   GunID: 0
   Name: clasic
+  GunModel: {fileID: 1298712114125637990, guid: fc1456374dc984243a838362139fd483, type: 3}
   Price: 0
   MagazineAmmo: 12
   Ammo: 36
@@ -23,10 +24,12 @@ MonoBehaviour:
   Category: 0
   BulletPenetration: 30
   PrimaryFire:
-    FireMode: 0
+    FireMode: 1
     FireType: 0
     FireDelay: 0.1
     BurstDelay: 0
+    BulletsPerFire: 0
+  HasSecondaryFire: 0
   SecondaryFire:
     FireMode: 0
     FireType: 0
@@ -36,6 +39,7 @@ MonoBehaviour:
       AmountMultiplier: 0
     FireDelay: 0
     BurstDelay: 0
+    BulletsPerFire: 0
   Bloom: 0
   Recoil: 0
   Damages:
@@ -49,7 +53,6 @@ MonoBehaviour:
     HeadDamage: 66
     BodyDamage: 22
     LegsDamage: 18
-  GunModel: {fileID: 1298712114125637990, guid: fc1456374dc984243a838362139fd483, type: 3}
   Stats:
     FireRate: 0
   Scope:
