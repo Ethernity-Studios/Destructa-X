@@ -90,7 +90,6 @@ public class PlayerMovement : NetworkBehaviour
         stateHandler();
         rotatePlayer();
 
-
         grounded = Physics.Raycast(origin: transform.position, direction: Vector3.down,
             maxDistance: 1.2f , layerMask: groundMask);
 

@@ -131,8 +131,6 @@ public class PlayerInventoryManager : NetworkBehaviour
     [Command(requiresAuthority = false)]
     public void CmdSwitchItem(Item item)
     {
-        Debug.Log("Switging item");
-
         RpcSwitchItem(item);
     }
 

@@ -330,6 +330,74 @@ public partial class @PlayerInput : IInputActionCollection2, IDisposable
                     ""isPartOfComposite"": false
                 }
             ]
+        },
+        {
+            ""name"": ""PlayerShoot"",
+            ""id"": ""f39b93d3-21d5-4a7b-b20a-9d11acb3d000"",
+            ""actions"": [
+                {
+                    ""name"": ""Primary"",
+                    ""type"": ""Button"",
+                    ""id"": ""6d683af0-8e74-46eb-af20-b1115558ddf9"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Secondary"",
+                    ""type"": ""Button"",
+                    ""id"": ""9e03eac3-8878-4421-823e-a71b46811524"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Reload"",
+                    ""type"": ""Button"",
+                    ""id"": ""37132ca8-28a1-41f7-b3b7-a7bcd1377811"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                }
+            ],
+            ""bindings"": [
+                {
+                    ""name"": """",
+                    ""id"": ""080d1df4-c601-463f-b8b5-5d799a0385fa"",
+                    ""path"": ""<Mouse>/leftButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Primary"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""95483e6f-ee74-40ad-bbb4-a951df965324"",
+                    ""path"": ""<Mouse>/rightButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Secondary"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""87db35d8-b96c-46c2-a31f-90a737964dd9"",
+                    ""path"": ""<Keyboard>/r"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Reload"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                }
+            ]
         }
     ],
     ""controlSchemes"": [
@@ -364,6 +432,11 @@ public partial class @PlayerInput : IInputActionCollection2, IDisposable
         m_PlayerBomb = asset.FindActionMap("PlayerBomb", throwIfNotFound: true);
         m_PlayerBomb_Planting = m_PlayerBomb.FindAction("Planting", throwIfNotFound: true);
         m_PlayerBomb_Defuse = m_PlayerBomb.FindAction("Defuse", throwIfNotFound: true);
+        // PlayerShoot
+        m_PlayerShoot = asset.FindActionMap("PlayerShoot", throwIfNotFound: true);
+        m_PlayerShoot_Primary = m_PlayerShoot.FindAction("Primary", throwIfNotFound: true);
+        m_PlayerShoot_Secondary = m_PlayerShoot.FindAction("Secondary", throwIfNotFound: true);
+        m_PlayerShoot_Reload = m_PlayerShoot.FindAction("Reload", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -590,6 +663,55 @@ public partial class @PlayerInput : IInputActionCollection2, IDisposable
         }
     }
     public PlayerBombActions @PlayerBomb => new PlayerBombActions(this);
+
+    // PlayerShoot
+    private readonly InputActionMap m_PlayerShoot;
+    private IPlayerShootActions m_PlayerShootActionsCallbackInterface;
+    private readonly InputAction m_PlayerShoot_Primary;
+    private readonly InputAction m_PlayerShoot_Secondary;
+    private readonly InputAction m_PlayerShoot_Reload;
+    public struct PlayerShootActions
+    {
+        private @PlayerInput m_Wrapper;
+        public PlayerShootActions(@PlayerInput wrapper) { m_Wrapper = wrapper; }
+        public InputAction @Primary => m_Wrapper.m_PlayerShoot_Primary;
+        public InputAction @Secondary => m_Wrapper.m_PlayerShoot_Secondary;
+        public InputAction @Reload => m_Wrapper.m_PlayerShoot_Reload;
+        public InputActionMap Get() { return m_Wrapper.m_PlayerShoot; }
+        public void Enable() { Get().Enable(); }
+        public void Disable() { Get().Disable(); }
+        public bool enabled => Get().enabled;
+        public static implicit operator InputActionMap(PlayerShootActions set) { return set.Get(); }
+        public void SetCallbacks(IPlayerShootActions instance)
+        {
+            if (m_Wrapper.m_PlayerShootActionsCallbackInterface != null)
+            {
+                @Primary.started -= m_Wrapper.m_PlayerShootActionsCallbackInterface.OnPrimary;
+                @Primary.performed -= m_Wrapper.m_PlayerShootActionsCallbackInterface.OnPrimary;
+                @Primary.canceled -= m_Wrapper.m_PlayerShootActionsCallbackInterface.OnPrimary;
+                @Secondary.started -= m_Wrapper.m_PlayerShootActionsCallbackInterface.OnSecondary;
+                @Secondary.performed -= m_Wrapper.m_PlayerShootActionsCallbackInterface.OnSecondary;
+                @Secondary.canceled -= m_Wrapper.m_PlayerShootActionsCallbackInterface.OnSecondary;
+                @Reload.started -= m_Wrapper.m_PlayerShootActionsCallbackInterface.OnReload;
+                @Reload.performed -= m_Wrapper.m_PlayerShootActionsCallbackInterface.OnReload;
+                @Reload.canceled -= m_Wrapper.m_PlayerShootActionsCallbackInterface.OnReload;
+            }
+            m_Wrapper.m_PlayerShootActionsCallbackInterface = instance;
+            if (instance != null)
+            {
+                @Primary.started += instance.OnPrimary;
+                @Primary.performed += instance.OnPrimary;
+                @Primary.canceled += instance.OnPrimary;
+                @Secondary.started += instance.OnSecondary;
+                @Secondary.performed += instance.OnSecondary;
+                @Secondary.canceled += instance.OnSecondary;
+                @Reload.started += instance.OnReload;
+                @Reload.performed += instance.OnReload;
+                @Reload.canceled += instance.OnReload;
+            }
+        }
+    }
+    public PlayerShootActions @PlayerShoot => new PlayerShootActions(this);
     private int m_KeyboardSchemeIndex = -1;
     public InputControlScheme KeyboardScheme
     {
@@ -619,5 +741,11 @@ public partial class @PlayerInput : IInputActionCollection2, IDisposable
     {
         void OnPlanting(InputAction.CallbackContext context);
         void OnDefuse(InputAction.CallbackContext context);
+    }
+    public interface IPlayerShootActions
+    {
+        void OnPrimary(InputAction.CallbackContext context);
+        void OnSecondary(InputAction.CallbackContext context);
+        void OnReload(InputAction.CallbackContext context);
     }
 }

@@ -308,6 +308,74 @@
                     "isPartOfComposite": false
                 }
             ]
+        },
+        {
+            "name": "PlayerShoot",
+            "id": "f39b93d3-21d5-4a7b-b20a-9d11acb3d000",
+            "actions": [
+                {
+                    "name": "Primary",
+                    "type": "Button",
+                    "id": "6d683af0-8e74-46eb-af20-b1115558ddf9",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Secondary",
+                    "type": "Button",
+                    "id": "9e03eac3-8878-4421-823e-a71b46811524",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Reload",
+                    "type": "Button",
+                    "id": "37132ca8-28a1-41f7-b3b7-a7bcd1377811",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "080d1df4-c601-463f-b8b5-5d799a0385fa",
+                    "path": "<Mouse>/leftButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Primary",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "95483e6f-ee74-40ad-bbb4-a951df965324",
+                    "path": "<Mouse>/rightButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Secondary",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "87db35d8-b96c-46c2-a31f-90a737964dd9",
+                    "path": "<Keyboard>/r",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Reload",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
         }
     ],
     "controlSchemes": [

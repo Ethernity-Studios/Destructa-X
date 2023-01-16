@@ -1,6 +1,7 @@
 using Mirror;
 using System.Collections;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class PlayerShootingManager : NetworkBehaviour
 {
@@ -17,8 +18,12 @@ public class PlayerShootingManager : NetworkBehaviour
 
     public GunInstance GunInstance;
     [SerializeField] GameObject BulletImpactDecalPenetrable, BulletImpactDecalNotPenetrable;
+
+    private PlayerInput playerInput;
     private void Awake()
     {
+        playerInput = new PlayerInput();
+
         player = GetComponent<Player>();
         FindObjectOfType<GameManager>();
         uiManager = FindObjectOfType<UIManager>();
@@ -27,6 +32,18 @@ public class PlayerShootingManager : NetworkBehaviour
         cameraHolder.GetComponent<Camera>().enabled = true;
         cameraHolder.GetChild(0).GetComponent<Camera>().enabled = true;
     }
+
+    private void OnEnable()
+    {
+        playerInput.PlayerShoot.Enable();
+    }
+
+    private void OnDisable()
+    {
+        playerInput.PlayerShoot.Disable();
+    }
+    
+
     void Update()
     {
         Debug.DrawRay(cameraHolder.position, cameraHolder.forward * 2, Color.green);
@@ -37,11 +54,11 @@ public class PlayerShootingManager : NetworkBehaviour
 
         if (playerInventory.EquippedGun != null && playerInventory.GunEquipped && CanShoot && GunInstance.Magazine > 0 && !Reloading)
         {
-            if (playerInventory.EquippedGun.PrimaryFire.FireMode == FireMode.Manual && Input.GetMouseButtonDown(0))
+            if (playerInventory.EquippedGun.PrimaryFire.FireMode == FireMode.Manual && playerInput.PlayerShoot.Primary.triggered)
             {
                 Shoot();
             }
-            else if (playerInventory.EquippedGun.PrimaryFire.FireMode == FireMode.Automatic && Input.GetMouseButton(0))
+            else if (playerInventory.EquippedGun.PrimaryFire.FireMode == FireMode.Automatic && playerInput.PlayerShoot.Primary.IsPressed())
             {
                 Shoot();
             }
@@ -51,7 +68,7 @@ public class PlayerShootingManager : NetworkBehaviour
         {
             StartCoroutine(Reload());
         }
-        if (GunInstance.Magazine != playerInventory.EquippedGun.MagazineAmmo && Input.GetKeyDown(KeyCode.R) && GunInstance.Ammo > 0 && !Reloading)
+        if (GunInstance.Magazine != playerInventory.EquippedGun.MagazineAmmo && playerInput.PlayerShoot.Reload.triggered && GunInstance.Ammo > 0 && !Reloading)
         {
             StartCoroutine(Reload());
         }

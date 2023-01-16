@@ -1,6 +1,7 @@
 using System;
 using Mirror;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class PlayerBombManager : NetworkBehaviour
 {
@@ -18,6 +19,18 @@ public class PlayerBombManager : NetworkBehaviour
     PlayerInventoryManager playerInventoryManager;
 
     [SerializeField] GameObject bombPrefab;
+    private PlayerInput playerInput;
+
+    private void Awake()
+    {
+        playerInput = new();
+
+        playerInput.PlayerBomb.Planting.performed += startPlanting;
+        playerInput.PlayerBomb.Planting.performed += stopPlanting;
+        
+        playerInput.PlayerBomb.Defuse.performed += startDefusing;
+        playerInput.PlayerBomb.Defuse.performed += stopDefusing;
+    }
 
     private void Start()
     {
@@ -27,21 +40,19 @@ public class PlayerBombManager : NetworkBehaviour
         gameManager = FindObjectOfType<GameManager>();
     }
 
+    private void OnEnable()
+    {
+        playerInput.PlayerBomb.Enable();
+    }
+
+    private void OnDisable()
+    {
+        playerInput.PlayerBomb.Disable();
+    }
 
     void Update()
     {
         if (isServer) ServerUpdate();
-        if (!isLocalPlayer) return;
-
-        switch (player.PlayerTeam)
-        {
-            case Team.Red:
-                ClientHandlePlanting();
-                break;
-            case Team.Blue:
-                ClientHandleDefusing();
-                break;
-        }
     }
 
     bool canPlant()
@@ -69,13 +80,11 @@ public class PlayerBombManager : NetworkBehaviour
             Debug.Log("player is dead");
             return false;
         }
-        if (gameState != GameState.Round && gameState != GameState.PostRound)
-        {
-            Debug.Log("invalid game state");
-            return false;
-        }
 
-        return true;
+        if (gameState is GameState.Round or GameState.PostRound) return true;
+        Debug.Log("invalid game state");
+        return false;
+
     }
     
     bool canDefuse()
@@ -255,39 +264,6 @@ public class PlayerBombManager : NetworkBehaviour
 
     #endregion
 
-    #region client
-
-    [Client]
-    void ClientHandlePlanting()
-    {
-        if ((Input.GetKeyDown(KeyCode.F) ||
-             playerInventoryManager.EquippedItem == Item.Bomb && Input.GetMouseButtonDown(0)) && canPlant())
-        {
-            CmdStartPlanting();
-        }
-        if (Input.GetKeyUp(KeyCode.F) || playerInventoryManager.EquippedItem == Item.Bomb && Input.GetMouseButtonUp(0))
-        {
-            CmdStopPlanting();
-        }
-    }
-
-    [Client]
-    void ClientHandleDefusing()
-    {
-        if(!canDefuse()) return;
-        
-        if (Input.GetKeyDown(KeyCode.F))
-        { 
-            CmdStartDefusing();
-        }
-        if (Input.GetKeyUp(KeyCode.F))
-        { 
-            CmdStopDefusing();
-        }
-    }
-
-    #endregion
-
     #region rpcs
 
     /*
@@ -318,6 +294,36 @@ public class PlayerBombManager : NetworkBehaviour
     #endregion
 
     #region commands
+
+    void startPlanting(InputAction.CallbackContext context)
+    {
+        if (!isLocalPlayer) return;
+        if (player.PlayerTeam == Team.Blue) return;
+        if(playerInventoryManager.EquippedItem == Item.Bomb && canPlant()) CmdStartPlanting();
+    }
+
+    void stopPlanting(InputAction.CallbackContext context)
+    {
+        if (!isLocalPlayer) return;
+        if (player.PlayerTeam == Team.Blue) return;
+        if(playerInventoryManager.EquippedItem == Item.Bomb) CmdStopPlanting();
+    }
+
+    void startDefusing(InputAction.CallbackContext context)
+    {
+        if (!isLocalPlayer) return;
+        if (player.PlayerTeam == Team.Red) return;
+        if(!canDefuse()) return;
+        CmdStartDefusing();
+    }
+
+    void stopDefusing(InputAction.CallbackContext context)
+    {
+        if (!isLocalPlayer) return;
+        if (player.PlayerTeam == Team.Red) return;
+        if(!canDefuse()) return;
+        CmdStopDefusing();
+    }
 
     [Command]
     void CmdStartPlanting()
