@@ -525,7 +525,7 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0.1
   deathScreenTime: 2
-  playerBody: {fileID: 0}
+  playerBody: {fileID: 1219471668820504962}
   itemHolder: {fileID: 399943159590823399}
   playerHands: {fileID: 6263509137884671384}
   playerHead: {fileID: 6906543326731332664}

@@ -75,7 +75,7 @@ public class Player : NetworkBehaviour, IDamageable
         if (isLocalPlayer)
         {
             Cursor.lockState = CursorLockMode.Locked;
-            CmdSetPlayerInfo(NicknameManager.DisplayName, RoomManager.PTeam, RoomManager.PAgent);   
+            CmdSetPlayerInfo(NicknameManager.DisplayName, RoomManager.PTeam, RoomManager.PAgent);
             //hideBody();
             // FIXME
             // CmdSetPlayerInfo(NicknameManager.DisplayName, RoomManager.PTeam, RoomManager.PAgent);

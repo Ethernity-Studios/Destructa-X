@@ -114,6 +114,8 @@ public class GameManager : NetworkBehaviour
     // [SyncVar]
     public bool isDefusing;
 
+    [SerializeField] GameObject mainCamera;
+
     private void Start()
     {
         playerStateManger = FindObjectOfType<PlayerStateManger>();
@@ -534,6 +536,7 @@ public class GameManager : NetworkBehaviour
     [Server]
     void spawnPlayers()
     {
+        RpcSpawnPlayers();
         int b = 0;
         int r = 0;
         foreach (Player player in PlayersID.Select(getPlayer))
@@ -552,6 +555,13 @@ public class GameManager : NetworkBehaviour
                     break;
             }
         }
+    }
+
+    [ClientRpc]
+    void RpcSpawnPlayers()
+    {
+        mainCamera.transform.parent.GetComponent<CameraMove>().CanMove = true;
+        mainCamera.GetComponent<CameraRotate>().CanRotate = true;
     }
     
     [Server]

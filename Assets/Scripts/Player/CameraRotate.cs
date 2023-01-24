@@ -18,6 +18,8 @@ public class CameraRotate : MonoBehaviour
     private PlayerInput playerInput;
     private Vector2 mouseLook;
 
+    public bool CanRotate = true;
+
     private void Awake()
     {
         playerInput = new PlayerInput();
@@ -35,6 +37,7 @@ public class CameraRotate : MonoBehaviour
         if (orientation == null) return;
         isShopOpen = PlayerEconomyManager.IsShopOpen;
         if (isShopOpen) return;
+        if (!CanRotate) return;
 
         mouseLook = playerInput.PlayerMovement.Look.ReadValue<Vector2>();
         float mouseX = mouseLook.x * MouseSensitivity * Time.deltaTime;

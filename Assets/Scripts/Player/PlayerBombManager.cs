@@ -278,7 +278,7 @@ public class PlayerBombManager : NetworkBehaviour
     void RpcSpawnBomb(GameObject bomb, Vector3 position, Quaternion rotation)
     {
         bomb.transform.SetParent(gameManager.transform);
-        bomb.transform.position = position + new Vector3(0,-1,0);
+        bomb.transform.position = position + new Vector3(0,.5f,0);
         bomb.transform.rotation = rotation;
     }
     
@@ -298,7 +298,6 @@ public class PlayerBombManager : NetworkBehaviour
     {
         if (!isLocalPlayer) return;
         if (player.PlayerTeam == Team.Blue) return;
-        Debug.Log(context.control.path);
         if (context.control.path == "/Keyboard/f" && playerInventoryManager.Bomb != null && canPlant()) CmdStartPlanting();
         else if(playerInventoryManager.Bomb != null && canPlant() && playerInventoryManager.EquippedItem == Item.Bomb) CmdStartPlanting();
 
