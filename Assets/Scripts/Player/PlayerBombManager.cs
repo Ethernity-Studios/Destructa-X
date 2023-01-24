@@ -25,10 +25,10 @@ public class PlayerBombManager : NetworkBehaviour
         playerInput = new();
 
         playerInput.PlayerBomb.Planting.performed += startPlanting;
-        playerInput.PlayerBomb.Planting.performed += stopPlanting;
+        playerInput.PlayerBomb.Planting.canceled += stopPlanting;
         
         playerInput.PlayerBomb.Defuse.performed += startDefusing;
-        playerInput.PlayerBomb.Defuse.performed += stopDefusing;
+        playerInput.PlayerBomb.Defuse.canceled += stopDefusing;
     }
 
     private void Start()
@@ -80,7 +80,7 @@ public class PlayerBombManager : NetworkBehaviour
             return false;
         }
 
-        if (gameState is GameState.Round or GameState.PostRound) return true;
+        if (gameState is GameState.Round or GameState.PostRound or GameState.PostRound or GameState.EndGame) return true;
         Debug.Log("invalid game state");
         return false;
 
@@ -298,7 +298,11 @@ public class PlayerBombManager : NetworkBehaviour
     {
         if (!isLocalPlayer) return;
         if (player.PlayerTeam == Team.Blue) return;
-        if(playerInventoryManager.EquippedItem == Item.Bomb && canPlant()) CmdStartPlanting();
+        Debug.Log(context.control.path);
+        if (context.control.path == "/Keyboard/f" && playerInventoryManager.Bomb != null && canPlant()) CmdStartPlanting();
+        else if(playerInventoryManager.Bomb != null && canPlant() && playerInventoryManager.EquippedItem == Item.Bomb) CmdStartPlanting();
+
+        
     }
 
     void stopPlanting(InputAction.CallbackContext context)

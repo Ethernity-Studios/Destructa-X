@@ -86,25 +86,25 @@ public class PlayerInventoryManager : NetworkBehaviour
     void switchPrimaryGun(InputAction.CallbackContext context)
     {
         if (!context.performed) return;
-        if(PrimaryGun != null && EquippedItem != Item.Primary) switchItem(Item.Primary);  
+        if (PrimaryGun != null && EquippedItem != Item.Primary) switchItem(Item.Primary);
     }
-    
+
     void switchSecondaryGun(InputAction.CallbackContext context)
     {
         if (!context.performed) return;
-        if(SecondaryGun != null && EquippedItem != Item.Secondary) switchItem(Item.Secondary);  
+        if (SecondaryGun != null && EquippedItem != Item.Secondary) switchItem(Item.Secondary);
     }
-    
+
     void switchKnife(InputAction.CallbackContext context)
     {
         if (!context.performed) return;
-        if(EquippedItem != Item.Knife) switchItem(Item.Knife);  
+        if (EquippedItem != Item.Knife) switchItem(Item.Knife);
     }
-    
+
     void switchBomb(InputAction.CallbackContext context)
     {
         if (!context.performed) return;
-        if(Bomb != null && EquippedItem != Item.Bomb) switchItem(Item.Bomb);  
+        if (Bomb != null && EquippedItem != Item.Bomb) switchItem(Item.Bomb);
     }
 
 
@@ -196,12 +196,11 @@ public class PlayerInventoryManager : NetworkBehaviour
     private void OnTriggerStay(Collider other)
     {
         if (!isLocalPlayer) return;
-
+        
         if (gameManager.Bomb == null) return;
-
         if (other.gameObject == gameManager.Bomb.transform.GetChild(0).gameObject && other.gameObject.layer == 8 &&
             player.PlayerTeam == Team.Red && !player.IsDead) CmdPickBomb();
-
+        
         if (!other.gameObject.TryGetComponent(out GunInstance instance)) return;
         if (instance.CanBePicked && instance.IsDropped && !player.IsDead)
             CmdPickGun(instance.GetComponent<NetworkIdentity>().netId);

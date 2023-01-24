@@ -320,6 +320,17 @@ public partial class @PlayerInput : IInputActionCollection2, IDisposable
                 },
                 {
                     ""name"": """",
+                    ""id"": ""21a1642e-65a7-4d37-a540-e01d61bfd061"",
+                    ""path"": ""<Mouse>/leftButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Planting"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
                     ""id"": ""c867b950-4a39-418d-9530-df12aec66089"",
                     ""path"": ""<Keyboard>/f"",
                     ""interactions"": """",

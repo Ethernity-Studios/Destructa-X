@@ -1,3 +1,4 @@
+using System;
 using Mirror;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -90,12 +91,13 @@ public class PlayerMovement : NetworkBehaviour
         stateHandler();
         rotatePlayer();
 
-        grounded = Physics.Raycast(origin: transform.position, direction: Vector3.down,
+        grounded = Physics.Raycast(origin: transform.position + new Vector3(0,1,0), direction: Vector3.down,
             maxDistance: 1.2f , layerMask: groundMask);
 
         if (grounded) rb.drag = groundDrag;
         else rb.drag = 0;
     }
+
 
     private void FixedUpdate()
     {
@@ -109,23 +111,18 @@ public class PlayerMovement : NetworkBehaviour
 
     void stateHandler()
     {
-        switch (grounded)
+        if (grounded && rb.velocity == Vector3.zero) state = MovementState.Idle;
+        else if (grounded && Input.GetKey(KeyCode.LeftShift))
         {
-            case true when rb.velocity == Vector3.zero:
-                state = MovementState.Idle;
-                break;
-            case true when Input.GetKey(KeyCode.LeftShift):
-                moveSpeed = walkSpeed;
-                state = MovementState.Walking;
-                break;
-            case true:
-                state = MovementState.Sprinting;
-                moveSpeed = sprintSpeed;
-                break;
-            default:
-                state = MovementState.Jumping;
-                break;
+            moveSpeed = walkSpeed;
+            state = MovementState.Walking;
         }
+        else if (grounded)
+        {
+            state = MovementState.Sprinting;
+            moveSpeed = sprintSpeed;
+        }
+        else state = MovementState.Jumping; 
     }
 
     void rotatePlayer()
