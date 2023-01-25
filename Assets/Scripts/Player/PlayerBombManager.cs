@@ -308,7 +308,7 @@ public class PlayerBombManager : NetworkBehaviour
     {
         if (!isLocalPlayer) return;
         if (player.PlayerTeam == Team.Blue) return;
-        if(playerInventoryManager.EquippedItem == Item.Bomb) CmdStopPlanting();
+        if(playerInventoryManager.Bomb != null) CmdStopPlanting();
     }
 
     void startDefusing(InputAction.CallbackContext context)
