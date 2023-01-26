@@ -163,12 +163,12 @@ public class LobbyPlayer : NetworkRoomPlayer
         if (team == Team.Blue)
         {
             transform.SetParent(BlueTeamHolder);
-            GetComponent<Image>().color = new Color(0f / 255f, 203f / 255f, 255f / 255f, 1f);
+            GetComponent<Image>().color = new Color(72f / 255f, 221f / 255f, 111f / 255f, 1f);
         }
         else if (team == Team.Red)
         {
             transform.SetParent(RedTeamHolder);
-            GetComponent<Image>().color = new Color(195f / 255f, 63f / 255f, 63f / 255f, 1f);
+            GetComponent<Image>().color = new Color(233f / 255f, 89f / 255f, 87f / 255f, 1f);
         }
         GetComponent<RectTransform>().localScale = Vector3.one;
         transform.GetChild(0).GetComponent<TMP_Text>().text = PlayerName;
@@ -180,12 +180,12 @@ public class LobbyPlayer : NetworkRoomPlayer
         if (PlayerTeam == Team.Blue)
         {
             transform.SetParent(BlueTeamHolder);
-            GetComponent<Image>().color = new Color(0f / 255f, 203f / 255f, 255f / 255f, 1f);
+            GetComponent<Image>().color = new Color(72f / 255f, 221f / 255f, 111f / 255f, 1f);
         }
         else if (PlayerTeam == Team.Red)
         {
             transform.SetParent(RedTeamHolder);
-            GetComponent<Image>().color = new Color(195f / 255f, 63f / 255f, 63f / 255f, 1f);
+            GetComponent<Image>().color = new Color(233f / 255f, 89f / 255f, 87f / 255f, 1f);
         }
         GetComponent<RectTransform>().localScale = Vector3.one;
         transform.GetChild(0).GetComponent<TMP_Text>().text = PlayerName;
@@ -201,12 +201,12 @@ public class LobbyPlayer : NetworkRoomPlayer
         if (PlayerTeam == Team.Blue)
         {
             transform.SetParent(BlueTeamHolder);
-            GetComponent<Image>().color = new Color(0f / 255f, 203f / 255f, 255f / 255f, 1f);
+            GetComponent<Image>().color = new Color(72f / 255f, 221f / 255f, 111f / 255f, 1f);
         }
         else if (PlayerTeam == Team.Red)
         {
             transform.SetParent(RedTeamHolder);
-            GetComponent<Image>().color = new Color(195f / 255f, 63f / 255f, 63f / 255f, 1f);
+            GetComponent<Image>().color = new Color(233f / 255f, 89f / 255f, 87f / 255f, 1f);
         }
         GetComponent<RectTransform>().localScale = Vector3.one;
         transform.GetChild(0).GetComponent<TMP_Text>().text = PlayerName;
@@ -229,11 +229,11 @@ public class LobbyPlayer : NetworkRoomPlayer
                 break;
             case Team.Blue:
                 transform.SetParent(BlueTeamHolder);
-                GetComponent<Image>().color = new Color(0f / 255f, 203f / 255f, 255f / 255f, 1f);
+                GetComponent<Image>().color = new Color(72f / 255f, 221f / 255f, 111f / 255f, 1f);
                 break;
             case Team.Red:
                 transform.SetParent(RedTeamHolder);
-                GetComponent<Image>().color = new Color(195f / 255f, 63f / 255f, 63f / 255f, 1f);
+                GetComponent<Image>().color = new Color(233f / 255f, 89f / 255f, 87f / 255f, 1f);
                 break;
             default:
                 throw new ArgumentOutOfRangeException();
@@ -273,11 +273,11 @@ public class LobbyPlayer : NetworkRoomPlayer
                 //break;
             case Team.Blue:
                 transform.SetParent(BlueTeamHolder);
-                GetComponent<Image>().color = new Color(0f / 255f, 203f / 255f, 255f / 255f, 1f);
+                GetComponent<Image>().color = new Color(72f / 255f, 221f / 255f, 111f / 255f, 1f);
                 break;
             case Team.Red:
                 transform.SetParent(RedTeamHolder);
-                GetComponent<Image>().color = new Color(195f / 255f, 63f / 255f, 63f / 255f, 1f);
+                GetComponent<Image>().color = new Color(233f / 255f, 89f / 255f, 87f / 255f, 1f);
                 break;
             default:
                 throw new ArgumentOutOfRangeException();
@@ -323,11 +323,11 @@ public class LobbyPlayer : NetworkRoomPlayer
                 break;
             case Team.Blue:
                 player.transform.SetParent(BlueTeamHolder);
-                player.GetComponent<Image>().color = new Color(0f / 255f, 203f / 255f, 255f / 255f, 1f);
+                player.GetComponent<Image>().color = new Color(72f / 255f, 221f / 255f, 111f / 255f, 1f);
                 break;
             case Team.Red:
                 player.transform.SetParent(RedTeamHolder);
-                player.GetComponent<Image>().color = new Color(195f / 255f, 63f / 255f, 63f / 255f, 1f);
+                player.GetComponent<Image>().color = new Color(233f / 255f, 89f / 255f, 87f / 255f, 1f);
                 break;
             default:
                 throw new ArgumentOutOfRangeException();
@@ -363,11 +363,11 @@ public class LobbyPlayer : NetworkRoomPlayer
                 break;
             case Team.Blue:
                 player.transform.SetParent(BlueTeamHolder);
-                player.GetComponent<Image>().color = new Color(0f / 255f, 203f / 255f, 255f / 255f, 1f);
+                player.GetComponent<Image>().color = new Color(72f / 255f, 221f / 255f, 111f / 255f, 1f);
                 break;
             case Team.Red:
                 player.transform.SetParent(RedTeamHolder);
-                player.GetComponent<Image>().color = new Color(195f / 255f, 63f / 255f, 63f / 255f, 1f);
+                player.GetComponent<Image>().color = new Color(233f / 255f, 89f / 255f, 87f / 255f, 1f);
                 break;
             default:
                 throw new ArgumentOutOfRangeException();

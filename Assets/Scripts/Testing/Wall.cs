@@ -11,11 +11,11 @@ public class Wall : NetworkBehaviour
     void Update()
     {
         if (!isServer) return;
-        if (Input.GetKeyDown(KeyCode.T))
+        /*if (Input.GetKeyDown(KeyCode.T))
         {
             if (wallDown) RpcShowWalls();
             else RpcHideWalls();
-        }
+        }*/
     }
     [ClientRpc]
     void RpcShowWalls()

@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using Mirror;
 using TMPro;
 using UnityEngine;
@@ -153,10 +154,8 @@ public class RoomManager : NetworkBehaviour
         //CmdSelectTeam(team, NicknameManager.DisplayName);
         //return;
 
-        foreach (var player in Room.roomSlots)
+        foreach (LobbyPlayer localPlayer in from player in Room.roomSlots where player.isLocalPlayer select player.GetComponent<LobbyPlayer>())
         {
-            if (!player.isLocalPlayer) continue;
-            var localPlayer = player.GetComponent<LobbyPlayer>();
             if (teamIndex == 1 && BlueTeamSize < 5)
             {
                 localPlayer.CmdJoinTeam(Team.Blue);
@@ -174,7 +173,6 @@ public class RoomManager : NetworkBehaviour
                 AgentSelectUI.SetActive(true);
             }
         }
-        
     }
 
     [TargetRpc]
