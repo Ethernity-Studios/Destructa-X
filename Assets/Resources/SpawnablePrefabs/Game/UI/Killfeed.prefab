@@ -374,6 +374,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2972884286118815612}
   - component: {fileID: 6921881312507012726}
+  - component: {fileID: 7063038570243957284}
   m_Layer: 5
   m_Name: Killfeed
   m_TagString: Untagged
@@ -427,6 +428,18 @@ MonoBehaviour:
   visible: 0
   m_AssetId: 75241e460d842494f9a018a865b06d9a
   hasSpawned: 0
+--- !u!225 &7063038570243957284
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2972884286118815611}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0
 --- !u!1 &4953459982455470655
 GameObject:
   m_ObjectHideFlags: 0
@@ -781,7 +794,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: be7e0623d1c134645a2592eb461d3e9f, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 5f44951e43fa5554b98ecb80f5c3d87e, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -1010,7 +1023,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 6453771a4d3392842952f5607565aabf, type: 3}
+  m_Sprite: {fileID: 21300000, guid: ed69fc9dc2978484a989dbbdb8ca790a, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
