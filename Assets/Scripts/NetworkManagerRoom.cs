@@ -24,9 +24,9 @@ public class NetworkManagerRoom : NetworkRoomManager
 
     public override void OnServerDisconnect(NetworkConnection conn)
     {
-        roomManager = FindObjectOfType<RoomManager>();
+        /*roomManager = FindObjectOfType<RoomManager>();
         if(roomManager != null)
-            roomManager.PlayerDisconnect(conn);
+            roomManager.PlayerDisconnect(conn);*/
         base.OnServerDisconnect(conn);
     }
 

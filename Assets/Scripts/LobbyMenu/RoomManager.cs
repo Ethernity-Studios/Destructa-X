@@ -79,7 +79,7 @@ public class RoomManager : NetworkBehaviour
 
     private void Start()
     {
-        DontDestroyOnLoad(this);
+        //DontDestroyOnLoad(this);
         BlueTeamHolder = GameObject.Find("BlueTeam").transform;
         RedTeamHolder = GameObject.Find("RedTeam").transform;
         

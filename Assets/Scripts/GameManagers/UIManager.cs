@@ -1,5 +1,6 @@
 using UnityEngine;
 using TMPro;
+using UnityEngine.Serialization;
 
 public class UIManager : MonoBehaviour
 {
@@ -14,5 +15,14 @@ public class UIManager : MonoBehaviour
     public GameObject SpectatingUI;
     public TMP_Text SpectatingPlayerName;
 
-    public GameObject MOTD;
+    [Header("Game State")]
+    public GameObject GameState;
+    public TMP_Text GameStateText;
+    public TMP_Text GameStateSubText;
+
+    public string BuyPhaseText, BuyPhaseSubText;
+    
+    public string RoundWinText, RoundWinSubText;
+    public string RoundLoseText, RoundLoseSubText;
+    
 }

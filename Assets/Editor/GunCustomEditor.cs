@@ -11,6 +11,8 @@ public class GunCustomEditor : Editor
     SerializedProperty primaryFire;
     SerializedProperty secondaryFire;
 
+    private SerializedProperty icon;
+
     SerializedProperty damagesList;
     SerializedProperty stats;
     SerializedProperty scope;
@@ -21,6 +23,7 @@ public class GunCustomEditor : Editor
 
         primaryFire = serializedObject.FindProperty("PrimaryFire");
         secondaryFire = serializedObject.FindProperty("SecondaryFire");
+        icon = serializedObject.FindProperty("Icon");
         //damagesList = serializedObject.FindProperty("Damages");
 
         //stats = serializedObject.FindProperty("Stats");
@@ -36,6 +39,7 @@ public class GunCustomEditor : Editor
         EditorGUILayout.BeginHorizontal();
         gun.GunModel = (GameObject)EditorGUILayout.ObjectField("GunModel", gun.GunModel, typeof(GameObject), true);
         EditorGUILayout.EndHorizontal();
+        EditorGUILayout.PropertyField(icon, new GUIContent("Icon"));
         gun.Price = (int)EditorGUILayout.IntField("Price", gun.Price);
         gun.MagazineAmmo = (int)EditorGUILayout.IntField("MagazineAmmo", gun.MagazineAmmo);
         gun.Ammo = (int)EditorGUILayout.IntField("Ammo", gun.Ammo);

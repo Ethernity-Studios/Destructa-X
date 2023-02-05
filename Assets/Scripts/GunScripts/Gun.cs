@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
+using UnityEngine.UI;
 
 
 [CreateAssetMenu]
@@ -8,6 +9,7 @@ public class Gun : ScriptableObject
     public int GunID;
     public string Name;
     public GameObject GunModel;
+    public Sprite Icon;
     public int Price;
     public int MagazineAmmo;
     public int Ammo;
@@ -33,6 +35,4 @@ public class Gun : ScriptableObject
     public Zoom Scope;
 
     public GunTransform GunTransform;
-
-
 }

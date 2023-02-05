@@ -80,7 +80,14 @@ public class PlayerMovement : NetworkBehaviour
     }
     private void OnDisable()
     {
+        if (!isLocalPlayer) return;
         playerInput.PlayerMovement.Disable();
+    }
+
+    private void OnEnable()
+    {
+        if (!isLocalPlayer) return;
+        playerInput.PlayerMovement.Enable();
     }
 
     private void Update()

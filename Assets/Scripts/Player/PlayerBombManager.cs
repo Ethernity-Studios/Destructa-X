@@ -22,7 +22,7 @@ public class PlayerBombManager : NetworkBehaviour
 
     private void Awake()
     {
-        playerInput = new();
+        playerInput = new PlayerInput();
 
         playerInput.PlayerBomb.Planting.performed += startPlanting;
         playerInput.PlayerBomb.Planting.canceled += stopPlanting;

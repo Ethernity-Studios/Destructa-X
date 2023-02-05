@@ -1,4 +1,5 @@
 using Mirror;
+using TMPro;
 using UnityEngine;
 
 namespace player
@@ -18,7 +19,6 @@ namespace player
         {
             player.transform.GetChild(0).GetComponent<MeshRenderer>().material.color = color;
         }*/
-
         [ClientRpc]
         public void RpcFuckOfBoom()
         {
@@ -74,9 +74,12 @@ namespace player
         }
 
         [ClientRpc]
-        public void RpcToggleMOTD(bool statement)
+        public void RpcToggleMOTD(bool statement, string text, string subText)
+
         {
-            uiManager.MOTD.SetActive(statement);
+            uiManager.GameState.SetActive(statement);
+            uiManager.GameStateText.text = text;
+            uiManager.GameStateSubText.text = text;
             /*
             MOTD.SetActive(statement);
             */

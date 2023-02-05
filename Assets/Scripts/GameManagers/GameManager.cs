@@ -68,9 +68,10 @@ public class GameManager : NetworkBehaviour
 
     [SerializeField] GunManager gunManager;
     public ShopManager shopManager;
+    [SerializeField] private UIManager uiManager;
     private PlayerStateManger playerStateManger;
     [SerializeField] MapController mapController;
-    private RoomManager roomManager;
+    //private RoomManager roomManager;
 
     public GameObject BulletHolder;
 
@@ -119,7 +120,7 @@ public class GameManager : NetworkBehaviour
     private void Start()
     {
         playerStateManger = FindObjectOfType<PlayerStateManger>();
-        roomManager = FindObjectOfType<RoomManager>();
+        //roomManager = FindObjectOfType<RoomManager>();
         /*
         ShopUI.SetActive(false);
         // PlantProgressSlider.gameObject.SetActive(false);
@@ -178,16 +179,16 @@ public class GameManager : NetworkBehaviour
 
         
         
-        foreach (KeyValuePair<int, NetworkConnectionToClient> con in NetworkServer.connections)
+        foreach (var con in NetworkServer.connections)
         {
-            if (roomManager.bluePlayers.Contains(con.Key))
+            /*if (roomManager.bluePlayers.Contains(con.Key))
             {
                 BlueTeamPlayersIDs.Add(con.Key);
             }
             else if (roomManager.redPlayers.Contains(con.Key))
             {
                 RedTeamPlayersIDs.Add(con.Key);
-            }
+            }*/
             PlayersID.Add(con.Key);
             //InitializePlayer(con.Key);
         }
@@ -243,7 +244,7 @@ public class GameManager : NetworkBehaviour
                 // closePlayerShopUI();
                 GameTime = RoundLenght;
                 GameState = GameState.Round;
-                playerStateManger.RpcToggleMOTD(false);
+                playerStateManger.RpcToggleMOTD(false, "", "");
                 break;
             case GameState.PreRound when GameTime <= 0:
                 //Buy phase
@@ -251,7 +252,7 @@ public class GameManager : NetworkBehaviour
                 // closePlayerShopUI();
                 GameState = GameState.Round;
                 GameTime = RoundLenght;
-                playerStateManger.RpcToggleMOTD(false);
+                playerStateManger.RpcToggleMOTD(false, "", "");
                 break;
             default:
             {
@@ -331,7 +332,7 @@ public class GameManager : NetworkBehaviour
         Round++;
 
 
-        playerStateManger.RpcToggleMOTD(true);
+        playerStateManger.RpcToggleMOTD(true, uiManager.BuyPhaseText, uiManager.BuyPhaseSubText);
         mapController.ResetWalls();
 
         NetworkServer.Destroy(Bomb);

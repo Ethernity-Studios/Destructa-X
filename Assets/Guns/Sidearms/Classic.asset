@@ -15,6 +15,7 @@ MonoBehaviour:
   GunID: 0
   Name: clasic
   GunModel: {fileID: 1298712114125637990, guid: fc1456374dc984243a838362139fd483, type: 3}
+  Icon: {fileID: 21300000, guid: 069c7905cdec9e9448540be51114822d, type: 3}
   Price: 0
   MagazineAmmo: 12
   Ammo: 36

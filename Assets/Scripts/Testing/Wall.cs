@@ -6,7 +6,7 @@ public class Wall : NetworkBehaviour
 {
     public List<GameObject> Walls;
 
-    bool wallDown;
+    //bool wallDown;
 
     void Update()
     {
@@ -20,7 +20,7 @@ public class Wall : NetworkBehaviour
     [ClientRpc]
     void RpcShowWalls()
     {
-        wallDown = false;
+      //  wallDown = false;
         foreach (var wall in Walls)
         {
             wall.SetActive(true);
@@ -29,7 +29,7 @@ public class Wall : NetworkBehaviour
     [ClientRpc]
     void RpcHideWalls()
     {
-        wallDown = true;
+        //wallDown = true;
         foreach (var wall in Walls)
         {
             wall.SetActive(false);

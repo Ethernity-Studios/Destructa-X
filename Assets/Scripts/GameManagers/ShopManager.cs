@@ -1,6 +1,7 @@
 using Mirror;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 public enum ShieldType
 {
@@ -14,6 +15,7 @@ public class ShopManager : NetworkBehaviour
     [SerializeField] TMP_Text gunName;
     [SerializeField] TMP_Text gunCategory;
     [SerializeField] TMP_Text gunType;
+    [SerializeField] private Image gunImage; 
 
     [SerializeField] TMP_Text gunFireRate;
     [SerializeField] TMP_Text gunEquipSpeed;
@@ -36,7 +38,8 @@ public class ShopManager : NetworkBehaviour
     public PlayerInventoryManager playerInventory;
 
     [SerializeField] GameManager gameManager;
-
+    
+    
     private void Start()
     {
         Invoke(nameof(CmdGetLocalPlayer), 1f);
@@ -48,7 +51,7 @@ public class ShopManager : NetworkBehaviour
     {
         foreach (int playerID in gameManager.PlayersID)
         {
-            RpcGetLocalPlayer(gameManager.getPlayer(playerID).netIdentity);
+            //RpcGetLocalPlayer(gameManager.getPlayer(playerID).netIdentity);
         }
     }
     [ClientRpc]
@@ -56,7 +59,8 @@ public class ShopManager : NetworkBehaviour
     {
         if (player.isLocalPlayer) playerInventory = player.GetComponent<PlayerInventoryManager>();
     }
-
+    
+    
     public void ShowGunInfo(Gun gun)
     {
         shieldInfo.SetActive(false);
@@ -64,6 +68,7 @@ public class ShopManager : NetworkBehaviour
         gunName.text = gun.name;
         gunCategory.text = ConvertGunCategoryToString(gun.Category);
         gunType.text = ConvertGunTypeToString(gun.Type);
+        gunImage.sprite = gun.Icon;
 
         gunFireRate.text = (gun.Stats.FireRate).ToString();
         gunEquipSpeed.text = gun.EquipTime.ToString();

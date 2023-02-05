@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace player
 {
-    public class PlayerGameStateSpecificUi: NetworkBehaviour
+    public class PlayerUI: NetworkBehaviour
     {
         private GameManager gameManager;
         private Player player;

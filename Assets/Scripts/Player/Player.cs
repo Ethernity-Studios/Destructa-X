@@ -60,12 +60,6 @@ public class Player : NetworkBehaviour, IDamageable
         PlayerState = state;
     }
 
-    public override void OnStartClient()
-    {
-        // FIXME
-                                
-    }
-
     public void Start()
     {
         if (isServer)
