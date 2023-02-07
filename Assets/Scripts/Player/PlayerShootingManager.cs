@@ -21,7 +21,8 @@ public class PlayerShootingManager : NetworkBehaviour
     private PlayerInput playerInput;
     private void Awake()
     {
-        
+        playerInput = new PlayerInput();
+        playerInput.PlayerShoot.Enable();  
 
         player = GetComponent<Player>();
         FindObjectOfType<GameManager>();
@@ -29,7 +30,7 @@ public class PlayerShootingManager : NetworkBehaviour
         playerEconomyManager = GetComponent<PlayerEconomyManager>();
         if (!isLocalPlayer) return;
         
-        playerInput = new PlayerInput();
+ 
         
         cameraHolder.GetComponent<Camera>().enabled = true;
         cameraHolder.GetChild(0).GetComponent<Camera>().enabled = true;

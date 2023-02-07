@@ -22,7 +22,6 @@ public class PlayerBombManager : NetworkBehaviour
 
     private void Awake()
     {
-        if (!isLocalPlayer) return;
         playerInput = new PlayerInput();
 
         playerInput.PlayerBomb.Planting.performed += startPlanting;
