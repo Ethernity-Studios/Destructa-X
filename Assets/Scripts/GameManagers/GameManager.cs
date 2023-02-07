@@ -118,8 +118,10 @@ public class GameManager : NetworkBehaviour
     [SerializeField] GameObject mainCamera;
 
     private void Start()
-    {
+    { 
         playerStateManger = FindObjectOfType<PlayerStateManger>();
+        
+        
         //roomManager = FindObjectOfType<RoomManager>();
         /*
         ShopUI.SetActive(false);

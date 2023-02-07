@@ -333,8 +333,8 @@ GameObject:
   - component: {fileID: 4148336677826501266}
   - component: {fileID: 7365863876986519927}
   - component: {fileID: 6021906618316908405}
-  - component: {fileID: 4591204699662543079}
   - component: {fileID: -7474328044268257047}
+  - component: {fileID: 8107270674050922034}
   - component: {fileID: 6774817143896442879}
   - component: {fileID: 6336609987163348861}
   - component: {fileID: 1502663924094324460}
@@ -495,21 +495,6 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0.01
   bombPrefab: {fileID: 2536634434620783955, guid: fb7c4534d6e00f34e9795d56e2cf49b4, type: 3}
---- !u!114 &4591204699662543079
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6720852769967137176}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 55c9ad7563dd411e8685305f18c87aba, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  syncMode: 0
-  syncInterval: 0.1
-  IsShopOpen: 0
 --- !u!114 &-7474328044268257047
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -530,6 +515,21 @@ MonoBehaviour:
   playerHands: {fileID: 6263509137884671384}
   playerHead: {fileID: 6906543326731332664}
   currentlySpectating: {fileID: 0}
+--- !u!114 &8107270674050922034
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6720852769967137176}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 55c9ad7563dd411e8685305f18c87aba, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncMode: 0
+  syncInterval: 0.1
+  IsShopOpen: 0
 --- !u!114 &6774817143896442879
 MonoBehaviour:
   m_ObjectHideFlags: 0

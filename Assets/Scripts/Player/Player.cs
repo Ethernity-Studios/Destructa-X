@@ -80,10 +80,7 @@ public class Player : NetworkBehaviour, IDamageable
         playerShootingManager = GetComponent<PlayerShootingManager>();
         playerBombManager = GetComponent<PlayerBombManager>();
         uiManager = FindObjectOfType<UIManager>();
-        FindObjectOfType<AgentManager>();
 
-        FindObjectOfType<NetworkManagerRoom>();
-        
         //Invoke("setPlayerBody", 1f);
         setPlayerBody();
         // Invoke("spawnUIAgent", .3f);
