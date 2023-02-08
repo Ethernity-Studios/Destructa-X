@@ -17,11 +17,10 @@ namespace GameManagers
         [SyncVar(hook = nameof(DrawRoundTimer))] private float GameTime;
         [SyncVar(hook = nameof(DrawRedScore))] private int redScore;
         [SyncVar(hook = nameof(DrawBlueScore))] private int blueScore;
-        // player local ui
+        
         public Slider PlantProgressSlider;
         public Slider DefuseProgressSlider;
-
-
+        
         private void Start()
         {
             if (isServer)

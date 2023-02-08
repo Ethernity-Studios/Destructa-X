@@ -17,5 +17,15 @@ public class Testtt : NetworkBehaviour
     {
         GameObject bl = Instantiate(Bullet,transform);
         NetworkServer.Spawn(bl);
+
+        trol t = new(){Name = "Pepa"};
+
+
+        bool canGo = t.Name == "Pepa" ? true : false;
     }
+}
+
+class trol
+{
+    public string Name;
 }
