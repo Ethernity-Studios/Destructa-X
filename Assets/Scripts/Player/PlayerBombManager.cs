@@ -41,14 +41,12 @@ public class PlayerBombManager : NetworkBehaviour
 
     private void OnEnable()
     {
-		if (!isLocalPlayer) return;
-		playerInput.PlayerBomb.Enable();
+        playerInput.PlayerBomb.Enable();
     }
 
     private void OnDisable()
     {
-		if (!isLocalPlayer) return;
-		playerInput.PlayerBomb.Disable();
+        playerInput.PlayerBomb.Disable();
     }
 
     void Update()
