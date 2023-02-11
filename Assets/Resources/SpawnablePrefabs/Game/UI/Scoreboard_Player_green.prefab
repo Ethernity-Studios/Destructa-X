@@ -297,6 +297,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4933623118060158418}
+  - component: {fileID: 2057731225355042450}
   - component: {fileID: 1564602566665286213}
   m_Layer: 5
   m_Name: Scoreboard_Player_green
@@ -335,6 +336,25 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 800, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &2057731225355042450
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4933623118060158419}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: adf71253bc890f141b9a4c7c36592fed, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Name: {fileID: 4933623117928612264}
+  Ultimate: {fileID: 4933623119024676702}
+  AgentIcon: {fileID: 4933623118978651599}
+  KDA: {fileID: 4933623118421521718}
+  GunIcon: {fileID: 4933623118125701328}
+  Money: {fileID: 4933623118711694807}
+  Ping: {fileID: 4933623118508178183}
 --- !u!114 &1564602566665286213
 MonoBehaviour:
   m_ObjectHideFlags: 0

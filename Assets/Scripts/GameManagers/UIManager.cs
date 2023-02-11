@@ -10,6 +10,7 @@ public class UIManager : MonoBehaviour
     public static Color GreenColor = new Color(142/255f, 214/255f, 161/255f, 1);
     public static Color RedColor = new Color(214/255f, 143/255f, 142/255f, 1);
     public static Color LightGreyColor = new Color(200/255f, 200/255f, 200/255f, 1);
+    public static Color YellowColor = new Color(214 / 255f, 214 / 255f, 142 / 255f, 1);
     
     [Header("Player")]
     public TMP_Text MagazineText;
@@ -29,7 +30,7 @@ public class UIManager : MonoBehaviour
     public TMP_Text UltimateBindKey;
     public Image UltimateIcon;
     [SerializeField] private GameObject UltimatePoint;
-    private List<Image> UltimatePoints;
+    public List<Image> UltimatePoints;
 
     [Header("Spectating")]
     public GameObject SpectatingUI;
@@ -45,4 +46,22 @@ public class UIManager : MonoBehaviour
     public string RoundWinText, RoundWinSubText;
     public string RoundLoseText, RoundLoseSubText;
 
+    [Header("Header")]
+    public GameObject HeaderGreenTeam;
+    public GameObject HeaderRedTeam;
+
+    public GameObject HeaderGreenPlayer;
+    public GameObject HeaderRedPlayer;
+
+    [Header("Shop")] 
+    public GameObject ShopTeam;
+    
+    public Image ShopPlayerAgentIcon;
+    public Image ShopPlayerShieldIcon;
+    public Image ShopPlayerPrimaryGun;
+    public Image ShopPlayerSecondaryGun;
+    public TMP_Text ShopPlayerMoney;
+    public TMP_Text ShopPlayerMinMoneyNextRound;
+
+    public GameObject ShopPlayer;
 }

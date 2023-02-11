@@ -387,6 +387,34 @@
                     "isPartOfComposite": false
                 }
             ]
+        },
+        {
+            "name": "Console",
+            "id": "f529fa0e-25a7-4cb3-a9a5-db5a280632e8",
+            "actions": [
+                {
+                    "name": "Open",
+                    "type": "Button",
+                    "id": "82685f5e-51a9-48fa-bf82-54b6edda5e52",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "7f718ef3-90ff-4627-88b0-4ec378660431",
+                    "path": "<Keyboard>/backquote",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Open",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
         }
     ],
     "controlSchemes": [

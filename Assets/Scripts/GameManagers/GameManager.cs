@@ -68,7 +68,7 @@ public class GameManager : NetworkBehaviour
 
     [SerializeField] GunManager gunManager;
     public ShopManager shopManager;
-    [SerializeField] private UIManager uiManager;
+    [SerializeField] public UIManager UIManager;
     private PlayerStateManger playerStateManger;
     [SerializeField] MapController mapController;
     //private RoomManager roomManager;
@@ -160,15 +160,8 @@ public class GameManager : NetworkBehaviour
         updateGameState();
         if (GameTime > 0) GameTime -= Time.deltaTime;
     }
+    
 
-    /*[Server]
-    void InitializePlayer(int id)
-    {
-        Player player = getPlayer(id);
-        player.PlayerName = roomManager.playerNameMapping[id];
-        player.PlayerAgent = roomManager.agentMapping[id];
-        player.PlayerTeam = roomManager.bluePlayers.Contains(id) ? Team.Blue : Team.Red;
-    }*/
 
     [Server]
     private void onPlayersLoaded()
@@ -178,41 +171,32 @@ public class GameManager : NetworkBehaviour
         PlayersID.Clear();
         BlueTeamPlayersIDs.Clear();
         RedTeamPlayersIDs.Clear();
-
-        
         
         foreach (var con in NetworkServer.connections)
         {
-            /*if (roomManager.bluePlayers.Contains(con.Key))
-            {
-                BlueTeamPlayersIDs.Add(con.Key);
-            }
-            else if (roomManager.redPlayers.Contains(con.Key))
-            {
-                RedTeamPlayersIDs.Add(con.Key);
-            }*/
             PlayersID.Add(con.Key);
-            //InitializePlayer(con.Key);
         }
+        Invoke(nameof(addPlayerToTeam),1f);
         
         setupGame();
     }
-
-    /*
-    public override void OnStartServer()
+    
+    [Server]
+    void addPlayerToTeam()
     {
-        Debug.Log("on start server");
-        
-        if(Room.roomSlots.Count(x => x.connectionToClient.isReady) != Room.roomSlots.Count) { return; }
-
-        //NetworkManagerRoom.OnServerReadied += startGame;
-        Debug.Log("Game ready! starting game in 3 second!");
-
-        // Invoke("setupGame", 3f);
-        setupGame();
-        //NetworkManagerRoom.OnServerReadied += startGame;
+        foreach (var con in NetworkServer.connections)
+        {
+            switch (con.Value.identity.GetComponent<Player>().PlayerTeam)
+            {
+                case Team.Blue:
+                    BlueTeamPlayersIDs.Add(con.Key);
+                    break;
+                case Team.Red:
+                    RedTeamPlayersIDs.Add(con.Key);
+                    break;
+            }
+        }
     }
-    */
 
     #region Server
 
@@ -231,9 +215,21 @@ public class GameManager : NetworkBehaviour
         Invoke(nameof(spawnPlayers), 1.5f);
         //spawnPlayers(); 
         Invoke(nameof(giveDefaultGun), 1f); // maybe fix me later ^^
+        Invoke(nameof(InitPlayerUI),1f);
         //giveDefaultGun();
         StartRound(GameState.StartGame);
     }
+
+    [Server]
+    void InitPlayerUI()
+    {
+        foreach (Player player in PlayersID.Select(GetPlayer))
+        {
+            PlayerUI playerUI = player.GetComponent<PlayerUI>();
+            playerUI.AddPlayerToHeader();
+        }
+    }
+
 
     [Server]
     void updateGameState()
@@ -276,13 +272,13 @@ public class GameManager : NetworkBehaviour
                                 GameTime = PostRoundLength;
                                 GameState = GameState.PostRound;
                                 break;
-                            case GameState.Round when AliveBluePlayers <= 0 && BlueTeamPlayersIDs.Count > 0 && PlayersID.Count > 1:
+                            case GameState.Round when AliveBluePlayers <= 0 && BlueTeamPlayersIDs.Count > 0:
                                 //All blue players dead
                                 Debug.Log("All blue players dead");
                                 GameTime = PostRoundLength;
                                 GameState = GameState.PostRound;
                                 break;
-                            case GameState.Round when BombState == BombState.NotPlanted && AliveRedPlayers <= 0 && RedTeamPlayersIDs.Count > 0 && PlayersID.Count > 1:
+                            case GameState.Round when BombState == BombState.NotPlanted && AliveRedPlayers <= 0 && RedTeamPlayersIDs.Count > 0:
                                 //Bomb not planted and all red players dead
                                 Debug.Log("Bomb not planted and all red players dead");
                                 GameTime = PostRoundLength;
@@ -304,7 +300,7 @@ public class GameManager : NetworkBehaviour
     }
     
     [Server]
-    public Player getPlayer(int id)
+    public Player GetPlayer(int id)
     {
         if (NetworkServer.connections[id] == null) return null;
         Player player = NetworkServer.connections[id].identity.GetComponent<Player>();
@@ -334,7 +330,7 @@ public class GameManager : NetworkBehaviour
         Round++;
 
 
-        playerStateManger.RpcToggleMOTD(true, uiManager.BuyPhaseText, uiManager.BuyPhaseSubText);
+        playerStateManger.RpcToggleMOTD(true, UIManager.BuyPhaseText, UIManager.BuyPhaseSubText);
         mapController.ResetWalls();
 
         NetworkServer.Destroy(Bomb);
@@ -349,7 +345,7 @@ public class GameManager : NetworkBehaviour
         }
 
 
-        foreach (Player player in PlayersID.Select(getPlayer))
+        foreach (Player player in PlayersID.Select(GetPlayer))
         {
             player.PreviousRoundShield = player.Shield;
             PlayerInventoryManager playerInventory = player.GetComponent<PlayerInventoryManager>();
@@ -440,14 +436,14 @@ public class GameManager : NetworkBehaviour
     void giveMoney()
     {
         //KILLS
-        foreach (Player player in PlayersID.Select(getPlayer))
+        foreach (Player player in PlayersID.Select(GetPlayer))
         {
             player.CmdChangeMoney(player.RoundKills * 200);
         }
         //RED TEAM BOMB PLANT
         if (BombPlanted)
         {
-            foreach (Player player in RedTeamPlayersIDs.Select(getPlayer))
+            foreach (Player player in RedTeamPlayersIDs.Select(GetPlayer))
             {
                 player.CmdChangeMoney(300);
             }
@@ -458,7 +454,7 @@ public class GameManager : NetworkBehaviour
             //WINNING TEAM
             case BombState.Defused when GameState == GameState.PostRound:
             {
-                foreach (Player player in BlueTeamPlayersIDs.Select(getPlayer))
+                foreach (Player player in BlueTeamPlayersIDs.Select(GetPlayer))
                 {
                     player.CmdChangeMoney(3000);
                 }
@@ -467,7 +463,7 @@ public class GameManager : NetworkBehaviour
             }
             case BombState.Exploded when GameState == GameState.PostRound:
             {
-                foreach (Player player in RedTeamPlayersIDs.Select(getPlayer))
+                foreach (Player player in RedTeamPlayersIDs.Select(GetPlayer))
                 {
                     player.CmdChangeMoney(3000);
                 }
@@ -476,7 +472,7 @@ public class GameManager : NetworkBehaviour
             }
             case BombState.NotPlanted:
             {
-                foreach (Player player in BlueTeamPlayersIDs.Select(getPlayer))
+                foreach (Player player in BlueTeamPlayersIDs.Select(GetPlayer))
                 {
                     player.CmdChangeMoney(3000);
                 }
@@ -486,7 +482,7 @@ public class GameManager : NetworkBehaviour
         }
 
         //LOSING TEAM
-        foreach (Player player in PlayersID.Select(getPlayer))
+        foreach (Player player in PlayersID.Select(GetPlayer))
         {
             player.RoundKills = 0;
             if (player.PlayerTeam != LosingTeam) continue;
@@ -527,7 +523,7 @@ public class GameManager : NetworkBehaviour
     [Server]
     void giveDefaultGun()
     {
-        foreach (PlayerInventoryManager playerInventory in PlayersID.Select(getPlayer).Select(player => player.GetComponent<PlayerInventoryManager>()))
+        foreach (PlayerInventoryManager playerInventory in PlayersID.Select(GetPlayer).Select(player => player.GetComponent<PlayerInventoryManager>()))
         {
             playerInventory.CmdGiveGun(gunManager.gunList[0].GunID);
             playerInventory.CmdSwitchItem(Item.Knife);
@@ -542,7 +538,7 @@ public class GameManager : NetworkBehaviour
         RpcSpawnPlayers();
         int b = 0;
         int r = 0;
-        foreach (Player player in PlayersID.Select(getPlayer))
+        foreach (Player player in PlayersID.Select(GetPlayer))
         {
             switch (player.PlayerTeam)
             {

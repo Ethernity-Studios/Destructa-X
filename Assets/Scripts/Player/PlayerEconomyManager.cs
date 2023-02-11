@@ -9,7 +9,7 @@ public class PlayerEconomyManager : NetworkBehaviour
     [HideInInspector]public bool IsShopOpen;
     private void Start()
     {
-        if (isServer) ServerSetup();
+        gameManager = FindObjectOfType<GameManager>();
     }
 
     [Server]
@@ -18,11 +18,6 @@ public class PlayerEconomyManager : NetworkBehaviour
         CanBeOpen = gameManager.GameState == GameState.PreRound || gameManager.GameState == GameState.StartGame;
     }
 
-    [Server]
-    void ServerSetup()
-    {
-        gameManager = FindObjectOfType<GameManager>();
-    }
     private void Update()
     {
         if (isServer) ServerUpdate();

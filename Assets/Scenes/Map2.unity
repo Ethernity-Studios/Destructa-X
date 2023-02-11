@@ -6157,7 +6157,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 270830817}
   m_LocalRotation: {x: 0.43497038, y: -0, z: -0, w: 0.9004448}
-  m_LocalPosition: {x: 29.258, y: 6.25, z: -23.24}
+  m_LocalPosition: {x: 8.57, y: 6.25, z: -23.24}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -13494,7 +13494,7 @@ MonoBehaviour:
   syncInterval: 0.1
   Round: 0
   RoundsPerHalf: 13
-  StartGameLenght: 5
+  StartGameLenght: 30
   EndgameLenght: 5
   PreRoundLenght: 8
   RoundLenght: 500
@@ -13531,7 +13531,7 @@ MonoBehaviour:
   Bomb: {fileID: 0}
   gunManager: {fileID: 826292310}
   shopManager: {fileID: 1363029321}
-  uiManager: {fileID: 1600231072}
+  UIManager: {fileID: 1600231072}
   mapController: {fileID: 1323497754}
   BulletHolder: {fileID: 1053849665}
   BlueTeamScore: 0
@@ -28021,6 +28021,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 153029999}
     m_Modifications:
+    - target: {fileID: 659359781550346643, guid: 3839b7b209a6dc6419715903b877a79d, type: 3}
+      propertyPath: sceneId
+      value: 3282542962
+      objectReference: {fileID: 0}
     - target: {fileID: 3842514483710830136, guid: 3839b7b209a6dc6419715903b877a79d, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5
@@ -31924,6 +31928,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 153029999}
     m_Modifications:
+    - target: {fileID: 659359781550346643, guid: 3839b7b209a6dc6419715903b877a79d, type: 3}
+      propertyPath: sceneId
+      value: 1879719145
+      objectReference: {fileID: 0}
     - target: {fileID: 3842514483710830136, guid: 3839b7b209a6dc6419715903b877a79d, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5
@@ -34578,6 +34586,7 @@ MonoBehaviour:
   UltimateBindKey: {fileID: 470081621}
   UltimateIcon: {fileID: 1498747993}
   UltimatePoint: {fileID: 3842514483710830137, guid: 3839b7b209a6dc6419715903b877a79d, type: 3}
+  UltimatePoints: []
   SpectatingUI: {fileID: 1323299992}
   SpectatingPlayerName: {fileID: 1174619022}
   GameState: {fileID: 466860640}
@@ -34589,6 +34598,18 @@ MonoBehaviour:
   RoundWinSubText: 
   RoundLoseText: Round lose
   RoundLoseSubText: 
+  HeaderGreenTeam: {fileID: 356150726}
+  HeaderRedTeam: {fileID: 1726851225}
+  HeaderGreenPlayer: {fileID: 2109682146115182050, guid: 61da4be82c60eb24a9d173d98471de9d, type: 3}
+  HeaderRedPlayer: {fileID: 6632674177688127930, guid: 115a6f2eefa220643af1803d097f32f9, type: 3}
+  ShopTeam: {fileID: 482002606}
+  ShopPlayerAgentIcon: {fileID: 2112336328}
+  ShopPlayerShieldIcon: {fileID: 843107797}
+  ShopPlayerPrimaryGun: {fileID: 613219355}
+  ShopPlayerSecondaryGun: {fileID: 1911524293}
+  ShopPlayerMoney: {fileID: 1158665037}
+  ShopPlayerMinMoneyNextRound: {fileID: 1155947499}
+  ShopPlayer: {fileID: 1223802701997621008, guid: 33f4a2a6aa2e9aa41b3e8b6677fbd393, type: 3}
 --- !u!114 &1600231073
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -37407,6 +37428,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 153029999}
     m_Modifications:
+    - target: {fileID: 659359781550346643, guid: 3839b7b209a6dc6419715903b877a79d, type: 3}
+      propertyPath: sceneId
+      value: 2772534592
+      objectReference: {fileID: 0}
     - target: {fileID: 3842514483710830136, guid: 3839b7b209a6dc6419715903b877a79d, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5
@@ -37991,6 +38016,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 153029999}
     m_Modifications:
+    - target: {fileID: 659359781550346643, guid: 3839b7b209a6dc6419715903b877a79d, type: 3}
+      propertyPath: sceneId
+      value: 836254769
+      objectReference: {fileID: 0}
     - target: {fileID: 3842514483710830136, guid: 3839b7b209a6dc6419715903b877a79d, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5
@@ -46213,6 +46242,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 153029999}
     m_Modifications:
+    - target: {fileID: 659359781550346643, guid: 3839b7b209a6dc6419715903b877a79d, type: 3}
+      propertyPath: sceneId
+      value: 3738806987
+      objectReference: {fileID: 0}
     - target: {fileID: 3842514483710830136, guid: 3839b7b209a6dc6419715903b877a79d, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5

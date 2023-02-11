@@ -109,7 +109,7 @@ public class PlayerSpectateManager : NetworkBehaviour
     {
         foreach (int playerID in gameManager.PlayersID)
         {
-            RpcGetPlayers(gameManager.getPlayer(playerID));
+            RpcGetPlayers(gameManager.GetPlayer(playerID));
         }
     }
     [ClientRpc]

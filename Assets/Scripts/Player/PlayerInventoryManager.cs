@@ -34,6 +34,7 @@ public class PlayerInventoryManager : NetworkBehaviour
     GameManager gameManager;
     GunManager gunManager;
     PlayerShootingManager playerShootingManager;
+    private UIManager uiManager;
     Player player;
 
     [SyncVar] public bool GunEquipped = true;
@@ -61,6 +62,7 @@ public class PlayerInventoryManager : NetworkBehaviour
         gunManager = FindObjectOfType<GunManager>();
         playerShootingManager = GetComponent<PlayerShootingManager>();
         gameManager = FindObjectOfType<GameManager>();
+        uiManager = gameManager.UIManager;
 
         if (!isLocalPlayer) return;
         setLayerMask(KnifeHolder.transform.GetChild(0).gameObject, 6);
@@ -154,6 +156,7 @@ public class PlayerInventoryManager : NetworkBehaviour
                 SecondaryGunHolder.SetActive(false);
                 KnifeHolder.SetActive(false);
                 BombHolder.SetActive(false);
+                toggleAmmoUI(true);
 
                 if (!isLocalPlayer) return;
                 StartCoroutine(toggleEquippedGun());
@@ -168,6 +171,7 @@ public class PlayerInventoryManager : NetworkBehaviour
                 PrimaryGunHolder.SetActive(false);
                 KnifeHolder.SetActive(false);
                 BombHolder.SetActive(false);
+                toggleAmmoUI(true);
 
                 if (!isLocalPlayer) return;
                 StartCoroutine(toggleEquippedGun());
@@ -180,6 +184,7 @@ public class PlayerInventoryManager : NetworkBehaviour
                 PrimaryGunHolder.SetActive(false);
                 SecondaryGunHolder.SetActive(false);
                 BombHolder.SetActive(false);
+                toggleAmmoUI(false);
                 break;
             case Item.Bomb:
                 if (Bomb == null) return;
@@ -189,8 +194,17 @@ public class PlayerInventoryManager : NetworkBehaviour
                 PrimaryGunHolder.SetActive(false);
                 SecondaryGunHolder.SetActive(false);
                 KnifeHolder.SetActive(false);
+                toggleAmmoUI(false);
                 break;
         }
+    }
+
+    void toggleAmmoUI(bool state)
+    {
+        if (!isLocalPlayer) return;
+        uiManager.MaxAmmoText.gameObject.SetActive(state);
+        uiManager.MagazineText.gameObject.SetActive(state);
+        uiManager.BulletsIcon.gameObject.SetActive(state);
     }
 
     private void OnTriggerStay(Collider other)

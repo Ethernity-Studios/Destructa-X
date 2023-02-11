@@ -1444,7 +1444,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1223802701997621011}
-  - component: {fileID: 177778703137675184}
+  - component: {fileID: 5174338982156311404}
   m_Layer: 5
   m_Name: ShopPlayer
   m_TagString: Untagged
@@ -1482,7 +1482,7 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 120}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &177778703137675184
+--- !u!114 &5174338982156311404
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -1491,14 +1491,19 @@ MonoBehaviour:
   m_GameObject: {fileID: 1223802701997621008}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9b91ecbcc199f4492b9a91e820070131, type: 3}
+  m_Script: {fileID: 11500000, guid: 56109207e34f6e1459a872623257b45d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  sceneId: 0
-  serverOnly: 0
-  visible: 0
-  m_AssetId: 33f4a2a6aa2e9aa41b3e8b6677fbd393
-  hasSpawned: 0
+  PlayerId: 0
+  AgentIcon: {fileID: 1223802701148905346}
+  Money: {fileID: 1223802700871755585}
+  Name: {fileID: 1223802701916737391}
+  Inventory: {fileID: 1223802702115153297}
+  ShieldIcon: {fileID: 1223802701837668276}
+  PrimaryGunIcon: {fileID: 1223802700750754943}
+  SecondaryGunIcon: {fileID: 1223802702066507060}
+  Request: {fileID: 1223802702298435911}
+  RequestedGunIcon: {fileID: 1223802701824083743}
 --- !u!1 &1223802702066507058
 GameObject:
   m_ObjectHideFlags: 0

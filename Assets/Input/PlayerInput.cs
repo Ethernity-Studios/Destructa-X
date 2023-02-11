@@ -409,6 +409,34 @@ public partial class @PlayerInput : IInputActionCollection2, IDisposable
                     ""isPartOfComposite"": false
                 }
             ]
+        },
+        {
+            ""name"": ""Console"",
+            ""id"": ""f529fa0e-25a7-4cb3-a9a5-db5a280632e8"",
+            ""actions"": [
+                {
+                    ""name"": ""Open"",
+                    ""type"": ""Button"",
+                    ""id"": ""82685f5e-51a9-48fa-bf82-54b6edda5e52"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                }
+            ],
+            ""bindings"": [
+                {
+                    ""name"": """",
+                    ""id"": ""7f718ef3-90ff-4627-88b0-4ec378660431"",
+                    ""path"": ""<Keyboard>/backquote"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Open"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                }
+            ]
         }
     ],
     ""controlSchemes"": [
@@ -448,6 +476,9 @@ public partial class @PlayerInput : IInputActionCollection2, IDisposable
         m_PlayerShoot_Primary = m_PlayerShoot.FindAction("Primary", throwIfNotFound: true);
         m_PlayerShoot_Secondary = m_PlayerShoot.FindAction("Secondary", throwIfNotFound: true);
         m_PlayerShoot_Reload = m_PlayerShoot.FindAction("Reload", throwIfNotFound: true);
+        // Console
+        m_Console = asset.FindActionMap("Console", throwIfNotFound: true);
+        m_Console_Open = m_Console.FindAction("Open", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -723,6 +754,39 @@ public partial class @PlayerInput : IInputActionCollection2, IDisposable
         }
     }
     public PlayerShootActions @PlayerShoot => new PlayerShootActions(this);
+
+    // Console
+    private readonly InputActionMap m_Console;
+    private IConsoleActions m_ConsoleActionsCallbackInterface;
+    private readonly InputAction m_Console_Open;
+    public struct ConsoleActions
+    {
+        private @PlayerInput m_Wrapper;
+        public ConsoleActions(@PlayerInput wrapper) { m_Wrapper = wrapper; }
+        public InputAction @Open => m_Wrapper.m_Console_Open;
+        public InputActionMap Get() { return m_Wrapper.m_Console; }
+        public void Enable() { Get().Enable(); }
+        public void Disable() { Get().Disable(); }
+        public bool enabled => Get().enabled;
+        public static implicit operator InputActionMap(ConsoleActions set) { return set.Get(); }
+        public void SetCallbacks(IConsoleActions instance)
+        {
+            if (m_Wrapper.m_ConsoleActionsCallbackInterface != null)
+            {
+                @Open.started -= m_Wrapper.m_ConsoleActionsCallbackInterface.OnOpen;
+                @Open.performed -= m_Wrapper.m_ConsoleActionsCallbackInterface.OnOpen;
+                @Open.canceled -= m_Wrapper.m_ConsoleActionsCallbackInterface.OnOpen;
+            }
+            m_Wrapper.m_ConsoleActionsCallbackInterface = instance;
+            if (instance != null)
+            {
+                @Open.started += instance.OnOpen;
+                @Open.performed += instance.OnOpen;
+                @Open.canceled += instance.OnOpen;
+            }
+        }
+    }
+    public ConsoleActions @Console => new ConsoleActions(this);
     private int m_KeyboardSchemeIndex = -1;
     public InputControlScheme KeyboardScheme
     {
@@ -758,5 +822,9 @@ public partial class @PlayerInput : IInputActionCollection2, IDisposable
         void OnPrimary(InputAction.CallbackContext context);
         void OnSecondary(InputAction.CallbackContext context);
         void OnReload(InputAction.CallbackContext context);
+    }
+    public interface IConsoleActions
+    {
+        void OnOpen(InputAction.CallbackContext context);
     }
 }

@@ -1,29 +1,33 @@
+using System.Linq;
 using Mirror;
+using player;
 using UnityEngine;
 
 public enum PlayerState
 {
-    Idle, Walk, Run, Crouch, Jump, Planting, Defusing, Dead
+    Idle,
+    Walk,
+    Run,
+    Crouch,
+    Jump,
+    Planting,
+    Defusing,
+    Dead
 }
 
 public class Player : NetworkBehaviour, IDamageable
 {
-    [SyncVar]
-    public string PlayerName = "";
-    [SyncVar]
-    public Team PlayerTeam;
-    [SyncVar]
-    public Agent PlayerAgent;
+    [SyncVar] public string PlayerName = "";
+    [SyncVar] public Team PlayerTeam;
+    [SyncVar] public Agent PlayerAgent;
+
     [SyncVar(hook = nameof(updateMoneyText))]
     public int PlayerMoney = 800;
-    [SyncVar]
-    public int PlayerKills;
-    [SyncVar]
-    public int PlayerDeaths;
-    [SyncVar]
-    public int PlayerAssists;
-    [SyncVar]
-    public bool IsDead;
+
+    [SyncVar] public int PlayerKills;
+    [SyncVar] public int PlayerDeaths;
+    [SyncVar] public int PlayerAssists;
+    [SyncVar] public bool IsDead;
 
     //[SerializeField] GameObject UIAgent;
 
@@ -34,25 +38,24 @@ public class Player : NetworkBehaviour, IDamageable
     PlayerBombManager playerBombManager;
     UIManager uiManager;
     CharacterController characterController;
+    private PlayerUI playerUI;
 
     // TODO maybe syncVar
     public PlayerState PlayerState;
 
     [SerializeField] GameObject playerBody;
 
-    [SyncVar(hook = nameof(updateHealth))]
-    public int Health = 100;
+    [SyncVar(hook = nameof(updateHealth))] public int Health = 100;
 
-    [SyncVar(hook = nameof(updateShield))]
-    public int Shield = 0;
-    [SyncVar]
-    public int PreviousRoundShield = 0;
+    [SyncVar(hook = nameof(updateShield))] public int Shield = 0;
+    [SyncVar] public int PreviousRoundShield = 0;
 
-    [SyncVar]
-    public int RoundKills = 0;
+    [SyncVar] public int RoundKills = 0;
 
-    [SyncVar]
-    public ShieldType ShieldType = ShieldType.None;
+    [SyncVar] public ShieldType ShieldType = ShieldType.None;
+
+    private Camera _camera;
+
 
     [TargetRpc]
     public void RpcSetState(PlayerState state)
@@ -62,29 +65,27 @@ public class Player : NetworkBehaviour, IDamageable
 
     public void Start()
     {
+        _camera = Camera.main;
         if (isServer)
         {
             gameManager = FindObjectOfType<GameManager>();
         }
+
         if (isLocalPlayer)
         {
             Cursor.lockState = CursorLockMode.Locked;
             CmdSetPlayerInfo(NicknameManager.DisplayName, RoomManager.PTeam, RoomManager.PAgent);
-            //hideBody();
-            // FIXME
-            // CmdSetPlayerInfo(NicknameManager.DisplayName, RoomManager.PTeam, RoomManager.PAgent);
         }
+
         PlayerState = PlayerState.Idle;
         playerSpectateManager = GetComponent<PlayerSpectateManager>();
         playerInventoryManager = GetComponent<PlayerInventoryManager>();
         playerShootingManager = GetComponent<PlayerShootingManager>();
         playerBombManager = GetComponent<PlayerBombManager>();
+        playerUI = GetComponent<PlayerUI>();
         uiManager = FindObjectOfType<UIManager>();
 
-        //Invoke("setPlayerBody", 1f);
         setPlayerBody();
-        // Invoke("spawnUIAgent", .3f);
-        // spawnUIAgent();
     }
 
     void setPlayerBody()
@@ -95,50 +96,6 @@ public class Player : NetworkBehaviour, IDamageable
         }
     }
 
-    /*void hideBody()
-    {
-        foreach (Transform c in playerBody.GetComponentsInChildren<Transform>())
-        {
-            c.gameObject.SetActive(false);
-        }
-    }*/
-
-    /*void spawnUIAgent()
-    {
-        GameObject UIAgent = Instantiate(this.UIAgent);
-        UIAgent.name = PlayerName;
-        UIAgent.transform.GetChild(0).GetComponent<Image>().sprite = agentManager.GetAgentMeta(PlayerAgent).Meta.Icon;
-        switch (PlayerTeam)
-        {
-            case Team.Blue:
-                UIAgent.transform.SetParent(gameManager.BlueUIAgents);
-                break;
-            case Team.Red:
-                UIAgent.transform.SetParent(gameManager.RedUIAgents);
-                break;
-        }
-        UIAgent.GetComponent<RectTransform>().localScale = Vector3.one;
-    }*/
-
-    /*
-    [Command]
-    void CmdAddPlayer()
-    {
-        gameManager = FindObjectOfType<GameManager>();
-        gameManager.PlayersID.Add(netId);
-        if (PlayerTeam == Team.Blue)
-        {
-            gameManager.AliveBluePlayers++;
-            gameManager.BlueTeamPlayersIDs.Add(netId);
-        }
-        else if (PlayerTeam == Team.Red) 
-        {
-            gameManager.AliveRedPlayers++;
-            gameManager.RedTeamPlayersIDs.Add(netId);
-        } 
-    }
-    */
-
     [Command]
     public void CmdSetPlayerInfo(string name, Team team, Agent agent)
     {
@@ -147,6 +104,7 @@ public class Player : NetworkBehaviour, IDamageable
         PlayerAgent = agent;
     }
 
+
     [Command]
     public void CmdSwitchPlayerTeam(Team team) => PlayerTeam = team;
 
@@ -154,13 +112,12 @@ public class Player : NetworkBehaviour, IDamageable
     public void CmdSwitchPlayerAgent(Agent agent) => PlayerAgent = agent;
 
     [Command(requiresAuthority = false)]
-    public void CmdChangeMoney(int money) 
+    public void CmdChangeMoney(int money)
     {
         PlayerMoney += money;
         if (PlayerMoney > 9000) PlayerMoney = 9000;
-    } 
+    }
 
-    // ReSharper disable Unity.PerformanceAnalysis
     [Command(requiresAuthority = false)]
     private void CmdTakeDamage(int damage)
     {
@@ -177,25 +134,23 @@ public class Player : NetworkBehaviour, IDamageable
 
     [Command]
     public void CmdSetShield(int shield) => Shield = shield;
+
     [Command]
     public void CmdSetShieldType(ShieldType shieldType) => ShieldType = shieldType;
 
     [Command]
     public void CmdAddKill() => PlayerKills++;
+
     [Command]
     public void CmdAddRoundKill() => RoundKills++;
 
     [ClientRpc]
     public void RpcRespawnPlayer(Vector3 position, Vector3 rotation)
     {
-        //characterController = GetComponent<CharacterController>();
-        //characterController.enabled = false;
         transform.position = position;
-        transform.rotation = UnityEngine.Quaternion.Euler(rotation);
-        // ReSharper disable once Unity.PerformanceCriticalCodeCameraMain
-        Camera.main!.transform.GetComponent<CameraRotate>().RotateCamera(rotation);
-        //GetComponent<Camera>()!.transform.rotation = rotation;
-        //characterController.enabled = true;
+        transform.rotation = Quaternion.Euler(rotation);
+
+        _camera!.transform.GetComponent<CameraRotate>().RotateCamera(rotation);
     }
 
     [Command(requiresAuthority = false)]
@@ -204,9 +159,15 @@ public class Player : NetworkBehaviour, IDamageable
         Debug.Log("Killing player: " + PlayerName);
         IsDead = true;
         PlayerState = PlayerState.Dead;
-        if (PlayerTeam == Team.Blue)
-            gameManager.AliveBluePlayers--;
-        else if (PlayerTeam == Team.Red) gameManager.AliveRedPlayers--;
+        switch (PlayerTeam)
+        {
+            case Team.Blue:
+                gameManager.AliveBluePlayers--;
+                break;
+            case Team.Red:
+                gameManager.AliveRedPlayers--;
+                break;
+        }
 
         RpcKillPlayer();
         TargetRpcKillPlayer(connectionToClient);
@@ -245,20 +206,46 @@ public class Player : NetworkBehaviour, IDamageable
             playerInventoryManager.CmdSwitchItem(Item.Secondary);
             playerInventoryManager.CmdDropGun(GunType.Secondary);
         }
+
         playerInventoryManager.CmdSwitchItem(Item.Knife);
     }
 
     void updateHealth(int _, int newValue)
     {
         if (!isLocalPlayer) return;
+        CmdUpdateHealth(newValue);
         uiManager.Health.text = newValue.ToString();
-        if (newValue < 0) uiManager.Health.text = 0.ToString();
+        uiManager.HealthBar.fillAmount = newValue * .01f;
+
+        if (newValue >= 0) return;
+        uiManager.Health.text = 0.ToString();
+        uiManager.HealthBar.fillAmount = 0;
+    }
+
+    [Command]
+    void CmdUpdateHealth(int value)
+    {
+        foreach (Player player in gameManager.PlayersID.Select(gameManager.GetPlayer))
+        {
+            if (player.PlayerTeam == PlayerTeam) RpcUpdateHealth(player.netIdentity.connectionToClient, value);
+        }
+    }
+
+    [TargetRpc]
+    void RpcUpdateHealth(NetworkConnection conn, int value)
+    {
+        HeaderPlayer headerPlayer = playerUI.PlayerHeader.GetComponent<HeaderPlayer>();
+
+        headerPlayer.Health.fillAmount = value * .01f;
+        if (value >= 0) return;
+        headerPlayer.Health.fillAmount = 0;
     }
 
     void updateShield(int _, int newValue)
     {
-        if (isLocalPlayer)
-            uiManager.Shield.text = newValue.ToString();
+        if (!isLocalPlayer) return;
+        uiManager.Shield.text = newValue.ToString();
+        uiManager.ShieldBar.fillAmount = newValue / 100;
     }
 
     void updateMoneyText(int _, int newValue)
@@ -271,7 +258,7 @@ public class Player : NetworkBehaviour, IDamageable
     {
         int h = Health;
         CmdTakeDamage(damage);
-        return damage >= h;   
+        return damage >= h;
     }
 
     public void AddHealth(int health) => CmdAddHealth(health);

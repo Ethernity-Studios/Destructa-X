@@ -88,6 +88,7 @@ GameObject:
   - component: {fileID: 2109682146115182061}
   - component: {fileID: 2109682146115182060}
   - component: {fileID: 4181676917613499393}
+  - component: {fileID: 599227485043722447}
   m_Layer: 5
   m_Name: Header_Player_Green
   m_TagString: Untagged
@@ -172,6 +173,20 @@ MonoBehaviour:
   visible: 0
   m_AssetId: 61da4be82c60eb24a9d173d98471de9d
   hasSpawned: 0
+--- !u!114 &599227485043722447
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2109682146115182050}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 68ea39c6a76de1345a98868cc4255bd0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Health: {fileID: 857720410210476418}
+  Agent: {fileID: 7706003305179432730}
 --- !u!1 &2803777746920394067
 GameObject:
   m_ObjectHideFlags: 0

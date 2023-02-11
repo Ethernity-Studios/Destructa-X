@@ -1,14 +1,42 @@
+using System;
 using UnityEngine;
+using UnityEngine.InputSystem;
+using Random = UnityEngine.Random;
 
 public class ConsoleToGUI : MonoBehaviour
 {
+    private PlayerInput playerInput;
+    
     string myLog = "*begin log";
     string filename = "";
     bool doShow = false;
     int kChars = 700;
-    void OnEnable() { Application.logMessageReceived += Log; }
-    void OnDisable() { Application.logMessageReceived -= Log; }
-    void Update() { if (Input.GetKeyDown(KeyCode.L)) { doShow = !doShow; } }
+
+    private void Awake()
+    {
+        playerInput = new();
+        playerInput.Enable();
+
+        playerInput.Console.Open.performed += toggleConsole;
+    }
+
+    void OnEnable()
+    {
+        playerInput.Console.Enable();
+        Application.logMessageReceived += Log;
+    }
+
+    void OnDisable()
+    {
+        playerInput.Console.Disable();
+        Application.logMessageReceived -= Log;
+    }
+
+    void toggleConsole(InputAction.CallbackContext context)
+    {
+        if (!context.performed) return;
+        doShow = !doShow;
+    }
 
     private void Start() => DontDestroyOnLoad(gameObject);
 
