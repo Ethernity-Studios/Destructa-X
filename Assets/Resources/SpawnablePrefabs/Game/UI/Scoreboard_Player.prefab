@@ -66,7 +66,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: c330ebe0a8120e9419176c2c28406b5d, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 61230ed7188a61e4397d65615259ffe6, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -278,7 +278,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: a94bd62fcf60b794c8a7d430f3a74997, type: 3}
+  m_Sprite: {fileID: 21300000, guid: a917043e729c9a24b877fa1252ba23b2, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -297,9 +297,10 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4933623118060158418}
-  - component: {fileID: 1111044461377916496}
+  - component: {fileID: 7382020196685814726}
+  - component: {fileID: -1944020586788590376}
   m_Layer: 5
-  m_Name: Scoreboard_Player_red
+  m_Name: Scoreboard_Player
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -335,7 +336,29 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 800, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &1111044461377916496
+--- !u!114 &7382020196685814726
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4933623118060158419}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: adf71253bc890f141b9a4c7c36592fed, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Name: {fileID: 4933623117928612264}
+  Ultimate: {fileID: 4933623119024676702}
+  AgentIcon: {fileID: 4933623118978651599}
+  KDA: {fileID: 4933623118421521718}
+  GunIcon: {fileID: 4933623118125701328}
+  Money: {fileID: 4933623118711694807}
+  Ping: {fileID: 4933623118508178183}
+  Border: {fileID: 4933623118804914391}
+  Background: {fileID: 4933623117845290780}
+  Owner: {fileID: 0}
+--- !u!114 &-1944020586788590376
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -350,7 +373,7 @@ MonoBehaviour:
   sceneId: 0
   serverOnly: 0
   visible: 0
-  m_AssetId: cb9b0dbc3bf9d4d4a8b0f6cc6459435e
+  m_AssetId: 782a21b26dab12a4faaf84cef201bf17
   hasSpawned: 0
 --- !u!1 &4933623118125701342
 GameObject:
@@ -892,7 +915,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.8388577, g: 0.56078434, b: 0.5568628, a: 1}
+  m_Color: {r: 0.5568628, g: 0.8392157, b: 0.6313726, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -1127,7 +1150,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 2/6
+  m_text: 0/6
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 5ed251ae614676840a2e608f7bce38d3, type: 2}
   m_sharedMaterial: {fileID: 2668923041365894296, guid: 5ed251ae614676840a2e608f7bce38d3, type: 2}

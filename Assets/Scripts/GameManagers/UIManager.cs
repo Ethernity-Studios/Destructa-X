@@ -64,4 +64,18 @@ public class UIManager : MonoBehaviour
     public TMP_Text ShopPlayerMinMoneyNextRound;
 
     public GameObject ShopPlayer;
+
+    [Header("Scoreboard")] 
+    public GameObject PlayerScoreboard;
+
+    public GameObject FriendlyTeamScoreboard;
+    public GameObject EnemyTeamScoreboard;
+
+    public Sprite RedTeamBackgroundScoreboard;
+
+    [Header("Items")] 
+    public Sprite Knife;
+
+    [Header("Performance")] 
+    public TMP_Text Latency;
 }

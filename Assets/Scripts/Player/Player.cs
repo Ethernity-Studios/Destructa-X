@@ -23,6 +23,10 @@ public class Player : NetworkBehaviour, IDamageable
 
     [SyncVar(hook = nameof(updateMoneyText))]
     public int PlayerMoney = 800;
+    [SyncVar]
+    public double Ping;
+
+    [SyncVar] public int EnemyPlayerMoney = 800;
 
     [SyncVar] public int PlayerKills;
     [SyncVar] public int PlayerDeaths;
@@ -88,6 +92,20 @@ public class Player : NetworkBehaviour, IDamageable
         setPlayerBody();
     }
 
+    private void Update()
+    {
+        if (!isLocalPlayer) return;
+        CmdUpdatePing(NetworkTime.rtt);
+        if (Input.GetKeyDown(KeyCode.U)) TakeDamage(10);
+    }
+
+    [Command]
+    void CmdUpdatePing(double ping)
+    {
+        Ping = ping;
+    }
+
+
     void setPlayerBody()
     {
         if (!isLocalPlayer)
@@ -115,7 +133,8 @@ public class Player : NetworkBehaviour, IDamageable
     public void CmdChangeMoney(int money)
     {
         PlayerMoney += money;
-        if (PlayerMoney > 9000) PlayerMoney = 9000;
+        if (PlayerMoney <= 9000) return;
+        PlayerMoney = 9000;
     }
 
     [Command(requiresAuthority = false)]
@@ -253,7 +272,7 @@ public class Player : NetworkBehaviour, IDamageable
         if (isLocalPlayer)
             uiManager.Money.text = newValue.ToString();
     }
-
+    
     public bool TakeDamage(int damage)
     {
         int h = Health;
@@ -262,10 +281,4 @@ public class Player : NetworkBehaviour, IDamageable
     }
 
     public void AddHealth(int health) => CmdAddHealth(health);
-
-    private void Update()
-    {
-        if (!isLocalPlayer) return;
-        if (Input.GetKeyDown(KeyCode.U)) TakeDamage(10);
-    }
 }

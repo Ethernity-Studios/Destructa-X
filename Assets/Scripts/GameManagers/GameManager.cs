@@ -347,6 +347,10 @@ public class GameManager : NetworkBehaviour
 
         foreach (Player player in PlayersID.Select(GetPlayer))
         {
+            player.EnemyPlayerMoney = player.PlayerMoney;
+            PlayerUI playerUI = player.GetComponent<PlayerUI>();
+            playerUI.RpcUpdatePlayerMoney();
+            
             player.PreviousRoundShield = player.Shield;
             PlayerInventoryManager playerInventory = player.GetComponent<PlayerInventoryManager>();
             playerStateManger.RpcSetDefaultPlayerSettings(player);
