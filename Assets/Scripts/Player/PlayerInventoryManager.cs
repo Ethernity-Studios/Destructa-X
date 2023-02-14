@@ -1,5 +1,7 @@
 using Mirror;
 using System.Collections;
+using System.Linq;
+using player;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -36,6 +38,7 @@ public class PlayerInventoryManager : NetworkBehaviour
     PlayerShootingManager playerShootingManager;
     private UIManager uiManager;
     Player player;
+    private PlayerUI playerUI;
 
     [SyncVar] public bool GunEquipped = true;
 
@@ -63,6 +66,7 @@ public class PlayerInventoryManager : NetworkBehaviour
         playerShootingManager = GetComponent<PlayerShootingManager>();
         gameManager = FindObjectOfType<GameManager>();
         uiManager = gameManager.UIManager;
+        playerUI = player.GetComponent<PlayerUI>();
 
         if (!isLocalPlayer) return;
         setLayerMask(KnifeHolder.transform.GetChild(0).gameObject, 6);
@@ -222,7 +226,14 @@ public class PlayerInventoryManager : NetworkBehaviour
 
 
     [Command]
-    void CmdPickBomb() => RpcPickBomb();
+    void CmdPickBomb()
+    {
+        RpcPickBomb();
+        foreach (var p in gameManager.PlayersID.Select(gameManager.GetPlayer))
+        {
+            if(p.PlayerTeam == player.PlayerTeam) playerUI.RpcToggleHeaderBomb(p.netIdentity.connectionToClient, true);
+        }
+    }
 
     [ClientRpc]
     void RpcPickBomb()
@@ -239,7 +250,15 @@ public class PlayerInventoryManager : NetworkBehaviour
     }
 
     [Command]
-    public void CmdDropBomb() => RpcDropBomb();
+    public void CmdDropBomb()
+    {
+        RpcDropBomb();
+        foreach (var p in gameManager.PlayersID.Select(gameManager.GetPlayer))
+        {
+            if(p.PlayerTeam == player.PlayerTeam) playerUI.RpcToggleHeaderBomb(p.netIdentity.connectionToClient, false);
+        }
+    }
+    
 
     [ClientRpc]
     void RpcDropBomb()
@@ -255,6 +274,8 @@ public class PlayerInventoryManager : NetworkBehaviour
         rb.AddForce(transform.GetChild(0).transform.TransformDirection(new Vector3(0, 0, 400)));
         Bomb = null;
     }
+
+
 
     void setBombLayer() => gameManager.Bomb.transform.GetChild(0).gameObject.layer = 8;
 

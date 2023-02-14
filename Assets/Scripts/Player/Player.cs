@@ -244,20 +244,20 @@ public class Player : NetworkBehaviour, IDamageable
     [Command]
     void CmdUpdateHealth(int value)
     {
-        foreach (Player player in gameManager.PlayersID.Select(gameManager.GetPlayer))
+        foreach (Player p in gameManager.PlayersID.Select(gameManager.GetPlayer))
         {
-            if (player.PlayerTeam == PlayerTeam) RpcUpdateHealth(player.netIdentity.connectionToClient, value);
+            if (p.PlayerTeam == PlayerTeam) RpcUpdateHealth(p.netIdentity.connectionToClient, value);
         }
     }
 
     [TargetRpc]
     void RpcUpdateHealth(NetworkConnection conn, int value)
     {
-        HeaderPlayer headerPlayer = playerUI.PlayerHeader.GetComponent<HeaderPlayer>();
+        PlayerHeader playerHeader = playerUI.HeaderPlayer.GetComponent<PlayerHeader>();
 
-        headerPlayer.Health.fillAmount = value * .01f;
+        playerHeader.Health.fillAmount = value * .01f;
         if (value >= 0) return;
-        headerPlayer.Health.fillAmount = 0;
+        playerHeader.Health.fillAmount = 0;
     }
 
     void updateShield(int _, int newValue)

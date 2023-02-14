@@ -47,11 +47,11 @@ public class UIManager : MonoBehaviour
     public string RoundLoseText, RoundLoseSubText;
 
     [Header("Header")]
-    public GameObject HeaderGreenTeam;
-    public GameObject HeaderRedTeam;
+    public GameObject HeaderPlayer;
+    public Sprite RedTeamBackgroundHeader;
 
-    public GameObject HeaderGreenPlayer;
-    public GameObject HeaderRedPlayer;
+    public GameObject FriendlyTeamHeader;
+    public GameObject EnemyTeamHeader;
 
     [Header("Shop")] 
     public GameObject ShopTeam;
@@ -66,12 +66,16 @@ public class UIManager : MonoBehaviour
     public GameObject ShopPlayer;
 
     [Header("Scoreboard")] 
+    public GameObject Scoreboard;
     public GameObject PlayerScoreboard;
 
     public GameObject FriendlyTeamScoreboard;
     public GameObject EnemyTeamScoreboard;
 
     public Sprite RedTeamBackgroundScoreboard;
+
+    public TMP_Text BlueScoreboardScore;
+    public TMP_Text RedScoreboardScore;
 
     [Header("Items")] 
     public Sprite Knife;

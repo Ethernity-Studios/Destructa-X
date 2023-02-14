@@ -389,6 +389,34 @@
             ]
         },
         {
+            "name": "PlayerUI",
+            "id": "95e5c1c1-ebfc-4d27-91a6-350c80f93178",
+            "actions": [
+                {
+                    "name": "Scoreboard",
+                    "type": "Button",
+                    "id": "e95774de-e392-4c9b-94d9-cf7f62b5ebf9",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "9d72cf8c-2b20-4f84-b97f-dc36adc59120",
+                    "path": "<Keyboard>/tab",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Scoreboard",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
+        },
+        {
             "name": "Console",
             "id": "f529fa0e-25a7-4cb3-a9a5-db5a280632e8",
             "actions": [

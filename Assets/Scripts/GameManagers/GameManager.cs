@@ -210,25 +210,25 @@ public class GameManager : NetworkBehaviour
         BombState = BombState.NotPlanted;
         // Invoke("RpcSetupGame",2f);
         playerStateManger.RpcSetupGame();
-        // Invoke("ServerSpawnBomb", 1f);
-        ServerSpawnBomb();
+        Invoke(nameof(ServerSpawnBomb), 1f);
+        //ServerSpawnBomb();
         Invoke(nameof(spawnPlayers), 1.5f);
         //spawnPlayers(); 
         Invoke(nameof(giveDefaultGun), 1f); // maybe fix me later ^^
-        Invoke(nameof(InitPlayerUI),1f);
+        //Invoke(nameof(InitPlayerUI),1f);
         //giveDefaultGun();
         StartRound(GameState.StartGame);
     }
 
-    [Server]
+    /*[Server]
     void InitPlayerUI()
     {
         foreach (Player player in PlayersID.Select(GetPlayer))
         {
             PlayerUI playerUI = player.GetComponent<PlayerUI>();
-            playerUI.AddPlayerToHeader();
+            //playerUI.AddPlayerToHeader();
         }
-    }
+    }*/
 
 
     [Server]
@@ -416,6 +416,7 @@ public class GameManager : NetworkBehaviour
                 LosingTeam = Team.Blue;
                 break;
         }
+        RpcUpdateScoreboardScore();
 
         if(LosingTeam == tempTeam)
         {
@@ -427,6 +428,13 @@ public class GameManager : NetworkBehaviour
             Debug.Log("resetting loss streak");
             LossStreak = 0;
         }
+    }
+
+    [ClientRpc]
+    void RpcUpdateScoreboardScore()
+    {
+        UIManager.BlueScoreboardScore.text = BlueTeamScore.ToString();
+        UIManager.RedScoreboardScore.text = RedTeamScore.ToString();
     }
     
     [Server]
@@ -521,7 +529,13 @@ public class GameManager : NetworkBehaviour
         // bombInstance.transform.SetParent(gameObject.transform);
         bombInstance.transform.position = bombSpawnLocation.position;
         NetworkServer.Spawn(bombInstance);
-        Bomb = bombInstance;
+        RpcSpawnBomb(bombInstance);
+    }
+
+    [ClientRpc]
+    void RpcSpawnBomb(GameObject bomb)
+    {
+        Bomb = bomb;
     }
     
     [Server]

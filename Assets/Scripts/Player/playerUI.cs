@@ -1,11 +1,9 @@
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using GameManagers;
 using Mirror;
-using objects;
 using UnityEngine;
-using UnityEngine.UIElements;
+using static UnityEngine.InputSystem.InputAction;
 
 namespace player
 {
@@ -25,9 +23,19 @@ namespace player
 
         private UIManager uiManager;
 
-        [SyncVar] public GameObject PlayerHeader;
-
+        public PlayerHeader HeaderPlayer;
         public PlayerScoreboard ScoreboardPlayer;
+
+        private PlayerInput playerInput;
+
+        private void Awake()
+        {
+            playerInput = new PlayerInput();
+            playerInput.PlayerUI.Enable();
+
+            playerInput.PlayerUI.Scoreboard.performed += openScoreboard;
+            playerInput.PlayerUI.Scoreboard.canceled += closeScoreboard;
+        }
 
         private void Start()
         {
@@ -40,9 +48,13 @@ namespace player
             gameStateUi = FindObjectOfType<GameStateUi>();
             if (!isLocalPlayer) return;
             Invoke(nameof(CmdAddPlayersToShop), 1.5f);
-            Invoke(nameof(spawnPlayerScoreboard),1f);
+            Invoke(nameof(CmdSpawnPlayerScoreboard),1f);
+            Invoke(nameof(CmdSpawnPlayerHeader),1f);
         }
 
+        private void OnEnable() => playerInput.PlayerInventory.Enable();
+
+        private void OnDisable() => playerInput.PlayerInventory.Disable();
 
         private void Update()
         {
@@ -65,48 +77,51 @@ namespace player
                     break;
             }
         }
-
-        [Server]
-        public void AddPlayerToHeader()
+        
+        void DrawPlantSlider(bool _, bool newValue)
         {
-            GameObject playerHeader;
-            switch (player.PlayerTeam)
-            {
-                case Team.Blue:
-                    playerHeader = Instantiate(uiManager.HeaderGreenPlayer);
-                    NetworkServer.Spawn(playerHeader);
-                    RpcAddPlayerToHeader(playerHeader);
-                    break;
-                case Team.Red:
-                    playerHeader = Instantiate(uiManager.HeaderRedPlayer);
-                    NetworkServer.Spawn(playerHeader);
-                    RpcAddPlayerToHeader(playerHeader);
-                    break;
-            }
-
-            foreach (Player p in gameManager.PlayersID.Select(gameManager.GetPlayer))
-            {
-                if (p.PlayerTeam != player.PlayerTeam) RpcHidePlayerHeaderHealthBar(p.netIdentity.connectionToClient);
-            }
+            Debug.Log("DrawPlantSlider");
+            gameStateUi.PlantProgressSlider.transform.parent.gameObject.SetActive(newValue);
+            // gameStateUi.PlantProgressSlider.gameObject.SetActive(newValue);
         }
 
+        void DrawDefuseSlider(bool _, bool newValue)
+        {
+            Debug.Log("DrawDefuseSlider");
+            gameStateUi.DefuseProgressSlider.transform.parent.gameObject.SetActive(newValue);
+            // gameStateUi.DefuseProgressSlider.gameObject.SetActive(newValue);
+        }
+
+        void DrawPlant(float _, float newValue)
+        {
+            Debug.Log("DrawPlant");
+            gameStateUi.PlantProgressSlider.value = newValue;
+        }
+
+        void DrawDefuse(float _, float newValue)
+        {
+            Debug.Log("DrawDefuse");
+            gameStateUi.DefuseProgressSlider.value = newValue;
+        }
+
+        void openScoreboard(CallbackContext context)
+        {
+            if (!isLocalPlayer) return;
+            uiManager.Scoreboard.SetActive(true);
+        }
+
+        void closeScoreboard(CallbackContext context)
+        {
+            if (!isLocalPlayer) return;
+            uiManager.Scoreboard.SetActive(false);
+        }
+        
         [TargetRpc]
-        void RpcHidePlayerHeaderHealthBar(NetworkConnection conn)
+        public void RpcToggleHeaderBomb(NetworkConnection conn, bool state)
         {
-            PlayerHeader.GetComponent<HeaderPlayer>().Health.transform.parent.gameObject.SetActive(false);
+            HeaderPlayer.GetComponent<PlayerHeader>().Bomb.gameObject.SetActive(state);
         }
-
-        [ClientRpc]
-        public void RpcAddPlayerToHeader(GameObject playerHeader /*, AgentScriptableObject agent*/)
-        {
-            if (player.PlayerTeam == Team.Blue) playerHeader.transform.SetParent(uiManager.HeaderGreenTeam.transform);
-            else if (player.PlayerTeam == Team.Red) playerHeader.transform.SetParent(uiManager.HeaderRedTeam.transform);
-            HeaderPlayer playerH = playerHeader.GetComponent<HeaderPlayer>();
-            //if (!isLocalPlayer) return;
-            PlayerHeader = playerHeader;
-            //playerH.Agent.sprite = agent.Meta.Icon; // TODO set player agent icon
-        }
-
+        
         [Command(requiresAuthority = false)]
         void CmdAddPlayersToShop()
         {
@@ -134,34 +149,42 @@ namespace player
             //sPlayer.AgentIcon = player.AgentIcon; TODO agent icon
         }
 
-        void DrawPlantSlider(bool _, bool newValue)
+        [Command]
+        void CmdSpawnPlayerHeader()
         {
-            Debug.Log("DrawPlantSlider");
-            gameStateUi.PlantProgressSlider.transform.parent.gameObject.SetActive(newValue);
-            // gameStateUi.PlantProgressSlider.gameObject.SetActive(newValue);
+            GameObject playerHeader = Instantiate(uiManager.HeaderPlayer);
+            NetworkServer.Spawn(playerHeader);
+            
+            foreach (var p in gameManager.PlayersID.Select(gameManager.GetPlayer))
+            {
+                if (p.PlayerTeam == player.PlayerTeam) RpcSpawnTeamPlayerHeader(p.netIdentity.connectionToClient, playerHeader);
+                else RpcSpawnEnemyPlayerHeader(p.netIdentity.connectionToClient, playerHeader);
+            }
         }
 
-        void DrawDefuseSlider(bool _, bool newValue)
+        [TargetRpc]
+        void RpcSpawnTeamPlayerHeader(NetworkConnection conn, GameObject playerHeader)
         {
-            Debug.Log("DrawDefuseSlider");
-            gameStateUi.DefuseProgressSlider.transform.parent.gameObject.SetActive(newValue);
-            // gameStateUi.DefuseProgressSlider.gameObject.SetActive(newValue);
+            HeaderPlayer = playerHeader.GetComponent<PlayerHeader>();
+            playerHeader.transform.SetParent(uiManager.FriendlyTeamHeader.transform);
+            //HeaderPlayer.Agent.sprite =  TODO
+            playerHeader.transform.localScale = Vector3.one/10;
+
         }
 
-        void DrawPlant(float _, float newValue)
+        [TargetRpc]
+        void RpcSpawnEnemyPlayerHeader(NetworkConnection conn, GameObject playerHeader)
         {
-            Debug.Log("DrawPlant");
-            gameStateUi.PlantProgressSlider.value = newValue;
-        }
-
-        void DrawDefuse(float _, float newValue)
-        {
-            Debug.Log("DrawDefuse");
-            gameStateUi.DefuseProgressSlider.value = newValue;
+            HeaderPlayer = playerHeader.GetComponent<PlayerHeader>();
+            playerHeader.transform.SetParent(uiManager.EnemyTeamHeader.transform);
+            HeaderPlayer.Health.transform.parent.gameObject.SetActive(false);
+            HeaderPlayer.Background.sprite = uiManager.RedTeamBackgroundHeader;
+            //HeaderPlayer.Agent.sprite =  TODO
+            playerHeader.transform.localScale = Vector3.one/10;
         }
 
         [Command]
-        void spawnPlayerScoreboard()
+        void CmdSpawnPlayerScoreboard()
         {
             GameObject playerScoreboard = Instantiate(uiManager.PlayerScoreboard);
             NetworkServer.Spawn(playerScoreboard);
@@ -170,7 +193,6 @@ namespace player
             {
                 if (p.PlayerTeam == player.PlayerTeam) RpcSpawnTeamPlayerScoreboard(p.netIdentity.connectionToClient, playerScoreboard);
                 else RpcSpawnEnemyPlayerScoreboard(p.netIdentity.connectionToClient, playerScoreboard);
-                
             }
         }
 

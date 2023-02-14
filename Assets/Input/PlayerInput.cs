@@ -411,6 +411,34 @@ public partial class @PlayerInput : IInputActionCollection2, IDisposable
             ]
         },
         {
+            ""name"": ""PlayerUI"",
+            ""id"": ""95e5c1c1-ebfc-4d27-91a6-350c80f93178"",
+            ""actions"": [
+                {
+                    ""name"": ""Scoreboard"",
+                    ""type"": ""Button"",
+                    ""id"": ""e95774de-e392-4c9b-94d9-cf7f62b5ebf9"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                }
+            ],
+            ""bindings"": [
+                {
+                    ""name"": """",
+                    ""id"": ""9d72cf8c-2b20-4f84-b97f-dc36adc59120"",
+                    ""path"": ""<Keyboard>/tab"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Scoreboard"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                }
+            ]
+        },
+        {
             ""name"": ""Console"",
             ""id"": ""f529fa0e-25a7-4cb3-a9a5-db5a280632e8"",
             ""actions"": [
@@ -476,6 +504,9 @@ public partial class @PlayerInput : IInputActionCollection2, IDisposable
         m_PlayerShoot_Primary = m_PlayerShoot.FindAction("Primary", throwIfNotFound: true);
         m_PlayerShoot_Secondary = m_PlayerShoot.FindAction("Secondary", throwIfNotFound: true);
         m_PlayerShoot_Reload = m_PlayerShoot.FindAction("Reload", throwIfNotFound: true);
+        // PlayerUI
+        m_PlayerUI = asset.FindActionMap("PlayerUI", throwIfNotFound: true);
+        m_PlayerUI_Scoreboard = m_PlayerUI.FindAction("Scoreboard", throwIfNotFound: true);
         // Console
         m_Console = asset.FindActionMap("Console", throwIfNotFound: true);
         m_Console_Open = m_Console.FindAction("Open", throwIfNotFound: true);
@@ -755,6 +786,39 @@ public partial class @PlayerInput : IInputActionCollection2, IDisposable
     }
     public PlayerShootActions @PlayerShoot => new PlayerShootActions(this);
 
+    // PlayerUI
+    private readonly InputActionMap m_PlayerUI;
+    private IPlayerUIActions m_PlayerUIActionsCallbackInterface;
+    private readonly InputAction m_PlayerUI_Scoreboard;
+    public struct PlayerUIActions
+    {
+        private @PlayerInput m_Wrapper;
+        public PlayerUIActions(@PlayerInput wrapper) { m_Wrapper = wrapper; }
+        public InputAction @Scoreboard => m_Wrapper.m_PlayerUI_Scoreboard;
+        public InputActionMap Get() { return m_Wrapper.m_PlayerUI; }
+        public void Enable() { Get().Enable(); }
+        public void Disable() { Get().Disable(); }
+        public bool enabled => Get().enabled;
+        public static implicit operator InputActionMap(PlayerUIActions set) { return set.Get(); }
+        public void SetCallbacks(IPlayerUIActions instance)
+        {
+            if (m_Wrapper.m_PlayerUIActionsCallbackInterface != null)
+            {
+                @Scoreboard.started -= m_Wrapper.m_PlayerUIActionsCallbackInterface.OnScoreboard;
+                @Scoreboard.performed -= m_Wrapper.m_PlayerUIActionsCallbackInterface.OnScoreboard;
+                @Scoreboard.canceled -= m_Wrapper.m_PlayerUIActionsCallbackInterface.OnScoreboard;
+            }
+            m_Wrapper.m_PlayerUIActionsCallbackInterface = instance;
+            if (instance != null)
+            {
+                @Scoreboard.started += instance.OnScoreboard;
+                @Scoreboard.performed += instance.OnScoreboard;
+                @Scoreboard.canceled += instance.OnScoreboard;
+            }
+        }
+    }
+    public PlayerUIActions @PlayerUI => new PlayerUIActions(this);
+
     // Console
     private readonly InputActionMap m_Console;
     private IConsoleActions m_ConsoleActionsCallbackInterface;
@@ -822,6 +886,10 @@ public partial class @PlayerInput : IInputActionCollection2, IDisposable
         void OnPrimary(InputAction.CallbackContext context);
         void OnSecondary(InputAction.CallbackContext context);
         void OnReload(InputAction.CallbackContext context);
+    }
+    public interface IPlayerUIActions
+    {
+        void OnScoreboard(InputAction.CallbackContext context);
     }
     public interface IConsoleActions
     {
