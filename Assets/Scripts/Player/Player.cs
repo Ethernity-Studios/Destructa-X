@@ -23,10 +23,11 @@ public class Player : NetworkBehaviour, IDamageable
 
     [SyncVar(hook = nameof(updateMoneyText))]
     public int PlayerMoney = 800;
-    [SyncVar]
-    public double Ping;
+    [SyncVar] 
+    public int EnemyPlayerMoney = 800;
 
-    [SyncVar] public int EnemyPlayerMoney = 800;
+    [SyncVar] public double Ping;
+
 
     [SyncVar] public int PlayerKills;
     [SyncVar] public int PlayerDeaths;
@@ -133,8 +134,12 @@ public class Player : NetworkBehaviour, IDamageable
     public void CmdChangeMoney(int money)
     {
         PlayerMoney += money;
-        if (PlayerMoney <= 9000) return;
-        PlayerMoney = 9000;
+        if (PlayerMoney > 9000) PlayerMoney = 9000;
+
+        foreach (var p in gameManager.PlayersID.Select(gameManager.GetPlayer))
+        {
+            playerUI.RpcUpdatePlayerTeamMoney(p.netIdentity.connectionToClient, money);
+        }
     }
 
     [Command(requiresAuthority = false)]
@@ -187,7 +192,6 @@ public class Player : NetworkBehaviour, IDamageable
                 gameManager.AliveRedPlayers--;
                 break;
         }
-
         RpcKillPlayer();
         TargetRpcKillPlayer(connectionToClient);
     }
@@ -202,6 +206,7 @@ public class Player : NetworkBehaviour, IDamageable
     void TargetRpcKillPlayer(NetworkConnection conn)
     {
         dropItems();
+        playerUI.CmdDestroyPlayerHeader();
         playerBombManager.StopAllCoroutines();
         playerShootingManager.StopAllCoroutines();
         playerInventoryManager.StopAllCoroutines();
@@ -272,7 +277,8 @@ public class Player : NetworkBehaviour, IDamageable
         if (isLocalPlayer)
             uiManager.Money.text = newValue.ToString();
     }
-    
+
+
     public bool TakeDamage(int damage)
     {
         int h = Health;

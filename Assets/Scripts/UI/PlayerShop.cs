@@ -3,10 +3,10 @@ using UnityEditor.PackageManager.Requests;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class ShopPlayer : MonoBehaviour
+public class PlayerShop : MonoBehaviour
 {
     [Header("Player")] 
-    public int PlayerId;
+    public Player Owner;
     public Image AgentIcon;
     public TMP_Text Money;
     public TMP_Text Name;

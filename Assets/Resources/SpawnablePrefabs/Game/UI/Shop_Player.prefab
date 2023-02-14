@@ -1445,8 +1445,9 @@ GameObject:
   m_Component:
   - component: {fileID: 1223802701997621011}
   - component: {fileID: 5174338982156311404}
+  - component: {fileID: -5837668522989409454}
   m_Layer: 5
-  m_Name: ShopPlayer
+  m_Name: Shop_Player
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1504,6 +1505,23 @@ MonoBehaviour:
   SecondaryGunIcon: {fileID: 1223802702066507060}
   Request: {fileID: 1223802702298435911}
   RequestedGunIcon: {fileID: 1223802701824083743}
+--- !u!114 &-5837668522989409454
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1223802701997621008}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9b91ecbcc199f4492b9a91e820070131, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  sceneId: 0
+  serverOnly: 0
+  visible: 0
+  m_AssetId: 33f4a2a6aa2e9aa41b3e8b6677fbd393
+  hasSpawned: 0
 --- !u!1 &1223802702066507058
 GameObject:
   m_ObjectHideFlags: 0

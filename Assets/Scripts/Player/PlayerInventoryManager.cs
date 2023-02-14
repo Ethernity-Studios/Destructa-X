@@ -238,7 +238,6 @@ public class PlayerInventoryManager : NetworkBehaviour
     [ClientRpc]
     void RpcPickBomb()
     {
-        Debug.Log("RPc pick bomb");
         Bomb = gameManager.Bomb;
         Bomb.transform.GetChild(0).gameObject.layer = 6;
         if (isLocalPlayer) setLayerMask(Bomb, 6);
@@ -288,7 +287,6 @@ public class PlayerInventoryManager : NetworkBehaviour
     [ClientRpc]
     void RpcPickGun(GameObject gunInstance)
     {
-        Debug.Log("Rpc pick gun");
         GunInstance instance = gunInstance.GetComponent<GunInstance>();
         if (!instance.CanBePicked) return;
         instance.IsDropped = false;

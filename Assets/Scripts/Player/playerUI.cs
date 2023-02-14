@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using System.Runtime.InteropServices.ComTypes;
 using GameManagers;
 using Mirror;
 using UnityEngine;
@@ -25,6 +26,7 @@ namespace player
 
         public PlayerHeader HeaderPlayer;
         public PlayerScoreboard ScoreboardPlayer;
+        public PlayerShop ShopPlayer;
 
         private PlayerInput playerInput;
 
@@ -47,9 +49,10 @@ namespace player
             gameStateUi.PlantProgressSlider.transform.parent.gameObject.SetActive(false);
             gameStateUi = FindObjectOfType<GameStateUi>();
             if (!isLocalPlayer) return;
-            Invoke(nameof(CmdAddPlayersToShop), 1.5f);
+            //Invoke(nameof(CmdAddPlayersToShop), 1.5f);
             Invoke(nameof(CmdSpawnPlayerScoreboard),1f);
             Invoke(nameof(CmdSpawnPlayerHeader),1f);
+            Invoke(nameof(CmdSpawnPlayerShop),1f);
         }
 
         private void OnEnable() => playerInput.PlayerInventory.Enable();
@@ -122,7 +125,7 @@ namespace player
             HeaderPlayer.GetComponent<PlayerHeader>().Bomb.gameObject.SetActive(state);
         }
         
-        [Command(requiresAuthority = false)]
+        /*[Command(requiresAuthority = false)]
         void CmdAddPlayersToShop()
         {
             foreach (Player p in gameManager.PlayersID.Select(gameManager.GetPlayer))
@@ -142,11 +145,45 @@ namespace player
             GameObject shopPlayer = Instantiate(uiManager.ShopPlayer, uiManager.ShopTeam.transform, true);
 
             shopPlayer.transform.localScale = Vector3.one;
-            ShopPlayer sPlayer = shopPlayer.GetComponent<ShopPlayer>();
-            sPlayer.PlayerId =
-                (int)p.netId; //p.netIdentity.connectionToServer.connectionId; null for some reason :shrug: ¯\_(ツ)_/¯
-            sPlayer.Name.text = p.PlayerName;
+            PlayerShop s = shopPlayer.GetComponent<PlayerShop>();
+            s.Owner = player;
+                ; //p.netIdentity.connectionToServer.connectionId; null for some reason :shrug: ¯\_(ツ)_/¯
+            s.Name.text = p.PlayerName;
             //sPlayer.AgentIcon = player.AgentIcon; TODO agent icon
+        }*/
+
+        [Command]
+        void CmdSpawnPlayerShop()
+        {
+            GameObject playerShop = Instantiate(uiManager.ShopPlayer);
+            NetworkServer.Spawn(playerShop);
+            
+            foreach (var p in gameManager.PlayersID.Select(gameManager.GetPlayer))
+            {
+                if (p.PlayerTeam == player.PlayerTeam) RpcSpawnTeamPlayerShop(p.netIdentity.connectionToClient, playerShop);
+                else RpcSpawnEnemyPlayerShop(p.netIdentity.connectionToClient, playerShop);
+            }
+        }
+
+        [TargetRpc]
+        void RpcSpawnTeamPlayerShop(NetworkConnection conn, GameObject playerShop)
+        {
+            playerShop.transform.SetParent(uiManager.ShopTeam.transform);
+            playerShop.transform.localScale = Vector3.one;
+
+            ShopPlayer = playerShop.GetComponent<PlayerShop>();
+
+            ShopPlayer.Owner = player;
+            //shopPlayer.AgentIcon.sprite = TODO
+            ShopPlayer.Name.text = player.PlayerName;
+            
+            if(isLocalPlayer) playerShop.SetActive(false);
+        }
+
+        [TargetRpc]
+        void RpcSpawnEnemyPlayerShop(NetworkConnection conn, GameObject playerShop)
+        {
+            playerShop.SetActive(false);
         }
 
         [Command]
@@ -181,6 +218,12 @@ namespace player
             HeaderPlayer.Background.sprite = uiManager.RedTeamBackgroundHeader;
             //HeaderPlayer.Agent.sprite =  TODO
             playerHeader.transform.localScale = Vector3.one/10;
+        }
+
+        [Command]
+        public void CmdDestroyPlayerHeader()
+        {
+            NetworkServer.Destroy(HeaderPlayer.gameObject);
         }
 
         [Command]
@@ -224,9 +267,10 @@ namespace player
         }
 
         [TargetRpc]
-        public void RpcUpdatePlayerTeamMoney()
+        public void RpcUpdatePlayerTeamMoney(NetworkConnection conn, int money)
         {
-            ScoreboardPlayer.Money.text = player.PlayerMoney.ToString();
+            ShopPlayer.Money.text = money.ToString();
+            ScoreboardPlayer.Money.text = money.ToString();
         }
 
         [ClientRpc]
