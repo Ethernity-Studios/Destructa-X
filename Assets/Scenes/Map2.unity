@@ -9943,7 +9943,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &507583871
 RectTransform:
   m_ObjectHideFlags: 0
@@ -13495,7 +13495,7 @@ MonoBehaviour:
   syncInterval: 0.1
   Round: 0
   RoundsPerHalf: 13
-  StartGameLenght: 30
+  StartGameLenght: 200
   EndgameLenght: 5
   PreRoundLenght: 8
   RoundLenght: 500
@@ -28956,6 +28956,7 @@ MonoBehaviour:
   shieldImage: {fileID: 0}
   playerInventory: {fileID: 0}
   gameManager: {fileID: 653545714}
+  gunManager: {fileID: 826292310}
 --- !u!114 &1363029322
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -34584,6 +34585,7 @@ MonoBehaviour:
   ShieldBar: {fileID: 727997357}
   Money: {fileID: 2078738349}
   AgentIcon: {fileID: 218265201}
+  Bomb: {fileID: 300744704}
   UltimateBindKey: {fileID: 470081621}
   UltimateIcon: {fileID: 1498747993}
   UltimatePoint: {fileID: 3842514483710830137, guid: 3839b7b209a6dc6419715903b877a79d, type: 3}

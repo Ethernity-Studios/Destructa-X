@@ -240,7 +240,11 @@ public class PlayerInventoryManager : NetworkBehaviour
     {
         Bomb = gameManager.Bomb;
         Bomb.transform.GetChild(0).gameObject.layer = 6;
-        if (isLocalPlayer) setLayerMask(Bomb, 6);
+        if (isLocalPlayer)
+        {
+            setLayerMask(Bomb, 6);
+            uiManager.Bomb.SetActive(true);
+        }
         Bomb.transform.SetParent(BombHolder.transform);
         Bomb.transform.localEulerAngles = Vector3.zero;
         Bomb.transform.localPosition = new Vector3(0, -.5f, .7f);
@@ -262,7 +266,11 @@ public class PlayerInventoryManager : NetworkBehaviour
     [ClientRpc]
     void RpcDropBomb()
     {
-        if (isLocalPlayer) CmdSwitchItem(PreviousEquippedItem);
+        if (isLocalPlayer)
+        {
+            CmdSwitchItem(PreviousEquippedItem);
+            uiManager.Bomb.SetActive(false);
+        }
         Bomb.transform.localPosition = new Vector3(0, .6f, .5f);
         Bomb.transform.SetParent(gameManager.gameObject.transform);
         setLayerMask(Bomb, 0);

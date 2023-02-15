@@ -3,7 +3,7 @@ using UnityEngine.EventSystems;
 
 public class GunButtonClick : MonoBehaviour, IPointerClickHandler
 {
-    [SerializeField]   ShopManager shopManager;
+    [SerializeField] ShopManager shopManager;
 
     public Gun Gun;
 
@@ -15,7 +15,7 @@ public class GunButtonClick : MonoBehaviour, IPointerClickHandler
                 shopManager.BuyGun(Gun);
                 break;
             case PointerEventData.InputButton.Right:
-                shopManager.SellGun(Gun);
+                shopManager.RightClickGun(Gun);
                 break;
         }
     }

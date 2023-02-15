@@ -1495,7 +1495,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 56109207e34f6e1459a872623257b45d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  PlayerId: 0
+  Owner: {fileID: 0}
   AgentIcon: {fileID: 1223802701148905346}
   Money: {fileID: 1223802700871755585}
   Name: {fileID: 1223802701916737391}

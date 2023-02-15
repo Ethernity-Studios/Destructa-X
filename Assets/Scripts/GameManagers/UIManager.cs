@@ -26,6 +26,7 @@ public class UIManager : MonoBehaviour
     public Image ShieldBar;
     public TMP_Text Money;
     public Image AgentIcon;
+    public GameObject Bomb;
 [Space(25)]
     public TMP_Text UltimateBindKey;
     public Image UltimateIcon;

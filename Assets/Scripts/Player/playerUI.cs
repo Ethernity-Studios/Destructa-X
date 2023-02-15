@@ -26,7 +26,7 @@ namespace player
 
         public PlayerHeader HeaderPlayer;
         public PlayerScoreboard ScoreboardPlayer;
-        public PlayerShop ShopPlayer;
+        [SerializeField] public PlayerShop ShopPlayer;
 
         private PlayerInput playerInput;
 

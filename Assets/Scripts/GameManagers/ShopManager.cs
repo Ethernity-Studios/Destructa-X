@@ -1,4 +1,8 @@
+using System;
+using System.Linq;
+using Autodesk.Fbx;
 using Mirror;
+using player;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -35,11 +39,14 @@ public class ShopManager : NetworkBehaviour
     [SerializeField] TMP_Text shieldDescription;
     [SerializeField] Sprite shieldImage;
 
-    public PlayerInventoryManager playerInventory;
+    [SerializeField]  private PlayerInventoryManager playerInventory;
+    [SerializeField]  private Player player;
+    [SerializeField]  private PlayerUI playerUI;
 
     [SerializeField] GameManager gameManager;
-    
-    
+
+    [SerializeField] private GunManager gunManager;
+
     private void Start()
     {
         Invoke(nameof(CmdGetLocalPlayer), 1f);
@@ -51,16 +58,18 @@ public class ShopManager : NetworkBehaviour
     {
         foreach (int playerID in gameManager.PlayersID)
         {
-            RpcGetLocalPlayer(gameManager.GetPlayer(playerID).netIdentity);
+            RpcGetLocalPlayer(gameManager.GetPlayer(playerID).netIdentity); 
         }
     }
     [ClientRpc]
     void RpcGetLocalPlayer(NetworkIdentity player)
     {
-        if (player.isLocalPlayer) playerInventory = player.GetComponent<PlayerInventoryManager>();
+        if (!player.isLocalPlayer) return;
+        this.player = player.GetComponent<Player>();
+        playerInventory = player.GetComponent<PlayerInventoryManager>();
+        playerUI = playerInventory.GetComponent<PlayerUI>();
     }
-    
-    
+
     public void ShowGunInfo(Gun gun)
     {
         shieldInfo.SetActive(false);
@@ -166,6 +175,14 @@ public class ShopManager : NetworkBehaviour
         }
     }
 
+    public void RightClickGun(Gun gun)
+    {
+        //if(gun.Type == GunType.Primary && playerInventory.PrimaryGun == gun && playerInventory.PrimaryGunInstance.GetComponent<GunInstance>().CanBeSold) SellGun(gun);
+        //else if(gun.Type == GunType.Secondary && playerInventory.SecondaryGun == gun && playerInventory.SecondaryGunInstance.GetComponent<GunInstance>().CanBeSold) SellGun(gun);
+        
+        RequestGun(gun);
+    }
+
     public void SellGun(Gun gun)
     {
         Player localPlayer = playerInventory.GetComponent<Player>();
@@ -182,6 +199,35 @@ public class ShopManager : NetworkBehaviour
                 playerInventory.CmdSellGun(playerInventory.SecondaryGunInstance.GetComponent<NetworkIdentity>().netId, gun);
                 break;
         }
+    }
+
+    public void RequestGun(Gun gun)
+    {
+        //TODO LOGIC PLS
+        Debug.Log("Request gun");
+
+        CmdRequestGun(gunManager.GetGunIdByGun(gun),playerUI.netIdentity.netId);
+    }
+
+    [Command(requiresAuthority = false)]
+    void CmdRequestGun(int gunId, uint uiId)
+    {
+        PlayerUI ui = NetworkServer.spawned[uiId].gameObject.GetComponent<PlayerUI>();
+        foreach (var p in gameManager.PlayersID.Select(gameManager.GetPlayer))
+        {
+            if(p.PlayerTeam == ui.GetComponent<Player>().PlayerTeam) RpcRequestGun(p.netIdentity.connectionToClient,gunId, ui);
+        }
+    }
+
+    [TargetRpc]
+    void RpcRequestGun(NetworkConnection conn,int gunId, PlayerUI playerUI)
+    {
+        Debug.Log("His name: " + playerUI.ShopPlayer.Name.text);
+
+        Gun gun = gunManager.GetGunByID(gunId);
+        playerUI.ShopPlayer.Request.SetActive(true);
+        playerUI.ShopPlayer.Inventory.SetActive(false);
+        playerUI.ShopPlayer.RequestedGunIcon.sprite = gun.Icon;
     }
 
     public void BuyShield(string shieldType)
