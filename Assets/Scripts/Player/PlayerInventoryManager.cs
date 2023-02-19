@@ -31,6 +31,8 @@ public class PlayerInventoryManager : NetworkBehaviour
     public GameObject PrimaryGunInstance;
     public GameObject SecondaryGunInstance;
 
+    public Gun RequestedGun;
+
     [SyncVar] public GameObject Bomb;
 
     GameManager gameManager;
@@ -330,7 +332,7 @@ public class PlayerInventoryManager : NetworkBehaviour
         if (isLocalPlayer) setLayerMask(gunInstance, 6);
     }
 
-    [Command]
+    [Command(requiresAuthority =  false)]
     public void CmdDropGun(GunType gunType) => RpcDropGun(gunType);
 
     [ClientRpc]
@@ -387,7 +389,7 @@ public class PlayerInventoryManager : NetworkBehaviour
         rb.AddForce(transform.GetChild(0).transform.TransformDirection(new Vector3(0, 0, 400))); // Camera
     }
 
-    // ReSharper disable Unity.PerformanceAnalysis
+
     [Command(requiresAuthority = false)]
     public void CmdGiveGun(int gunID)
     {
@@ -395,8 +397,7 @@ public class PlayerInventoryManager : NetworkBehaviour
         NetworkServer.Spawn(gunInstance);
         RpcGiveGun(gunID, gunInstance.GetComponent<NetworkIdentity>());
     }
-
-    // ReSharper disable Unity.PerformanceAnalysis
+    
     [ClientRpc]
     private void RpcGiveGun(int gunID, NetworkIdentity gunNetworkIdentity)
     {
@@ -456,7 +457,7 @@ public class PlayerInventoryManager : NetworkBehaviour
         gunInstance.transform.localEulerAngles = gun.GunTransform.FirstPersonGunRotation;
     }
 
-    [Command]
+    [Command(requiresAuthority =  false)]
     public void CmdSellGun(uint gunID, Gun gun)
     {
         switch (gun.Type)
@@ -475,7 +476,7 @@ public class PlayerInventoryManager : NetworkBehaviour
         NetworkServer.Destroy(NetworkServer.spawned[gunID].gameObject);
     }
 
-    [Command]
+    [Command(requiresAuthority =  false)]
     public void CmdDestroyGun(GunType type)
     {
         switch (type)
