@@ -72,7 +72,7 @@ public class PlayerShop : NetworkBehaviour
             if (localPlayer.PlayerMoney + playerInventory.PrimaryGun.Price < requestedGun.Price) return;
             //Debug.Log(playerInventory.PrimaryGun.Price + "Gun price");
             //Debug.Log("buying primary gun with money and primary gun");
-            SellGun(playerInventory.PrimaryGun);
+            //SellGun(playerInventory.PrimaryGun);
             if (playerInventory.PrimaryGun != null || requestedGun.Type != GunType.Primary) return;
             localPlayer.CmdChangeMoney(-requestedGun.Price);
             playerInventory.CmdGiveGun(requestedGun.GunID);
@@ -83,7 +83,7 @@ public class PlayerShop : NetworkBehaviour
             if (localPlayer.PlayerMoney + playerInventory.SecondaryGun.Price < requestedGun.Price) return;
             //Debug.Log(playerInventory.SecondaryGun.Price + "Gun price");
             //Debug.Log("buying secondary gun with money and primary gun");
-            SellGun(playerInventory.SecondaryGun);
+            //SellGun(playerInventory.SecondaryGun);
             if (playerInventory.SecondaryGun != null || requestedGun.Type != GunType.Secondary) return;
             localPlayer.CmdChangeMoney(-requestedGun.Price);
             playerInventory.CmdGiveGun(requestedGun.GunID);
