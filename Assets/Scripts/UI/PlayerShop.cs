@@ -23,11 +23,13 @@ public class PlayerShop : NetworkBehaviour
     public Image RequestedGunIcon;
 
     private GameManager gameManager;
+    private ShopManager shopManager;
     private Player localPlayer;
 
     private void Start()
     {
         gameManager = FindObjectOfType<GameManager>();
+        shopManager = FindObjectOfType<ShopManager>();
         Invoke(nameof(CmdGetLocalPlayer), 1f);
     }
 
@@ -70,9 +72,7 @@ public class PlayerShop : NetworkBehaviour
         {
             Debug.Log("trying to buy requested primary gun with gun and money!");
             if (localPlayer.PlayerMoney + playerInventory.PrimaryGun.Price < requestedGun.Price) return;
-            //Debug.Log(playerInventory.PrimaryGun.Price + "Gun price");
-            //Debug.Log("buying primary gun with money and primary gun");
-            //SellGun(playerInventory.PrimaryGun);
+            shopManager.SellGun(playerInventory.PrimaryGun);
             if (playerInventory.PrimaryGun != null || requestedGun.Type != GunType.Primary) return;
             localPlayer.CmdChangeMoney(-requestedGun.Price);
             playerInventory.CmdGiveGun(requestedGun.GunID);
@@ -81,9 +81,7 @@ public class PlayerShop : NetworkBehaviour
         {
             Debug.Log("trying to buy requested secondary gun with gun and money!");
             if (localPlayer.PlayerMoney + playerInventory.SecondaryGun.Price < requestedGun.Price) return;
-            //Debug.Log(playerInventory.SecondaryGun.Price + "Gun price");
-            //Debug.Log("buying secondary gun with money and primary gun");
-            //SellGun(playerInventory.SecondaryGun);
+            shopManager.SellGun(playerInventory.SecondaryGun);
             if (playerInventory.SecondaryGun != null || requestedGun.Type != GunType.Secondary) return;
             localPlayer.CmdChangeMoney(-requestedGun.Price);
             playerInventory.CmdGiveGun(requestedGun.GunID);

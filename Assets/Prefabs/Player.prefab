@@ -335,7 +335,7 @@ GameObject:
   - component: {fileID: 6021906618316908405}
   - component: {fileID: -7474328044268257047}
   - component: {fileID: 8107270674050922034}
-  - component: {fileID: 6774817143896442879}
+  - component: {fileID: 1805058751750204041}
   - component: {fileID: 6336609987163348861}
   - component: {fileID: 1502663924094324460}
   - component: {fileID: 4704746696696432680}
@@ -388,6 +388,8 @@ MonoBehaviour:
   PlayerTeam: 0
   PlayerAgent: 0
   PlayerMoney: 800
+  EnemyPlayerMoney: 800
+  Ping: 0
   PlayerKills: 0
   PlayerDeaths: 0
   PlayerAssists: 0
@@ -425,6 +427,7 @@ MonoBehaviour:
   SecondaryGun: {fileID: 0}
   PrimaryGunInstance: {fileID: 0}
   SecondaryGunInstance: {fileID: 0}
+  RequestedGun: {fileID: 0}
   Bomb: {fileID: 0}
   GunEquipped: 1
 --- !u!114 &4148336677826501266
@@ -530,7 +533,7 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0.1
   IsShopOpen: 0
---- !u!114 &6774817143896442879
+--- !u!114 &1805058751750204041
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -544,6 +547,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   syncMode: 0
   syncInterval: 0.1
+  HeaderPlayer: {fileID: 0}
+  ScoreboardPlayer: {fileID: 0}
+  ShopPlayer: {fileID: 0}
 --- !u!54 &6336609987163348861
 Rigidbody:
   m_ObjectHideFlags: 0

@@ -1,6 +1,7 @@
 using Mirror;
 using System.Collections;
 using System.Linq;
+using System.Transactions;
 using player;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -10,7 +11,8 @@ public enum Item
     Primary,
     Secondary,
     Knife,
-    Bomb
+    Bomb,
+    None
 }
 
 public class PlayerInventoryManager : NetworkBehaviour
@@ -22,6 +24,7 @@ public class PlayerInventoryManager : NetworkBehaviour
 
     public Item EquippedItem = Item.Secondary;
     public Item PreviousEquippedItem = Item.Knife;
+    public Item PrePreviousEquippedItem;
     public Gun EquippedGun;
     public GameObject EquippedGunInstance;
 
@@ -145,7 +148,14 @@ public class PlayerInventoryManager : NetworkBehaviour
     [ClientRpc]
     public void RpcSwitchItem(Item item)
     {
-        PreviousEquippedItem = EquippedItem;
+        if (PreviousEquippedItem != Item.None)
+        {
+            PrePreviousEquippedItem = PreviousEquippedItem;
+        }
+        else if (EquippedItem != Item.None)
+        {
+            PreviousEquippedItem = EquippedItem;
+        }
         EquippedItem = item;
         playerShootingManager = GetComponent<PlayerShootingManager>();
         playerShootingManager.StopAllCoroutines();
@@ -202,6 +212,19 @@ public class PlayerInventoryManager : NetworkBehaviour
                 KnifeHolder.SetActive(false);
                 toggleAmmoUI(false);
                 break;
+        }
+
+        //UI switching items
+        if (!isLocalPlayer) return;
+        if (EquippedItem == Item.Bomb) return;
+        if (EquippedItem == Item.Knife)
+        {
+            uiManager.EquippedItem.sprite = uiManager.Knife;
+            uiManager.PreviousEquippedItem = 
+        }
+        else
+        {
+            uiManager.EquippedItem.sprite = EquippedGun.Icon;
         }
     }
 

@@ -9943,7 +9943,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &507583871
 RectTransform:
   m_ObjectHideFlags: 0
@@ -28955,6 +28955,8 @@ MonoBehaviour:
   shieldDescription: {fileID: 0}
   shieldImage: {fileID: 0}
   playerInventory: {fileID: 0}
+  player: {fileID: 0}
+  playerUI: {fileID: 0}
   gameManager: {fileID: 653545714}
   gunManager: {fileID: 826292310}
 --- !u!114 &1363029322
@@ -34576,9 +34578,9 @@ MonoBehaviour:
   MagazineText: {fileID: 1177006352}
   MaxAmmoText: {fileID: 1749585235}
   BulletsIcon: {fileID: 1193221499}
-  EquippedGun: {fileID: 345530139}
-  PreviousEquippedGun: {fileID: 547944841}
-  PrePreviousEquippedGun: {fileID: 1553800624}
+  EquippedItem: {fileID: 0}
+  PreviousEquippedItem: {fileID: 0}
+  PrePreviousEquippedItem: {fileID: 0}
   Health: {fileID: 1311369002}
   HealthBar: {fileID: 894169512}
   Shield: {fileID: 229665647}

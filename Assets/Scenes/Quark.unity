@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.45133537, g: 0.50094754, b: 0.572971, a: 1}
+  m_IndirectSpecularColor: {r: 0.18382925, g: 0.22909665, b: 0.30384696, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -327,6 +327,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b4bdd9fde1b7b584b9be20aea3fc827e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  shopManager: {fileID: 0}
   Gun: {fileID: 11400000, guid: b2036781265a8d343919c144f1bf6f20, type: 2}
 --- !u!1 &58494393
 GameObject:
@@ -2779,6 +2780,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b4bdd9fde1b7b584b9be20aea3fc827e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  shopManager: {fileID: 0}
   Gun: {fileID: 11400000, guid: 370f4348b5b791e428482e0c5b054ef1, type: 2}
 --- !u!1001 &216549570
 PrefabInstance:
@@ -4708,6 +4710,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b4bdd9fde1b7b584b9be20aea3fc827e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  shopManager: {fileID: 0}
   Gun: {fileID: 11400000, guid: ba89c74c629929542ac9683e2f4c0c6f, type: 2}
 --- !u!1 &373653724
 GameObject:
@@ -5424,6 +5427,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b4bdd9fde1b7b584b9be20aea3fc827e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  shopManager: {fileID: 0}
   Gun: {fileID: 11400000, guid: 42752df7826757e49b77d68123f7f591, type: 2}
 --- !u!1 &417324084
 GameObject:
@@ -5764,6 +5768,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b4bdd9fde1b7b584b9be20aea3fc827e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  shopManager: {fileID: 0}
   Gun: {fileID: 11400000, guid: 8065c8f1b2293fb4d877d368152414ab, type: 2}
 --- !u!1 &430057650
 GameObject:
@@ -6920,6 +6925,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b4bdd9fde1b7b584b9be20aea3fc827e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  shopManager: {fileID: 0}
   Gun: {fileID: 11400000, guid: c132e1b25245c9c45b5ccece894c4737, type: 2}
 --- !u!1 &461774261
 GameObject:
@@ -8618,6 +8624,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b4bdd9fde1b7b584b9be20aea3fc827e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  shopManager: {fileID: 0}
   Gun: {fileID: 11400000, guid: aa603a1780324fb4e868221fa7c83c53, type: 2}
 --- !u!1 &642706614
 GameObject:
@@ -9322,6 +9329,7 @@ MonoBehaviour:
   gunName: {fileID: 646898812}
   gunCategory: {fileID: 488592160}
   gunType: {fileID: 1273768314}
+  gunImage: {fileID: 0}
   gunFireRate: {fileID: 140687582}
   gunEquipSpeed: {fileID: 2121682557}
   gunReloadSpeed: {fileID: 1860693935}
@@ -9349,7 +9357,10 @@ MonoBehaviour:
   shieldDescription: {fileID: 0}
   shieldImage: {fileID: 0}
   playerInventory: {fileID: 0}
+  player: {fileID: 0}
+  playerUI: {fileID: 0}
   gameManager: {fileID: 814328176}
+  gunManager: {fileID: 863848735}
 --- !u!114 &702520297
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -12479,7 +12490,7 @@ MonoBehaviour:
   EndgameLenght: 5
   PreRoundLenght: 8
   RoundLenght: 500
-  PostRoundlenght: 5
+  PostRoundLength: 5
   BombPlantTime: 5
   BombHalfDefuseTime: 5
   BombDefuseTime: 10
@@ -12512,6 +12523,7 @@ MonoBehaviour:
   Bomb: {fileID: 0}
   gunManager: {fileID: 863848735}
   shopManager: {fileID: 702520296}
+  UIManager: {fileID: 0}
   mapController: {fileID: 346509951}
   BulletHolder: {fileID: 446060248}
   BlueTeamScore: 0
@@ -12523,12 +12535,12 @@ MonoBehaviour:
   BlueTeamPlayersIDs: 
   RedTeamPlayersIDs: 
   isEveryoneFuckingReady: 0
-  GameReady: 0
   loadingScreen: {fileID: 1577046284}
   PlantTimeLeft: 0
   DefuseTimeLeft: 0
   isPlanting: 0
   isDefusing: 0
+  mainCamera: {fileID: 0}
 --- !u!4 &814328177
 Transform:
   m_ObjectHideFlags: 0
@@ -12931,6 +12943,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b4bdd9fde1b7b584b9be20aea3fc827e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  shopManager: {fileID: 0}
   Gun: {fileID: 11400000, guid: 81e1688166dadd04a9b67b27ae61f47e, type: 2}
 --- !u!1 &842787472
 GameObject:
@@ -13172,6 +13185,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b4bdd9fde1b7b584b9be20aea3fc827e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  shopManager: {fileID: 0}
   Gun: {fileID: 11400000, guid: 3426c16190f3dd149a74bfd24cbcee6d, type: 2}
 --- !u!1 &852490846
 GameObject:
@@ -14864,6 +14878,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b4bdd9fde1b7b584b9be20aea3fc827e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  shopManager: {fileID: 0}
   Gun: {fileID: 11400000, guid: e34981b822f91724a9783b1cfbdf6a59, type: 2}
 --- !u!1 &992693801
 GameObject:
@@ -16232,6 +16247,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b4bdd9fde1b7b584b9be20aea3fc827e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  shopManager: {fileID: 0}
   Gun: {fileID: 11400000, guid: 475659704fd14a942aa9653f7630d183, type: 2}
 --- !u!1 &1142524801
 GameObject:
@@ -25007,6 +25023,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b4bdd9fde1b7b584b9be20aea3fc827e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  shopManager: {fileID: 0}
   Gun: {fileID: 11400000, guid: 0b5c373de06cbb54583cb49ec152e042, type: 2}
 --- !u!1 &1666469308
 GameObject:
@@ -25802,6 +25819,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b4bdd9fde1b7b584b9be20aea3fc827e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  shopManager: {fileID: 0}
   Gun: {fileID: 11400000, guid: e44c0cb49d2828347bc157120349c547, type: 2}
 --- !u!1 &1780911733
 GameObject:
@@ -26271,6 +26289,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b4bdd9fde1b7b584b9be20aea3fc827e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  shopManager: {fileID: 0}
   Gun: {fileID: 11400000, guid: a64988b0de7a3cd409fc60cce89b8f89, type: 2}
 --- !u!1 &1848875287
 GameObject:
@@ -28246,12 +28265,53 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   MagazineText: {fileID: 286275736}
   MaxAmmoText: {fileID: 1350334447}
+  BulletsIcon: {fileID: 0}
+  EquippedGun: {fileID: 0}
+  PreviousEquippedGun: {fileID: 0}
+  PrePreviousEquippedGun: {fileID: 0}
   Health: {fileID: 457943771}
+  HealthBar: {fileID: 0}
   Shield: {fileID: 1293872201}
+  ShieldBar: {fileID: 0}
   Money: {fileID: 234212383}
+  AgentIcon: {fileID: 0}
+  Bomb: {fileID: 0}
+  UltimateBindKey: {fileID: 0}
+  UltimateIcon: {fileID: 0}
+  UltimatePoint: {fileID: 0}
+  UltimatePoints: []
   SpectatingUI: {fileID: 466994839}
   SpectatingPlayerName: {fileID: 143250591}
-  MOTD: {fileID: 0}
+  GameState: {fileID: 0}
+  GameStateText: {fileID: 0}
+  GameStateSubText: {fileID: 0}
+  BuyPhaseText: 
+  BuyPhaseSubText: 
+  RoundWinText: 
+  RoundWinSubText: 
+  RoundLoseText: 
+  RoundLoseSubText: 
+  HeaderPlayer: {fileID: 0}
+  RedTeamBackgroundHeader: {fileID: 0}
+  FriendlyTeamHeader: {fileID: 0}
+  EnemyTeamHeader: {fileID: 0}
+  ShopTeam: {fileID: 0}
+  ShopPlayerAgentIcon: {fileID: 0}
+  ShopPlayerShieldIcon: {fileID: 0}
+  ShopPlayerPrimaryGun: {fileID: 0}
+  ShopPlayerSecondaryGun: {fileID: 0}
+  ShopPlayerMoney: {fileID: 0}
+  ShopPlayerMinMoneyNextRound: {fileID: 0}
+  ShopPlayer: {fileID: 0}
+  Scoreboard: {fileID: 0}
+  PlayerScoreboard: {fileID: 0}
+  FriendlyTeamScoreboard: {fileID: 0}
+  EnemyTeamScoreboard: {fileID: 0}
+  RedTeamBackgroundScoreboard: {fileID: 0}
+  BlueScoreboardScore: {fileID: 0}
+  RedScoreboardScore: {fileID: 0}
+  Knife: {fileID: 0}
+  Latency: {fileID: 0}
 --- !u!1 &1934109852
 GameObject:
   m_ObjectHideFlags: 0
@@ -29080,6 +29140,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b4bdd9fde1b7b584b9be20aea3fc827e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  shopManager: {fileID: 0}
   Gun: {fileID: 11400000, guid: 2b4b1f6b79cc49b41afb5c9ac2ddfced, type: 2}
 --- !u!1 &1982170012
 GameObject:
@@ -30367,6 +30428,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b4bdd9fde1b7b584b9be20aea3fc827e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  shopManager: {fileID: 0}
   Gun: {fileID: 11400000, guid: 5884efa0c837a88479c061a465ead533, type: 2}
 --- !u!1 &2068013382
 GameObject:
@@ -30616,6 +30678,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b4bdd9fde1b7b584b9be20aea3fc827e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  shopManager: {fileID: 0}
   Gun: {fileID: 11400000, guid: 2d1abd84ad117154fbd78804ae4efbdd, type: 2}
 --- !u!1 &2076609187
 GameObject:

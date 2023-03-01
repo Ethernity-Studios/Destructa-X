@@ -16,9 +16,9 @@ public class UIManager : MonoBehaviour
     public TMP_Text MagazineText;
     public TMP_Text MaxAmmoText;
     public GameObject BulletsIcon;
-    public Image EquippedGun;
-    public Image PreviousEquippedGun;
-    public Image PrePreviousEquippedGun;
+    public Image EquippedItem;
+    public Image PreviousEquippedItem;
+    public Image PrePreviousEquippedItem;
 [Space(25)]
     public TMP_Text Health;
     public Image HealthBar;

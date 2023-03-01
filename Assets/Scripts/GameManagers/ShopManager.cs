@@ -67,7 +67,7 @@ public class ShopManager : NetworkBehaviour
         if (!player.isLocalPlayer) return;
         this.player = player.GetComponent<Player>();
         playerInventory = player.GetComponent<PlayerInventoryManager>();
-        playerUI = playerInventory.GetComponent<PlayerUI>();
+        playerUI = player.GetComponent<PlayerUI>();
     }
 
     public void ShowGunInfo(Gun gun)
@@ -205,8 +205,6 @@ public class ShopManager : NetworkBehaviour
 
     public void RequestGun(Gun gun)
     {
-        if (playerInventory.PrimaryGun.Type == gun.Type || playerInventory.SecondaryGun.Type == gun.Type) return;
-
         CmdRequestGun(gunManager.GetGunIdByGun(gun),playerUI.netIdentity.netId);
     }
 
