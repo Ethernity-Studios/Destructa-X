@@ -34578,9 +34578,9 @@ MonoBehaviour:
   MagazineText: {fileID: 1177006352}
   MaxAmmoText: {fileID: 1749585235}
   BulletsIcon: {fileID: 1193221499}
-  EquippedItem: {fileID: 0}
-  PreviousEquippedItem: {fileID: 0}
-  PrePreviousEquippedItem: {fileID: 0}
+  EquippedItem: {fileID: 345530139}
+  PreviousEquippedItem: {fileID: 547944841}
+  PrePreviousEquippedItem: {fileID: 1553800624}
   Health: {fileID: 1311369002}
   HealthBar: {fileID: 894169512}
   Shield: {fileID: 229665647}

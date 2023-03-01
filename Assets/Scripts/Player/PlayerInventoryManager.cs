@@ -220,7 +220,7 @@ public class PlayerInventoryManager : NetworkBehaviour
         if (EquippedItem == Item.Knife)
         {
             uiManager.EquippedItem.sprite = uiManager.Knife;
-            uiManager.PreviousEquippedItem = 
+            //uiManager.PreviousEquippedItem = 
         }
         else
         {
@@ -481,9 +481,9 @@ public class PlayerInventoryManager : NetworkBehaviour
     }
 
     [Command(requiresAuthority =  false)]
-    public void CmdSellGun(uint gunID, Gun gun)
+    public void CmdSellGun(uint gunID, GunType gunType)
     {
-        switch (gun.Type)
+        switch (gunType)
         {
             case GunType.Primary:
                 PrimaryGun = null;

@@ -1,3 +1,4 @@
+using System;
 using Mirror;
 using TMPro;
 using UnityEditor.PackageManager.Requests;
@@ -31,6 +32,12 @@ public class PlayerShop : NetworkBehaviour
         gameManager = FindObjectOfType<GameManager>();
         shopManager = FindObjectOfType<ShopManager>();
         Invoke(nameof(CmdGetLocalPlayer), 1f);
+    }
+
+    private void OnEnable()
+    {
+        gameManager = FindObjectOfType<GameManager>();
+        shopManager = FindObjectOfType<ShopManager>();
     }
 
     [Command(requiresAuthority = false)]
@@ -87,8 +94,27 @@ public class PlayerShop : NetworkBehaviour
             playerInventory.CmdGiveGun(requestedGun.GunID);
         }
         
-        
-        
         Owner.GetComponent<PlayerInventoryManager>().CmdGiveGun(playerInventory.RequestedGun.GunID);
+        
+        CmdSetGunOwner();
+    }
+
+    [Command(requiresAuthority =  false)]
+    void CmdSetGunOwner() => RpcSetGunOwner();
+    
+    [ClientRpc]
+    void RpcSetGunOwner()
+    {
+        PlayerInventoryManager playerInventory = Owner.GetComponent<PlayerInventoryManager>();
+        Gun requestedGun = Owner.GetComponent<PlayerInventoryManager>().RequestedGun;
+        if (requestedGun.Type == GunType.Primary)
+        {
+            playerInventory.PrimaryGunInstance.GetComponent<GunInstance>().GunOwner = localPlayer; 
+        }
+        else if (requestedGun.Type == GunType.Secondary)
+        {
+            playerInventory.SecondaryGunInstance.GetComponent<GunInstance>().GunOwner = localPlayer; 
+        }
+
     }
 }

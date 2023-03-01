@@ -177,12 +177,12 @@ public class ShopManager : NetworkBehaviour
 
     public void RightClickGun(Gun gun)
     {
-        if(gun.Type == GunType.Primary && playerInventory.PrimaryGun == gun && playerInventory.PrimaryGunInstance.GetComponent<GunInstance>().CanBeSold) SellGun(gun);
-        else if(gun.Type == GunType.Primary && playerInventory.PrimaryGun == gun && !playerInventory.PrimaryGunInstance.GetComponent<GunInstance>().CanBeSold) playerInventory.CmdDropGun(GunType.Primary);
-        else if(gun.Type == GunType.Secondary && playerInventory.SecondaryGun == gun && playerInventory.SecondaryGunInstance.GetComponent<GunInstance>().CanBeSold) SellGun(gun);
-        else if(gun.Type == GunType.Secondary && playerInventory.SecondaryGun == gun && !playerInventory.SecondaryGunInstance.GetComponent<GunInstance>().CanBeSold) playerInventory.CmdDropGun(GunType.Secondary);
+        if(gun.Type == GunType.Primary && playerInventory.PrimaryGun == gun && playerInventory.PrimaryGunInstance.GetComponent<GunInstance>().CanBeSold && playerInventory.PrimaryGun != null && playerInventory.PrimaryGunInstance.GetComponent<GunInstance>().GunOwner == player) SellGun(gun);
+        else if(gun.Type == GunType.Primary && playerInventory.PrimaryGun == gun && playerInventory.PrimaryGunInstance.GetComponent<GunInstance>().CanBeSold && playerInventory.PrimaryGun != null && playerInventory.PrimaryGunInstance.GetComponent<GunInstance>().GunOwner != player) SellGun(gun); //HEEELP
+        else if(gun.Type == GunType.Primary && playerInventory.PrimaryGun == gun && !playerInventory.PrimaryGunInstance.GetComponent<GunInstance>().CanBeSold && playerInventory.PrimaryGun != null && playerInventory.PrimaryGunInstance.GetComponent<GunInstance>().GunOwner == player) playerInventory.CmdDropGun(GunType.Primary);
+        else if(gun.Type == GunType.Secondary && playerInventory.SecondaryGun == gun && playerInventory.SecondaryGunInstance.GetComponent<GunInstance>().CanBeSold && playerInventory.SecondaryGun != null && playerInventory.SecondaryGunInstance.GetComponent<GunInstance>().GunOwner == player) SellGun(gun);
+        else if(gun.Type == GunType.Secondary && playerInventory.SecondaryGun == gun && !playerInventory.SecondaryGunInstance.GetComponent<GunInstance>().CanBeSold && playerInventory.SecondaryGun != null && playerInventory.SecondaryGunInstance.GetComponent<GunInstance>().GunOwner == player) playerInventory.CmdDropGun(GunType.Secondary);
         else RequestGun(gun);
-
     }
 
     public void SellGun(Gun gun)
@@ -192,13 +192,15 @@ public class ShopManager : NetworkBehaviour
         {
             case GunType.Primary when playerInventory.PrimaryGun == gun && playerInventory.PrimaryGunInstance.GetComponent<GunInstance>().CanBeSold:
                 Debug.Log("selling primary gun");
-                localPlayer.CmdChangeMoney(gun.Price);
-                playerInventory.CmdSellGun(playerInventory.PrimaryGunInstance.GetComponent<NetworkIdentity>().netId, gun);
+                playerInventory.PrimaryGunInstance.GetComponent<GunInstance>().GunOwner.CmdChangeMoney(gun.Price);
+                //localPlayer.CmdChangeMoney(gun.Price);
+                playerInventory.CmdSellGun(playerInventory.PrimaryGunInstance.GetComponent<NetworkIdentity>().netId, gun.Type);
                 break;
             case GunType.Secondary when playerInventory.SecondaryGun == gun && playerInventory.SecondaryGunInstance.GetComponent<GunInstance>().CanBeSold:
                 Debug.Log("selling secondary gun");
-                localPlayer.CmdChangeMoney(gun.Price);
-                playerInventory.CmdSellGun(playerInventory.SecondaryGunInstance.GetComponent<NetworkIdentity>().netId, gun);
+                playerInventory.SecondaryGunInstance.GetComponent<GunInstance>().GunOwner.CmdChangeMoney(gun.Price);
+                //localPlayer.CmdChangeMoney(gun.Price);
+                playerInventory.CmdSellGun(playerInventory.SecondaryGunInstance.GetComponent<NetworkIdentity>().netId, gun.Type);
                 break;
         }
     }
