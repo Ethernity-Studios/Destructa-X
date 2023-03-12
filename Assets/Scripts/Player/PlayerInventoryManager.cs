@@ -1,7 +1,6 @@
 using Mirror;
 using System.Collections;
 using System.Linq;
-using System.Transactions;
 using player;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -24,7 +23,6 @@ public class PlayerInventoryManager : NetworkBehaviour
 
     public Item EquippedItem = Item.Secondary;
     public Item PreviousEquippedItem = Item.Knife;
-    public Item PrePreviousEquippedItem;
     public Gun EquippedGun;
     public GameObject EquippedGunInstance;
 
@@ -148,11 +146,7 @@ public class PlayerInventoryManager : NetworkBehaviour
     [ClientRpc]
     public void RpcSwitchItem(Item item)
     {
-        if (PreviousEquippedItem != Item.None)
-        {
-            PrePreviousEquippedItem = PreviousEquippedItem;
-        }
-        else if (EquippedItem != Item.None)
+        if (EquippedItem != Item.None)
         {
             PreviousEquippedItem = EquippedItem;
         }
@@ -172,7 +166,7 @@ public class PlayerInventoryManager : NetworkBehaviour
                 SecondaryGunHolder.SetActive(false);
                 KnifeHolder.SetActive(false);
                 BombHolder.SetActive(false);
-                toggleAmmoUI(true);
+                playerUI.ToggleAmmoUI(true);
 
                 if (!isLocalPlayer) return;
                 StartCoroutine(toggleEquippedGun());
@@ -187,7 +181,7 @@ public class PlayerInventoryManager : NetworkBehaviour
                 PrimaryGunHolder.SetActive(false);
                 KnifeHolder.SetActive(false);
                 BombHolder.SetActive(false);
-                toggleAmmoUI(true);
+                playerUI.ToggleAmmoUI(true);
 
                 if (!isLocalPlayer) return;
                 StartCoroutine(toggleEquippedGun());
@@ -200,7 +194,7 @@ public class PlayerInventoryManager : NetworkBehaviour
                 PrimaryGunHolder.SetActive(false);
                 SecondaryGunHolder.SetActive(false);
                 BombHolder.SetActive(false);
-                toggleAmmoUI(false);
+                playerUI.ToggleAmmoUI(false);
                 break;
             case Item.Bomb:
                 if (Bomb == null) return;
@@ -210,31 +204,13 @@ public class PlayerInventoryManager : NetworkBehaviour
                 PrimaryGunHolder.SetActive(false);
                 SecondaryGunHolder.SetActive(false);
                 KnifeHolder.SetActive(false);
-                toggleAmmoUI(false);
+                playerUI.ToggleAmmoUI(false);
                 break;
         }
 
-        //UI switching items
-        if (!isLocalPlayer) return;
-        if (EquippedItem == Item.Bomb) return;
-        if (EquippedItem == Item.Knife)
-        {
-            uiManager.EquippedItem.sprite = uiManager.Knife;
-            //uiManager.PreviousEquippedItem = 
-        }
-        else
-        {
-            uiManager.EquippedItem.sprite = EquippedGun.Icon;
-        }
     }
 
-    void toggleAmmoUI(bool state)
-    {
-        if (!isLocalPlayer) return;
-        uiManager.MaxAmmoText.gameObject.SetActive(state);
-        uiManager.MagazineText.gameObject.SetActive(state);
-        uiManager.BulletsIcon.gameObject.SetActive(state);
-    }
+
 
     private void OnTriggerStay(Collider other)
     {
@@ -352,7 +328,13 @@ public class PlayerInventoryManager : NetworkBehaviour
         rb.useGravity = false;
         rb.velocity = Vector3.zero;
         gunInstance.gameObject.transform.GetChild(0).gameObject.layer = 6;
-        if (isLocalPlayer) setLayerMask(gunInstance, 6);
+        
+        if (!isLocalPlayer) return;
+        setLayerMask(gunInstance, 6);
+        if(playerUI.ShopPlayer != null) playerUI.CmdUpdateShopPlayer();
+        playerUI.UpdateLocalPlayerShopPlayer();
+        playerUI.UpdateEquippedItem();
+        playerUI.CmdUpdateScoreboardPlayer();
     }
 
     [Command(requiresAuthority =  false)]
@@ -410,6 +392,11 @@ public class PlayerInventoryManager : NetworkBehaviour
         rb.useGravity = true;
         rb.constraints = RigidbodyConstraints.None;
         rb.AddForce(transform.GetChild(0).transform.TransformDirection(new Vector3(0, 0, 400))); // Camera
+
+        if (!isLocalPlayer) return;
+        RpcUpdateUI();
+        playerUI.UpdateEquippedItem();
+        playerUI.CmdUpdateScoreboardPlayer();
     }
 
 
@@ -429,12 +416,12 @@ public class PlayerInventoryManager : NetworkBehaviour
         Gun gun = gunManager.GetGunByID(gunID);
         gunInstance.AddComponent<GunInstance>();
         GunInstance spawnedGun = gunInstance.GetComponent<GunInstance>();
-        spawnedGun.GunOwner = player;
         spawnedGun.CanBeSold = true;
         spawnedGun.Gun = gun;
         spawnedGun.Ammo = gun.Ammo;
         spawnedGun.Magazine = gun.MagazineAmmo;
         GunType type = gunManager.GetGunByID(gunID).Type;
+        spawnedGun.GunOwner = player;
         switch (type)
         {
             case GunType.Primary:
@@ -462,7 +449,13 @@ public class PlayerInventoryManager : NetworkBehaviour
         }
 
         setGunTransform(gunInstance, gun);
-        if (isLocalPlayer) setLayerMask(gunInstance, 6);
+        
+        if (!isLocalPlayer) return;
+        setLayerMask(gunInstance, 6);
+        if(playerUI.ShopPlayer != null) playerUI.CmdUpdateShopPlayer();
+        playerUI.UpdateLocalPlayerShopPlayer();
+        playerUI.UpdateEquippedItem();
+        playerUI.CmdUpdateScoreboardPlayer();
     }
 
     private void setGunTransform(GameObject gunInstance, Gun gun)
@@ -497,6 +490,7 @@ public class PlayerInventoryManager : NetworkBehaviour
 
         CmdSwitchItem(PreviousEquippedItem);
         NetworkServer.Destroy(NetworkServer.spawned[gunID].gameObject);
+        RpcUpdateUI();
     }
 
     [Command(requiresAuthority =  false)]
@@ -523,5 +517,13 @@ public class PlayerInventoryManager : NetworkBehaviour
                 CmdSwitchItem(Item.Knife);
                 break;
         }
+        RpcUpdateUI();
+    }
+[ClientRpc]
+    public void RpcUpdateUI()
+    {
+        if (!isLocalPlayer) return;
+        if(playerUI.ShopPlayer != null) playerUI.CmdUpdateShopPlayer();
+        playerUI.UpdateLocalPlayerShopPlayer();
     }
 }

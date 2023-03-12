@@ -1,5 +1,6 @@
 using System;
 using Mirror;
+using player;
 using TMPro;
 using UnityEditor.PackageManager.Requests;
 using UnityEngine;
@@ -22,6 +23,7 @@ public class PlayerShop : NetworkBehaviour
     [Header("Request")]
     public GameObject Request;
     public Image RequestedGunIcon;
+    public TMP_Text RequestedGunPrice;
 
     private GameManager gameManager;
     private ShopManager shopManager;
@@ -31,7 +33,7 @@ public class PlayerShop : NetworkBehaviour
     {
         gameManager = FindObjectOfType<GameManager>();
         shopManager = FindObjectOfType<ShopManager>();
-        Invoke(nameof(CmdGetLocalPlayer), 1f);
+        CmdGetLocalPlayer();
     }
 
     private void OnEnable()
@@ -57,6 +59,9 @@ public class PlayerShop : NetworkBehaviour
     
     public void BuyRequestedGun()
     {
+        Debug.Log("BuyRequested Gun hell yeah");
+
+        CmdGetLocalPlayer();
         PlayerInventoryManager playerInventory = Owner.GetComponent<PlayerInventoryManager>();
         Gun requestedGun = Owner.GetComponent<PlayerInventoryManager>().RequestedGun;
         
@@ -94,27 +99,38 @@ public class PlayerShop : NetworkBehaviour
             playerInventory.CmdGiveGun(requestedGun.GunID);
         }
         
-        Owner.GetComponent<PlayerInventoryManager>().CmdGiveGun(playerInventory.RequestedGun.GunID);
-        
-        CmdSetGunOwner();
+        //Owner.GetComponent<PlayerInventoryManager>().CmdGiveGun(playerInventory.RequestedGun.GunID);
+        //playerInventory.GetComponent<PlayerUI>().CmdUpdateShopPlayer();
+        CmdSetGunOwner(localPlayer.netIdentity.netId);
     }
 
-    [Command(requiresAuthority =  false)]
-    void CmdSetGunOwner() => RpcSetGunOwner();
+    [Command(requiresAuthority = false)]
+    void CmdSetGunOwner(uint playerId)
+    {
+        Player player = NetworkServer.spawned[playerId].gameObject.GetComponent<Player>();
+        RpcSetGunOwner(player);
+    }    
     
     [ClientRpc]
-    void RpcSetGunOwner()
+    void RpcSetGunOwner(Player player)
     {
+        Debug.Log("RpcsetGunOwner bruh");
+
         PlayerInventoryManager playerInventory = Owner.GetComponent<PlayerInventoryManager>();
         Gun requestedGun = Owner.GetComponent<PlayerInventoryManager>().RequestedGun;
-        if (requestedGun.Type == GunType.Primary)
+        Debug.Log("requested gun type: " + requestedGun.Type);
+
+        switch (requestedGun.Type)
         {
-            playerInventory.PrimaryGunInstance.GetComponent<GunInstance>().GunOwner = localPlayer; 
+            case GunType.Primary:
+                playerInventory.PrimaryGunInstance.GetComponent<GunInstance>().GunOwner = player;
+                break;
+            case GunType.Secondary:
+                playerInventory.SecondaryGunInstance.GetComponent<GunInstance>().GunOwner = player;
+                break;
         }
-        else if (requestedGun.Type == GunType.Secondary)
-        {
-            playerInventory.SecondaryGunInstance.GetComponent<GunInstance>().GunOwner = localPlayer; 
-        }
+
+        playerInventory.RequestedGun = null;
 
     }
 }

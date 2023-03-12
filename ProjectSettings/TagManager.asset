@@ -22,7 +22,7 @@ TagManager:
   - PickableObject
   - Bullet
   - EntityBody
-  - 
+  - Volume
   - 
   - 
   - 

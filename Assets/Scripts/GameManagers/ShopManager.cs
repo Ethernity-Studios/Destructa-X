@@ -133,7 +133,6 @@ public class ShopManager : NetworkBehaviour
 
     public void BuyGun(Gun gun)
     {
-        // FIXME sus?
         if (gun.GunModel == null) return;
         Player localPlayer = playerInventory.GetComponent<Player>();
         if (localPlayer.PlayerMoney >= gun.Price)
@@ -177,12 +176,24 @@ public class ShopManager : NetworkBehaviour
 
     public void RightClickGun(Gun gun)
     {
-        if(gun.Type == GunType.Primary && playerInventory.PrimaryGun == gun && playerInventory.PrimaryGunInstance.GetComponent<GunInstance>().CanBeSold && playerInventory.PrimaryGun != null && playerInventory.PrimaryGunInstance.GetComponent<GunInstance>().GunOwner == player) SellGun(gun);
-        else if(gun.Type == GunType.Primary && playerInventory.PrimaryGun == gun && playerInventory.PrimaryGunInstance.GetComponent<GunInstance>().CanBeSold && playerInventory.PrimaryGun != null && playerInventory.PrimaryGunInstance.GetComponent<GunInstance>().GunOwner != player) SellGun(gun); //HEEELP
-        else if(gun.Type == GunType.Primary && playerInventory.PrimaryGun == gun && !playerInventory.PrimaryGunInstance.GetComponent<GunInstance>().CanBeSold && playerInventory.PrimaryGun != null && playerInventory.PrimaryGunInstance.GetComponent<GunInstance>().GunOwner == player) playerInventory.CmdDropGun(GunType.Primary);
-        else if(gun.Type == GunType.Secondary && playerInventory.SecondaryGun == gun && playerInventory.SecondaryGunInstance.GetComponent<GunInstance>().CanBeSold && playerInventory.SecondaryGun != null && playerInventory.SecondaryGunInstance.GetComponent<GunInstance>().GunOwner == player) SellGun(gun);
-        else if(gun.Type == GunType.Secondary && playerInventory.SecondaryGun == gun && !playerInventory.SecondaryGunInstance.GetComponent<GunInstance>().CanBeSold && playerInventory.SecondaryGun != null && playerInventory.SecondaryGunInstance.GetComponent<GunInstance>().GunOwner == player) playerInventory.CmdDropGun(GunType.Secondary);
-        else RequestGun(gun);
+        switch (gun.Type)
+        {
+            case GunType.Primary when playerInventory.PrimaryGun == gun && playerInventory.PrimaryGunInstance.GetComponent<GunInstance>().CanBeSold && playerInventory.PrimaryGun != null && playerInventory.PrimaryGunInstance.GetComponent<GunInstance>().GunOwner == player:
+                SellGun(gun);
+                break;
+            case GunType.Primary when playerInventory.PrimaryGun == gun && !playerInventory.PrimaryGunInstance.GetComponent<GunInstance>().CanBeSold && playerInventory.PrimaryGun != null && playerInventory.PrimaryGunInstance.GetComponent<GunInstance>().GunOwner != player:
+                playerInventory.CmdDropGun(GunType.Primary);
+                break;
+            case GunType.Secondary when playerInventory.SecondaryGun == gun && playerInventory.SecondaryGunInstance.GetComponent<GunInstance>().CanBeSold && playerInventory.SecondaryGun != null && playerInventory.SecondaryGunInstance.GetComponent<GunInstance>().GunOwner == player:
+                SellGun(gun);
+                break;
+            case GunType.Secondary when playerInventory.SecondaryGun == gun && !playerInventory.SecondaryGunInstance.GetComponent<GunInstance>().CanBeSold && playerInventory.SecondaryGun != null && playerInventory.SecondaryGunInstance.GetComponent<GunInstance>().GunOwner != player:
+                playerInventory.CmdDropGun(GunType.Secondary);
+                break;
+            default:
+                RequestGun(gun);
+                break;
+        }
     }
 
     public void SellGun(Gun gun)
@@ -223,13 +234,13 @@ public class ShopManager : NetworkBehaviour
     [TargetRpc]
     void RpcRequestGun(NetworkConnection conn,int gunId, PlayerUI playerUI)
     {
-        Debug.Log("His name: " + playerUI.ShopPlayer.Name.text);
         Gun gun = gunManager.GetGunByID(gunId);
         PlayerInventoryManager playerInventory = playerUI.GetComponent<PlayerInventoryManager>();
         playerInventory.RequestedGun = gun;
         playerUI.ShopPlayer.Request.SetActive(true);
         playerUI.ShopPlayer.Inventory.SetActive(false);
         playerUI.ShopPlayer.RequestedGunIcon.sprite = gun.Icon;
+        playerUI.ShopPlayer.RequestedGunPrice.text = gun.Price.ToString();
     }
 
     public void BuyShield(string shieldType)

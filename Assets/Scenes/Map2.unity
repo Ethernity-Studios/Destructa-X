@@ -25,8 +25,8 @@ RenderSettings:
   m_AmbientGroundColor: {r: 0.047, g: 0.043, b: 0.035, a: 1}
   m_AmbientIntensity: 1
   m_AmbientMode: 0
-  m_SubtractiveShadowColor: {r: 0.42, g: 0.478, b: 0.627, a: 1}
-  m_SkyboxMaterial: {fileID: 10304, guid: 0000000000000000f000000000000000, type: 0}
+  m_SubtractiveShadowColor: {r: 1, g: 1, b: 1, a: 1}
+  m_SkyboxMaterial: {fileID: 2100000, guid: 3f698c5d47507d54db2dcb930054532e, type: 2}
   m_HaloStrength: 0.5
   m_FlareStrength: 1
   m_FlareFadeSpeed: 3
@@ -37,8 +37,8 @@ RenderSettings:
   m_ReflectionBounces: 1
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
-  m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.18217254, g: 0.22787313, b: 0.30737278, a: 1}
+  m_Sun: {fileID: 600687756}
+  m_IndirectSpecularColor: {r: 0.52412844, g: 0.5618112, b: 0.47702503, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -7426,12 +7426,12 @@ GameObject:
   - component: {fileID: 345530140}
   - component: {fileID: 345530139}
   m_Layer: 5
-  m_Name: Equpied_item_icon
+  m_Name: PrimaryItemIcon
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &345530138
 RectTransform:
   m_ObjectHideFlags: 0
@@ -7472,7 +7472,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 2b2687121c71d8e4d9845100b3f07a39, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 4475010bfc76780468828fd7f109ae86, type: 3}
   m_Type: 0
   m_PreserveAspect: 1
   m_FillCenter: 1
@@ -10791,7 +10791,7 @@ GameObject:
   - component: {fileID: 547944842}
   - component: {fileID: 547944841}
   m_Layer: 5
-  m_Name: Previous_item_icon
+  m_Name: SecondaryItemIcon
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -10837,7 +10837,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 2da9aa027cdfea4468299c070bf152cc, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 2b2687121c71d8e4d9845100b3f07a39, type: 3}
   m_Type: 0
   m_PreserveAspect: 1
   m_FillCenter: 1
@@ -12119,8 +12119,8 @@ Light:
   serializedVersion: 10
   m_Type: 1
   m_Shape: 0
-  m_Color: {r: 0.9648229, g: 0.9716981, b: 0.8937789, a: 1}
-  m_Intensity: 1.04
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Intensity: 1
   m_Range: 10
   m_SpotAngle: 30
   m_InnerSpotAngle: 21.80208
@@ -12503,7 +12503,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &613219354
 RectTransform:
   m_ObjectHideFlags: 0
@@ -17637,7 +17637,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &843107796
 RectTransform:
   m_ObjectHideFlags: 0
@@ -32982,7 +32982,7 @@ GameObject:
   - component: {fileID: 1553800625}
   - component: {fileID: 1553800624}
   m_Layer: 5
-  m_Name: PrePrevious_item_icon
+  m_Name: KnifeIcon
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -33028,7 +33028,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 9eaf82342004f7949b0826a00921a76d, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 2da9aa027cdfea4468299c070bf152cc, type: 3}
   m_Type: 0
   m_PreserveAspect: 1
   m_FillCenter: 1
@@ -34580,7 +34580,6 @@ MonoBehaviour:
   BulletsIcon: {fileID: 1193221499}
   EquippedItem: {fileID: 345530139}
   PreviousEquippedItem: {fileID: 547944841}
-  PrePreviousEquippedItem: {fileID: 1553800624}
   Health: {fileID: 1311369002}
   HealthBar: {fileID: 894169512}
   Shield: {fileID: 229665647}
@@ -34624,6 +34623,7 @@ MonoBehaviour:
   RedScoreboardScore: {fileID: 1827124998}
   Knife: {fileID: 21300000, guid: 2da9aa027cdfea4468299c070bf152cc, type: 3}
   Latency: {fileID: 1970197834}
+  TransparentImage: {fileID: 21300000, guid: 9eaf82342004f7949b0826a00921a76d, type: 3}
 --- !u!114 &1600231073
 MonoBehaviour:
   m_ObjectHideFlags: 0

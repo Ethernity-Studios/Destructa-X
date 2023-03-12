@@ -18,8 +18,7 @@ public class UIManager : MonoBehaviour
     public GameObject BulletsIcon;
     public Image EquippedItem;
     public Image PreviousEquippedItem;
-    public Image PrePreviousEquippedItem;
-[Space(25)]
+    [Space(25)]
     public TMP_Text Health;
     public Image HealthBar;
     public TMP_Text Shield;
@@ -83,4 +82,7 @@ public class UIManager : MonoBehaviour
 
     [Header("Performance")] 
     public TMP_Text Latency;
+    
+    [Header("Misc")]
+    public Sprite TransparentImage;
 }

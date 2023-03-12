@@ -135,10 +135,10 @@ public class Player : NetworkBehaviour, IDamageable
     {
         PlayerMoney += money;
         if (PlayerMoney > 9000) PlayerMoney = 9000;
-
+        uiManager.ShopPlayerMoney.text = PlayerMoney.ToString();
         foreach (var p in gameManager.PlayersID.Select(gameManager.GetPlayer))
         {
-            playerUI.RpcUpdatePlayerTeamMoney(p.netIdentity.connectionToClient, money);
+            playerUI.RpcUpdatePlayerTeamMoney(p.netIdentity.connectionToClient, PlayerMoney);
         }
     }
 

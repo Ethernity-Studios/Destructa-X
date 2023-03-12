@@ -263,6 +263,7 @@ namespace player
             playerScoreboard.transform.SetParent(uiManager.EnemyTeamScoreboard.transform);
             ScoreboardPlayer.Border.color = UIManager.RedColor;
             ScoreboardPlayer.Background.sprite = uiManager.RedTeamBackgroundScoreboard;
+            ScoreboardPlayer.GunIcon.gameObject.SetActive(false);
             playerScoreboard.transform.localScale = Vector3.one;
         }
 
@@ -278,9 +279,18 @@ namespace player
         {
             ScoreboardPlayer.Money.text = player.EnemyPlayerMoney.ToString();
         }
+        
+        [Command]
+        public void CmdUpdateScoreboardPlayer()
+        {
+            foreach (var p in gameManager.PlayersID.Select(gameManager.GetPlayer))
+            {
+                if(p.PlayerTeam == player.PlayerTeam) RpcUpdatePlayerScoreboard(p.netIdentity.connectionToClient);
+            }
+        }
 
         [TargetRpc]
-        public void RpcUpdatePlayerGun()
+        public void RpcUpdatePlayerScoreboard(NetworkConnection conn)
         {
             PlayerInventoryManager playerInventoryManager = player.GetComponent<PlayerInventoryManager>();
             if (playerInventoryManager.PrimaryGun != null)
@@ -289,6 +299,66 @@ namespace player
                 ScoreboardPlayer.GunIcon.sprite = playerInventoryManager.SecondaryGun.Icon;
             else if(playerInventoryManager.SecondaryGun == null && playerInventoryManager.PrimaryGun == null)
                 ScoreboardPlayer.GunIcon.sprite = uiManager.Knife;
+        }
+
+        [Command]
+        public void CmdUpdateShopPlayer()
+        {
+            foreach (var p in gameManager.PlayersID.Select(gameManager.GetPlayer))
+            {
+                if(p.PlayerTeam == player.PlayerTeam) RpcUpdateShopPlayer(p.netIdentity.connectionToClient);
+            }
+        }
+        
+        [TargetRpc]
+        public void RpcUpdateShopPlayer(NetworkConnection conn)
+        {
+            PlayerInventoryManager playerInventoryManager = player.GetComponent<PlayerInventoryManager>();
+            //ShopPlayer.ShieldIcon.sprite =
+            if (playerInventoryManager.RequestedGun != null)
+            {
+                ShopPlayer.Inventory.SetActive(false);
+                ShopPlayer.Request.SetActive(true);
+            }
+            else
+            {
+                ShopPlayer.Inventory.SetActive(true);
+                ShopPlayer.Request.SetActive(false);
+            }
+            
+            
+            if (playerInventoryManager.PrimaryGun != null)
+            {
+                ShopPlayer.PrimaryGunIcon.gameObject.SetActive(true);
+                ShopPlayer.PrimaryGunIcon.sprite = playerInventoryManager.PrimaryGun.Icon;
+            }
+            else ShopPlayer.PrimaryGunIcon.gameObject.SetActive(false);
+
+            if (playerInventoryManager.SecondaryGun != null)
+            {
+                ShopPlayer.SecondaryGunIcon.gameObject.SetActive(true);
+                ShopPlayer.SecondaryGunIcon.sprite = playerInventoryManager.SecondaryGun.Icon;
+            }
+            else ShopPlayer.SecondaryGunIcon.gameObject.SetActive(false);
+        }
+
+        public void UpdateLocalPlayerShopPlayer()
+        {
+            //SHIELD UPDATE
+            PlayerInventoryManager playerInventoryManager = player.GetComponent<PlayerInventoryManager>();
+            if (playerInventoryManager.PrimaryGun != null)
+            {
+                uiManager.ShopPlayerPrimaryGun.gameObject.SetActive(true);
+                uiManager.ShopPlayerPrimaryGun.sprite = playerInventoryManager.PrimaryGun.Icon;
+            }
+            else uiManager.ShopPlayerPrimaryGun.gameObject.SetActive(false);
+
+            if (playerInventoryManager.SecondaryGun != null)
+            {
+                uiManager.ShopPlayerSecondaryGun.gameObject.SetActive(true);
+                uiManager.ShopPlayerSecondaryGun.sprite = playerInventoryManager.SecondaryGun.Icon;
+            }
+            else uiManager.ShopPlayerSecondaryGun.gameObject.SetActive(false);
         }
 
         [TargetRpc]
@@ -301,6 +371,33 @@ namespace player
         public void RpcUpdatePlayerScore()
         {
             ScoreboardPlayer.KDA.text = $"{player.PlayerKills} {player.PlayerDeaths} {player.PlayerAssists}";
+        }
+        
+        public void ToggleAmmoUI(bool state)
+        {
+            if (!isLocalPlayer) return;
+            uiManager.MaxAmmoText.gameObject.SetActive(state);
+            uiManager.MagazineText.gameObject.SetActive(state);
+            uiManager.BulletsIcon.gameObject.SetActive(state);
+        }
+
+        public void UpdateEquippedItem()
+        {
+            PlayerInventoryManager playerInventoryManager = player.GetComponent<PlayerInventoryManager>();
+            if (playerInventoryManager.EquippedItem == Item.Bomb) return;
+            if (playerInventoryManager.PrimaryGun != null)
+            {
+                uiManager.EquippedItem.sprite = playerInventoryManager.PrimaryGun.Icon;
+                uiManager.EquippedItem.gameObject.SetActive(true);
+            }
+            else uiManager.EquippedItem.gameObject.SetActive(false);
+            
+            if (playerInventoryManager.SecondaryGun != null)
+            {
+                uiManager.PreviousEquippedItem.sprite = playerInventoryManager.SecondaryGun.Icon;
+                uiManager.PreviousEquippedItem.gameObject.SetActive(true);
+            }
+            else uiManager.PreviousEquippedItem.gameObject.SetActive(false);
         }
     }
 }
