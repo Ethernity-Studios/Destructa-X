@@ -1,6 +1,7 @@
+using Mirror;
 using UnityEngine;
 
-public class CombatReportManager : MonoBehaviour
+public class CombatReportManager : NetworkBehaviour
 {
     void Start()
     {
