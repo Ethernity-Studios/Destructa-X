@@ -11,6 +11,7 @@ public class PlayerShootingManager : NetworkBehaviour
     [SerializeField] Transform cameraHolder;
 
     PlayerEconomyManager playerEconomyManager;
+    private PlayerCombatReport playerCombatReport;
 
     public bool CanShoot = true;
     public bool Reloading;
@@ -28,6 +29,7 @@ public class PlayerShootingManager : NetworkBehaviour
         FindObjectOfType<GameManager>();
         uiManager = FindObjectOfType<UIManager>();
         playerEconomyManager = GetComponent<PlayerEconomyManager>();
+        playerCombatReport = GetComponent<PlayerCombatReport>();
         if (!isLocalPlayer) return;
         
  
@@ -144,7 +146,6 @@ public class PlayerShootingManager : NetworkBehaviour
                             if (entity.TakeDamage(calculateDamage(hit.point)))
                             {
                                 player.CmdAddKill();
-                                player.CmdAddRoundKill();
                             }
                     }
                 }

@@ -44,6 +44,7 @@ public class Player : NetworkBehaviour, IDamageable
     UIManager uiManager;
     CharacterController characterController;
     private PlayerUI playerUI;
+    private PlayerCombatReport playerCombatReport;
 
     // TODO maybe syncVar
     public PlayerState PlayerState;
@@ -88,6 +89,7 @@ public class Player : NetworkBehaviour, IDamageable
         playerShootingManager = GetComponent<PlayerShootingManager>();
         playerBombManager = GetComponent<PlayerBombManager>();
         playerUI = GetComponent<PlayerUI>();
+        playerCombatReport = GetComponent<PlayerCombatReport>();
         uiManager = FindObjectOfType<UIManager>();
 
         setPlayerBody();
@@ -164,9 +166,6 @@ public class Player : NetworkBehaviour, IDamageable
 
     [Command]
     public void CmdAddKill() => PlayerKills++;
-
-    [Command]
-    public void CmdAddRoundKill() => RoundKills++;
 
     [ClientRpc]
     public void RpcRespawnPlayer(Vector3 position, Vector3 rotation)
