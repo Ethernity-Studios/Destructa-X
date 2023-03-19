@@ -334,7 +334,7 @@ public class PlayerInventoryManager : NetworkBehaviour
         if(playerUI.ShopPlayer != null) playerUI.CmdUpdateShopPlayer();
         playerUI.UpdateLocalPlayerShopPlayer();
         playerUI.UpdateEquippedItem();
-        playerUI.CmdUpdateScoreboardPlayer();
+        if(playerUI.ScoreboardPlayer != null)playerUI.CmdUpdateScoreboardPlayer();
     }
 
     [Command(requiresAuthority =  false)]
@@ -396,7 +396,7 @@ public class PlayerInventoryManager : NetworkBehaviour
         if (!isLocalPlayer) return;
         RpcUpdateUI();
         playerUI.UpdateEquippedItem();
-        playerUI.CmdUpdateScoreboardPlayer();
+        if(playerUI.ScoreboardPlayer != null)playerUI.CmdUpdateScoreboardPlayer();
     }
 
 
@@ -455,7 +455,7 @@ public class PlayerInventoryManager : NetworkBehaviour
         if(playerUI.ShopPlayer != null) playerUI.CmdUpdateShopPlayer();
         playerUI.UpdateLocalPlayerShopPlayer();
         playerUI.UpdateEquippedItem();
-        playerUI.CmdUpdateScoreboardPlayer();
+        if(playerUI.ScoreboardPlayer != null)playerUI.CmdUpdateScoreboardPlayer();
     }
 
     private void setGunTransform(GameObject gunInstance, Gun gun)

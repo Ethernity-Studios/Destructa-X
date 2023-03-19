@@ -1,37 +1,107 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Mirror;
+using player;
 
 public class PlayerCombatReport : NetworkBehaviour
 {
-    public SyncList<CombatReport> Reports;
+    public readonly SyncList<CombatReport> Reports = new();
 
-    public void AddReport(CombatReport report)
+    [SerializeField] private GameObject CombatReport;
+    public List<GameObject> CombatReports;
+
+    private UIManager uiManager;
+
+    private void Start()
     {
-        int i = 0;
-        foreach (CombatReport rep in Reports)
+        GetComponent<PlayerUI>();
+        uiManager = FindObjectOfType<UIManager>();
+        FindObjectOfType<GameManager>();
+    }
+
+    [Command(requiresAuthority = false)]
+    public void CmdAddReport(CombatReport report)
+    {
+        if (Reports.Count > 0)
         {
-            if (rep.Target == report.Target)
+            int index = 0;
+            foreach (CombatReport rep in Reports)
             {
-                Reports[i].Gun = report.Gun;
-                Reports[i].GunType = report.GunType;
-
-                Reports[i].IncomingDamage = report.IncomingDamage;
-                Reports[i].OutComingDamage = report.OutComingDamage;
-
-                foreach (Body body in report.OwnerBody)
+                if (rep.OwnerPlayerId == report.OwnerPlayerId && rep.TargetPlayerId == report.TargetPlayerId &&
+                    rep.TargetState != ReportState.Killed)
                 {
-                    Reports[i].OwnerBody.Add(body);
+                    Debug.Log("LOCAL - Updating existing report");
+
+                    rep.GunId = report.GunId;
+
+                    rep.IncomingDamage += report.IncomingDamage;
+                    rep.OutComingDamage += report.OutComingDamage;
+                    
+                    if(report.OwnerBody.Count>0)
+                        foreach (Body body in report.OwnerBody)
+                        {
+                            rep.OwnerBody.Add(body);
+                        }
+                    if(report.TargetBody.Count>0)
+                        foreach (Body body in report.TargetBody)
+                        {
+                            rep.TargetBody.Add(body);
+                        }
+                    CombatReports[index].GetComponent<Report>().UpdateReport(report,NetworkServer.spawned[report.TargetPlayerId].GetComponent<Player>());
+                    index++;
                 }
-                
-                foreach (Body body in report.TargetBody)
+                else
                 {
-                    Reports[i].TargetBody.Add(body);
+                    Debug.Log("LOCAL - Adding new report :)");
+
+                    GameObject r = Instantiate(CombatReport, uiManager.CombatReport.transform);
+                    CombatReports.Add(r);
+                    r.GetComponent<Report>().UpdateReport(report,NetworkServer.spawned[report.TargetPlayerId].GetComponent<Player>());
+                    Reports.Add(report);
                 }
-                
             }
-            i++;
+        }
+        else
+        {
+            Debug.Log("LOCAL - Adding new report");
+
+            GameObject r = Instantiate(CombatReport, uiManager.CombatReport.transform);
+            CombatReports.Add(r);
+            r.GetComponent<Report>().UpdateReport(report,NetworkServer.spawned[report.TargetPlayerId].GetComponent<Player>());
+            Reports.Add(report);
+        }
+        
+    }
+
+    [ClientRpc]
+    public void RpcClearReports()
+    {
+        Reports.Clear();
+        foreach (GameObject cr in CombatReports)
+        {
+            Destroy(cr);
+        }
+    }
+
+    [Command(requiresAuthority = false)]
+    public void CmdUpdateReport(CombatReport report) => RpcUpdateReport(report);
+
+    [ClientRpc]
+    public void RpcUpdateReport(CombatReport report)
+    {
+        Debug.Log("Updating reports");
+
+        foreach (CombatReport combatReport in Reports)
+        {
+            if (combatReport.TargetPlayerId == report.TargetPlayerId &&
+                combatReport.OwnerPlayerId == report.OwnerPlayerId)
+            {
+                Debug.Log("Report exists - updating");
+            }
+            else
+            {
+                Debug.Log("Report does not exist");
+            }
         }
     }
 }

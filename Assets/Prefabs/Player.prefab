@@ -336,8 +336,8 @@ GameObject:
   - component: {fileID: -7474328044268257047}
   - component: {fileID: 8107270674050922034}
   - component: {fileID: 1805058751750204041}
+  - component: {fileID: 2661542283209995485}
   - component: {fileID: 6336609987163348861}
-  - component: {fileID: 1502663924094324460}
   - component: {fileID: 4704746696696432680}
   - component: {fileID: 3516282345566254277}
   - component: {fileID: 5070754395047204269}
@@ -454,7 +454,7 @@ MonoBehaviour:
   BulletImpactDecalNotPenetrable: {fileID: 6071705189317625677, guid: 3c428bab6c0c4694aa239f13ef2a6e9b, type: 3}
   mask:
     serializedVersion: 2
-    m_Bits: 1599
+    m_Bits: 1727
 --- !u!114 &7365863876986519927
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -550,6 +550,22 @@ MonoBehaviour:
   HeaderPlayer: {fileID: 0}
   ScoreboardPlayer: {fileID: 0}
   ShopPlayer: {fileID: 0}
+--- !u!114 &2661542283209995485
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6720852769967137176}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a958d4c62a772564f94d561cc329b7e9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncMode: 0
+  syncInterval: 0.1
+  CombatReport: {fileID: 3622835321398936820, guid: 4e8066dd6a4a49c4dbfddcd8a359c8ae, type: 3}
+  CombatReports: []
 --- !u!54 &6336609987163348861
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -566,19 +582,6 @@ Rigidbody:
   m_Interpolate: 1
   m_Constraints: 112
   m_CollisionDetection: 1
---- !u!65 &1502663924094324460
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6720852769967137176}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 1
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Size: {x: 1, y: 2, z: 1}
-  m_Center: {x: 0, y: 1, z: 0}
 --- !u!136 &4704746696696432680
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -1153,6 +1156,20 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: 1c7dde570c7141d45bff875411287fd6, type: 3}
   m_PrefabInstance: {fileID: 2030286516592299219}
   m_PrefabAsset: {fileID: 0}
+--- !u!136 &2026408746200856195
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1219471668820504962}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  m_Radius: 0.5
+  m_Height: 2
+  m_Direction: 1
+  m_Center: {x: 0, y: 1, z: 0}
 --- !u!4 &1992772092889836344 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 1c7dde570c7141d45bff875411287fd6, type: 3}

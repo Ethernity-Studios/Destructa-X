@@ -1,21 +1,27 @@
 using System.Collections.Generic;
 
 public enum Body{
-    Head, Body, Legs
+    None, Head, Body, Legs
+}
+
+public enum ReportState
+{
+    None, Killed, Assisted, Alive
 }
 
 public class CombatReport
 {
-    public Player Target;
-    public Player Owner;
+    public uint TargetPlayerId;
+    public uint OwnerPlayerId;
     
     public int OutComingDamage;
     public int IncomingDamage;
 
-    public Gun Gun;
-    public GunType GunType;
+    public int GunId;
 
-    public List<Body> TargetBody;
-    public List<Body> OwnerBody;
-
+    public List<Body> TargetBody = new();
+    public List<Body> OwnerBody = new();
+    
+    public ReportState TargetState;
+    public ReportState OwnerState;
 }

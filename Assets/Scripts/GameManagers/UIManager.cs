@@ -8,7 +8,7 @@ using UnityEngine.UI;
 public class UIManager : MonoBehaviour
 {
     public static Color GreenColor = new Color(142/255f, 214/255f, 161/255f, 1);
-    public static Color RedColor = new Color(214/255f, 143/255f, 142/255f, 1);
+    public static Color RedColor = new Color(214/255f, 143/255f, 142/255f, 1); //#D68F8E
     public static Color LightGreyColor = new Color(200/255f, 200/255f, 200/255f, 1);
     public static Color YellowColor = new Color(214 / 255f, 214 / 255f, 142 / 255f, 1);
     
@@ -76,6 +76,9 @@ public class UIManager : MonoBehaviour
 
     public TMP_Text BlueScoreboardScore;
     public TMP_Text RedScoreboardScore;
+
+    [Header("CombatReport")] 
+    public GameObject CombatReport;
 
     [Header("Items")] 
     public Sprite Knife;

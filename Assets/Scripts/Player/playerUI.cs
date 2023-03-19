@@ -3,6 +3,7 @@ using System.Linq;
 using System.Runtime.InteropServices.ComTypes;
 using GameManagers;
 using Mirror;
+using TMPro;
 using UnityEngine;
 using static UnityEngine.InputSystem.InputAction;
 

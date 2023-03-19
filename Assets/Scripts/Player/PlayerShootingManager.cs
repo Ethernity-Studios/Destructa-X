@@ -1,5 +1,6 @@
 using Mirror;
 using System.Collections;
+using System.Linq;
 using UnityEngine;
 
 public class PlayerShootingManager : NetworkBehaviour
@@ -12,6 +13,7 @@ public class PlayerShootingManager : NetworkBehaviour
 
     PlayerEconomyManager playerEconomyManager;
     private PlayerCombatReport playerCombatReport;
+    private GameManager gameManager;
 
     public bool CanShoot = true;
     public bool Reloading;
@@ -28,6 +30,7 @@ public class PlayerShootingManager : NetworkBehaviour
         player = GetComponent<Player>();
         FindObjectOfType<GameManager>();
         uiManager = FindObjectOfType<UIManager>();
+        gameManager = FindObjectOfType<GameManager>();
         playerEconomyManager = GetComponent<PlayerEconomyManager>();
         playerCombatReport = GetComponent<PlayerCombatReport>();
         if (!isLocalPlayer) return;
@@ -134,19 +137,44 @@ public class PlayerShootingManager : NetworkBehaviour
     {
         while (true)
         {
+            Debug.Log("Checking penetration");
+
             Ray ray = new Ray(originPosition, transform.forward + cameraHolder.transform.forward);
             if (Physics.Raycast(originPosition, cameraHolder.forward, out RaycastHit hit, Mathf.Infinity, layerMask: mask))
             {
                 if (hit.collider.transform.parent != null)
                 {
+                    Debug.Log("Collider has parent");
+
                     if (hit.collider.transform.parent.TryGetComponent(out IDamageable entity))
                     {
+                        Debug.Log("Player hit!");
+
                         Player hitPlayer = hit.collider.transform.parent.gameObject.GetComponent<Player>();
                         if (hitPlayer.PlayerTeam != player.PlayerTeam && !hitPlayer.IsDead)
-                            if (entity.TakeDamage(calculateDamage(hit.point)))
+                        {
+                            Body body = GetBody(hit.collider.gameObject);
+                            var damage = calculateDamage(hit.point);
+                            CombatReport report = new()
                             {
+                                TargetPlayerId = hitPlayer.netId,
+                                OwnerPlayerId = player.netId,
+                                IncomingDamage = damage,
+                                GunId = playerInventory.EquippedGun.GunID,
+                            };
+                            if(body != Body.None) report.TargetBody.Add(body);
+                            playerCombatReport.CmdAddReport(report);
+                            if (entity.TakeDamage(damage))
+                            {
+                                report.TargetState = ReportState.Killed;
                                 player.CmdAddKill();
                             }
+
+                            /*foreach (var player in gameManager.PlayersID.Select(gameManager.GetPlayer))
+                            {
+                                player.GetComponent<PlayerCombatReport>().CmdUpdateReport(report);
+                            }*/
+                        }
                     }
                 }
 
@@ -189,6 +217,15 @@ public class PlayerShootingManager : NetworkBehaviour
             break;
         }
     }
+
+    Body GetBody(GameObject hit) =>
+        hit.tag switch
+        {
+            "leg" => Body.Legs,
+            "body" => Body.Body,
+            "head" => Body.Head,
+            _ => Body.None
+        };
 
     int calculateDamage(Vector3 entityPosition)
     {
