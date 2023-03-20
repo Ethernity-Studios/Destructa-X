@@ -1,3 +1,4 @@
+using System;
 using Mirror;
 using System.Collections;
 using System.Linq;
@@ -22,10 +23,11 @@ public class PlayerShootingManager : NetworkBehaviour
     [SerializeField] GameObject BulletImpactDecalPenetrable, BulletImpactDecalNotPenetrable;
 
     private PlayerInput playerInput;
+
     private void Awake()
     {
         playerInput = new PlayerInput();
-        playerInput.PlayerShoot.Enable();  
+        playerInput.PlayerShoot.Enable();
 
         player = GetComponent<Player>();
         FindObjectOfType<GameManager>();
@@ -34,9 +36,8 @@ public class PlayerShootingManager : NetworkBehaviour
         playerEconomyManager = GetComponent<PlayerEconomyManager>();
         playerCombatReport = GetComponent<PlayerCombatReport>();
         if (!isLocalPlayer) return;
-        
- 
-        
+
+
         cameraHolder.GetComponent<Camera>().enabled = true;
         cameraHolder.GetChild(0).GetComponent<Camera>().enabled = true;
     }
@@ -52,7 +53,7 @@ public class PlayerShootingManager : NetworkBehaviour
         if (!isLocalPlayer) return;
         playerInput.PlayerShoot.Disable();
     }
-    
+
 
     void Update()
     {
@@ -62,23 +63,29 @@ public class PlayerShootingManager : NetworkBehaviour
         if (GunInstance == null) return;
         if (playerEconomyManager.IsShopOpen) return;
 
-        if (playerInventory.EquippedGun != null && playerInventory.GunEquipped && CanShoot && GunInstance.Magazine > 0 && !Reloading)
+        if (playerInventory.EquippedGun != null && playerInventory.GunEquipped && CanShoot &&
+            GunInstance.Magazine > 0 && !Reloading)
         {
-            if (playerInventory.EquippedGun.PrimaryFire.FireMode == FireMode.Manual && playerInput.PlayerShoot.Primary.triggered)
+            if (playerInventory.EquippedGun.PrimaryFire.FireMode == FireMode.Manual &&
+                playerInput.PlayerShoot.Primary.triggered)
             {
                 Shoot();
             }
-            else if (playerInventory.EquippedGun.PrimaryFire.FireMode == FireMode.Automatic && playerInput.PlayerShoot.Primary.IsPressed())
+            else if (playerInventory.EquippedGun.PrimaryFire.FireMode == FireMode.Automatic &&
+                     playerInput.PlayerShoot.Primary.IsPressed())
             {
                 Shoot();
             }
         }
+
         if (playerInventory.EquippedGun == null) return;
         if (GunInstance.Magazine == 0 && GunInstance.Ammo > 0 && !Reloading)
         {
             StartCoroutine(Reload());
         }
-        if (GunInstance.Magazine != playerInventory.EquippedGun.MagazineAmmo && playerInput.PlayerShoot.Reload.triggered && GunInstance.Ammo > 0 && !Reloading)
+
+        if (GunInstance.Magazine != playerInventory.EquippedGun.MagazineAmmo &&
+            playerInput.PlayerShoot.Reload.triggered && GunInstance.Ammo > 0 && !Reloading)
         {
             StartCoroutine(Reload());
         }
@@ -105,6 +112,7 @@ public class PlayerShootingManager : NetworkBehaviour
             GunInstance.Magazine = GunInstance.Ammo;
             GunInstance.Ammo = 0;
         }
+
         UpdateUIAmmo();
     }
 
@@ -137,16 +145,14 @@ public class PlayerShootingManager : NetworkBehaviour
     {
         while (true)
         {
-
             Ray ray = new Ray(originPosition, transform.forward + cameraHolder.transform.forward);
-            if (Physics.Raycast(originPosition, cameraHolder.forward, out RaycastHit hit, Mathf.Infinity, layerMask: mask))
+            if (Physics.Raycast(originPosition, cameraHolder.forward, out RaycastHit hit, Mathf.Infinity,
+                    layerMask: mask))
             {
                 if (hit.collider.transform.parent != null)
                 {
-
                     if (hit.collider.transform.parent.TryGetComponent(out IDamageable entity))
                     {
-
                         Player hitPlayer = hit.collider.transform.parent.gameObject.GetComponent<Player>();
                         if (hitPlayer.PlayerTeam != player.PlayerTeam && !hitPlayer.IsDead)
                         {
@@ -159,8 +165,8 @@ public class PlayerShootingManager : NetworkBehaviour
                                 IncomingDamage = damage,
                                 GunId = playerInventory.EquippedGun.GunID,
                             };
-                            if(body != Body.None) report.TargetBody.Add(body);
-                            playerCombatReport.CmdAddReport(report);
+                            if (body != Body.None) report.TargetBody.Add(body);
+                            playerCombatReport.AddReport(report);
                             if (entity.TakeDamage(damage))
                             {
                                 report.TargetState = ReportState.Killed;
@@ -242,7 +248,8 @@ public class PlayerShootingManager : NetworkBehaviour
             case 3 when distance <= gun.Damages[0].MaxDistance:
                 BulletDamage = gun.Damages[0].BodyDamage;
                 break;
-            case 3 when distance >= gun.Damages[1].MinDistance && distance <= gun.Damages[1].MaxDistance:
+            case 3 when
+                (distance >= gun.Damages[1].MinDistance && distance <= gun.Damages[1].MaxDistance):
                 BulletDamage = gun.Damages[1].BodyDamage;
                 break;
             case 3:
@@ -251,13 +258,18 @@ public class PlayerShootingManager : NetworkBehaviour
                 break;
             }
         }
+
+        Debug.Log("Bullet damage before: " + BulletDamage);
+        BulletDamage -= (int)penetrationAmount*2; //TODO need better damage calculation
+        Debug.Log("Bullet damage after: " + BulletDamage);
         return BulletDamage;
     }
 
     [Command]
     void CmdInstantiateImpactDecal(bool canPenetrate, Vector3 position, Vector3 rotation)
     {
-        GameObject bulletImpact = Instantiate(canPenetrate ? BulletImpactDecalPenetrable : BulletImpactDecalNotPenetrable);
+        GameObject bulletImpact =
+            Instantiate(canPenetrate ? BulletImpactDecalPenetrable : BulletImpactDecalNotPenetrable);
         NetworkServer.Spawn(bulletImpact);
         RpcInstantiateImpactDecal(bulletImpact, position, rotation);
         StartCoroutine(destroyDecal(bulletImpact));

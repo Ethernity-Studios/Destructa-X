@@ -12,15 +12,15 @@ public class PlayerCombatReport : NetworkBehaviour
 
     private UIManager uiManager;
 
+    private Player targetPlayer;
     private void Start()
     {
         GetComponent<PlayerUI>();
         uiManager = FindObjectOfType<UIManager>();
         FindObjectOfType<GameManager>();
     }
-
-    [Command(requiresAuthority = false)]
-    public void CmdAddReport(CombatReport report)
+    
+    public void AddReport(CombatReport report)
     {
         bool addNew = false;
         if (Reports.Count > 0)
@@ -49,9 +49,8 @@ public class PlayerCombatReport : NetworkBehaviour
                         {
                             rep.TargetBody.Add(body);
                         }
-
-                    CombatReports[index].GetComponent<Report>().UpdateReport(rep,
-                        NetworkServer.spawned[rep.TargetPlayerId].GetComponent<Player>());
+                    CmdGetTargetPlayer(rep.TargetPlayerId);
+                    CombatReports[index].GetComponent<Report>().UpdateReport(rep, targetPlayer);
                     index++;
                 }
                 else
@@ -66,9 +65,9 @@ public class PlayerCombatReport : NetworkBehaviour
             addNew = false;
             GameObject r = Instantiate(CombatReport, uiManager.CombatReport.transform);
             CombatReports.Add(r);
-            r.GetComponent<Report>()
-                .UpdateReport(report, NetworkServer.spawned[report.TargetPlayerId].GetComponent<Player>());
-            Reports.Add(report);
+            CmdGetTargetPlayer(report.TargetPlayerId);
+            r.GetComponent<Report>().UpdateReport(report, targetPlayer);
+            CmdAddReport(report);
         }
 
         if (!addNew) return;
@@ -76,9 +75,22 @@ public class PlayerCombatReport : NetworkBehaviour
 
         GameObject re = Instantiate(CombatReport, uiManager.CombatReport.transform);
         CombatReports.Add(re);
-        re.GetComponent<Report>()
-            .UpdateReport(report, NetworkServer.spawned[report.TargetPlayerId].GetComponent<Player>());
+        CmdGetTargetPlayer(report.TargetPlayerId);
+        re.GetComponent<Report>().UpdateReport(report, targetPlayer);
+        CmdAddReport(report);
+    }
+
+    [Command]
+    void CmdAddReport(CombatReport report)
+    {
         Reports.Add(report);
+    }
+
+
+    [Command(requiresAuthority = false)]
+    void CmdGetTargetPlayer(uint playerId)
+    {
+        targetPlayer = NetworkServer.spawned[playerId].GetComponent<Player>();
     }
 
     [ClientRpc]
