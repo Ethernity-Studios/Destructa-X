@@ -394,7 +394,7 @@ public class PlayerInventoryManager : NetworkBehaviour
         rb.AddForce(transform.GetChild(0).transform.TransformDirection(new Vector3(0, 0, 400))); // Camera
 
         if (!isLocalPlayer) return;
-        RpcUpdateUI();
+        CmdUpdateUI();
         playerUI.UpdateEquippedItem();
         if(playerUI.ScoreboardPlayer != null)playerUI.CmdUpdateScoreboardPlayer();
     }
@@ -519,7 +519,11 @@ public class PlayerInventoryManager : NetworkBehaviour
         }
         RpcUpdateUI();
     }
-[ClientRpc]
+
+    [Command(requiresAuthority = false)]
+    public void CmdUpdateUI() => RpcUpdateUI();
+    
+    [ClientRpc]
     public void RpcUpdateUI()
     {
         if (!isLocalPlayer) return;

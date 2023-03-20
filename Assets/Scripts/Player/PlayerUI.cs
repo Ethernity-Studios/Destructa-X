@@ -271,7 +271,7 @@ namespace player
         [TargetRpc]
         public void RpcUpdatePlayerTeamMoney(NetworkConnection conn, int money)
         {
-            ShopPlayer.Money.text = money.ToString();
+            if(ShopPlayer!= null) ShopPlayer.Money.text = money.ToString();
             ScoreboardPlayer.Money.text = money.ToString();
         }
 

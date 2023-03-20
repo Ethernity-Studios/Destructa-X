@@ -40,86 +40,11 @@ public class LobbyPlayer : NetworkRoomPlayer
         agentManager = FindObjectOfType<AgentManager>();
     }
 
-    /*public override void OnClientEnterRoom()
+    public override void OnStartLocalPlayer()
     {
-        return;
-        BlueTeamHolder = GameObject.Find("BlueTeam").transform;
-        RedTeamHolder = GameObject.Find("RedTeam").transform;
-        agentManager = FindObjectOfType<AgentManager>();
-
-        foreach (var player in Room.roomSlots)
-        {
-            var localPlayer = player.GetComponent<LobbyPlayer>();
-            var localPlayerTeam = localPlayer.PlayerTeam;
-            switch (localPlayerTeam)
-            {
-                case Team.None:
-                    break;
-                case Team.Blue:
-                    localPlayer.transform.SetParent(BlueTeamHolder);
-                    localPlayer.GetComponent<Image>().color = new Color(0f / 255f, 203f / 255f, 255f / 255f, 1f);
-
-                    break;
-                case Team.Red:
-                    localPlayer.transform.SetParent(RedTeamHolder);
-                    localPlayer.GetComponent<Image>().color = new Color(195f / 255f, 63f / 255f, 63f / 255f, 1f);
-                    break;
-            }
-            localPlayer.GetComponent<RectTransform>().localScale = Vector3.one;
-            localPlayer.transform.GetChild(0).GetComponent<TMP_Text>().text = localPlayer.PlayerName;
-            Image localPlayerImage = localPlayer.transform.GetChild(1).GetComponent<Image>();
-            if (localPlayer.PlayerSelectedAgent == Agent.None)
-            {
-                localPlayerImage.sprite = null;
-                if (localPlayer.PlayerPreselectedAgent == Agent.None)
-                {
-                    localPlayerImage.sprite = null;
-                }
-                else
-                {
-                    localPlayerImage.sprite = agentManager.GetAgentMeta(localPlayer.PlayerPreselectedAgent).Meta.Icon;
-                }
-            }
-            else
-            {
-                localPlayerImage.sprite = agentManager.GetAgentMeta(localPlayer.PlayerSelectedAgent).Meta.Icon;
-                localPlayerImage.color = Color.white;
-                localPlayer.transform.GetChild(2).GetComponent<TMP_Text>().text = agentManager.GetAgentMeta(localPlayer.PlayerSelectedAgent).Name;
-            }
-        }
-        base.OnClientEnterRoom();
-    }*/
-
-    public override void OnClientExitRoom()
-    {
-        /*
-        roomManager = FindObjectOfType<RoomManager>();
-        if (SceneManager.GetActiveScene().name == "RoomScene" && isServer && roomManager != null)
-        {
-            int tempB = 0, tempR = 0;
-            foreach (var player in Room.roomSlots)
-            {
-                LobbyPlayer localPlayer = player.GetComponent<LobbyPlayer>();
-                switch (localPlayer.PlayerTeam)
-                {
-                    case Team.None:
-                        break;
-                    case Team.Blue:
-                        tempB++;
-                        break;
-                    case Team.Red:
-                        tempR++;
-                        break;
-                }
-                if(SceneManager.GetActiveScene().name == "RoomScene" && isServer && roomManager != null)
-                {
-                    roomManager.BlueTeamSize = tempB;
-                    roomManager.RedTeamSize = tempR;
-                }
-            }
-        }
-        */
+        CmdSetNickname(NicknameManager.DisplayName);
     }
+
 
     #region Command Sync
 
@@ -210,8 +135,8 @@ public class LobbyPlayer : NetworkRoomPlayer
         }
         GetComponent<RectTransform>().localScale = Vector3.one;
         transform.GetChild(0).GetComponent<TMP_Text>().text = PlayerName;
-        
-        
+
+        AgentIcon.sprite = agentManager.GetAgentMeta(agent).Meta.Icon;
         AgentIcon.color = Color.white;
         agentManager = FindObjectOfType<AgentManager>();
         agentText.text = agentManager.GetAgentMeta(agent).Name;

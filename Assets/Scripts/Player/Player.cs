@@ -257,6 +257,7 @@ public class Player : NetworkBehaviour, IDamageable
     [TargetRpc]
     void RpcUpdateHealth(NetworkConnection conn, int value)
     {
+        if (playerUI.HeaderPlayer == null) return;
         PlayerHeader playerHeader = playerUI.HeaderPlayer.GetComponent<PlayerHeader>();
 
         playerHeader.Health.fillAmount = value * .01f;

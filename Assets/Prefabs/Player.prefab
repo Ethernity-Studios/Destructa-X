@@ -450,8 +450,8 @@ MonoBehaviour:
   CanShoot: 1
   Reloading: 0
   GunInstance: {fileID: 0}
-  BulletImpactDecalPenetrable: {fileID: 6071705189317625677, guid: aeffaea663eb17147b647894e18ee251, type: 3}
-  BulletImpactDecalNotPenetrable: {fileID: 6071705189317625677, guid: 3c428bab6c0c4694aa239f13ef2a6e9b, type: 3}
+  BulletImpactDecalPenetrable: {fileID: 6870612456802620677, guid: dd39f28f1225a0543a5956a175d881a2, type: 3}
+  BulletImpactDecalNotPenetrable: {fileID: 3127634398550035562, guid: e77031b087ca48f4fbe92710113ef8f9, type: 3}
   mask:
     serializedVersion: 2
     m_Bits: 1727

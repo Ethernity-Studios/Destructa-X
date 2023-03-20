@@ -22,6 +22,7 @@ public class PlayerCombatReport : NetworkBehaviour
     [Command(requiresAuthority = false)]
     public void CmdAddReport(CombatReport report)
     {
+        bool addNew = false;
         if (Reports.Count > 0)
         {
             int index = 0;
@@ -36,41 +37,48 @@ public class PlayerCombatReport : NetworkBehaviour
 
                     rep.IncomingDamage += report.IncomingDamage;
                     rep.OutComingDamage += report.OutComingDamage;
-                    
-                    if(report.OwnerBody.Count>0)
+
+                    if (report.OwnerBody.Count > 0)
                         foreach (Body body in report.OwnerBody)
                         {
                             rep.OwnerBody.Add(body);
                         }
-                    if(report.TargetBody.Count>0)
+
+                    if (report.TargetBody.Count > 0)
                         foreach (Body body in report.TargetBody)
                         {
                             rep.TargetBody.Add(body);
                         }
-                    CombatReports[index].GetComponent<Report>().UpdateReport(report,NetworkServer.spawned[report.TargetPlayerId].GetComponent<Player>());
+
+                    CombatReports[index].GetComponent<Report>().UpdateReport(rep,
+                        NetworkServer.spawned[rep.TargetPlayerId].GetComponent<Player>());
                     index++;
                 }
                 else
                 {
-                    Debug.Log("LOCAL - Adding new report :)");
-
-                    GameObject r = Instantiate(CombatReport, uiManager.CombatReport.transform);
-                    CombatReports.Add(r);
-                    r.GetComponent<Report>().UpdateReport(report,NetworkServer.spawned[report.TargetPlayerId].GetComponent<Player>());
-                    Reports.Add(report);
+                    addNew = true;
                 }
             }
         }
         else
         {
             Debug.Log("LOCAL - Adding new report");
-
+            addNew = false;
             GameObject r = Instantiate(CombatReport, uiManager.CombatReport.transform);
             CombatReports.Add(r);
-            r.GetComponent<Report>().UpdateReport(report,NetworkServer.spawned[report.TargetPlayerId].GetComponent<Player>());
+            r.GetComponent<Report>()
+                .UpdateReport(report, NetworkServer.spawned[report.TargetPlayerId].GetComponent<Player>());
             Reports.Add(report);
         }
-        
+
+        if (!addNew) return;
+        Debug.Log("LOCAL - Adding new report");
+
+        GameObject re = Instantiate(CombatReport, uiManager.CombatReport.transform);
+        CombatReports.Add(re);
+        re.GetComponent<Report>()
+            .UpdateReport(report, NetworkServer.spawned[report.TargetPlayerId].GetComponent<Player>());
+        Reports.Add(report);
     }
 
     [ClientRpc]

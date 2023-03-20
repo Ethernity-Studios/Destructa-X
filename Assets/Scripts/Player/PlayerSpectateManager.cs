@@ -48,6 +48,8 @@ public class PlayerSpectateManager : NetworkBehaviour
 
     public void PlayerDeath()
     {
+        if (!isLocalPlayer) return;
+        mainCamera = Camera.main!.gameObject;
         mainCamera.GetComponent<CameraRotate>().CanRotate = false;
         mainCamera.transform.parent.GetComponent<CameraMove>().CanMove = false;
         playerBody.transform.localEulerAngles = new Vector3(90, 0, 0);
@@ -132,7 +134,7 @@ public class PlayerSpectateManager : NetworkBehaviour
         playerBody.transform.localEulerAngles = new Vector3(0, 0, 0);
         playerBody.transform.localPosition = new Vector3(0, 0, 0);
         itemHolder.SetActive(true);
-        playerHead.transform.localPosition = new Vector3(0, .6f, 0);
+        playerHead.transform.localPosition = new Vector3(0, 1.6f, 0);
         playerHead.transform.localEulerAngles = new Vector3(0, 0, 0);
         playerHands.GetComponent<Renderer>().enabled = true;
         Debug.Log("");

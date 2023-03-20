@@ -47,9 +47,9 @@ public class GameManager : NetworkBehaviour
 
     public Transform BlueUIAgents, RedUIAgents;
 
-    // [SyncVar]
-    public int AliveBluePlayers = 0;
-    // [SyncVar]
+    [SyncVar]
+    public int AliveBluePlayers = 0; 
+    [SyncVar]
     public int AliveRedPlayers = 0;
 
     // public Slider PlantProgressSlider;
@@ -176,6 +176,7 @@ public class GameManager : NetworkBehaviour
         {
             PlayersID.Add(con.Key);
         }
+
         Invoke(nameof(addPlayerToTeam),1f);
         
         setupGame();
@@ -189,13 +190,17 @@ public class GameManager : NetworkBehaviour
             switch (con.Value.identity.GetComponent<Player>().PlayerTeam)
             {
                 case Team.Blue:
+                    Debug.Log("Adding player to blue team");
                     BlueTeamPlayersIDs.Add(con.Key);
                     break;
                 case Team.Red:
+                    Debug.Log("Adding player to red team");
                     RedTeamPlayersIDs.Add(con.Key);
                     break;
             }
         }
+        AliveBluePlayers = BlueTeamPlayersIDs.Count;
+        AliveRedPlayers = RedTeamPlayersIDs.Count;
     }
 
     #region Server
@@ -203,8 +208,6 @@ public class GameManager : NetworkBehaviour
     [Server]
     void setupGame()
     {
-        AliveBluePlayers = BlueTeamPlayersIDs.Count;
-        AliveRedPlayers = RedTeamPlayersIDs.Count;
 
         GameTime = StartGameLenght;
         BombState = BombState.NotPlanted;

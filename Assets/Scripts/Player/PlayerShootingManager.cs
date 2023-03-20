@@ -137,18 +137,15 @@ public class PlayerShootingManager : NetworkBehaviour
     {
         while (true)
         {
-            Debug.Log("Checking penetration");
 
             Ray ray = new Ray(originPosition, transform.forward + cameraHolder.transform.forward);
             if (Physics.Raycast(originPosition, cameraHolder.forward, out RaycastHit hit, Mathf.Infinity, layerMask: mask))
             {
                 if (hit.collider.transform.parent != null)
                 {
-                    Debug.Log("Collider has parent");
 
                     if (hit.collider.transform.parent.TryGetComponent(out IDamageable entity))
                     {
-                        Debug.Log("Player hit!");
 
                         Player hitPlayer = hit.collider.transform.parent.gameObject.GetComponent<Player>();
                         if (hitPlayer.PlayerTeam != player.PlayerTeam && !hitPlayer.IsDead)
@@ -186,8 +183,8 @@ public class PlayerShootingManager : NetworkBehaviour
                     endPoint = transform.position + transform.forward * 1000;
                     if (hit.collider.transform.TryGetComponent(out MaterialToughness materialToughness))
                     {
-                        CmdInstantiateImpactDecal(true, hit.point, hit.normal); // first point
-                        CmdInstantiateImpactDecal(true, penHit.point, penHit.normal); //second point
+                        CmdInstantiateImpactDecal(true, hit.point, -hit.normal); // first point
+                        CmdInstantiateImpactDecal(true, penHit.point, -penHit.normal); //second point
 
 
                         penetrationAmount -= Vector3.Distance((Vector3)penetrationPoint, hit.point);
@@ -197,12 +194,12 @@ public class PlayerShootingManager : NetworkBehaviour
                     }
                     else
                     {
-                        CmdInstantiateImpactDecal(false, hit.point, hit.normal);
+                        CmdInstantiateImpactDecal(false, hit.point, -hit.normal);
                     }
                 }
                 else
                 {
-                    CmdInstantiateImpactDecal(false, hit.point, hit.normal);
+                    CmdInstantiateImpactDecal(false, hit.point, -hit.normal);
                     endPoint = impactPoint.Value + ray.direction * penetrationAmount;
                     penetrationPoint = endPoint;
                 }
