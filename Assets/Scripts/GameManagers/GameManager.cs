@@ -357,6 +357,7 @@ public class GameManager : NetworkBehaviour
             player.PreviousRoundShield = player.Shield;
             PlayerInventoryManager playerInventory = player.GetComponent<PlayerInventoryManager>();
             playerStateManger.RpcSetDefaultPlayerSettings(player);
+            player.GetComponent<PlayerCombatReport>().RpcClearReports();
             if (playerInventory.Bomb != null) NetworkServer.Destroy(playerInventory.Bomb);
             playerInventory.CmdSwitchItem(Item.Knife);
 

@@ -137,7 +137,6 @@ public class PlayerSpectateManager : NetworkBehaviour
         playerHead.transform.localPosition = new Vector3(0, 1.6f, 0);
         playerHead.transform.localEulerAngles = new Vector3(0, 0, 0);
         playerHands.GetComponent<Renderer>().enabled = true;
-        Debug.Log("");
     }
 }
 

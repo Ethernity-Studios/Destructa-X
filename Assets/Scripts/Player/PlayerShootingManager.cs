@@ -259,9 +259,9 @@ public class PlayerShootingManager : NetworkBehaviour
             }
         }
 
-        Debug.Log("Bullet damage before: " + BulletDamage);
-        BulletDamage -= (int)penetrationAmount*2; //TODO need better damage calculation
-        Debug.Log("Bullet damage after: " + BulletDamage);
+        //Debug.Log("Bullet damage before: " + BulletDamage);
+        //BulletDamage -= (int)penetrationAmount*2; //TODO need better damage calculation
+        //Debug.Log("Bullet damage after: " + BulletDamage);
         return BulletDamage;
     }
 
