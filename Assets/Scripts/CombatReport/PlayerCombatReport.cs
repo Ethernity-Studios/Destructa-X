@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using Mirror;
 
@@ -11,11 +12,13 @@ public class PlayerCombatReport : NetworkBehaviour
     public List<GameObject> CombatReports;
 
     private UIManager uiManager;
+    private GameManager gameManager;
 
     [SerializeField]  private Player targetPlayer;
     private void Start()
     {
         uiManager = FindObjectOfType<UIManager>();
+        gameManager = FindObjectOfType<GameManager>();
         FindObjectOfType<GameManager>();
         FindObjectOfType<GameManager>();
     }
@@ -34,7 +37,7 @@ public class PlayerCombatReport : NetworkBehaviour
                 {
                     addNew = false;
                     
-                    rep.GunId = report.GunId;
+                    rep.OwnerGunId = report.OwnerGunId;
 
                     rep.IncomingDamage += report.IncomingDamage;
                     rep.OutComingDamage += report.OutComingDamage;
@@ -50,7 +53,7 @@ public class PlayerCombatReport : NetworkBehaviour
                         {
                             rep.TargetBody.Add(body);
                         }
-
+                    CmdGetTargetPlayer(rep.TargetPlayerId);
                     StartCoroutine(handleReport(CombatReports[index], rep));
                     break;
                 }
@@ -64,12 +67,12 @@ public class PlayerCombatReport : NetworkBehaviour
 
         GameObject re = Instantiate(CombatReport, uiManager.CombatReport.transform);
         CombatReports.Add(re);
+        CmdGetTargetPlayer(report.TargetPlayerId);
         StartCoroutine(handleReport(re, report));
     }
 
     IEnumerator handleReport(GameObject report, CombatReport rep)
     {
-        CmdGetTargetPlayer(rep.TargetPlayerId);
         while (targetPlayer == null) yield return null;
             report.GetComponent<Report>().UpdateReport(rep, targetPlayer);
         CmdAddReport(rep);
@@ -109,48 +112,93 @@ public class PlayerCombatReport : NetworkBehaviour
 
 
     [Command(requiresAuthority = false)]
-    public void CmdHandleEnemyReport(CombatReport report) => RpcHandleEnemyReport(report);
+    public void CmdHandleEnemyReport(CombatReport report)
+    {
+        foreach (Player p in gameManager.PlayersID.Select(gameManager.GetPlayer))
+        {
+            PlayerCombatReport playerCombatReport = p.GetComponent<PlayerCombatReport>();
+            foreach (CombatReport unused in playerCombatReport.Reports.Where(cr => cr.TargetPlayerId == GetComponent<Player>().netId))
+            {
+                RpcHandleEnemyReport(p.netIdentity.connectionToClient, report);
+            }
+        }
+        
+    }
 
-    [ClientRpc]
-    public void RpcHandleEnemyReport(CombatReport report)
+    [TargetRpc]
+    public void RpcHandleEnemyReport(NetworkConnection conn,  CombatReport report)
     {
         Debug.Log("Handling enemy report!!");
+        int index = 0;
         if (Reports.Count > 0)
         {
             foreach (CombatReport combatReport in Reports)
             {
-                if (combatReport.TargetPlayerId == report.TargetPlayerId && combatReport.OwnerPlayerId == report.OwnerPlayerId)
+                if (combatReport.TargetPlayerId == report.OwnerPlayerId && combatReport.OwnerPlayerId == report.TargetPlayerId)
                 {
                     Debug.Log("Report exists - updating");
+                    combatReport.OwnerGunId = report.OwnerGunId;
+
+                    combatReport.IncomingDamage += report.OutComingDamage;
+                    combatReport.OutComingDamage += report.IncomingDamage;
+
+                    if (report.OwnerBody.Count > 0)
+                        foreach (Body body in report.OwnerBody)
+                        {
+                            combatReport.OwnerBody.Add(body);
+                        }
+
+                    if (report.TargetBody.Count > 0)
+                        foreach (Body body in report.TargetBody)
+                        {
+                            combatReport.TargetBody.Add(body);
+                        }
+                    CmdGetTargetPlayer(report.TargetPlayerId);
+                    StartCoroutine(handleReport(CombatReports[index], combatReport));
                 }
                 else
                 {
-                    Debug.Log("Report does not exist");
+                    Debug.Log("Report does not exist, creating new");
+                    CombatReport rep = createEnemyReport(report);
+                    GameObject re = Instantiate(CombatReport, uiManager.CombatReport.transform);
+                    CombatReports.Add(re);
+                    CmdGetTargetPlayer(report.TargetPlayerId);
+                    StartCoroutine(handleReport(re, rep));
                 }
+
+                index++;
             }
         }
         else
         {
             Debug.Log("No reports found, creating new");
-            report.GunId = report.GunId;
-
-            report.IncomingDamage += report.IncomingDamage;
-            report.OutComingDamage += report.OutComingDamage;
-
-            if (report.OwnerBody.Count > 0)
-                foreach (Body body in report.OwnerBody)
-                {
-                    report.OwnerBody.Add(body);
-                }
-
-            if (report.TargetBody.Count > 0)
-                foreach (Body body in report.TargetBody)
-                {
-                    report.TargetBody.Add(body);
-                }
+            CombatReport rep = createEnemyReport(report);
             GameObject re = Instantiate(CombatReport, uiManager.CombatReport.transform);
             CombatReports.Add(re);
-            StartCoroutine(handleReport(re, report));
+            CmdGetTargetPlayer(report.TargetPlayerId);
+            StartCoroutine(handleReport(re, rep));
         }
+    }
+
+    CombatReport createEnemyReport(CombatReport report)
+    {
+        report.OwnerGunId = report.OwnerGunId;
+
+        report.IncomingDamage += report.OutComingDamage;
+        report.OutComingDamage += report.IncomingDamage;
+
+        if (report.OwnerBody.Count > 0)
+            foreach (Body body in report.OwnerBody)
+            {
+                report.OwnerBody.Add(body);
+            }
+
+        if (report.TargetBody.Count > 0)
+            foreach (Body body in report.TargetBody)
+            {
+                report.TargetBody.Add(body);
+            }
+
+        return report;
     }
 }

@@ -17,11 +17,11 @@ public class CombatReport
     public int OutComingDamage;
     public int IncomingDamage;
 
-    public int GunId;
+    public int OwnerGunId;
 
     public List<Body> TargetBody = new();
     public List<Body> OwnerBody = new();
     
-    public ReportState TargetState;
-    public ReportState OwnerState;
+    public ReportState TargetState = ReportState.Alive;
+    public ReportState OwnerState = ReportState.Alive;
 }

@@ -163,7 +163,7 @@ public class PlayerShootingManager : NetworkBehaviour
                                 TargetPlayerId = hitPlayer.netId,
                                 OwnerPlayerId = player.netId,
                                 IncomingDamage = damage,
-                                GunId = playerInventory.EquippedGun.GunID,
+                                OwnerGunId = playerInventory.EquippedGun.GunID,
                             };
                             if (body != Body.None) report.TargetBody.Add(body);
                             playerCombatReport.AddReport(report);
