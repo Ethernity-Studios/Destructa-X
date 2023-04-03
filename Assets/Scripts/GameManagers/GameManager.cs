@@ -190,11 +190,9 @@ public class GameManager : NetworkBehaviour
             switch (con.Value.identity.GetComponent<Player>().PlayerTeam)
             {
                 case Team.Blue:
-                    Debug.Log("Adding player to blue team");
                     BlueTeamPlayersIDs.Add(con.Key);
                     break;
                 case Team.Red:
-                    Debug.Log("Adding player to red team");
                     RedTeamPlayersIDs.Add(con.Key);
                     break;
             }

@@ -6,7 +6,7 @@ using Mirror;
 
 public class PlayerCombatReport : NetworkBehaviour
 {
-    public readonly SyncList<CombatReport> Reports = new();
+    public List<CombatReport> Reports = new();
 
     [SerializeField] private GameObject CombatReport;
     public List<GameObject> CombatReports;
@@ -35,6 +35,7 @@ public class PlayerCombatReport : NetworkBehaviour
                 if (rep.OwnerPlayerId == report.OwnerPlayerId && rep.TargetPlayerId == report.TargetPlayerId &&
                     rep.TargetState != ReportState.Killed)
                 {
+                    Debug.Log("Updating existing report");
                     addNew = false;
                     
                     rep.OwnerGunId = report.OwnerGunId;
@@ -54,9 +55,10 @@ public class PlayerCombatReport : NetworkBehaviour
                             rep.TargetBody.Add(body);
                         }
                     CmdGetTargetPlayer(rep.TargetPlayerId);
-                    StartCoroutine(handleReport(CombatReports[index], rep));
+                    StartCoroutine(handleReport(CombatReports[index], rep, false));
                     break;
                 }
+
                 addNew = true;
                 index++;
             }
@@ -64,18 +66,19 @@ public class PlayerCombatReport : NetworkBehaviour
         else addNew = true;
 
         if (!addNew) return;
-
+        Debug.Log("Creating new report");
         GameObject re = Instantiate(CombatReport, uiManager.CombatReport.transform);
         CombatReports.Add(re);
         CmdGetTargetPlayer(report.TargetPlayerId);
-        StartCoroutine(handleReport(re, report));
+        StartCoroutine(handleReport(re, report, true));
     }
 
-    IEnumerator handleReport(GameObject report, CombatReport rep)
+    IEnumerator handleReport(GameObject report, CombatReport rep, bool add)
     {
         while (targetPlayer == null) yield return null;
             report.GetComponent<Report>().UpdateReport(rep, targetPlayer);
-        CmdAddReport(rep);
+        //CmdAddReport(rep);
+        if(add) Reports.Add(rep);
         CmdUpdateTargetReport(rep);
         targetPlayer = null;
     }
@@ -116,11 +119,19 @@ public class PlayerCombatReport : NetworkBehaviour
     {
         foreach (Player p in gameManager.PlayersID.Select(gameManager.GetPlayer))
         {
+            
             PlayerCombatReport playerCombatReport = p.GetComponent<PlayerCombatReport>();
-            foreach (CombatReport unused in playerCombatReport.Reports.Where(cr => cr.TargetPlayerId == GetComponent<Player>().netId))
+            if (report.TargetPlayerId == p.netId && !isLocalPlayer)
             {
+                Debug.Log("Handling enemy report on player with id: " + p.netId);
                 RpcHandleEnemyReport(p.netIdentity.connectionToClient, report);
             }
+            /*foreach (CombatReport unused in playerCombatReport.Reports.Where(cr => cr.TargetPlayerId == p.netId))
+            {
+                if (isLocalPlayer) return;
+                Debug.Log("Handling enemy report on player with id: " + p.netId);
+                RpcHandleEnemyReport(p.netIdentity.connectionToClient, report);
+            }*/
         }
         
     }
@@ -154,7 +165,7 @@ public class PlayerCombatReport : NetworkBehaviour
                             combatReport.TargetBody.Add(body);
                         }
                     CmdGetTargetPlayer(report.TargetPlayerId);
-                    StartCoroutine(handleReport(CombatReports[index], combatReport));
+                    StartCoroutine(handleReport(CombatReports[index], combatReport, false));
                 }
                 else
                 {
@@ -163,7 +174,8 @@ public class PlayerCombatReport : NetworkBehaviour
                     GameObject re = Instantiate(CombatReport, uiManager.CombatReport.transform);
                     CombatReports.Add(re);
                     CmdGetTargetPlayer(report.TargetPlayerId);
-                    StartCoroutine(handleReport(re, rep));
+                    StartCoroutine(handleReport(re, rep, true));
+                    break;
                 }
 
                 index++;
@@ -176,12 +188,13 @@ public class PlayerCombatReport : NetworkBehaviour
             GameObject re = Instantiate(CombatReport, uiManager.CombatReport.transform);
             CombatReports.Add(re);
             CmdGetTargetPlayer(report.TargetPlayerId);
-            StartCoroutine(handleReport(re, rep));
+            StartCoroutine(handleReport(re, rep, true));
         }
     }
 
     CombatReport createEnemyReport(CombatReport report)
     {
+        Debug.Log("Creating enemy report");
         report.OwnerGunId = report.OwnerGunId;
 
         report.IncomingDamage += report.OutComingDamage;

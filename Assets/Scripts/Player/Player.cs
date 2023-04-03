@@ -147,7 +147,6 @@ public class Player : NetworkBehaviour, IDamageable
     [Command(requiresAuthority = false)]
     private void CmdTakeDamage(int damage)
     {
-        Debug.Log(this + " Taking damage");
         Health -= damage;
         if (Health <= 0)
         {

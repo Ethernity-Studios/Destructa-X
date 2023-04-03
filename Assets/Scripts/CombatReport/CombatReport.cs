@@ -8,7 +8,7 @@ public enum ReportState
 {
     None, Killed, Assisted, Alive
 }
-
+[System.Serializable]
 public class CombatReport
 {
     public uint TargetPlayerId;
