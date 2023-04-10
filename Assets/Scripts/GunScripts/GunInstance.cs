@@ -30,7 +30,6 @@ public class GunInstance : NetworkBehaviour
 
     public void SetPickStatus()
     {
-        Debug.Log("Setting gun pick status");
         CanBePicked = true;
     }
 
