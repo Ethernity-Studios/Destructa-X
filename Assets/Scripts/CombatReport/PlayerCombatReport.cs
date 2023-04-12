@@ -33,12 +33,12 @@ public class PlayerCombatReport : NetworkBehaviour
             foreach (CombatReport rep in Reports)
             {
                 if (rep.OwnerPlayerId == report.OwnerPlayerId && rep.TargetPlayerId == report.TargetPlayerId &&
-                    rep.TargetState != ReportState.Killed)
+                    rep.TargetState != ReportState.Killed && rep.TargetState != ReportState.Assisted)
                 {
                     Debug.Log("Updating existing report");
                     addNew = false;
                     
-                    rep.OwnerGunId = report.OwnerGunId;
+                    rep.GunId = report.GunId;
                     
                     rep.OutComingDamage += report.OutComingDamage;
 
@@ -53,34 +53,13 @@ public class PlayerCombatReport : NetworkBehaviour
                         {
                             rep.TargetBody.Add(body);
                         }
-                    CmdGetTargetPlayer(rep.TargetPlayerId);
-                    StartCoroutine(handleReport(CombatReports[index], rep, false, true));
-                    break;
-                }
 
-                if (report.OwnerPlayerId == rep.TargetPlayerId && report.TargetPlayerId == rep.OwnerPlayerId)
-                {
-                    Debug.Log("Updating existing report 2");
-                    addNew = false;
+                    rep.TargetState = report.TargetState;
+                    rep.GunId = report.GunId;
                     
-                    rep.OwnerGunId = report.OwnerGunId;
-
-                    //rep.IncomingDamage += report.IncomingDamage;
-                    rep.OutComingDamage += report.OutComingDamage;
-
-                    if (report.OwnerBody.Count > 0)
-                        foreach (Body body in report.OwnerBody)
-                        {
-                            rep.OwnerBody.Add(body);
-                        }
-
-                    if (report.TargetBody.Count > 0)
-                        foreach (Body body in report.TargetBody)
-                        {
-                            rep.TargetBody.Add(body);
-                        }
                     CmdGetTargetPlayer(rep.TargetPlayerId);
                     StartCoroutine(handleReport(CombatReports[index], rep, false, true));
+                    if(rep.TargetState == ReportState.Killed) CmdNotifyPlayerDeath(rep.TargetPlayerId);
                     break;
                 }
 
@@ -91,19 +70,45 @@ public class PlayerCombatReport : NetworkBehaviour
         else addNew = true;
 
         if (!addNew) return;
-        Debug.Log($"Creating new report with owner: {report.OwnerPlayerId} target: {report.TargetPlayerId}");
+        Debug.Log("Creating new report");
+
         GameObject re = Instantiate(CombatReport, uiManager.CombatReport.transform);
         CombatReports.Add(re);
         CmdGetTargetPlayer(report.TargetPlayerId);
         StartCoroutine(handleReport(re, report, true, true));
     }
 
-    IEnumerator handleReport(GameObject report, CombatReport rep, bool add, bool update)
+    [Command]
+    void CmdNotifyPlayerDeath(uint targetPlayerId)
+    {
+        foreach (Player p in gameManager.PlayersID.Select(gameManager.GetPlayer))
+        {
+            p.GetComponent<PlayerCombatReport>().RpcNotifyPlayerDeath(targetPlayerId);
+        }
+    }
+
+    [ClientRpc]
+    void RpcNotifyPlayerDeath(uint targetPlayerId)
+    {
+        if (!isLocalPlayer) return;
+        int index = 0;
+        foreach (var rep in Reports)
+        {
+            if (rep.TargetPlayerId == targetPlayerId && rep.OwnerPlayerId != targetPlayerId)
+            {
+                CombatReports[index].GetComponent<Report>().UpdateAssist();
+            }
+            index++;
+        }
+    }
+    
+
+    IEnumerator handleReport(GameObject report, CombatReport rep, bool add, bool updateTarget)
     {
         while (targetPlayer == null) yield return null;
             report.GetComponent<Report>().UpdateReport(rep, targetPlayer);
             if(add) Reports.Add(rep);
-        if(update) CmdUpdateTargetReport(rep);
+        if(updateTarget) CmdUpdateTargetReport(rep);
         
         targetPlayer = null;
     }
@@ -125,15 +130,13 @@ public class PlayerCombatReport : NetworkBehaviour
     public void RpcClearReports()
     {
         if (!isLocalPlayer) return;
-        CmdClearReports();
         foreach (GameObject cr in CombatReports)
         {
             Destroy(cr);
         }
+        CombatReports.Clear();
+        Reports.Clear();  
     }
-
-    [Command(requiresAuthority = false)]
-    void CmdClearReports() => Reports.Clear();
 
 
     [Command(requiresAuthority = false)]
@@ -141,19 +144,8 @@ public class PlayerCombatReport : NetworkBehaviour
     {
         foreach (Player p in gameManager.PlayersID.Select(gameManager.GetPlayer))
         {
-            p.GetComponent<PlayerCombatReport>();
-            if (report.TargetPlayerId == p.netId)
-            {
-                Debug.Log("Handling enemy report on player with id: " + p.netId);
-                RpcHandleEnemyReport(p.netIdentity.connectionToClient, report);
-                return;
-            }
-            /*foreach (CombatReport unused in playerCombatReport.Reports.Where(cr => cr.TargetPlayerId == p.netId))
-            {
-                if (isLocalPlayer) return;
-                Debug.Log("Handling enemy report on player with id: " + p.netId);
-                RpcHandleEnemyReport(p.netIdentity.connectionToClient, report);
-            }*/
+            if (report.TargetPlayerId != p.netId) continue;
+            RpcHandleEnemyReport(p.netIdentity.connectionToClient, report);
         }
         
     }
@@ -168,14 +160,14 @@ public class PlayerCombatReport : NetworkBehaviour
         {
             foreach (CombatReport combatReport in Reports)
             {
-                if (combatReport.TargetPlayerId == report.OwnerPlayerId && combatReport.OwnerPlayerId == report.TargetPlayerId)
+                if (report.TargetPlayerId == combatReport.OwnerPlayerId && report.OwnerPlayerId == combatReport.TargetPlayerId)
                 {
                     addNew = false;
-                    Debug.Log("Report exists - updating 1");
-                    combatReport.OwnerGunId = report.OwnerGunId;
+                    Debug.Log("Updating target report");
+                    combatReport.GunId = report.GunId;
 
                     combatReport.IncomingDamage = report.OutComingDamage;
-                    combatReport.OutComingDamage = report.IncomingDamage;
+                    //combatReport.OutComingDamage = report.IncomingDamage;
 
                     if (report.OwnerBody.Count > 0)
                         foreach (Body body in report.OwnerBody)
@@ -188,47 +180,24 @@ public class PlayerCombatReport : NetworkBehaviour
                         {
                             combatReport.TargetBody.Add(body);
                         }
+
+                    combatReport.OwnerState = report.TargetState;
+                    combatReport.GunId = report.GunId;
+                    
                     CmdGetTargetPlayer(report.TargetPlayerId);
                     StartCoroutine(handleReport(CombatReports[index], combatReport, false, false));
                     break;
                 }
-                if (combatReport.TargetPlayerId == report.TargetPlayerId && combatReport.OwnerPlayerId == report.OwnerPlayerId)
-                {
-                    addNew = false;
-                    Debug.Log("Report exists - updating 2");
-                    combatReport.OwnerGunId = report.OwnerGunId;
 
-                    combatReport.IncomingDamage = report.OutComingDamage;
-                    combatReport.OutComingDamage = report.IncomingDamage;
-
-                    if (report.OwnerBody.Count > 0)
-                        foreach (Body body in report.OwnerBody)
-                        {
-                            combatReport.OwnerBody.Add(body);
-                        }
-
-                    if (report.TargetBody.Count > 0)
-                        foreach (Body body in report.TargetBody)
-                        {
-                            combatReport.TargetBody.Add(body);
-                        }
-                    CmdGetTargetPlayer(report.TargetPlayerId);
-                    StartCoroutine(handleReport(CombatReports[index], combatReport, false, false));
-                    break;
-                }
-                
                 addNew = true;
                 index++;
                 
             }
         }
-        else
-        {
-            addNew = true;
-        }
-        
+        else addNew = true;
+
         if (!addNew) return;
-        Debug.Log($"Report does not exist, creating new owner: {report.OwnerPlayerId} target: {report.TargetPlayerId}");
+        Debug.Log($"Creating new target report");
         CombatReport rep = createEnemyReport(report);
         GameObject re = Instantiate(CombatReport, uiManager.CombatReport.transform);
         CombatReports.Add(re);
@@ -241,13 +210,12 @@ public class PlayerCombatReport : NetworkBehaviour
         CombatReport rep = new();
         
         Debug.Log("Creating enemy report");
-        rep.OwnerGunId = report.OwnerGunId;
+        rep.GunId = report.GunId;
 
-        rep.OwnerPlayerId = report.OwnerPlayerId;
-        rep.TargetPlayerId = report.TargetPlayerId;
+        rep.OwnerPlayerId = report.TargetPlayerId;
+        rep.TargetPlayerId = report.OwnerPlayerId;
 
         rep.IncomingDamage = report.OutComingDamage;
-        //rep.OutComingDamage += report.IncomingDamage;
 
         if (report.OwnerBody.Count > 0)
             foreach (Body body in report.OwnerBody)
@@ -260,6 +228,9 @@ public class PlayerCombatReport : NetworkBehaviour
             {
                 rep.TargetBody.Add(body);
             }
+
+        rep.OwnerState = report.TargetState;
+        rep.GunId = report.GunId;
 
         return rep;
     }

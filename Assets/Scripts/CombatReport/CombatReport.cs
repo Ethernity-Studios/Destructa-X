@@ -6,7 +6,7 @@ public enum Body{
 
 public enum ReportState
 {
-    None, Killed, Assisted, Alive
+    Alive, Killed, Assisted
 }
 [System.Serializable]
 public class CombatReport
@@ -17,7 +17,7 @@ public class CombatReport
     public int OutComingDamage;
     public int IncomingDamage;
 
-    public int OwnerGunId;
+    public int GunId;
 
     public List<Body> TargetBody = new();
     public List<Body> OwnerBody = new();

@@ -50,17 +50,19 @@ public class Report : MonoBehaviour
         //AgentIcon.sprite = report. TODO get agent sprite
         PlayerName.text = targetPlayer.PlayerName;
         //GunAbilityIcon.sprite = gunManager.GetGunByID(report.GunId).Icon;
+
         switch (report.TargetState)
         {
             case ReportState.Killed:
                 KillAssist.SetActive(true);
                 KillAssistText.text = "Killed";
                 break;
-            case ReportState.Assisted:
-                KillAssist.SetActive(true);
-                KillAssistText.text = "Assist";
-                break;
         }
-        
+    }
+
+    public void UpdateAssist()
+    {
+        KillAssist.SetActive(true);
+        KillAssistText.text = "Assist";
     }
 }

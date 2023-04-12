@@ -1,7 +1,5 @@
-using System;
 using Mirror;
 using System.Collections;
-using System.Linq;
 using UnityEngine;
 
 public class PlayerShootingManager : NetworkBehaviour
@@ -14,7 +12,6 @@ public class PlayerShootingManager : NetworkBehaviour
 
     PlayerEconomyManager playerEconomyManager;
     private PlayerCombatReport playerCombatReport;
-    private GameManager gameManager;
 
     public bool CanShoot = true;
     public bool Reloading;
@@ -30,9 +27,7 @@ public class PlayerShootingManager : NetworkBehaviour
         playerInput.PlayerShoot.Enable();
 
         player = GetComponent<Player>();
-        FindObjectOfType<GameManager>();
         uiManager = FindObjectOfType<UIManager>();
-        gameManager = FindObjectOfType<GameManager>();
         playerEconomyManager = GetComponent<PlayerEconomyManager>();
         playerCombatReport = GetComponent<PlayerCombatReport>();
         if (!isLocalPlayer) return;
@@ -163,20 +158,15 @@ public class PlayerShootingManager : NetworkBehaviour
                                 TargetPlayerId = hitPlayer.netId,
                                 OwnerPlayerId = player.netId,
                                 OutComingDamage = damage,
-                                OwnerGunId = playerInventory.EquippedGun.GunID,
+                                GunId = playerInventory.EquippedGun.GunID,
                             };
                             if (body != Body.None) report.TargetBody.Add(body);
-                            playerCombatReport.AddReport(report);
                             if (entity.TakeDamage(damage))
                             {
                                 report.TargetState = ReportState.Killed;
                                 player.CmdAddKill();
                             }
-
-                            /*foreach (var player in gameManager.PlayersID.Select(gameManager.GetPlayer))
-                            {
-                                player.GetComponent<PlayerCombatReport>().CmdUpdateReport(report);
-                            }*/
+                            playerCombatReport.AddReport(report);
                         }
                     }
                 }
