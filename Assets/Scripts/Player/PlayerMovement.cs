@@ -8,7 +8,7 @@ public enum MovementState
     Idle,
     Walking,
     Sprinting,
-    Jumping
+    InAir
 }
 
 public class PlayerMovement : NetworkBehaviour
@@ -17,11 +17,17 @@ public class PlayerMovement : NetworkBehaviour
 
     Player playerManager;
     Rigidbody rb;
+    [SerializeField]  Animator anim;
 
     public MovementState state;
 
-    [Header("Movement")] float horizontalInput;
+    [Header("Movement")]
+    float horizontalInput;
     float verticalInput;
+
+    private float smoothX;
+    private float smoothZ;
+    [SerializeField] private float smoothFactor;
 
     Vector3 moveDirection;
 
@@ -50,6 +56,12 @@ public class PlayerMovement : NetworkBehaviour
     private PlayerInput playerInput;
 
     [SerializeField] private LayerMask groundMask;
+    
+    private static readonly int VelocityX = Animator.StringToHash("VelocityX");
+    private static readonly int VelocityZ = Animator.StringToHash("VelocityZ");
+    private static readonly int IsMoving = Animator.StringToHash("isMoving");
+    private static readonly int JumpUp = Animator.StringToHash("jump_up");
+    private static readonly int IsInAir = Animator.StringToHash("isInAir");
 
     public override void OnStartLocalPlayer()
     {
@@ -97,7 +109,8 @@ public class PlayerMovement : NetworkBehaviour
         getInput();
         stateHandler();
         rotatePlayer();
-
+        setAnimVelocity(verticalInput, horizontalInput);
+        
         grounded = Physics.Raycast(origin: transform.position + new Vector3(0,1,0), direction: Vector3.down,
             maxDistance: 1.2f , layerMask: groundMask);
 
@@ -118,18 +131,23 @@ public class PlayerMovement : NetworkBehaviour
 
     void stateHandler()
     {
-        if (grounded && rb.velocity == Vector3.zero) state = MovementState.Idle;
-        else if (grounded && Input.GetKey(KeyCode.LeftShift))
+        switch (grounded)
         {
-            moveSpeed = walkSpeed;
-            state = MovementState.Walking;
+            case true when rb.velocity == Vector3.zero:
+                state = MovementState.Idle;
+                break;
+            case true when playerInput.PlayerMovement.Walking.IsPressed():
+                moveSpeed = walkSpeed;
+                state = MovementState.Walking;
+                break;
+            case true when !playerInput.PlayerMovement.Walking.IsPressed():
+                state = MovementState.Sprinting;
+                moveSpeed = sprintSpeed;
+                break;
+            case false:
+                state = MovementState.InAir;
+                break;
         }
-        else if (grounded)
-        {
-            state = MovementState.Sprinting;
-            moveSpeed = sprintSpeed;
-        }
-        else state = MovementState.Jumping; 
     }
 
     void rotatePlayer()
@@ -174,10 +192,60 @@ public class PlayerMovement : NetworkBehaviour
         rb.velocity = new Vector3(rb.velocity.x, 0f, rb.velocity.z);
 
         rb.AddForce(transform.up * jumpForce, ForceMode.Impulse);
+        animateJump();
     }
 
     void resetJump()
     {
         readyToJump = true;
+    }
+
+    #region Animations
+
+    void setAnimVelocity(float x, float z)
+    {
+        
+        smoothX = Mathf.Lerp(smoothX, x, smoothFactor);
+        smoothZ = Mathf.Lerp(smoothZ, z, smoothFactor);
+        if (state == MovementState.Walking)
+        {
+            anim.speed = 1;
+            anim.SetFloat(VelocityX, smoothZ/2);
+            anim.SetFloat(VelocityZ, smoothX/2);
+        }
+        else
+        {
+            anim.speed = .85f;
+            anim.SetFloat(VelocityX, smoothZ);
+            anim.SetFloat(VelocityZ, smoothX);
+        }
+        
+        
+        if(x != 0 || z != 0) anim.SetBool(IsMoving, true);
+        else anim.SetBool(IsMoving, false);
+    }
+
+    void animateJump()
+    {
+        anim.SetTrigger(JumpUp);
+        anim.SetBool(IsInAir, true);
+    }
+
+    void land()
+    {
+        Debug.Log("Landing");
+        anim.SetBool(IsInAir, false);
+        anim.ResetTrigger(JumpUp);
+    }
+
+
+    #endregion
+
+    private void OnCollisionEnter(Collision collision)
+    {
+        if (collision.gameObject.layer != 3) return;
+        if (anim.GetBool(IsInAir)) land();
+        Debug.Log("Landed");
+
     }
 }
