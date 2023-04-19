@@ -23,7 +23,7 @@ public class Gun : ScriptableObject
     public bool HasSecondaryFire;
     public SecondaryFire SecondaryFire;
 
-
+    
     public float Bloom;
     public float Recoil;
 

@@ -60,9 +60,9 @@ public class PlayerMovement : NetworkBehaviour
     private static readonly int VelocityX = Animator.StringToHash("VelocityX");
     private static readonly int VelocityZ = Animator.StringToHash("VelocityZ");
     private static readonly int IsMoving = Animator.StringToHash("isMoving");
-    private static readonly int JumpUp = Animator.StringToHash("jump_up");
-    private static readonly int IsInAir = Animator.StringToHash("isInAir");
-
+    private static readonly int IsJumping = Animator.StringToHash("isJumping");
+    private static readonly int IsFalling = Animator.StringToHash("isFalling");
+    private static readonly int IsGrounded = Animator.StringToHash("isGrounded");
     public override void OnStartLocalPlayer()
     {
         playerInput = new PlayerInput();
@@ -114,8 +114,18 @@ public class PlayerMovement : NetworkBehaviour
         grounded = Physics.Raycast(origin: transform.position + new Vector3(0,1,0), direction: Vector3.down,
             maxDistance: 1.2f , layerMask: groundMask);
 
-        if (grounded) rb.drag = groundDrag;
-        else rb.drag = 0;
+        if (grounded)
+        {
+            rb.drag = groundDrag;
+            anim.SetBool(IsGrounded, true);
+        }
+        else
+        {
+            rb.drag = 0;
+            anim.SetBool(IsGrounded, false);
+            anim.SetBool(IsJumping, false);
+            anim.SetBool(IsFalling, false);
+        }
     }
 
 
@@ -227,24 +237,22 @@ public class PlayerMovement : NetworkBehaviour
 
     void animateJump()
     {
-        anim.SetTrigger(JumpUp);
-        anim.SetBool(IsInAir, true);
+        anim.SetBool(IsJumping, true);
+        anim.SetBool(IsFalling, true);
     }
 
     void land()
     {
         Debug.Log("Landing");
-        anim.SetBool(IsInAir, false);
-        anim.ResetTrigger(JumpUp);
+        anim.SetBool(IsFalling, false);
     }
-
-
+    
     #endregion
 
     private void OnCollisionEnter(Collision collision)
     {
         if (collision.gameObject.layer != 3) return;
-        if (anim.GetBool(IsInAir)) land();
+        if (anim.GetBool(IsFalling)) land();
         Debug.Log("Landed");
 
     }

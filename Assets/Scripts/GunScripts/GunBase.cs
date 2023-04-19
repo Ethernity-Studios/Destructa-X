@@ -1,4 +1,5 @@
 using System;
+using UnityEditor;
 using UnityEngine;
 
 [Serializable]
@@ -18,7 +19,7 @@ public class SecondaryFire
 {
     public FireMode FireMode;
     public FireType FireType;
-
+    
     public ZoomType ZoomType;
     public Zoom Zoom; 
 
@@ -26,6 +27,7 @@ public class SecondaryFire
     public float BurstDelay;
 
     public float BulletsPerFire;
+
 }
 
 /// <summary>

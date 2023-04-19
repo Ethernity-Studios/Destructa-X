@@ -1,7 +1,10 @@
+using System;
 using UnityEngine;
+using Object = UnityEngine.Object;
 
 #if UNITY_EDITOR
 using UnityEditor;
+using UnityEditor.TerrainTools;
 
 [CustomEditor(typeof(Gun)), CanEditMultipleObjects]
 public class GunCustomEditor : Editor
@@ -44,7 +47,7 @@ public class GunCustomEditor : Editor
         gun.MagazineAmmo = (int)EditorGUILayout.IntField("MagazineAmmo", gun.MagazineAmmo);
         gun.Ammo = (int)EditorGUILayout.IntField("Ammo", gun.Ammo);
         gun.ReloadTime = (float)EditorGUILayout.FloatField("ReloadTime", gun.ReloadTime);
-        gun.EquipTime = (float)EditorGUILayout.FloatField("EqupidTime", gun.EquipTime);
+        gun.EquipTime = (float)EditorGUILayout.FloatField("EquipTime", gun.EquipTime);
         gun.Type = (GunType)EditorGUILayout.EnumPopup("PlayerType", gun.Type);
         gun.Category = (GunCategory)EditorGUILayout.EnumPopup("GunCategory", gun.Category);
         gun.BulletPenetration = (float)EditorGUILayout.FloatField("BulletPenetration", gun.BulletPenetration);
@@ -63,7 +66,7 @@ public class GunCustomEditor : Editor
     }
 }
 
-[CustomEditor(typeof(Gun)), CanEditMultipleObjects]
+[CustomEditor(typeof(PrimaryFire)), CanEditMultipleObjects]
 public class PrimaryFireCustomEditor : Editor
 {
     PrimaryFire primaryFire;
@@ -76,6 +79,16 @@ public class PrimaryFireCustomEditor : Editor
 
 }
 
+[CustomEditor(typeof(SecondaryFire)), CanEditMultipleObjects]
+public class SecondaryFireCustomEditor : Editor
+{
+    private SecondaryFire secondaryFire;
+
+    private void OnEnable()
+    {
+        
+    }
+}
 
 
 
