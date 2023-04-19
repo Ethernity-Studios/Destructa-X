@@ -30,7 +30,7 @@ MonoBehaviour:
     FireDelay: 0.1
     BurstDelay: 0
     BulletsPerFire: 0
-  HasSecondaryFire: 0
+  HasSecondaryFire: 1
   SecondaryFire:
     FireMode: 0
     FireType: 0

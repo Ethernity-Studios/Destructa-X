@@ -1,5 +1,4 @@
 using System;
-using UnityEditor;
 using UnityEngine;
 
 [Serializable]
@@ -21,6 +20,7 @@ public class SecondaryFire
     public FireType FireType;
     
     public ZoomType ZoomType;
+    [DrawIf("BoolTest", true)]
     public Zoom Zoom; 
 
     public float FireDelay;
