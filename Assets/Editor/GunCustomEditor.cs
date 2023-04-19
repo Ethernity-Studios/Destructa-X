@@ -66,7 +66,7 @@ public class GunCustomEditor : Editor
     }
 }
 
-[CustomEditor(typeof(PrimaryFire)), CanEditMultipleObjects]
+[CustomEditor(typeof(Gun)), CanEditMultipleObjects]
 public class PrimaryFireCustomEditor : Editor
 {
     PrimaryFire primaryFire;
@@ -78,18 +78,5 @@ public class PrimaryFireCustomEditor : Editor
 
 
 }
-
-[CustomEditor(typeof(SecondaryFire)), CanEditMultipleObjects]
-public class SecondaryFireCustomEditor : Editor
-{
-    private SecondaryFire secondaryFire;
-
-    private void OnEnable()
-    {
-        
-    }
-}
-
-
 
 #endif

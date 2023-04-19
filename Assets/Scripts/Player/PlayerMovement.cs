@@ -120,6 +120,8 @@ public class PlayerMovement : NetworkBehaviour
         }
         else
         {
+            Debug.Log("Not grounded");
+
             rb.drag = 0;
             anim.SetBool(IsGrounded, false);
             anim.SetBool(IsJumping, false);
@@ -169,8 +171,6 @@ public class PlayerMovement : NetworkBehaviour
     {
         horizontalInput = playerInput.PlayerMovement.Movement.ReadValue<Vector2>().x;
         verticalInput = playerInput.PlayerMovement.Movement.ReadValue<Vector2>().y;
-        //horizontalInput = Input.GetAxisRaw("Horizontal");
-        //verticalInput = Input.GetAxisRaw("Vertical");
     }
 
 
