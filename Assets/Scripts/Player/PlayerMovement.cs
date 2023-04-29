@@ -109,23 +109,21 @@ public class PlayerMovement : NetworkBehaviour
         stateHandler();
         rotatePlayer();
         setAnimVelocity(verticalInput, horizontalInput);
-        
-        grounded = Physics.Raycast(origin: transform.position + new Vector3(0,1,0), direction: Vector3.down,
-            maxDistance: 1.2f , layerMask: groundMask);
 
         if (grounded)
         {
             rb.drag = groundDrag;
             anim.SetBool(IsGrounded, true);
+            anim.SetBool(IsFalling, false);
         }
         else
         {
             Debug.Log("Not grounded");
 
             rb.drag = 0;
-            anim.SetBool(IsGrounded, false);
+            anim.SetBool(IsGrounded, true);
             anim.SetBool(IsJumping, false);
-            anim.SetBool(IsFalling, false);
+            anim.SetBool(IsFalling, true);
         }
     }
 
@@ -136,8 +134,13 @@ public class PlayerMovement : NetworkBehaviour
         if (playerManager.IsDead) return;
         if (playerManager.PlayerState is PlayerState.Planting or PlayerState.Defusing) return;
 
+        grounded = Physics.Raycast(origin: transform.position + new Vector3(0,1,0), direction: Vector3.down,
+            maxDistance: 1.2f , layerMask: groundMask);
+        
         speedControl();
         movePlayer();
+        //if(grounded && anim.GetBool(IsFalling)) anim.SetBool(IsFalling, false);
+        //else anim.SetBool(IsFalling, true);
     }
 
     void stateHandler()
@@ -239,20 +242,8 @@ public class PlayerMovement : NetworkBehaviour
         anim.SetBool(IsJumping, true);
         anim.SetBool(IsFalling, true);
     }
-
-    void land()
-    {
-        Debug.Log("Landing");
-        anim.SetBool(IsFalling, false);
-    }
+    
     
     #endregion
 
-    private void OnCollisionEnter(Collision collision)
-    {
-        if (collision.gameObject.layer != 3) return;
-        if (anim.GetBool(IsFalling)) land();
-        Debug.Log("Landed");
-
-    }
 }
