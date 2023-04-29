@@ -7,7 +7,8 @@ public enum MovementState
     Idle,
     Walking,
     Sprinting,
-    InAir
+    InAir,
+    Crouching
 }
 
 public class PlayerMovement : NetworkBehaviour
@@ -16,26 +17,31 @@ public class PlayerMovement : NetworkBehaviour
 
     Player playerManager;
     Rigidbody rb;
-    [SerializeField]  Animator anim;
+    [SerializeField] Animator anim;
 
     public MovementState state;
 
-    [Header("Movement")]
-    float horizontalInput;
+    [Header("Movement")] float horizontalInput;
     float verticalInput;
 
     private float smoothX;
     private float smoothZ;
-    [SerializeField] private float smoothFactor;
+    [SerializeField] private float movementSmoothFactor;
+
+    [SerializeField] private float crouchSmoothFactor;
+
+    [SerializeField] private float capsuleSmoothFactor;
 
     Vector3 moveDirection;
 
     [SerializeField] float sprintSpeed = 5f;
     [SerializeField] float walkSpeed = 3f;
-    float moveSpeed;
+    [SerializeField] private float crouchSpeed = 2f;
+    [SerializeField] float moveSpeed;
 
     [Header("Jump")] [SerializeField] float groundDrag;
     [SerializeField] bool grounded;
+    [SerializeField] private bool crouching;
 
     [SerializeField] float jumpForce;
     [SerializeField] float jumpCooldown;
@@ -55,18 +61,25 @@ public class PlayerMovement : NetworkBehaviour
     private PlayerInput playerInput;
 
     [SerializeField] private LayerMask groundMask;
-    
+
+    [SerializeField] private CapsuleCollider capsuleCollider;
+    private float targetHeight;
+    private float targetCrouch;
+
     private static readonly int VelocityX = Animator.StringToHash("VelocityX");
     private static readonly int VelocityZ = Animator.StringToHash("VelocityZ");
     private static readonly int IsMoving = Animator.StringToHash("isMoving");
     private static readonly int IsJumping = Animator.StringToHash("isJumping");
     private static readonly int IsFalling = Animator.StringToHash("isFalling");
     private static readonly int IsGrounded = Animator.StringToHash("isGrounded");
+    private static readonly int IsCrouching = Animator.StringToHash("isCrouching");
+    private static readonly int Crouch = Animator.StringToHash("Crouch");
+
     public override void OnStartLocalPlayer()
     {
         playerInput = new PlayerInput();
-        
-        playerInput.PlayerMovement.Jump.performed += Jump;
+
+        playerInput.PlayerMovement.Jump.performed += jump;
     }
 
     void Start()
@@ -89,6 +102,7 @@ public class PlayerMovement : NetworkBehaviour
         //cameraTransform.SetParent(transform.GetChild(0));
         //cameraTransform.position = new Vector3(transform.position.x, transform.position.y, transform.position.z);
     }
+
     private void OnDisable()
     {
         if (!isLocalPlayer) return;
@@ -108,6 +122,7 @@ public class PlayerMovement : NetworkBehaviour
         getInput();
         stateHandler();
         rotatePlayer();
+        crouch();
         setAnimVelocity(verticalInput, horizontalInput);
 
         if (grounded)
@@ -134,9 +149,9 @@ public class PlayerMovement : NetworkBehaviour
         if (playerManager.IsDead) return;
         if (playerManager.PlayerState is PlayerState.Planting or PlayerState.Defusing) return;
 
-        grounded = Physics.Raycast(origin: transform.position + new Vector3(0,1,0), direction: Vector3.down,
-            maxDistance: 1.2f , layerMask: groundMask);
-        
+        grounded = Physics.Raycast(origin: transform.position + new Vector3(0, 1, 0), direction: Vector3.down,
+            maxDistance: 1.2f, layerMask: groundMask);
+
         speedControl();
         movePlayer();
         //if(grounded && anim.GetBool(IsFalling)) anim.SetBool(IsFalling, false);
@@ -145,22 +160,28 @@ public class PlayerMovement : NetworkBehaviour
 
     void stateHandler()
     {
-        switch (grounded)
+        if (grounded && rb.velocity == Vector3.zero)
         {
-            case true when rb.velocity == Vector3.zero:
-                state = MovementState.Idle;
-                break;
-            case true when playerInput.PlayerMovement.Walking.IsPressed():
-                moveSpeed = walkSpeed;
-                state = MovementState.Walking;
-                break;
-            case true when !playerInput.PlayerMovement.Walking.IsPressed():
-                state = MovementState.Sprinting;
-                moveSpeed = sprintSpeed;
-                break;
-            case false:
-                state = MovementState.InAir;
-                break;
+            state = MovementState.Idle;
+        }
+        else if (grounded && playerInput.PlayerMovement.Walking.IsPressed())
+        {
+            moveSpeed = walkSpeed;
+            state = MovementState.Walking;
+        }
+        else if (grounded && !playerInput.PlayerMovement.Walking.IsPressed() && rb.velocity.x != 0 || rb.velocity.y != 0)
+        {
+            state = MovementState.Sprinting;
+            moveSpeed = sprintSpeed;
+        }
+        else if (grounded && crouching)
+        {
+            state = MovementState.Crouching;
+            moveSpeed = crouchSpeed;
+        }
+        else if (!grounded)
+        {
+            state = MovementState.InAir;
         }
     }
 
@@ -195,9 +216,32 @@ public class PlayerMovement : NetworkBehaviour
         rb.velocity = new Vector3(limitedVel.x, rb.velocity.y, limitedVel.z);
     }
 
-    public void Jump(InputAction.CallbackContext context)
+    void crouch()
     {
-        if (!readyToJump || !grounded || playerManager.PlayerState is PlayerState.Planting or PlayerState.Defusing) return;
+        if (playerInput.PlayerMovement.Crouching.IsPressed())
+        {
+            crouching = true;
+            anim.SetBool(IsCrouching, true);
+            targetHeight = 1f;
+            targetCrouch = 1;
+        }
+        else
+        {
+            crouching = false;
+            anim.SetBool(IsCrouching, false);
+            targetHeight = 2f;
+            targetCrouch = 0;
+        }
+        
+        
+        anim.SetFloat(Crouch, Mathf.Lerp(anim.GetFloat(Crouch), targetCrouch, crouchSmoothFactor));
+        capsuleCollider.height = Mathf.Lerp(capsuleCollider.height, targetHeight, capsuleSmoothFactor);
+    }
+
+    void jump(InputAction.CallbackContext context)
+    {
+        if (!readyToJump || !grounded ||
+            playerManager.PlayerState is PlayerState.Planting or PlayerState.Defusing) return;
         if (!context.performed) return;
         readyToJump = false;
         Invoke(nameof(resetJump), jumpCooldown);
@@ -216,14 +260,13 @@ public class PlayerMovement : NetworkBehaviour
 
     void setAnimVelocity(float x, float z)
     {
-        
-        smoothX = Mathf.Lerp(smoothX, x, smoothFactor);
-        smoothZ = Mathf.Lerp(smoothZ, z, smoothFactor);
+        smoothX = Mathf.Lerp(smoothX, x, movementSmoothFactor);
+        smoothZ = Mathf.Lerp(smoothZ, z, movementSmoothFactor);
         if (state == MovementState.Walking)
         {
             anim.speed = 1;
-            anim.SetFloat(VelocityX, smoothZ/2);
-            anim.SetFloat(VelocityZ, smoothX/2);
+            anim.SetFloat(VelocityX, smoothZ / 2);
+            anim.SetFloat(VelocityZ, smoothX / 2);
         }
         else
         {
@@ -231,9 +274,9 @@ public class PlayerMovement : NetworkBehaviour
             anim.SetFloat(VelocityX, smoothZ);
             anim.SetFloat(VelocityZ, smoothX);
         }
-        
-        
-        if(x != 0 || z != 0) anim.SetBool(IsMoving, true);
+
+
+        if (x != 0 || z != 0) anim.SetBool(IsMoving, true);
         else anim.SetBool(IsMoving, false);
     }
 
@@ -242,8 +285,6 @@ public class PlayerMovement : NetworkBehaviour
         anim.SetBool(IsJumping, true);
         anim.SetBool(IsFalling, true);
     }
-    
-    
-    #endregion
 
+    #endregion
 }

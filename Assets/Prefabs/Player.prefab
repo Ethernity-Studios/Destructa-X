@@ -338,7 +338,7 @@ GameObject:
   - component: {fileID: 1805058751750204041}
   - component: {fileID: 2661542283209995485}
   - component: {fileID: 6336609987163348861}
-  - component: {fileID: 4704746696696432680}
+  - component: {fileID: 5791900000202027061}
   - component: {fileID: 3516282345566254277}
   - component: {fileID: 5070754395047204269}
   - component: {fileID: 354066564697787795}
@@ -472,11 +472,16 @@ MonoBehaviour:
   playerHead: {fileID: 2809714701104030514}
   anim: {fileID: 5568581631737819458}
   state: 0
-  smoothFactor: 0.125
+  movementSmoothFactor: 0.1
+  crouchSmoothFactor: 0.07
+  capsuleSmoothFactor: 0.09
   sprintSpeed: 5
   walkSpeed: 3
+  crouchSpeed: 2
+  moveSpeed: 0
   groundDrag: 5
   grounded: 0
+  crouching: 0
   jumpForce: 6
   jumpCooldown: 0.25
   airMultiplier: 0.4
@@ -485,6 +490,7 @@ MonoBehaviour:
   groundMask:
     serializedVersion: 2
     m_Bits: 8
+  capsuleCollider: {fileID: 5791900000202027061}
 --- !u!114 &6021906618316908405
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -586,7 +592,7 @@ Rigidbody:
   m_Interpolate: 1
   m_Constraints: 112
   m_CollisionDetection: 1
---- !u!136 &4704746696696432680
+--- !u!136 &5791900000202027061
 CapsuleCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -597,7 +603,7 @@ CapsuleCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   m_Radius: 0.5
-  m_Height: 2
+  m_Height: 1
   m_Direction: 1
   m_Center: {x: 0, y: 1, z: 0}
 --- !u!114 &3516282345566254277
@@ -1799,7 +1805,7 @@ CapsuleCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   m_Radius: 0.5
-  m_Height: 2
+  m_Height: 1
   m_Direction: 1
   m_Center: {x: 0, y: 1, z: 0}
 --- !u!4 &1992772092889836344 stripped
