@@ -19,6 +19,7 @@ public class CameraRotate : MonoBehaviour
     private Vector2 mouseLook;
 
     public bool CanRotate = true;
+    public bool CanRotateBody = true;
 
     private void Awake()
     {
@@ -50,6 +51,7 @@ public class CameraRotate : MonoBehaviour
 
         transform.rotation = Quaternion.Euler(xRotation, yRotation, 0);
         orientation.rotation = Quaternion.Euler(0,yRotation,0);
+        if (!CanRotateBody) return;
         body.rotation = Quaternion.Euler(0, yRotation, 0);
     }
 
@@ -58,6 +60,7 @@ public class CameraRotate : MonoBehaviour
         yRotation = rotation.y;
         transform.rotation = Quaternion.Euler(transform.eulerAngles.x,rotation.y,transform.eulerAngles.z);
         orientation.rotation = Quaternion.Euler(transform.eulerAngles.x,rotation.y,transform.eulerAngles.z);
+        if (!CanRotateBody) return;
         body.rotation = Quaternion.Euler(transform.eulerAngles.x,rotation.y,transform.eulerAngles.z);
     }
 

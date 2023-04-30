@@ -1,6 +1,12 @@
+using System.Collections;
 using Mirror;
 using UnityEngine;
 using UnityEngine.InputSystem;
+
+public enum Side
+{
+    Right, Left
+}
 
 public enum MovementState
 {
@@ -74,7 +80,17 @@ public class PlayerMovement : NetworkBehaviour
     private static readonly int IsGrounded = Animator.StringToHash("isGrounded");
     private static readonly int IsCrouching = Animator.StringToHash("isCrouching");
     private static readonly int Crouch = Animator.StringToHash("Crouch");
+    private static readonly int TurnLeft = Animator.StringToHash("turnLeft");
+    private static readonly int TurnRight = Animator.StringToHash("turnRight");
 
+    private CameraRotate cameraRotate;
+
+    [SerializeField] private float currentBodyRotationY;
+    [SerializeField] private float bodyRotationThreshold;
+    public float minBodyRotationThresholdY;
+    public float maxBodyRotationThresholdY;
+
+    [SerializeField] private float bodyRotationTime;
     public override void OnStartLocalPlayer()
     {
         playerInput = new PlayerInput();
@@ -89,15 +105,19 @@ public class PlayerMovement : NetworkBehaviour
         mainCamera = Camera.main!.gameObject;
         mainCamera.transform.parent.position = transform.position + new Vector3(0, .6f, 0);
         mainCamera.transform.parent.eulerAngles = new Vector3(playerHead.rotation.x, transform.rotation.y, 0);
-        mainCamera.GetComponent<CameraRotate>().orientation = orientation;
-        mainCamera.GetComponent<CameraRotate>().body = body;
-        mainCamera.GetComponent<CameraRotate>().PlayerEconomyManager = GetComponent<PlayerEconomyManager>();
+        cameraRotate = mainCamera.GetComponent<CameraRotate>();
+        cameraRotate.orientation = orientation;
+        cameraRotate.body = body;
+        cameraRotate.PlayerEconomyManager = GetComponent<PlayerEconomyManager>();
         mainCamera.transform.parent.GetComponent<CameraMove>().cameraPosition = playerHead;
         playerManager = GetComponent<Player>();
         playerManager.PlayerState = PlayerState.Idle;
         rb.freezeRotation = true;
 
         playerInput.PlayerMovement.Enable();
+        
+        Invoke(nameof(setRotationThreshold),2f);
+        
         //cameraTransform = Camera.main.transform;
         //cameraTransform.SetParent(transform.GetChild(0));
         //cameraTransform.position = new Vector3(transform.position.x, transform.position.y, transform.position.z);
@@ -123,6 +143,8 @@ public class PlayerMovement : NetworkBehaviour
         stateHandler();
         rotatePlayer();
         crouch();
+        checkRotation();
+        
         setAnimVelocity(verticalInput, horizontalInput);
 
         if (grounded)
@@ -163,25 +185,30 @@ public class PlayerMovement : NetworkBehaviour
         if (grounded && rb.velocity == Vector3.zero)
         {
             state = MovementState.Idle;
+            cameraRotate.CanRotateBody = false;
         }
         else if (grounded && playerInput.PlayerMovement.Walking.IsPressed())
         {
             moveSpeed = walkSpeed;
             state = MovementState.Walking;
+            cameraRotate.CanRotateBody = true;
         }
         else if (grounded && !playerInput.PlayerMovement.Walking.IsPressed() && rb.velocity.x != 0 || rb.velocity.y != 0)
         {
             state = MovementState.Sprinting;
             moveSpeed = sprintSpeed;
+            cameraRotate.CanRotateBody = true;
         }
         else if (grounded && crouching)
         {
             state = MovementState.Crouching;
             moveSpeed = crouchSpeed;
+            cameraRotate.CanRotateBody = true;
         }
         else if (!grounded)
         {
             state = MovementState.InAir;
+            cameraRotate.CanRotateBody = true;
         }
     }
 
@@ -189,6 +216,44 @@ public class PlayerMovement : NetworkBehaviour
     {
         playerHead.rotation = mainCamera.transform.rotation;
     }
+
+    void setRotationThreshold()
+    {
+        minBodyRotationThresholdY = currentBodyRotationY - bodyRotationThreshold;
+        maxBodyRotationThresholdY = currentBodyRotationY + bodyRotationThreshold;
+    }
+
+    void checkRotation()
+    {
+        if (state != MovementState.Idle) return;
+        currentBodyRotationY = cameraRotate.transform.rotation.eulerAngles.y;
+
+        if(currentBodyRotationY <= minBodyRotationThresholdY) StartCoroutine(rotateBody(Side.Left));
+        else if(currentBodyRotationY >= maxBodyRotationThresholdY) StartCoroutine(rotateBody(Side.Right));
+    }
+
+    IEnumerator rotateBody(Side side)
+    {
+        Debug.Log("Rotating to side: " + side);
+        setRotationThreshold();
+        switch (side)
+        {
+            case Side.Right:
+                anim.ResetTrigger(TurnLeft);
+                anim.SetTrigger(TurnLeft);
+                yield return new WaitForSeconds(bodyRotationTime);
+                body.transform.eulerAngles = new Vector3(0,body.transform.eulerAngles.y + 90,0);
+                break;
+            case Side.Left:
+                anim.ResetTrigger(TurnRight);
+                anim.SetTrigger(TurnRight);
+                yield return new WaitForSeconds(bodyRotationTime);
+                body.transform.eulerAngles = new Vector3(0,body.transform.eulerAngles.y - 90,0);
+                break;
+        }
+    }
+    
+    
 
 
     void getInput()

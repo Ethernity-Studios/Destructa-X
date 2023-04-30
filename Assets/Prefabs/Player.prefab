@@ -491,6 +491,12 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 8
   capsuleCollider: {fileID: 5791900000202027061}
+  currentBodyRotationY: 0
+  bodyRotationThreshold: 45
+  minBodyRotationThresholdY: 0
+  maxBodyRotationThresholdY: 0
+  bodyRotateLimit: 0
+  bodyRotationTime: 0.8
 --- !u!114 &6021906618316908405
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1629,7 +1635,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5866666021909216657, guid: 1c7dde570c7141d45bff875411287fd6, type: 3}
       propertyPath: m_ApplyRootMotion
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6000407479487422213, guid: 1c7dde570c7141d45bff875411287fd6, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
