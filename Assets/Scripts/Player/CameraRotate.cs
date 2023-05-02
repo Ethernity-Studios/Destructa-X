@@ -16,7 +16,7 @@ public class CameraRotate : MonoBehaviour
     public PlayerEconomyManager PlayerEconomyManager;
 
     private PlayerInput playerInput;
-    private Vector2 mouseLook;
+    public Vector2 MouseLook;
 
     public bool CanRotate = true;
     public bool CanRotateBody = true;
@@ -40,9 +40,9 @@ public class CameraRotate : MonoBehaviour
         if (isShopOpen) return;
         if (!CanRotate) return;
 
-        mouseLook = playerInput.PlayerMovement.Look.ReadValue<Vector2>();
-        float mouseX = mouseLook.x * MouseSensitivity * Time.deltaTime;
-        float mouseY = mouseLook.y * MouseSensitivity * Time.deltaTime;
+        MouseLook = playerInput.PlayerMovement.Look.ReadValue<Vector2>();
+        float mouseX = MouseLook.x * MouseSensitivity * Time.deltaTime;
+        float mouseY = MouseLook.y * MouseSensitivity * Time.deltaTime;
 
         yRotation += mouseX;
 

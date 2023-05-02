@@ -1,11 +1,11 @@
-using System.Collections;
 using Mirror;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
 public enum Side
 {
-    Right, Left
+    Right,
+    Left
 }
 
 public enum MovementState
@@ -85,12 +85,17 @@ public class PlayerMovement : NetworkBehaviour
 
     private CameraRotate cameraRotate;
 
-    [SerializeField] private float currentBodyRotationY;
+    [SerializeField] private Vector3 currentBodyRotationY;
     [SerializeField] private float bodyRotationThreshold;
     public float minBodyRotationThresholdY;
     public float maxBodyRotationThresholdY;
 
     [SerializeField] private float bodyRotationTime;
+    [SerializeField] private Vector3 targetBodyRotation;
+    [SerializeField] private float bodyRotationSmoothFactor;
+
+    private bool canRotateBody = false;
+
     public override void OnStartLocalPlayer()
     {
         playerInput = new PlayerInput();
@@ -115,9 +120,10 @@ public class PlayerMovement : NetworkBehaviour
         rb.freezeRotation = true;
 
         playerInput.PlayerMovement.Enable();
-        
-        Invoke(nameof(setRotationThreshold),2f);
-        
+
+        Invoke(nameof(setRotationThreshold), 2f);
+        Invoke(nameof(setBodyRotate), 3f);
+
         //cameraTransform = Camera.main.transform;
         //cameraTransform.SetParent(transform.GetChild(0));
         //cameraTransform.position = new Vector3(transform.position.x, transform.position.y, transform.position.z);
@@ -144,7 +150,7 @@ public class PlayerMovement : NetworkBehaviour
         rotatePlayer();
         crouch();
         checkRotation();
-        
+
         setAnimVelocity(verticalInput, horizontalInput);
 
         if (grounded)
@@ -155,8 +161,6 @@ public class PlayerMovement : NetworkBehaviour
         }
         else
         {
-            Debug.Log("Not grounded");
-
             rb.drag = 0;
             anim.SetBool(IsGrounded, true);
             anim.SetBool(IsJumping, false);
@@ -180,6 +184,8 @@ public class PlayerMovement : NetworkBehaviour
         //else anim.SetBool(IsFalling, true);
     }
 
+    void setBodyRotate() => canRotateBody = true;
+
     void stateHandler()
     {
         if (grounded && rb.velocity == Vector3.zero)
@@ -192,18 +198,24 @@ public class PlayerMovement : NetworkBehaviour
             moveSpeed = walkSpeed;
             state = MovementState.Walking;
             cameraRotate.CanRotateBody = true;
+            targetBodyRotation = body.transform.eulerAngles;
+            setRotationThreshold();
         }
         else if (grounded && !playerInput.PlayerMovement.Walking.IsPressed() && rb.velocity.x != 0 || rb.velocity.y != 0)
         {
             state = MovementState.Sprinting;
             moveSpeed = sprintSpeed;
             cameraRotate.CanRotateBody = true;
+            targetBodyRotation = body.transform.eulerAngles;
+            setRotationThreshold();
         }
         else if (grounded && crouching)
         {
             state = MovementState.Crouching;
             moveSpeed = crouchSpeed;
             cameraRotate.CanRotateBody = true;
+            targetBodyRotation = body.transform.eulerAngles;
+            setRotationThreshold();
         }
         else if (!grounded)
         {
@@ -219,41 +231,72 @@ public class PlayerMovement : NetworkBehaviour
 
     void setRotationThreshold()
     {
-        minBodyRotationThresholdY = currentBodyRotationY - bodyRotationThreshold;
-        maxBodyRotationThresholdY = currentBodyRotationY + bodyRotationThreshold;
+        minBodyRotationThresholdY = currentBodyRotationY.y - bodyRotationThreshold;
+        maxBodyRotationThresholdY = currentBodyRotationY.y + bodyRotationThreshold;
+
+        //Convert angle
+        if (minBodyRotationThresholdY < 0) minBodyRotationThresholdY = 360 - Mathf.Abs(minBodyRotationThresholdY);
+        if (maxBodyRotationThresholdY > 360) maxBodyRotationThresholdY = maxBodyRotationThresholdY - 360;
     }
 
     void checkRotation()
     {
         if (state != MovementState.Idle) return;
-        currentBodyRotationY = cameraRotate.transform.rotation.eulerAngles.y;
+        if (!canRotateBody) return;
 
-        if(currentBodyRotationY <= minBodyRotationThresholdY) StartCoroutine(rotateBody(Side.Left));
-        else if(currentBodyRotationY >= maxBodyRotationThresholdY) StartCoroutine(rotateBody(Side.Right));
+        currentBodyRotationY.y = cameraRotate.transform.rotation.eulerAngles.y;
+        //body.transform.rotation = Quaternion.Lerp(body.transform.rotation, Quaternion.Euler(currentBodyRotationY), bodyRotationSmoothFactor);
+        float smoothness = Mathf.Abs(cameraRotate.MouseLook.x) / bodyRotationSmoothFactor ;
+        body.transform.rotation = Quaternion.Lerp(body.transform.rotation, Quaternion.Euler(currentBodyRotationY),smoothness);
+
+        /*if (minBodyRotationThresholdY < maxBodyRotationThresholdY)
+        {
+            if (currentBodyRotationY.y <= minBodyRotationThresholdY)
+            {
+                rotateBody(Side.Left);
+                Debug.Log("ROTATING LEFT");
+
+            }
+            else if (currentBodyRotationY.y >= maxBodyRotationThresholdY)
+            {
+                rotateBody(Side.Right);
+                Debug.Log("ROTATING RIGHT");
+
+            }
+            
+        }
+        else if (minBodyRotationThresholdY > maxBodyRotationThresholdY)
+        {
+            if (currentBodyRotationY.y <= minBodyRotationThresholdY && currentBodyRotationY.y > minBodyRotationThresholdY - 45)
+            {
+                rotateBody(Side.Left);
+                Debug.Log("rt left");
+
+            }
+            else if (currentBodyRotationY.y >= maxBodyRotationThresholdY && currentBodyRotationY.y < maxBodyRotationThresholdY + 45)
+            {
+                rotateBody(Side.Right);
+                Debug.Log("rt right");
+
+            }
+        }*/
     }
 
-    IEnumerator rotateBody(Side side)
+    /*void rotateBody(Side side)
     {
-        Debug.Log("Rotating to side: " + side);
         setRotationThreshold();
         switch (side)
         {
             case Side.Right:
-                anim.ResetTrigger(TurnLeft);
-                anim.SetTrigger(TurnLeft);
-                yield return new WaitForSeconds(bodyRotationTime);
-                body.transform.eulerAngles = new Vector3(0,body.transform.eulerAngles.y + 90,0);
-                break;
-            case Side.Left:
                 anim.ResetTrigger(TurnRight);
                 anim.SetTrigger(TurnRight);
-                yield return new WaitForSeconds(bodyRotationTime);
-                body.transform.eulerAngles = new Vector3(0,body.transform.eulerAngles.y - 90,0);
+                break;
+            case Side.Left:
+                anim.ResetTrigger(TurnLeft);
+                anim.SetTrigger(TurnLeft);
                 break;
         }
-    }
-    
-    
+    }*/
 
 
     void getInput()
@@ -297,8 +340,8 @@ public class PlayerMovement : NetworkBehaviour
             targetHeight = 2f;
             targetCrouch = 0;
         }
-        
-        
+
+
         anim.SetFloat(Crouch, Mathf.Lerp(anim.GetFloat(Crouch), targetCrouch, crouchSmoothFactor));
         capsuleCollider.height = Mathf.Lerp(capsuleCollider.height, targetHeight, capsuleSmoothFactor);
     }
