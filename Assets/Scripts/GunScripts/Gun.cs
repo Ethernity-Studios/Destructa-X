@@ -32,7 +32,7 @@ public class Gun : ScriptableObject
 
     public GunStats Stats;
 
-    public Zoom Scope;
+    //public Zoom Scope;
 
     public GunTransform GunTransform;
 }

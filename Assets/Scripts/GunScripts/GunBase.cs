@@ -78,9 +78,19 @@ public class GunTransform
 {
     public Vector3 FirstPersonGunPosition;
     public Vector3 FirstPersonGunRotation;
-
+    [Space(10)]
     public Vector3 ThirdPersonGunPosition;
     public Vector3 ThirdPersonGunRotation;
+    [Space(10)]
+    public Vector3 RightHandTargetPosition;
+    public Vector3 RightHandTargetRotation;
+    public Vector3 RightHandHintPosition;
+    public Vector3 RightHandHintRotation;
+    [Space(10)]
+    public Vector3 LeftHandTargetPosition;
+    public Vector3 LeftHandTargetRotation;
+    public Vector3 LeftHandHintPosition;
+    public Vector3 LeftHandHintRotation;
 }
 
 public enum GunType

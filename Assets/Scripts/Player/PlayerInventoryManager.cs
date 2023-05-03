@@ -46,6 +46,18 @@ public class PlayerInventoryManager : NetworkBehaviour
     [SyncVar] public bool GunEquipped = true;
 
     private PlayerInput playerInput;
+    
+    [SerializeField] private Transform RightHandHint;
+    [SerializeField] private Transform LeftHandTarget;
+    [SerializeField] private Transform RightHandTarget;
+    [SerializeField] private Transform LeftHandHint;
+
+    [SerializeField] private Vector3 KnifeLeftHandTargetPosition;
+    [SerializeField] private Vector3 KnifeLeftHandTargetRotation;
+    [SerializeField] private Vector3 KnifeLeftHandHintPosition;
+    [SerializeField] private Vector3 KnifeRightHandTargetPosition;
+    [SerializeField] private Vector3 KnifeRightHandTargetRotation;
+    [SerializeField] private Vector3 KnifeRightHandHintPositon;
 
     private void Awake()
     {
@@ -167,6 +179,7 @@ public class PlayerInventoryManager : NetworkBehaviour
                 KnifeHolder.SetActive(false);
                 BombHolder.SetActive(false);
                 playerUI.ToggleAmmoUI(true);
+                setHandTransform(EquippedGun);
 
                 if (!isLocalPlayer) return;
                 StartCoroutine(toggleEquippedGun());
@@ -182,6 +195,7 @@ public class PlayerInventoryManager : NetworkBehaviour
                 KnifeHolder.SetActive(false);
                 BombHolder.SetActive(false);
                 playerUI.ToggleAmmoUI(true);
+                setHandTransform(EquippedGun);
 
                 if (!isLocalPlayer) return;
                 StartCoroutine(toggleEquippedGun());
@@ -195,6 +209,7 @@ public class PlayerInventoryManager : NetworkBehaviour
                 SecondaryGunHolder.SetActive(false);
                 BombHolder.SetActive(false);
                 playerUI.ToggleAmmoUI(false);
+                setKnifeHandTransform();
                 break;
             case Item.Bomb:
                 if (Bomb == null) return;
@@ -468,9 +483,37 @@ public class PlayerInventoryManager : NetworkBehaviour
         rb.isKinematic = true;
         gunInstance.transform.GetChild(0).GetComponent<BoxCollider>().enabled = false;
         gunInstance.transform.GetComponent<SphereCollider>().enabled = false;
-        gunInstance.transform.localScale = new Vector3(1f, 1f, 1.5f);
-        gunInstance.transform.localPosition = gun.GunTransform.FirstPersonGunPosition;
-        gunInstance.transform.localEulerAngles = gun.GunTransform.FirstPersonGunRotation;
+        gunInstance.transform.localScale = new Vector3(1f, 1f, 1f);
+        //gunInstance.transform.localPosition = gun.GunTransform.FirstPersonGunPosition;
+        //gunInstance.transform.localEulerAngles = gun.GunTransform.FirstPersonGunRotation;
+        //if (isLocalPlayer) return;
+        gunInstance.transform.localPosition = gun.GunTransform.ThirdPersonGunPosition;
+        gunInstance.transform.localEulerAngles = gun.GunTransform.ThirdPersonGunRotation;
+    }
+
+    private void setHandTransform(Gun gun)
+    {
+        RightHandTarget.localPosition = gun.GunTransform.RightHandTargetPosition;
+        RightHandTarget.localEulerAngles = gun.GunTransform.RightHandTargetRotation;
+        RightHandHint.localPosition = gun.GunTransform.RightHandHintPosition;
+        RightHandHint.localEulerAngles = gun.GunTransform.RightHandHintRotation;
+
+        LeftHandTarget.localPosition = gun.GunTransform.LeftHandTargetPosition;
+        LeftHandTarget.localEulerAngles = gun.GunTransform.LeftHandTargetRotation;
+        LeftHandHint.localPosition = gun.GunTransform.LeftHandHintPosition;
+        LeftHandHint.localEulerAngles = gun.GunTransform.LeftHandHintRotation;
+    }
+
+    private void setKnifeHandTransform()
+    {
+        RightHandTarget.localPosition = KnifeRightHandTargetPosition;
+        RightHandTarget.localEulerAngles = KnifeRightHandTargetRotation;
+        RightHandHint.localPosition = KnifeRightHandHintPositon;
+
+        LeftHandTarget.localPosition = KnifeLeftHandTargetPosition;
+        LeftHandTarget.localEulerAngles = KnifeLeftHandTargetRotation;
+        LeftHandHint.localPosition = KnifeLeftHandHintPosition;
+
     }
 
     [Command(requiresAuthority =  false)]

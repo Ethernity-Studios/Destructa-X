@@ -32,8 +32,8 @@ MonoBehaviour:
     BulletsPerFire: 0
   HasSecondaryFire: 1
   SecondaryFire:
-    FireMode: 0
-    FireType: 0
+    FireMode: 1
+    FireType: 2
     ZoomType: 0
     Zoom:
       Amount: 0
@@ -56,11 +56,16 @@ MonoBehaviour:
     LegsDamage: 18
   Stats:
     FireRate: 0
-  Scope:
-    Amount: 0
-    AmountMultiplier: 0
   GunTransform:
     FirstPersonGunPosition: {x: 0.45, y: -0.25, z: 0.48}
     FirstPersonGunRotation: {x: 0, y: 80, z: 0}
-    ThirdPersonGunPosition: {x: 0, y: 0, z: 0}
-    ThirdPersonGunRotation: {x: 0, y: 0, z: 0}
+    ThirdPersonGunPosition: {x: -0.0262, y: 0.1067, z: 0.0307}
+    ThirdPersonGunRotation: {x: 4.581, y: -176.799, z: -77.831}
+    RightHandTargetPosition: {x: 0.046, y: 0.146, z: 0.066}
+    RightHandTargetRotation: {x: 2.621, y: 3.208, z: -3.589}
+    RightHandHintPosition: {x: -0.124, y: -0.395, z: -0.784}
+    RightHandHintRotation: {x: 0, y: 0, z: 0}
+    LeftHandTargetPosition: {x: 0.0318, y: 0.1912, z: 0.1888}
+    LeftHandTargetRotation: {x: 13.551, y: 214.872, z: 30.971}
+    LeftHandHintPosition: {x: 0.115, y: 0.293, z: 0.573}
+    LeftHandHintRotation: {x: 0, y: -90, z: 90}
