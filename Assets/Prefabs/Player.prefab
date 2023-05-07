@@ -2804,6 +2804,7 @@ MonoBehaviour:
   RequestedGun: {fileID: 0}
   Bomb: {fileID: 0}
   GunEquipped: 1
+  anim: {fileID: 5568581631737819458}
   RightHandHint: {fileID: 8631416258077975874}
   LeftHandTarget: {fileID: 3103512890510773538}
   RightHandTarget: {fileID: 6039664060687507456}
@@ -2836,6 +2837,10 @@ MonoBehaviour:
   GunInstance: {fileID: 0}
   BulletImpactDecalPenetrable: {fileID: 6870612456802620677, guid: dd39f28f1225a0543a5956a175d881a2, type: 3}
   BulletImpactDecalNotPenetrable: {fileID: 3127634398550035562, guid: e77031b087ca48f4fbe92710113ef8f9, type: 3}
+  isAiming: 0
+  snappiness: 6
+  returnSpeed: 2
+  cameraRecoil: {fileID: 0}
   mask:
     serializedVersion: 2
     m_Bits: 1727

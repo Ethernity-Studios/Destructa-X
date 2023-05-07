@@ -49,7 +49,7 @@ public class CameraRotate : MonoBehaviour
         xRotation -= mouseY;
         xRotation = Mathf.Clamp(xRotation, -90f, 90f);
 
-        transform.rotation = Quaternion.Euler(xRotation, yRotation, 0);
+        transform.parent.rotation = Quaternion.Euler(xRotation, yRotation, 0);
         orientation.rotation = Quaternion.Euler(0,yRotation,0);
         if (!CanRotateBody) return;
         body.rotation = Quaternion.Euler(0, yRotation, 0);
@@ -58,7 +58,7 @@ public class CameraRotate : MonoBehaviour
     public void RotateCamera(Vector3 rotation)
     {
         yRotation = rotation.y;
-        transform.rotation = Quaternion.Euler(transform.eulerAngles.x,rotation.y,transform.eulerAngles.z);
+        transform.parent.rotation = Quaternion.Euler(transform.eulerAngles.x,rotation.y,transform.eulerAngles.z);
         orientation.rotation = Quaternion.Euler(transform.eulerAngles.x,rotation.y,transform.eulerAngles.z);
         if (!CanRotateBody) return;
         body.rotation = Quaternion.Euler(transform.eulerAngles.x,rotation.y,transform.eulerAngles.z);

@@ -1,6 +1,9 @@
+using System;
 using Mirror;
 using System.Collections;
 using UnityEngine;
+using UnityEngine.InputSystem;
+using Random = UnityEngine.Random;
 
 public class PlayerShootingManager : NetworkBehaviour
 {
@@ -21,6 +24,8 @@ public class PlayerShootingManager : NetworkBehaviour
 
     private PlayerInput playerInput;
 
+    [SerializeField] private bool isAiming;
+
     private void Awake()
     {
         playerInput = new PlayerInput();
@@ -30,6 +35,9 @@ public class PlayerShootingManager : NetworkBehaviour
         uiManager = FindObjectOfType<UIManager>();
         playerEconomyManager = GetComponent<PlayerEconomyManager>();
         playerCombatReport = GetComponent<PlayerCombatReport>();
+
+        cameraRecoil = Camera.main!.transform.gameObject;
+
         if (!isLocalPlayer) return;
 
 
@@ -55,35 +63,37 @@ public class PlayerShootingManager : NetworkBehaviour
         Debug.DrawRay(cameraHolder.position, cameraHolder.forward * 2, Color.green);
         if (player.IsDead) return;
         if (!isLocalPlayer) return;
+        recoil();
         if (GunInstance == null) return;
         if (playerEconomyManager.IsShopOpen) return;
 
-        if (playerInventory.EquippedGun != null && playerInventory.GunEquipped && CanShoot &&
-            GunInstance.Magazine > 0 && !Reloading)
+        Gun gun = playerInventory.EquippedGun;
+
+        if (gun != null && playerInventory.GunEquipped && CanShoot && GunInstance.Magazine > 0 && !Reloading)
         {
-            if (playerInventory.EquippedGun.PrimaryFire.FireMode == FireMode.Manual &&
-                playerInput.PlayerShoot.Primary.triggered)
+            if (gun.PrimaryFire.FireMode == FireMode.Manual && playerInput.PlayerShoot.Primary.triggered)
             {
                 Shoot();
             }
-            else if (playerInventory.EquippedGun.PrimaryFire.FireMode == FireMode.Automatic &&
-                     playerInput.PlayerShoot.Primary.IsPressed())
+            else if (gun.PrimaryFire.FireMode == FireMode.Automatic && playerInput.PlayerShoot.Primary.IsPressed())
             {
                 Shoot();
             }
         }
 
-        if (playerInventory.EquippedGun == null) return;
+        if (gun == null) return;
         if (GunInstance.Magazine == 0 && GunInstance.Ammo > 0 && !Reloading)
         {
             StartCoroutine(Reload());
         }
 
-        if (GunInstance.Magazine != playerInventory.EquippedGun.MagazineAmmo &&
-            playerInput.PlayerShoot.Reload.triggered && GunInstance.Ammo > 0 && !Reloading)
+        if (GunInstance.Magazine != gun.MagazineAmmo && playerInput.PlayerShoot.Reload.triggered && GunInstance.Ammo > 0 && !Reloading)
         {
             StartCoroutine(Reload());
         }
+
+        if (gun.HasSecondaryFire && gun.SecondaryFire.ZoomType != ZoomType.None && playerInput.PlayerShoot.Zoom.IsPressed()) isAiming = true;
+        else isAiming = false;
     }
 
     private IEnumerator DelayFire()
@@ -126,6 +136,36 @@ public class PlayerShootingManager : NetworkBehaviour
         UpdateUIAmmo();
         penetrationAmount = playerInventory.EquippedGun.BulletPenetration;
         CheckPenetration(cameraHolder.position);
+        recoilFire(playerInventory.EquippedGun);
+    }
+
+    private Vector3 currentRotation;
+    private Vector3 targetRotation;
+
+    [SerializeField] private float snappiness;
+    [SerializeField] private float returnSpeed;
+
+    [SerializeField] private GameObject cameraRecoil;
+
+    void recoil()
+    {
+        targetRotation = Vector3.Lerp(targetRotation, Vector3.zero, returnSpeed * Time.deltaTime);
+        currentRotation = Vector3.Slerp(currentRotation, targetRotation, snappiness * Time.fixedDeltaTime);
+        cameraRecoil.transform.localRotation = Quaternion.Euler(currentRotation);
+    }
+
+    void recoilFire(Gun gun)
+    {
+        if (isAiming)
+        {
+            Debug.Log("Recoil with aiming");
+            targetRotation += new Vector3(gun.GunRecoil.AimRecoilX, Random.Range(-gun.GunRecoil.AimRecoilY, gun.GunRecoil.AimRecoilY), Random.Range(-gun.GunRecoil.AimRecoilZ, gun.GunRecoil.AimRecoilZ));
+        }
+        else
+        {
+            targetRotation += new Vector3(gun.GunRecoil.RecoilX, Random.Range(-gun.GunRecoil.RecoilY, gun.GunRecoil.RecoilY), Random.Range(-gun.GunRecoil.RecoilZ, gun.GunRecoil.RecoilZ));
+            Debug.Log("Recoil without aiming " + targetRotation);
+        }
     }
 
     [SerializeField] LayerMask mask;
@@ -166,6 +206,7 @@ public class PlayerShootingManager : NetworkBehaviour
                                 report.TargetState = ReportState.Killed;
                                 player.CmdAddKill();
                             }
+
                             playerCombatReport.AddReport(report);
                         }
                     }
@@ -210,6 +251,7 @@ public class PlayerShootingManager : NetworkBehaviour
             break;
         }
     }
+
 
     Body GetBody(GameObject hit) =>
         hit.tag switch

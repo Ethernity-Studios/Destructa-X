@@ -35,6 +35,7 @@ public class SecondaryFire
 
 public enum FireType
 {
+    None,
     Single,
     Burst,
     Multiple
@@ -42,6 +43,7 @@ public enum FireType
 
 public enum FireMode
 {
+    None,
     Automatic,
     Manual
 }
@@ -91,6 +93,18 @@ public class GunTransform
     public Vector3 LeftHandTargetRotation;
     public Vector3 LeftHandHintPosition;
     public Vector3 LeftHandHintRotation;
+}
+
+[Serializable]
+public class GunRecoil
+{
+    public float RecoilX;
+    public float RecoilY;
+    public float RecoilZ;
+    [Space(10)]
+    public float AimRecoilX;
+    public float AimRecoilY;
+    public float AimRecoilZ;
 }
 
 public enum GunType

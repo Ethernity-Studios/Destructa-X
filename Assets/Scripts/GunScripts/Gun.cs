@@ -24,8 +24,8 @@ public class Gun : ScriptableObject
     public SecondaryFire SecondaryFire;
 
     
-    public float Bloom;
-    public float Recoil;
+    //public float Bloom;
+    //public float Recoil;
 
     public List<Damages> Damages;
 
@@ -34,5 +34,6 @@ public class Gun : ScriptableObject
 
     //public Zoom Scope;
 
+    public GunRecoil GunRecoil;
     public GunTransform GunTransform;
 }

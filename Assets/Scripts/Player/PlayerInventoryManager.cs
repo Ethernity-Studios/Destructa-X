@@ -46,6 +46,8 @@ public class PlayerInventoryManager : NetworkBehaviour
     [SyncVar] public bool GunEquipped = true;
 
     private PlayerInput playerInput;
+
+    [SerializeField] private Animator anim;
     
     [SerializeField] private Transform RightHandHint;
     [SerializeField] private Transform LeftHandTarget;
