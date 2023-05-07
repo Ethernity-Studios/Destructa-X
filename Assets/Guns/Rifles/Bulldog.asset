@@ -17,16 +17,16 @@ MonoBehaviour:
   GunModel: {fileID: 4105488676187192654, guid: 13c043ae6a33bb04bbc4b7befc69f2cd, type: 3}
   Icon: {fileID: 21300000, guid: 97502c9661f1f3145b7f11068dc00731, type: 3}
   Price: 500
-  MagazineAmmo: 24
-  Ammo: 500
+  MagazineAmmo: 2400
+  Ammo: 5000
   ReloadTime: 2.5
   EquipTime: 1
   Type: 0
   Category: 0
   BulletPenetration: 5
   PrimaryFire:
-    FireMode: 0
-    FireType: 0
+    FireMode: 1
+    FireType: 1
     FireDelay: 0.1
     BurstDelay: 0
     BulletsPerFire: 0
@@ -41,8 +41,6 @@ MonoBehaviour:
     FireDelay: 0
     BurstDelay: 0
     BulletsPerFire: 0
-  Bloom: 0
-  Recoil: 0
   Damages:
   - MinDistance: 0
     MaxDistance: 50
@@ -51,11 +49,23 @@ MonoBehaviour:
     LegsDamage: 29
   Stats:
     FireRate: 0
-  Scope:
-    Amount: 0
-    AmountMultiplier: 0
+  GunRecoil:
+    RecoilX: -3
+    RecoilY: 2
+    RecoilZ: 0.35
+    AimRecoilX: -2
+    AimRecoilY: 2
+    AimRecoilZ: 0.35
   GunTransform:
     FirstPersonGunPosition: {x: 0.45, y: -0.25, z: 0.33}
     FirstPersonGunRotation: {x: 0, y: 80, z: 0}
     ThirdPersonGunPosition: {x: 0, y: 0, z: 0}
     ThirdPersonGunRotation: {x: 0, y: 0, z: 0}
+    RightHandTargetPosition: {x: 0, y: 0, z: 0}
+    RightHandTargetRotation: {x: 0, y: 0, z: 0}
+    RightHandHintPosition: {x: 0, y: 0, z: 0}
+    RightHandHintRotation: {x: 0, y: 0, z: 0}
+    LeftHandTargetPosition: {x: 0, y: 0, z: 0}
+    LeftHandTargetRotation: {x: 0, y: 0, z: 0}
+    LeftHandHintPosition: {x: 0, y: 0, z: 0}
+    LeftHandHintRotation: {x: 0, y: 0, z: 0}

@@ -1,8 +1,6 @@
-using System;
 using Mirror;
 using System.Collections;
 using UnityEngine;
-using UnityEngine.InputSystem;
 using Random = UnityEngine.Random;
 
 public class PlayerShootingManager : NetworkBehaviour
@@ -25,6 +23,10 @@ public class PlayerShootingManager : NetworkBehaviour
     private PlayerInput playerInput;
 
     [SerializeField] private bool isAiming;
+    [SerializeField] private bool isShooting;
+
+    [SerializeField] private int gunHeath;
+    [SerializeField] private float heathDecreaseTime;
 
     private void Awake()
     {
@@ -61,9 +63,11 @@ public class PlayerShootingManager : NetworkBehaviour
     void Update()
     {
         Debug.DrawRay(cameraHolder.position, cameraHolder.forward * 2, Color.green);
+        Debug.DrawRay(cameraHolder.position, transform.forward + cameraHolder.transform.forward, Color.magenta);
         if (player.IsDead) return;
         if (!isLocalPlayer) return;
         recoil();
+        decreaseGunHeath();
         if (GunInstance == null) return;
         if (playerEconomyManager.IsShopOpen) return;
 
@@ -78,7 +82,9 @@ public class PlayerShootingManager : NetworkBehaviour
             else if (gun.PrimaryFire.FireMode == FireMode.Automatic && playerInput.PlayerShoot.Primary.IsPressed())
             {
                 Shoot();
+                isShooting = true;
             }
+            else isShooting = false;
         }
 
         if (gun == null) return;
@@ -137,6 +143,7 @@ public class PlayerShootingManager : NetworkBehaviour
         penetrationAmount = playerInventory.EquippedGun.BulletPenetration;
         CheckPenetration(cameraHolder.position);
         recoilFire(playerInventory.EquippedGun);
+        if (gunHeath < 20) gunHeath++;
     }
 
     private Vector3 currentRotation;
@@ -158,14 +165,22 @@ public class PlayerShootingManager : NetworkBehaviour
     {
         if (isAiming)
         {
-            Debug.Log("Recoil with aiming");
             targetRotation += new Vector3(gun.GunRecoil.AimRecoilX, Random.Range(-gun.GunRecoil.AimRecoilY, gun.GunRecoil.AimRecoilY), Random.Range(-gun.GunRecoil.AimRecoilZ, gun.GunRecoil.AimRecoilZ));
         }
         else
         {
             targetRotation += new Vector3(gun.GunRecoil.RecoilX, Random.Range(-gun.GunRecoil.RecoilY, gun.GunRecoil.RecoilY), Random.Range(-gun.GunRecoil.RecoilZ, gun.GunRecoil.RecoilZ));
-            Debug.Log("Recoil without aiming " + targetRotation);
         }
+    }
+
+    private float t;
+
+    public void decreaseGunHeath()
+    {
+        t += Time.deltaTime;
+        if (!(t >= heathDecreaseTime) || gunHeath <= 0 || isShooting) return;
+        t = 0;
+        gunHeath--;
     }
 
     [SerializeField] LayerMask mask;
@@ -178,11 +193,28 @@ public class PlayerShootingManager : NetworkBehaviour
 
     private void CheckPenetration(Vector3 originPosition)
     {
+        int i = 0;
         while (true)
         {
-            Ray ray = new Ray(originPosition, transform.forward + cameraHolder.transform.forward);
-            if (Physics.Raycast(originPosition, cameraHolder.forward, out RaycastHit hit, Mathf.Infinity,
-                    layerMask: mask))
+            Vector3 direction;
+            if (i == 0)
+            {
+                i++;
+                Vector3 bloomDirection = cameraHolder.position + cameraHolder.forward * 1000f;
+                bloomDirection += Random.Range(-gunHeath, gunHeath) * cameraHolder.up;
+                bloomDirection += Random.Range(-gunHeath, gunHeath) * cameraHolder.right;
+                bloomDirection -= cameraHolder.position;
+                bloomDirection.Normalize();
+                direction = bloomDirection;
+            }
+            else
+            {
+                direction = cameraHolder.forward;
+            }
+
+            i++;
+            Ray ray = new(originPosition, direction);
+            if (Physics.Raycast(originPosition, direction, out RaycastHit hit, Mathf.Infinity, layerMask: mask))
             {
                 if (hit.collider.transform.parent != null)
                 {
@@ -213,7 +245,7 @@ public class PlayerShootingManager : NetworkBehaviour
                 }
 
                 impactPoint = hit.point;
-                Ray penRay = new Ray(hit.point + ray.direction * penetrationAmount, -ray.direction);
+                Ray penRay = new(hit.point + ray.direction * penetrationAmount, -ray.direction);
                 if (hit.collider.Raycast(penRay, out RaycastHit penHit, penetrationAmount))
                 {
                     penetrationPoint = penHit.point;
@@ -304,14 +336,8 @@ public class PlayerShootingManager : NetworkBehaviour
             Instantiate(canPenetrate ? BulletImpactDecalPenetrable : BulletImpactDecalNotPenetrable);
         NetworkServer.Spawn(bulletImpact);
         RpcInstantiateImpactDecal(bulletImpact, position, rotation);
-        StartCoroutine(destroyDecal(bulletImpact));
     }
 
-    IEnumerator destroyDecal(GameObject bulletImpact)
-    {
-        yield return new WaitForSeconds(7);
-        NetworkServer.Destroy(bulletImpact);
-    }
 
     [ClientRpc]
     void RpcInstantiateImpactDecal(GameObject bulletImpact, Vector3 position, Vector3 rotation)
