@@ -22,7 +22,7 @@ MonoBehaviour:
   ReloadTime: 1
   EquipTime: 0.75
   Type: 1
-  Category: 0
+  Category: 3
   BulletPenetration: 30
   PrimaryFire:
     FireMode: 2
@@ -33,14 +33,14 @@ MonoBehaviour:
   HasSecondaryFire: 1
   SecondaryFire:
     FireMode: 2
-    FireType: 2
+    FireType: 3
     ZoomType: 0
     Zoom:
       Amount: 0
       AmountMultiplier: 0
-    FireDelay: 0
+    FireDelay: 0.5
     BurstDelay: 0
-    BulletsPerFire: 0
+    BulletsPerFire: 1
   Damages:
   - MinDistance: 0
     MaxDistance: 30

@@ -25,7 +25,9 @@ public class PlayerShootingManager : NetworkBehaviour
     [SerializeField] private bool isAiming;
     [SerializeField] private bool isShooting;
 
-    [SerializeField] private int gunHeath;
+    public int GunHeath;
+    float bloomAmount;
+    public float BloomModifier;
     [SerializeField] private float heathDecreaseTime;
 
     private void Awake()
@@ -143,7 +145,7 @@ public class PlayerShootingManager : NetworkBehaviour
         penetrationAmount = playerInventory.EquippedGun.BulletPenetration;
         CheckPenetration(cameraHolder.position);
         recoilFire(playerInventory.EquippedGun);
-        if (gunHeath < 20) gunHeath++;
+        if (GunHeath < 30) GunHeath+= 2;
     }
 
     private Vector3 currentRotation;
@@ -178,9 +180,9 @@ public class PlayerShootingManager : NetworkBehaviour
     public void decreaseGunHeath()
     {
         t += Time.deltaTime;
-        if (!(t >= heathDecreaseTime) || gunHeath <= 0 || isShooting) return;
+        if (!(t >= heathDecreaseTime) || GunHeath <= 0 || isShooting) return;
         t = 0;
-        gunHeath--;
+        GunHeath--;
     }
 
     [SerializeField] LayerMask mask;
@@ -199,10 +201,12 @@ public class PlayerShootingManager : NetworkBehaviour
             Vector3 direction;
             if (i == 0)
             {
+                bloomAmount = GunHeath + BloomModifier;
+                if (bloomAmount < 0) bloomAmount = 0;
                 i++;
                 Vector3 bloomDirection = cameraHolder.position + cameraHolder.forward * 1000f;
-                bloomDirection += Random.Range(-gunHeath, gunHeath) * cameraHolder.up;
-                bloomDirection += Random.Range(-gunHeath, gunHeath) * cameraHolder.right;
+                bloomDirection += Random.Range(-bloomAmount, bloomAmount) * cameraHolder.up;
+                bloomDirection += Random.Range(-bloomAmount, bloomAmount) * cameraHolder.right;
                 bloomDirection -= cameraHolder.position;
                 bloomDirection.Normalize();
                 direction = bloomDirection;

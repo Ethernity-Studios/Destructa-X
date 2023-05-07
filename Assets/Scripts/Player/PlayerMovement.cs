@@ -14,7 +14,8 @@ public enum MovementState
     Walking,
     Sprinting,
     InAir,
-    Crouching
+    Crouching,
+    CrouchingIdle
 }
 
 public class PlayerMovement : NetworkBehaviour
@@ -22,6 +23,7 @@ public class PlayerMovement : NetworkBehaviour
     [SerializeField] Transform playerHead;
 
     Player playerManager;
+    private PlayerShootingManager playerShootingManager;
     Rigidbody rb;
     [SerializeField] Animator anim;
 
@@ -97,6 +99,7 @@ public class PlayerMovement : NetworkBehaviour
     void Start()
     {
         rb = GetComponent<Rigidbody>();
+        playerShootingManager = GetComponent<PlayerShootingManager>();
         if (!isLocalPlayer) return;
         mainCamera = Camera.main!.gameObject;
         mainCamera.transform.parent.position = transform.position + new Vector3(0, .6f, 0);
@@ -172,33 +175,41 @@ public class PlayerMovement : NetworkBehaviour
 
     void stateHandler()
     {
-        if (grounded && rb.velocity == Vector3.zero)
+        switch (grounded)
         {
-            state = MovementState.Idle;
-            cameraRotate.CanRotateBody = false;
-        }
-        else if (grounded && playerInput.PlayerMovement.Walking.IsPressed())
-        {
-            moveSpeed = walkSpeed;
-            state = MovementState.Walking;
-            cameraRotate.CanRotateBody = true;
-        }
-        else if (grounded && !playerInput.PlayerMovement.Walking.IsPressed() && rb.velocity.x != 0 || rb.velocity.y != 0)
-        {
-            state = MovementState.Sprinting;
-            moveSpeed = sprintSpeed;
-            cameraRotate.CanRotateBody = true;
-        }
-        else if (grounded && crouching)
-        {
-            state = MovementState.Crouching;
-            moveSpeed = crouchSpeed;
-            cameraRotate.CanRotateBody = false;
-        }
-        else if (!grounded)
-        {
-            state = MovementState.InAir;
-            cameraRotate.CanRotateBody = true;
+            case true when rb.velocity == Vector3.zero && !crouching:
+                state = MovementState.Idle;
+                cameraRotate.CanRotateBody = false;
+                playerShootingManager.BloomModifier = 0;
+                break;
+            case true when playerInput.PlayerMovement.Walking.IsPressed() && !crouching:
+                moveSpeed = walkSpeed;
+                state = MovementState.Walking;
+                cameraRotate.CanRotateBody = true;
+                playerShootingManager.BloomModifier = 60;
+                break;
+            case true when !playerInput.PlayerMovement.Walking.IsPressed() && rb.velocity != Vector3.zero && !crouching:
+                state = MovementState.Sprinting;
+                moveSpeed = sprintSpeed;
+                cameraRotate.CanRotateBody = true;
+                playerShootingManager.BloomModifier = 80;
+                break;
+            case true when crouching && rb.velocity == Vector3.zero:
+                state = MovementState.CrouchingIdle;
+                cameraRotate.CanRotateBody = false;
+                playerShootingManager.BloomModifier = -10;
+                break;
+            case true when crouching && rb.velocity != Vector3.zero:
+                state = MovementState.Crouching;
+                moveSpeed = crouchSpeed;
+                cameraRotate.CanRotateBody = true;
+                playerShootingManager.BloomModifier = 45;
+                break;
+            case false:
+                state = MovementState.InAir;
+                cameraRotate.CanRotateBody = true;
+                playerShootingManager.BloomModifier = 120;
+                break;
         }
     }
 
@@ -209,7 +220,7 @@ public class PlayerMovement : NetworkBehaviour
 
     void checkRotation()
     {
-        if (state != MovementState.Idle) return;
+        if (state != MovementState.Idle && state != MovementState.CrouchingIdle) return;
         if (!canRotateBody) return;
 
         currentBodyRotationY.y = cameraRotate.transform.rotation.eulerAngles.y;

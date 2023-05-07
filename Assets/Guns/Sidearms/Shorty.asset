@@ -14,52 +14,53 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   GunID: 4
   Name: 
+  GunModel: {fileID: 1298712114125637990, guid: fc1456374dc984243a838362139fd483, type: 3}
+  Icon: {fileID: 21300000, guid: be988a1e34bfcd54481a26277cfbebf4, type: 3}
   Price: 0
+  MagazineAmmo: 0
   Ammo: 0
-  MaxAmmo: 0
   ReloadTime: 0
   EquipTime: 0
   Type: 1
   Category: 0
-  GunModel: {fileID: 1298712114125637990, guid: fc1456374dc984243a838362139fd483, type: 3}
-  LMB:
-    FireType: 0
-    FireMode: 0
+  BulletPenetration: 0
+  PrimaryFire:
+    FireMode: 2
+    FireType: 3
     FireDelay: 0
-    AmmoLoss: 0
-    LegDamage: 0
-    BodyDamage: 0
-    HeadDamage: 0
-    DamageDrop: 0
-    Recoil: 0
-    Bloom: 0
-  RMB:
-    Type: 0
-    Scope:
-      Magnification: 0
-      ScopeType: 0
-      MoveSpeedModifier: 0
-      BloomModifier: 0
-      RecoilModifier: 0
-    Fire:
-      FireType: 0
-      FireMode: 0
-      FireDelay: 0
-      AmmoLoss: 0
-      LegDamage: 0
-      BodyDamage: 0
-      HeadDamage: 0
-      DamageDrop: 0
-      Recoil: 0
-      Bloom: 0
+    BurstDelay: 0
+    BulletsPerFire: 6
+  HasSecondaryFire: 0
+  SecondaryFire:
+    FireMode: 0
+    FireType: 0
+    ZoomType: 0
+    Zoom:
+      Amount: 0
+      AmountMultiplier: 0
+    FireDelay: 0
+    BurstDelay: 0
+    BulletsPerFire: 0
+  Damages: []
   Stats:
     FireRate: 0
-    HeadDamageShort: 0
-    HeadDamageLong: 0
-    BodyDamageShort: 0
-    BodyDamageLong: 0
-    LegsDamageShort: 0
-    LegsDamageLong: 0
+  GunRecoil:
+    RecoilX: 0
+    RecoilY: 0
+    RecoilZ: 0
+    AimRecoilX: 0
+    AimRecoilY: 0
+    AimRecoilZ: 0
   GunTransform:
     FirstPersonGunPosition: {x: 0, y: 0, z: 0}
     FirstPersonGunRotation: {x: 0, y: 0, z: 0}
+    ThirdPersonGunPosition: {x: 0, y: 0, z: 0}
+    ThirdPersonGunRotation: {x: 0, y: 0, z: 0}
+    RightHandTargetPosition: {x: 0, y: 0, z: 0}
+    RightHandTargetRotation: {x: 0, y: 0, z: 0}
+    RightHandHintPosition: {x: 0, y: 0, z: 0}
+    RightHandHintRotation: {x: 0, y: 0, z: 0}
+    LeftHandTargetPosition: {x: 0, y: 0, z: 0}
+    LeftHandTargetRotation: {x: 0, y: 0, z: 0}
+    LeftHandHintPosition: {x: 0, y: 0, z: 0}
+    LeftHandHintRotation: {x: 0, y: 0, z: 0}

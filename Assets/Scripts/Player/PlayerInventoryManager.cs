@@ -169,6 +169,7 @@ public class PlayerInventoryManager : NetworkBehaviour
         playerShootingManager.StopAllCoroutines();
         playerShootingManager.CanShoot = true;
         playerShootingManager.Reloading = false;
+        playerShootingManager.GunHeath = 0;
         switch (item)
         {
             case Item.Primary:
