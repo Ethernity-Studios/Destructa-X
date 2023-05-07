@@ -164,8 +164,7 @@ public class PlayerMovement : NetworkBehaviour
         if (playerManager.IsDead) return;
         if (playerManager.PlayerState is PlayerState.Planting or PlayerState.Defusing) return;
 
-        grounded = Physics.Raycast(origin: transform.position + new Vector3(0, 1, 0), direction: Vector3.down,
-            maxDistance: 1.2f, layerMask: groundMask);
+        grounded = Physics.Raycast(origin: transform.position + new Vector3(0, 1, 0), direction: Vector3.down, maxDistance: 1.2f, layerMask: groundMask);
 
         speedControl();
         movePlayer();

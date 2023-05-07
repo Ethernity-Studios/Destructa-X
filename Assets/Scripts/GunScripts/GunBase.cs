@@ -10,7 +10,7 @@ public class PrimaryFire
     public float FireDelay;
     public float BurstDelay;
 
-    public float BulletsPerFire;
+    public int BulletsPerFire;
 }
 
 [Serializable]
@@ -25,7 +25,7 @@ public class SecondaryFire
     public float FireDelay;
     public float BurstDelay;
 
-    public float BulletsPerFire;
+    public int BulletsPerFire;
 
 }
 

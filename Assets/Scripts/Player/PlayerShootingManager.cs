@@ -79,11 +79,11 @@ public class PlayerShootingManager : NetworkBehaviour
         {
             if (gun.PrimaryFire.FireMode == FireMode.Manual && playerInput.PlayerShoot.Primary.triggered)
             {
-                Shoot();
+                Shoot(Side.Left);
             }
             else if (gun.PrimaryFire.FireMode == FireMode.Automatic && playerInput.PlayerShoot.Primary.IsPressed())
             {
-                Shoot();
+                Shoot(Side.Left);
                 isShooting = true;
             }
             else isShooting = false;
@@ -136,16 +136,54 @@ public class PlayerShootingManager : NetworkBehaviour
         uiManager.MagazineText.text = GunInstance.Magazine.ToString();
     }
 
-    private void Shoot()
+    private void Shoot(Side buttonPressed)
     {
         CanShoot = false;
         StartCoroutine(DelayFire());
         GunInstance.Magazine--;
         UpdateUIAmmo();
         penetrationAmount = playerInventory.EquippedGun.BulletPenetration;
-        CheckPenetration(cameraHolder.position);
         recoilFire(playerInventory.EquippedGun);
         if (GunHeath < 30) GunHeath+= 2;
+
+        Gun gun = playerInventory.EquippedGun;
+
+        switch (gun.PrimaryFire.FireType)
+        {
+            case FireType.Single:
+                
+                break;
+            case FireType.Burst:
+                
+                break;
+            case FireType.Multiple:
+                
+                break;
+        }
+
+        switch (buttonPressed)
+        {
+            case Side.Left:
+            {
+                for (int i = 0; i < gun.PrimaryFire.BulletsPerFire; i++)
+                {
+                    CheckPenetration(cameraHolder.position);
+                }
+
+                break;
+            }
+            case Side.Right:
+            {
+                for (int i = 0; i < gun.SecondaryFire.BulletsPerFire; i++)
+                {
+                    CheckPenetration(cameraHolder.position);
+                }
+
+                break;
+            }
+        }
+        
+        
     }
 
     private Vector3 currentRotation;
@@ -195,15 +233,16 @@ public class PlayerShootingManager : NetworkBehaviour
 
     private void CheckPenetration(Vector3 originPosition)
     {
-        int i = 0;
+        int penIndex = 0;
+
         while (true)
         {
             Vector3 direction;
-            if (i == 0)
+            if (penIndex == 0)
             {
                 bloomAmount = GunHeath + BloomModifier;
                 if (bloomAmount < 0) bloomAmount = 0;
-                i++;
+                penIndex++;
                 Vector3 bloomDirection = cameraHolder.position + cameraHolder.forward * 1000f;
                 bloomDirection += Random.Range(-bloomAmount, bloomAmount) * cameraHolder.up;
                 bloomDirection += Random.Range(-bloomAmount, bloomAmount) * cameraHolder.right;
@@ -216,7 +255,7 @@ public class PlayerShootingManager : NetworkBehaviour
                 direction = cameraHolder.forward;
             }
 
-            i++;
+            penIndex++;
             Ray ray = new(originPosition, direction);
             if (Physics.Raycast(originPosition, direction, out RaycastHit hit, Mathf.Infinity, layerMask: mask))
             {
@@ -287,6 +326,7 @@ public class PlayerShootingManager : NetworkBehaviour
             break;
         }
     }
+    
 
 
     Body GetBody(GameObject hit) =>
@@ -336,8 +376,7 @@ public class PlayerShootingManager : NetworkBehaviour
     [Command]
     void CmdInstantiateImpactDecal(bool canPenetrate, Vector3 position, Vector3 rotation)
     {
-        GameObject bulletImpact =
-            Instantiate(canPenetrate ? BulletImpactDecalPenetrable : BulletImpactDecalNotPenetrable);
+        GameObject bulletImpact = Instantiate(canPenetrate ? BulletImpactDecalPenetrable : BulletImpactDecalNotPenetrable);
         NetworkServer.Spawn(bulletImpact);
         RpcInstantiateImpactDecal(bulletImpact, position, rotation);
     }
