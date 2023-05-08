@@ -30,17 +30,20 @@ MonoBehaviour:
     FireDelay: 0.1
     BurstDelay: 0
     BulletsPerFire: 1
+    Bloom: 0
   HasSecondaryFire: 1
   SecondaryFire:
     FireMode: 2
     FireType: 3
     ZoomType: 0
     Zoom:
-      Amount: 0
-      AmountMultiplier: 0
+      FirstZoomFOV: 0
+      SecondZoomFOV: 0
+      ScopeImg: {fileID: 0}
     FireDelay: 0.5
     BurstDelay: 0
-    BulletsPerFire: 1
+    BulletsPerFire: 3
+    Bloom: 30
   Damages:
   - MinDistance: 0
     MaxDistance: 30

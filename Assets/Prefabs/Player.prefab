@@ -2838,8 +2838,16 @@ MonoBehaviour:
   BulletImpactDecalPenetrable: {fileID: 6870612456802620677, guid: dd39f28f1225a0543a5956a175d881a2, type: 3}
   BulletImpactDecalNotPenetrable: {fileID: 3127634398550035562, guid: e77031b087ca48f4fbe92710113ef8f9, type: 3}
   isAiming: 0
-  gunHeath: 0
+  isShooting: 0
+  GunHeath: 0
+  BloomModifier: 0
   heathDecreaseTime: 0.25
+  targetFOV: 80
+  targetZoomLayerWeight: 0
+  zoomLayerWeightSmoothness: 0.125
+  FOVsmoothness: 0.125
+  ZoomState: 0
+  anim: {fileID: 5568581631737819458}
   snappiness: 6
   returnSpeed: 2
   cameraRecoil: {fileID: 0}

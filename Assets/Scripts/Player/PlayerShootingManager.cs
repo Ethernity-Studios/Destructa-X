@@ -30,6 +30,20 @@ public class PlayerShootingManager : NetworkBehaviour
     public float BloomModifier;
     [SerializeField] private float heathDecreaseTime;
 
+    public IEnumerator BurstShootCoroutine;
+    public IEnumerator SetGunScopeCoroutine;
+
+    [SerializeField] private float targetFOV = 80;
+    [SerializeField] private float targetZoomLayerWeight;
+    private float zoomLayerWeight;
+    [SerializeField] private float zoomLayerWeightSmoothness;
+    [SerializeField] private float FOVsmoothness;
+
+    [SerializeField] public int ZoomState;
+
+    private Camera mainCamera;
+    [SerializeField] private Animator anim;
+
     private void Awake()
     {
         playerInput = new PlayerInput();
@@ -39,9 +53,7 @@ public class PlayerShootingManager : NetworkBehaviour
         uiManager = FindObjectOfType<UIManager>();
         playerEconomyManager = GetComponent<PlayerEconomyManager>();
         playerCombatReport = GetComponent<PlayerCombatReport>();
-
-        cameraRecoil = Camera.main!.transform.gameObject;
-
+        
         if (!isLocalPlayer) return;
 
 
@@ -61,6 +73,12 @@ public class PlayerShootingManager : NetworkBehaviour
         playerInput.PlayerShoot.Disable();
     }
 
+    private void Start()
+    {
+        if (!isLocalPlayer) return;
+        mainCamera = Camera.main; 
+        cameraRecoil = mainCamera!.transform.gameObject;
+    }
 
     void Update()
     {
@@ -68,12 +86,17 @@ public class PlayerShootingManager : NetworkBehaviour
         Debug.DrawRay(cameraHolder.position, transform.forward + cameraHolder.transform.forward, Color.magenta);
         if (player.IsDead) return;
         if (!isLocalPlayer) return;
+        Gun gun = playerInventory.EquippedGun;
         recoil();
         decreaseGunHeath();
+        mainCamera.fieldOfView = Mathf.Lerp(mainCamera.fieldOfView, targetFOV, FOVsmoothness);
+        zoomLayerWeight = Mathf.Lerp(zoomLayerWeight, targetZoomLayerWeight, zoomLayerWeightSmoothness);
+        anim.SetLayerWeight(1, zoomLayerWeight);
+        
         if (GunInstance == null) return;
+        handleZoom(gun);
         if (playerEconomyManager.IsShopOpen) return;
 
-        Gun gun = playerInventory.EquippedGun;
 
         if (gun != null && playerInventory.GunEquipped && CanShoot && GunInstance.Magazine > 0 && !Reloading)
         {
@@ -84,6 +107,15 @@ public class PlayerShootingManager : NetworkBehaviour
             else if (gun.PrimaryFire.FireMode == FireMode.Automatic && playerInput.PlayerShoot.Primary.IsPressed())
             {
                 Shoot(Side.Left);
+                isShooting = true;
+            }
+            else if (gun.HasSecondaryFire && gun.SecondaryFire.FireMode == FireMode.Manual && playerInput.PlayerShoot.Secondary.triggered)
+            {
+                Shoot(Side.Right);
+            }
+            else if (gun.HasSecondaryFire && gun.SecondaryFire.FireMode == FireMode.Automatic && playerInput.PlayerShoot.Secondary.IsPressed() && !isAiming)
+            {
+                Shoot(Side.Right);
                 isShooting = true;
             }
             else isShooting = false;
@@ -99,14 +131,78 @@ public class PlayerShootingManager : NetworkBehaviour
         {
             StartCoroutine(Reload());
         }
-
-        if (gun.HasSecondaryFire && gun.SecondaryFire.ZoomType != ZoomType.None && playerInput.PlayerShoot.Zoom.IsPressed()) isAiming = true;
-        else isAiming = false;
+        
     }
 
-    private IEnumerator DelayFire()
+    void handleZoom(Gun gun)
     {
-        yield return new WaitForSeconds(playerInventory.EquippedGun.PrimaryFire.FireDelay);
+        if (!gun.HasSecondaryFire) return;
+
+        if (ZoomState == 0)
+        {
+            isAiming = false;
+            targetFOV = 80;
+            targetZoomLayerWeight = 0;
+        }
+        
+        switch (gun.SecondaryFire.ZoomType)
+        {
+            case ZoomType.None:
+                break;
+            case ZoomType.Semi when playerInput.PlayerShoot.Secondary.IsPressed():
+                isAiming = true;
+                targetFOV = gun.SecondaryFire.Zoom.FirstZoomFOV;
+                targetZoomLayerWeight = 1;
+                break;
+            case ZoomType.Full when playerInput.PlayerShoot.Secondary.triggered:
+            {
+                isAiming = true;
+                if (gun.SecondaryFire.Zoom.SecondZoomFOV == 0)
+                {
+                    if (ZoomState == 0)
+                    {
+                        ZoomState = 1;
+                        targetFOV = gun.SecondaryFire.Zoom.FirstZoomFOV;
+                        targetZoomLayerWeight = 1;
+                    }
+                }
+                else if (gun.SecondaryFire.Zoom.SecondZoomFOV != 0)
+                {
+                    SetGunScopeCoroutine = SetGunScope(gun);
+                    StartCoroutine(SetGunScopeCoroutine);
+                }
+
+                break;
+            }
+        }
+    }
+
+    IEnumerator SetGunScope(Gun gun)
+    {
+        switch (ZoomState)
+        {
+            case 0:
+                targetFOV = gun.SecondaryFire.Zoom.FirstZoomFOV;
+                ZoomState = 1;
+                yield return new WaitForSeconds(.25f);
+                uiManager.Scope.sprite = gun.SecondaryFire.Zoom.ScopeImg;
+                break;
+            case 1:
+                mainCamera.fieldOfView = gun.SecondaryFire.Zoom.SecondZoomFOV;
+                targetFOV = gun.SecondaryFire.Zoom.SecondZoomFOV;
+                ZoomState = 2;
+                break;
+            case 2:
+                ZoomState = 0;
+                targetFOV = 80;
+                uiManager.Scope.sprite = uiManager.TransparentImage;
+                break;
+        }
+    }
+
+    private IEnumerator DelayFire(float time)
+    {
+        yield return new WaitForSeconds(time);
         CanShoot = true;
     }
 
@@ -139,51 +235,120 @@ public class PlayerShootingManager : NetworkBehaviour
     private void Shoot(Side buttonPressed)
     {
         CanShoot = false;
-        StartCoroutine(DelayFire());
-        GunInstance.Magazine--;
-        UpdateUIAmmo();
+        Debug.Log(buttonPressed);
+
         penetrationAmount = playerInventory.EquippedGun.BulletPenetration;
         recoilFire(playerInventory.EquippedGun);
-        if (GunHeath < 30) GunHeath+= 2;
-
+        if (GunHeath < 30) GunHeath += 2;
         Gun gun = playerInventory.EquippedGun;
-
-        switch (gun.PrimaryFire.FireType)
-        {
-            case FireType.Single:
-                
-                break;
-            case FireType.Burst:
-                
-                break;
-            case FireType.Multiple:
-                
-                break;
-        }
 
         switch (buttonPressed)
         {
             case Side.Left:
             {
-                for (int i = 0; i < gun.PrimaryFire.BulletsPerFire; i++)
+                if (!isAiming)
                 {
-                    CheckPenetration(cameraHolder.position);
+                    Debug.Log("FIRE");
+
+                    switch (gun.PrimaryFire.FireType)
+                    {
+                        case FireType.Single:
+                            CheckPenetration(gun.PrimaryFire.Bloom);
+                            GunInstance.Magazine--;
+                            UpdateUIAmmo();
+                            break;
+                        case FireType.Burst:
+                            BurstShootCoroutine = BurstShoot(gun.PrimaryFire.BulletsPerFire, gun.PrimaryFire.BurstDelay, gun.PrimaryFire.Bloom, gun.PrimaryFire.RemoveBulletsPerFire);
+                            StartCoroutine(BurstShootCoroutine);
+                            break;
+                        case FireType.Multiple:
+                            for (int i = 0; i < gun.PrimaryFire.BulletsPerFire; i++)
+                            {
+                                CheckPenetration(gun.PrimaryFire.Bloom);
+                                GunInstance.Magazine--;
+                                UpdateUIAmmo();
+                            }
+
+                            break;
+                    }
+                    StartCoroutine(DelayFire(gun.PrimaryFire.FireDelay));
+                }
+                else
+                {
+                    Debug.Log("ALT FIRE");
+
+                    switch (gun.SecondaryFire.FireType)
+                    {
+                        case FireType.Single:
+                            CheckPenetration(gun.SecondaryFire.Bloom);
+                            GunInstance.Magazine -= gun.SecondaryFire.RemoveBulletsPerFire;
+                            UpdateUIAmmo();
+                            break;
+                        case FireType.Burst:
+                            BurstShootCoroutine = BurstShoot(gun.SecondaryFire.BulletsPerFire, gun.SecondaryFire.BurstDelay, gun.SecondaryFire.Bloom, gun.SecondaryFire.RemoveBulletsPerFire);
+                            StartCoroutine(BurstShootCoroutine);
+                            break;
+                        case FireType.Multiple:
+                            for (int i = 0; i < gun.SecondaryFire.BulletsPerFire; i++)
+                            {
+                                CheckPenetration(gun.SecondaryFire.Bloom);
+                            }
+
+                            GunInstance.Magazine -= gun.SecondaryFire.RemoveBulletsPerFire;
+                            UpdateUIAmmo();
+
+                            break;
+                    }
+                    StartCoroutine(DelayFire(gun.SecondaryFire.FireDelay));
                 }
 
+                
                 break;
             }
-            case Side.Right:
+            case Side.Right when !isAiming:
             {
-                for (int i = 0; i < gun.SecondaryFire.BulletsPerFire; i++)
+                Debug.Log("RIGHT CLICK");
+
+                if (!gun.HasSecondaryFire) return;
+                switch (gun.SecondaryFire.FireType)
                 {
-                    CheckPenetration(cameraHolder.position);
+                    case FireType.Single:
+                        CheckPenetration(gun.SecondaryFire.Bloom);
+                        GunInstance.Magazine -= gun.SecondaryFire.RemoveBulletsPerFire;
+                        UpdateUIAmmo();
+                        break;
+                    case FireType.Burst:
+                        BurstShootCoroutine = BurstShoot(gun.SecondaryFire.BulletsPerFire, gun.SecondaryFire.BurstDelay, gun.SecondaryFire.Bloom, gun.SecondaryFire.RemoveBulletsPerFire);
+                        StartCoroutine(BurstShootCoroutine);
+                        break;
+                    case FireType.Multiple:
+                        for (int i = 0; i < gun.SecondaryFire.BulletsPerFire; i++)
+                        {
+                            CheckPenetration(gun.SecondaryFire.Bloom);
+                        }
+
+                        GunInstance.Magazine -= gun.SecondaryFire.RemoveBulletsPerFire;
+                        UpdateUIAmmo();
+
+                        break;
                 }
 
+                StartCoroutine(DelayFire(gun.SecondaryFire.FireDelay));
                 break;
             }
         }
-        
-        
+    }
+
+    IEnumerator BurstShoot(int j, float burstDelay, float bloom, int bulletsToRemove)
+    {
+        for (int i = 0; i < j; i++)
+        {
+            if (GunInstance.Magazine <= 0) break;
+            CheckPenetration(bloom);
+            GunInstance.Magazine -= bulletsToRemove;
+            UpdateUIAmmo();
+            yield return new WaitForSeconds(burstDelay);
+        }
     }
 
     private Vector3 currentRotation;
@@ -220,7 +385,7 @@ public class PlayerShootingManager : NetworkBehaviour
         t += Time.deltaTime;
         if (!(t >= heathDecreaseTime) || GunHeath <= 0 || isShooting) return;
         t = 0;
-        GunHeath--;
+        GunHeath-= 3;
     }
 
     [SerializeField] LayerMask mask;
@@ -231,26 +396,27 @@ public class PlayerShootingManager : NetworkBehaviour
     bool canPenetrate;
     float penetrationAmount;
 
-    private void CheckPenetration(Vector3 originPosition)
+    private void CheckPenetration(float bloom)
     {
         int penIndex = 0;
+        Vector3 originPosition = cameraHolder.position;
 
         while (true)
         {
             Vector3 direction;
-            if (penIndex == 0)
+            if (penIndex == 0) //First pen check
             {
-                bloomAmount = GunHeath + BloomModifier;
+                bloomAmount = GunHeath * 3 + BloomModifier + bloom;
                 if (bloomAmount < 0) bloomAmount = 0;
                 penIndex++;
                 Vector3 bloomDirection = cameraHolder.position + cameraHolder.forward * 1000f;
-                bloomDirection += Random.Range(-bloomAmount, bloomAmount) * cameraHolder.up;
-                bloomDirection += Random.Range(-bloomAmount, bloomAmount) * cameraHolder.right;
+                bloomDirection += Random.Range(-bloomAmount, bloomAmount) * cameraHolder.up; //Y
+                bloomDirection += Random.Range(-bloomAmount, bloomAmount) * cameraHolder.right; //X
                 bloomDirection -= cameraHolder.position;
                 bloomDirection.Normalize();
                 direction = bloomDirection;
             }
-            else
+            else //Pen check
             {
                 direction = cameraHolder.forward;
             }
@@ -326,7 +492,6 @@ public class PlayerShootingManager : NetworkBehaviour
             break;
         }
     }
-    
 
 
     Body GetBody(GameObject hit) =>

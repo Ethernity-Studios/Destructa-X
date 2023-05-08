@@ -11,6 +11,8 @@ public class PrimaryFire
     public float BurstDelay;
 
     public int BulletsPerFire;
+    public int RemoveBulletsPerFire;
+    public float Bloom;
 }
 
 [Serializable]
@@ -26,6 +28,8 @@ public class SecondaryFire
     public float BurstDelay;
 
     public int BulletsPerFire;
+    public int RemoveBulletsPerFire;
+    public float Bloom;
 
 }
 
@@ -56,8 +60,10 @@ public enum ZoomType
 [Serializable]
 public class Zoom
 {
-    public int Amount;
-    public int AmountMultiplier;
+    public int FirstZoomFOV;
+    public int SecondZoomFOV;
+
+    public Sprite ScopeImg;
 }
 
 [Serializable]

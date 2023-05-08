@@ -392,15 +392,6 @@ public partial class @PlayerInput: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
-                },
-                {
-                    ""name"": ""Zoom"",
-                    ""type"": ""Button"",
-                    ""id"": ""588cd684-357b-48b0-88a5-2095cb102ad7"",
-                    ""expectedControlType"": ""Button"",
-                    ""processors"": """",
-                    ""interactions"": """",
-                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -434,17 +425,6 @@ public partial class @PlayerInput: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""groups"": """",
                     ""action"": ""Reload"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""be1babba-3491-483d-9849-14b7edfd8c64"",
-                    ""path"": ""<Mouse>/rightButton"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""Zoom"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -545,7 +525,6 @@ public partial class @PlayerInput: IInputActionCollection2, IDisposable
         m_PlayerShoot_Primary = m_PlayerShoot.FindAction("Primary", throwIfNotFound: true);
         m_PlayerShoot_Secondary = m_PlayerShoot.FindAction("Secondary", throwIfNotFound: true);
         m_PlayerShoot_Reload = m_PlayerShoot.FindAction("Reload", throwIfNotFound: true);
-        m_PlayerShoot_Zoom = m_PlayerShoot.FindAction("Zoom", throwIfNotFound: true);
         // PlayerUI
         m_PlayerUI = asset.FindActionMap("PlayerUI", throwIfNotFound: true);
         m_PlayerUI_Scoreboard = m_PlayerUI.FindAction("Scoreboard", throwIfNotFound: true);
@@ -834,7 +813,6 @@ public partial class @PlayerInput: IInputActionCollection2, IDisposable
     private readonly InputAction m_PlayerShoot_Primary;
     private readonly InputAction m_PlayerShoot_Secondary;
     private readonly InputAction m_PlayerShoot_Reload;
-    private readonly InputAction m_PlayerShoot_Zoom;
     public struct PlayerShootActions
     {
         private @PlayerInput m_Wrapper;
@@ -842,7 +820,6 @@ public partial class @PlayerInput: IInputActionCollection2, IDisposable
         public InputAction @Primary => m_Wrapper.m_PlayerShoot_Primary;
         public InputAction @Secondary => m_Wrapper.m_PlayerShoot_Secondary;
         public InputAction @Reload => m_Wrapper.m_PlayerShoot_Reload;
-        public InputAction @Zoom => m_Wrapper.m_PlayerShoot_Zoom;
         public InputActionMap Get() { return m_Wrapper.m_PlayerShoot; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -861,9 +838,6 @@ public partial class @PlayerInput: IInputActionCollection2, IDisposable
             @Reload.started += instance.OnReload;
             @Reload.performed += instance.OnReload;
             @Reload.canceled += instance.OnReload;
-            @Zoom.started += instance.OnZoom;
-            @Zoom.performed += instance.OnZoom;
-            @Zoom.canceled += instance.OnZoom;
         }
 
         private void UnregisterCallbacks(IPlayerShootActions instance)
@@ -877,9 +851,6 @@ public partial class @PlayerInput: IInputActionCollection2, IDisposable
             @Reload.started -= instance.OnReload;
             @Reload.performed -= instance.OnReload;
             @Reload.canceled -= instance.OnReload;
-            @Zoom.started -= instance.OnZoom;
-            @Zoom.performed -= instance.OnZoom;
-            @Zoom.canceled -= instance.OnZoom;
         }
 
         public void RemoveCallbacks(IPlayerShootActions instance)
@@ -1025,7 +996,6 @@ public partial class @PlayerInput: IInputActionCollection2, IDisposable
         void OnPrimary(InputAction.CallbackContext context);
         void OnSecondary(InputAction.CallbackContext context);
         void OnReload(InputAction.CallbackContext context);
-        void OnZoom(InputAction.CallbackContext context);
     }
     public interface IPlayerUIActions
     {

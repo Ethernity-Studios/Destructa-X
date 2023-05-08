@@ -26,11 +26,14 @@ public class UIManager : MonoBehaviour
     public TMP_Text Money;
     public Image AgentIcon;
     public GameObject Bomb;
-[Space(25)]
+    [Space(25)]
     public TMP_Text UltimateBindKey;
     public Image UltimateIcon;
     [SerializeField] private GameObject UltimatePoint;
     public List<Image> UltimatePoints;
+    [Space(25)] 
+    public Image Scope;
+    public Image Crosshair;
 
     [Header("Spectating")]
     public GameObject SpectatingUI;
