@@ -4679,9 +4679,6 @@ MonoBehaviour:
   - {fileID: 3138579794541000320}
   - {fileID: 917681669305526630}
   - {fileID: 4472902044996050977}
-  HitboxMask:
-    serializedVersion: 2
-    m_Bits: 4096
   snappiness: 6
   returnSpeed: 2
   cameraRecoil: {fileID: 0}

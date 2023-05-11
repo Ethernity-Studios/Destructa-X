@@ -6,6 +6,7 @@ public enum Toughness
 }
 public class MaterialToughness : MonoBehaviour
 {
+    public Toughness Toughness;
     private void Awake()
     {
         ToughnessAmount = Toughness switch
@@ -21,5 +22,4 @@ public class MaterialToughness : MonoBehaviour
         };
     }
     public int ToughnessAmount;
-    public Toughness Toughness;
 }

@@ -63,7 +63,7 @@ VisualEffect:
       m_Array:
       - m_Value: 7
         m_Name: DecalLifetime
-        m_Overridden: 0
+        m_Overridden: 1
     m_Matrix4x4f:
       m_Array: []
     m_AnimationCurve:
@@ -116,7 +116,7 @@ VFXRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingOrder: -17
 --- !u!114 &-7293832682251785741
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -2,7 +2,6 @@ using Mirror;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
 using Random = UnityEngine.Random;
 
 public enum BodyType
@@ -164,9 +163,9 @@ public class PlayerShootingManager : NetworkBehaviour
         targetZoomLayerWeight = 0;
         ZoomState = 0;
 
-        if(SetGunScopeCoroutine !=null) StopCoroutine(SetGunScopeCoroutine);
-        if(ReloadCoroutine !=null) StopCoroutine(ReloadCoroutine);
-        if(BurstShootCoroutine !=null) StopCoroutine(BurstShootCoroutine);
+        if (SetGunScopeCoroutine != null) StopCoroutine(SetGunScopeCoroutine);
+        if (ReloadCoroutine != null) StopCoroutine(ReloadCoroutine);
+        if (BurstShootCoroutine != null) StopCoroutine(BurstShootCoroutine);
     }
 
     void handleZoom(Gun gun)
@@ -270,7 +269,6 @@ public class PlayerShootingManager : NetworkBehaviour
     private void Shoot(Side buttonPressed)
     {
         CanShoot = false;
-        Debug.Log(buttonPressed);
 
         penetrationAmount = playerInventory.EquippedGun.BulletPenetration;
         recoilFire(playerInventory.EquippedGun);
@@ -283,8 +281,6 @@ public class PlayerShootingManager : NetworkBehaviour
             {
                 if (!isAiming)
                 {
-                    Debug.Log("FIRE");
-
                     switch (gun.PrimaryFire.FireType)
                     {
                         case FireType.Single:
@@ -311,8 +307,6 @@ public class PlayerShootingManager : NetworkBehaviour
                 }
                 else
                 {
-                    Debug.Log("ALT FIRE");
-
                     switch (gun.SecondaryFire.FireType)
                     {
                         case FireType.Single:
@@ -344,8 +338,6 @@ public class PlayerShootingManager : NetworkBehaviour
             }
             case Side.Right when !isAiming:
             {
-                Debug.Log("RIGHT CLICK");
-
                 if (!gun.HasSecondaryFire) return;
                 switch (gun.SecondaryFire.FireType)
                 {
@@ -437,6 +429,7 @@ public class PlayerShootingManager : NetworkBehaviour
     {
         int penIndex = 0;
         Vector3 originPosition = cameraHolder.position;
+        bool firstCheck = true;
 
         while (true)
         {
@@ -458,18 +451,18 @@ public class PlayerShootingManager : NetworkBehaviour
                 direction = cameraHolder.forward;
             }
 
+            Debug.Log("Penetration amount: " + penetrationAmount);
+
             penIndex++;
             Ray ray = new(originPosition, direction);
             if (Physics.Raycast(originPosition, direction, out RaycastHit hit, Mathf.Infinity, layerMask: mask))
             {
-                Debug.Log("Hit: " + hit.collider);
+                Debug.Log(hit.point);
 
                 if (hit.collider.transform.parent != null)
                 {
                     if (hit.collider.TryGetComponent(out Hitbox entity))
                     {
-                        Debug.Log("Getting hitbox component");
-
                         Hitbox hitbox = hit.collider.GetComponent<Hitbox>();
                         Player hitPlayer = hitbox.Player;
                         if (hitPlayer.PlayerTeam != player.PlayerTeam && !hitPlayer.IsDead)
@@ -500,33 +493,31 @@ public class PlayerShootingManager : NetworkBehaviour
                 if (hit.collider.Raycast(penRay, out RaycastHit penHit, penetrationAmount))
                 {
                     penetrationPoint = penHit.point;
-                    endPoint = transform.position + transform.forward * 1000;
+                    endPoint = transform.position + cameraHolder.forward * 1000;
                     if (hit.collider.transform.TryGetComponent(out MaterialToughness materialToughness))
                     {
                         CmdInstantiateImpactDecal(true, hit.point, -hit.normal); // first point
                         CmdInstantiateImpactDecal(true, penHit.point, -penHit.normal); //second point
 
-
                         penetrationAmount -= Vector3.Distance((Vector3)penetrationPoint, hit.point);
                         penetrationAmount -= materialToughness.ToughnessAmount;
                         originPosition = hit.point;
+                        firstCheck = false;
                         continue;
                     }
-                    else
-                    {
-                        CmdInstantiateImpactDecal(false, hit.point, -hit.normal);
-                    }
+
+                    CmdInstantiateImpactDecal(false, hit.point, -hit.normal);
                 }
                 else
                 {
-                    CmdInstantiateImpactDecal(false, hit.point, -hit.normal);
+                    if(firstCheck) CmdInstantiateImpactDecal(false, hit.point, -hit.normal);
                     endPoint = impactPoint.Value + ray.direction * penetrationAmount;
                     penetrationPoint = endPoint;
                 }
             }
             else
             {
-                endPoint = transform.position + transform.forward * 1000;
+                endPoint = transform.position + cameraHolder.forward * 1000;
                 penetrationPoint = null;
                 impactPoint = null;
             }
@@ -634,7 +625,6 @@ public class PlayerShootingManager : NetworkBehaviour
                 break;
         }
 
-
         //Debug.Log("Bullet damage before: " + BulletDamage);
         //BulletDamage -= (int)penetrationAmount*2; //TODO need better damage calculation
         //Debug.Log("Bullet damage after: " + BulletDamage);
@@ -644,6 +634,8 @@ public class PlayerShootingManager : NetworkBehaviour
     [Command]
     void CmdInstantiateImpactDecal(bool canPenetrate, Vector3 position, Vector3 rotation)
     {
+        Debug.Log("Can penetrate: " + canPenetrate);
+
         GameObject bulletImpact = Instantiate(canPenetrate ? BulletImpactDecalPenetrable : BulletImpactDecalNotPenetrable);
         NetworkServer.Spawn(bulletImpact);
         RpcInstantiateImpactDecal(bulletImpact, position, rotation);
