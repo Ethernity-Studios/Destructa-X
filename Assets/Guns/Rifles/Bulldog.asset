@@ -22,27 +22,29 @@ MonoBehaviour:
   ReloadTime: 2.5
   EquipTime: 1
   Type: 0
-  Category: 0
+  Category: 1
   BulletPenetration: 30
   PrimaryFire:
     FireMode: 1
     FireType: 1
     FireDelay: 0.1
     BurstDelay: 0
-    BulletsPerFire: 12
+    BulletsPerFire: 1
+    RemoveBulletsPerFire: 1
     Bloom: 0
   HasSecondaryFire: 1
   SecondaryFire:
-    FireMode: 0
-    FireType: 0
-    ZoomType: 2
+    FireMode: 1
+    FireType: 2
+    ZoomType: 1
     Zoom:
       FirstZoomFOV: 65
-      SecondZoomFOV: 50
+      SecondZoomFOV: 0
       ScopeImg: {fileID: 21300000, guid: b47edd76c59dbe9439ad342c60769676, type: 3}
-    FireDelay: 0
-    BurstDelay: 0
-    BulletsPerFire: 0
+    FireDelay: 0.4
+    BurstDelay: 0.1
+    BulletsPerFire: 3
+    RemoveBulletsPerFire: 3
     Bloom: 0
   Damages:
   - MinDistance: 0

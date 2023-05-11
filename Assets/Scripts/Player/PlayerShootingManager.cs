@@ -1,7 +1,16 @@
 using Mirror;
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using Random = UnityEngine.Random;
+
+public enum BodyType
+{
+    Head,
+    Body,
+    Legs
+}
 
 public class PlayerShootingManager : NetworkBehaviour
 {
@@ -32,6 +41,7 @@ public class PlayerShootingManager : NetworkBehaviour
 
     public IEnumerator BurstShootCoroutine;
     public IEnumerator SetGunScopeCoroutine;
+    public IEnumerator ReloadCoroutine;
 
     [SerializeField] private float targetFOV = 80;
     [SerializeField] private float targetZoomLayerWeight;
@@ -44,6 +54,8 @@ public class PlayerShootingManager : NetworkBehaviour
     private Camera mainCamera;
     [SerializeField] private Animator anim;
 
+    [SerializeField] private List<GameObject> Hitboxes;
+
     private void Awake()
     {
         playerInput = new PlayerInput();
@@ -53,7 +65,7 @@ public class PlayerShootingManager : NetworkBehaviour
         uiManager = FindObjectOfType<UIManager>();
         playerEconomyManager = GetComponent<PlayerEconomyManager>();
         playerCombatReport = GetComponent<PlayerCombatReport>();
-        
+
         if (!isLocalPlayer) return;
 
 
@@ -76,8 +88,13 @@ public class PlayerShootingManager : NetworkBehaviour
     private void Start()
     {
         if (!isLocalPlayer) return;
-        mainCamera = Camera.main; 
+        mainCamera = Camera.main;
         cameraRecoil = mainCamera!.transform.gameObject;
+
+        foreach (var hitbox in Hitboxes)
+        {
+            hitbox.layer = 12;
+        }
     }
 
     void Update()
@@ -92,8 +109,9 @@ public class PlayerShootingManager : NetworkBehaviour
         mainCamera.fieldOfView = Mathf.Lerp(mainCamera.fieldOfView, targetFOV, FOVsmoothness);
         zoomLayerWeight = Mathf.Lerp(zoomLayerWeight, targetZoomLayerWeight, zoomLayerWeightSmoothness);
         anim.SetLayerWeight(1, zoomLayerWeight);
-        
+
         if (GunInstance == null) return;
+        if (gun == null) return;
         handleZoom(gun);
         if (playerEconomyManager.IsShopOpen) return;
 
@@ -124,14 +142,31 @@ public class PlayerShootingManager : NetworkBehaviour
         if (gun == null) return;
         if (GunInstance.Magazine == 0 && GunInstance.Ammo > 0 && !Reloading)
         {
-            StartCoroutine(Reload());
+            ReloadCoroutine = Reload();
+            StartCoroutine(ReloadCoroutine);
         }
 
         if (GunInstance.Magazine != gun.MagazineAmmo && playerInput.PlayerShoot.Reload.triggered && GunInstance.Ammo > 0 && !Reloading)
         {
-            StartCoroutine(Reload());
+            ReloadCoroutine = Reload();
+            StartCoroutine(ReloadCoroutine);
         }
-        
+    }
+
+    public void SetDefaultStates()
+    {
+        CanShoot = true;
+        Reloading = false;
+        isAiming = false;
+        isShooting = false;
+        GunHeath = 0;
+        targetFOV = 80;
+        targetZoomLayerWeight = 0;
+        ZoomState = 0;
+
+        if(SetGunScopeCoroutine !=null) StopCoroutine(SetGunScopeCoroutine);
+        if(ReloadCoroutine !=null) StopCoroutine(ReloadCoroutine);
+        if(BurstShootCoroutine !=null) StopCoroutine(BurstShootCoroutine);
     }
 
     void handleZoom(Gun gun)
@@ -144,7 +179,7 @@ public class PlayerShootingManager : NetworkBehaviour
             targetFOV = 80;
             targetZoomLayerWeight = 0;
         }
-        
+
         switch (gun.SecondaryFire.ZoomType)
         {
             case ZoomType.None:
@@ -271,6 +306,7 @@ public class PlayerShootingManager : NetworkBehaviour
 
                             break;
                     }
+
                     StartCoroutine(DelayFire(gun.PrimaryFire.FireDelay));
                 }
                 else
@@ -299,10 +335,11 @@ public class PlayerShootingManager : NetworkBehaviour
 
                             break;
                     }
+
                     StartCoroutine(DelayFire(gun.SecondaryFire.FireDelay));
                 }
 
-                
+
                 break;
             }
             case Side.Right when !isAiming:
@@ -385,7 +422,7 @@ public class PlayerShootingManager : NetworkBehaviour
         t += Time.deltaTime;
         if (!(t >= heathDecreaseTime) || GunHeath <= 0 || isShooting) return;
         t = 0;
-        GunHeath-= 3;
+        GunHeath -= 3;
     }
 
     [SerializeField] LayerMask mask;
@@ -425,15 +462,20 @@ public class PlayerShootingManager : NetworkBehaviour
             Ray ray = new(originPosition, direction);
             if (Physics.Raycast(originPosition, direction, out RaycastHit hit, Mathf.Infinity, layerMask: mask))
             {
+                Debug.Log("Hit: " + hit.collider);
+
                 if (hit.collider.transform.parent != null)
                 {
-                    if (hit.collider.transform.parent.TryGetComponent(out IDamageable entity))
+                    if (hit.collider.TryGetComponent(out Hitbox entity))
                     {
-                        Player hitPlayer = hit.collider.transform.parent.gameObject.GetComponent<Player>();
+                        Debug.Log("Getting hitbox component");
+
+                        Hitbox hitbox = hit.collider.GetComponent<Hitbox>();
+                        Player hitPlayer = hitbox.Player;
                         if (hitPlayer.PlayerTeam != player.PlayerTeam && !hitPlayer.IsDead)
                         {
                             Body body = GetBody(hit.collider.gameObject);
-                            var damage = calculateDamage(hit.point);
+                            var damage = calculateDamage(hit.point, hitbox.BodyType);
                             CombatReport report = new()
                             {
                                 TargetPlayerId = hitPlayer.netId,
@@ -503,34 +545,95 @@ public class PlayerShootingManager : NetworkBehaviour
             _ => Body.None
         };
 
-    int calculateDamage(Vector3 entityPosition)
+    int calculateDamage(Vector3 entityPosition, BodyType type)
     {
+        Debug.Log("Calculating damage for type: " + type);
+
         Gun gun = playerInventory.EquippedGun;
         float distance = Vector3.Distance(entityPosition, cameraHolder.position);
-        switch (gun.Damages.Count)
+
+        switch (type)
         {
-            case 1:
-            case 2 when distance <= gun.Damages[0].MaxDistance:
-                BulletDamage = gun.Damages[0].BodyDamage;
+            case BodyType.Head:
+                switch (gun.Damages.Count)
+                {
+                    case 1:
+                    case 2 when distance <= gun.Damages[0].MaxDistance:
+                        BulletDamage = gun.Damages[0].HeadDamage;
+                        break;
+                    case 2:
+                    {
+                        if (distance >= gun.Damages[1].MinDistance) BulletDamage = gun.Damages[1].HeadDamage;
+                        break;
+                    }
+                    case 3 when distance <= gun.Damages[0].MaxDistance:
+                        BulletDamage = gun.Damages[0].HeadDamage;
+                        break;
+                    case 3 when (distance >= gun.Damages[1].MinDistance && distance <= gun.Damages[1].MaxDistance):
+                        BulletDamage = gun.Damages[1].HeadDamage;
+                        break;
+                    case 3:
+                    {
+                        if (distance >= gun.Damages[2].MinDistance) BulletDamage = gun.Damages[2].HeadDamage;
+                        break;
+                    }
+                }
+
                 break;
-            case 2:
-            {
-                if (distance >= gun.Damages[1].MinDistance) BulletDamage = gun.Damages[1].BodyDamage;
+            case BodyType.Body:
+                switch (gun.Damages.Count)
+                {
+                    case 1:
+                    case 2 when distance <= gun.Damages[0].MaxDistance:
+                        BulletDamage = gun.Damages[0].BodyDamage;
+                        break;
+                    case 2:
+                    {
+                        if (distance >= gun.Damages[1].MinDistance) BulletDamage = gun.Damages[1].BodyDamage;
+                        break;
+                    }
+                    case 3 when distance <= gun.Damages[0].MaxDistance:
+                        BulletDamage = gun.Damages[0].BodyDamage;
+                        break;
+                    case 3 when (distance >= gun.Damages[1].MinDistance && distance <= gun.Damages[1].MaxDistance):
+                        BulletDamage = gun.Damages[1].BodyDamage;
+                        break;
+                    case 3:
+                    {
+                        if (distance >= gun.Damages[2].MinDistance) BulletDamage = gun.Damages[2].BodyDamage;
+                        break;
+                    }
+                }
+
                 break;
-            }
-            case 3 when distance <= gun.Damages[0].MaxDistance:
-                BulletDamage = gun.Damages[0].BodyDamage;
+            case BodyType.Legs:
+                switch (gun.Damages.Count)
+                {
+                    case 1:
+                    case 2 when distance <= gun.Damages[0].MaxDistance:
+                        BulletDamage = gun.Damages[0].LegsDamage;
+                        break;
+                    case 2:
+                    {
+                        if (distance >= gun.Damages[1].MinDistance) BulletDamage = gun.Damages[1].LegsDamage;
+                        break;
+                    }
+                    case 3 when distance <= gun.Damages[0].MaxDistance:
+                        BulletDamage = gun.Damages[0].LegsDamage;
+                        break;
+                    case 3 when (distance >= gun.Damages[1].MinDistance && distance <= gun.Damages[1].MaxDistance):
+                        BulletDamage = gun.Damages[1].LegsDamage;
+                        break;
+                    case 3:
+                    {
+                        if (distance >= gun.Damages[2].MinDistance) BulletDamage = gun.Damages[2].LegsDamage;
+                        break;
+                    }
+                }
+
                 break;
-            case 3 when
-                (distance >= gun.Damages[1].MinDistance && distance <= gun.Damages[1].MaxDistance):
-                BulletDamage = gun.Damages[1].BodyDamage;
-                break;
-            case 3:
-            {
-                if (distance >= gun.Damages[2].MinDistance) BulletDamage = gun.Damages[2].BodyDamage;
-                break;
-            }
         }
+
 
         //Debug.Log("Bullet damage before: " + BulletDamage);
         //BulletDamage -= (int)penetrationAmount*2; //TODO need better damage calculation

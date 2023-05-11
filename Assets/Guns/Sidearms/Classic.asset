@@ -30,6 +30,7 @@ MonoBehaviour:
     FireDelay: 0.1
     BurstDelay: 0
     BulletsPerFire: 1
+    RemoveBulletsPerFire: 0
     Bloom: 0
   HasSecondaryFire: 1
   SecondaryFire:
@@ -43,6 +44,7 @@ MonoBehaviour:
     FireDelay: 0.5
     BurstDelay: 0
     BulletsPerFire: 3
+    RemoveBulletsPerFire: 3
     Bloom: 30
   Damages:
   - MinDistance: 0

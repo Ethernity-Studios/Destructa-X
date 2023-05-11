@@ -137,8 +137,7 @@ public class PlayerInventoryManager : NetworkBehaviour
         if (player.PlayerState is PlayerState.Planting or PlayerState.Defusing or PlayerState.Dead) return;
         StopAllCoroutines();
         CmdToggleEquippedGun(false);
-        playerShootingManager.StopAllCoroutines();
-        playerShootingManager.Reloading = false;
+        playerShootingManager.SetDefaultStates();
         CmdSwitchItem(item);
     }
 
