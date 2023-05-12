@@ -4649,7 +4649,7 @@ MonoBehaviour:
   isShooting: 0
   GunHeath: 0
   BloomModifier: 0
-  heathDecreaseTime: 0.25
+  heathDecreaseTime: 0.125
   targetFOV: 80
   targetZoomLayerWeight: 0
   zoomLayerWeightSmoothness: 0.125

@@ -41,6 +41,7 @@ public class PlayerShootingManager : NetworkBehaviour
     public IEnumerator BurstShootCoroutine;
     public IEnumerator SetGunScopeCoroutine;
     public IEnumerator ReloadCoroutine;
+    public IEnumerator SetIsShootingCoroutine;
 
     [SerializeField] private float targetFOV = 80;
     [SerializeField] private float targetZoomLayerWeight;
@@ -124,7 +125,6 @@ public class PlayerShootingManager : NetworkBehaviour
             else if (gun.PrimaryFire.FireMode == FireMode.Automatic && playerInput.PlayerShoot.Primary.IsPressed())
             {
                 Shoot(Side.Left);
-                isShooting = true;
             }
             else if (gun.HasSecondaryFire && gun.SecondaryFire.FireMode == FireMode.Manual && playerInput.PlayerShoot.Secondary.triggered)
             {
@@ -133,9 +133,7 @@ public class PlayerShootingManager : NetworkBehaviour
             else if (gun.HasSecondaryFire && gun.SecondaryFire.FireMode == FireMode.Automatic && playerInput.PlayerShoot.Secondary.IsPressed() && !isAiming)
             {
                 Shoot(Side.Right);
-                isShooting = true;
             }
-            else isShooting = false;
         }
 
         if (gun == null) return;
@@ -150,6 +148,12 @@ public class PlayerShootingManager : NetworkBehaviour
             ReloadCoroutine = Reload();
             StartCoroutine(ReloadCoroutine);
         }
+    }
+
+    IEnumerator setIsShooting()
+    {
+        yield return new WaitForSeconds(.25f);
+        isShooting = false;
     }
 
     public void SetDefaultStates()
@@ -269,10 +273,13 @@ public class PlayerShootingManager : NetworkBehaviour
     private void Shoot(Side buttonPressed)
     {
         CanShoot = false;
-
+        isShooting = true;
+        if(SetIsShootingCoroutine != null) StopCoroutine(SetIsShootingCoroutine);
+        SetIsShootingCoroutine = setIsShooting();
+        StartCoroutine(SetIsShootingCoroutine);
         penetrationAmount = playerInventory.EquippedGun.BulletPenetration;
         recoilFire(playerInventory.EquippedGun);
-        if (GunHeath < 30) GunHeath += 2;
+        if (GunHeath < 20) GunHeath += 2;
         Gun gun = playerInventory.EquippedGun;
 
         switch (buttonPressed)
@@ -414,7 +421,7 @@ public class PlayerShootingManager : NetworkBehaviour
         t += Time.deltaTime;
         if (!(t >= heathDecreaseTime) || GunHeath <= 0 || isShooting) return;
         t = 0;
-        GunHeath -= 3;
+        GunHeath -= 5;
     }
 
     [SerializeField] LayerMask mask;
@@ -432,9 +439,12 @@ public class PlayerShootingManager : NetworkBehaviour
         bool firstCheck = true;
 
         Vector3 direction = Vector3.zero;
+
+        float penDistance = 0;
+        int penToughness = 0;
+
         while (true)
         {
-            
             if (penIndex == 0) //First pen check
             {
                 bloomAmount = GunHeath * 3 + BloomModifier + bloom;
@@ -447,21 +457,11 @@ public class PlayerShootingManager : NetworkBehaviour
                 bloomDirection.Normalize();
                 direction = bloomDirection;
             }
-            /*else //Pen check
-            {
-                direction = cameraHolder.forward;
-            }*/
-
-            Debug.Log("TESTTTTTT");
-
-
 
             penIndex++;
             Ray ray = new(originPosition, direction);
             if (Physics.Raycast(originPosition, direction, out RaycastHit hit, Mathf.Infinity, layerMask: mask))
             {
-                Debug.Log("Penetration: " + hit.collider);
-                Debug.DrawRay(originPosition, direction, Color.red, 5f);
                 if (hit.collider.transform.parent != null)
                 {
                     if (hit.collider.TryGetComponent(out Hitbox entity))
@@ -471,7 +471,8 @@ public class PlayerShootingManager : NetworkBehaviour
                         if (hitPlayer.PlayerTeam != player.PlayerTeam && !hitPlayer.IsDead)
                         {
                             Body body = GetBody(hit.collider.gameObject);
-                            var damage = calculateDamage(hit.point, hitbox.BodyType);
+
+                            var damage = calculateDamage(hit.point, hitbox.BodyType, penDistance, penToughness);
                             CombatReport report = new()
                             {
                                 TargetPlayerId = hitPlayer.netId,
@@ -491,22 +492,29 @@ public class PlayerShootingManager : NetworkBehaviour
                     }
                 }
 
+                if (hit.collider.TryGetComponent(out MaterialToughness toughness))
+                {
+                    penToughness = toughness.ToughnessAmount;
+                    penetrationAmount -= penetrationAmount - penetrationAmount / toughness.ToughnessAmount;
+                }
+
                 impactPoint = hit.point;
-                //hit.collider.TryGetComponent(out MaterialToughness toughness);
-                //if(toughness != null) penetrationAmount -= toughness.ToughnessAmount;
                 Ray penRay = new(hit.point + ray.direction * penetrationAmount, -ray.direction);
                 if (hit.collider.Raycast(penRay, out RaycastHit penHit, penetrationAmount))
                 {
                     penetrationPoint = penHit.point;
                     endPoint = transform.position + transform.forward * 1000;
-                    if (hit.collider.transform.TryGetComponent(out MaterialToughness materialToughness))
+                    if (hit.collider.transform.TryGetComponent(out MaterialToughness _))
                     {
                         CmdInstantiateImpactDecal(true, hit.point, -hit.normal); // first point
                         CmdInstantiateImpactDecal(true, penHit.point, -penHit.normal); //second point
                         penetrationAmount -= Vector3.Distance((Vector3)penetrationPoint, hit.point);
-                        penetrationAmount -= materialToughness.ToughnessAmount;
                         originPosition = penHit.point;
                         firstCheck = false;
+
+                        penDistance = Vector3.Distance(hit.point, penHit.point);
+
+
                         continue;
                     }
 
@@ -514,11 +522,9 @@ public class PlayerShootingManager : NetworkBehaviour
                 }
                 else
                 {
-                    if(firstCheck) CmdInstantiateImpactDecal(false, hit.point, -hit.normal);
+                    if (firstCheck) CmdInstantiateImpactDecal(false, hit.point, -hit.normal);
                     endPoint = impactPoint.Value + ray.direction * penetrationAmount;
                     penetrationPoint = endPoint;
-                    Debug.Log("No more pen");
-
                 }
             }
             else
@@ -542,10 +548,8 @@ public class PlayerShootingManager : NetworkBehaviour
             _ => Body.None
         };
 
-    int calculateDamage(Vector3 entityPosition, BodyType type)
+    int calculateDamage(Vector3 entityPosition, BodyType type, float penDistance, int matToughness)
     {
-        Debug.Log("Calculating damage for type: " + type);
-
         Gun gun = playerInventory.EquippedGun;
         float distance = Vector3.Distance(entityPosition, cameraHolder.position);
 
@@ -631,8 +635,12 @@ public class PlayerShootingManager : NetworkBehaviour
                 break;
         }
 
+
         Debug.Log("Bullet damage before: " + BulletDamage);
-        if(penetrationAmount > 0) BulletDamage -= (int)penetrationAmount*2; //TODO need better damage calculation
+        Debug.Log("pen dist: " + penDistance + "   mat tough: " + matToughness);
+
+        BulletDamage = Mathf.FloorToInt(BulletDamage - (penDistance * 3) - matToughness);
+        if (BulletDamage <= 0) BulletDamage = 1;
         Debug.Log("Bullet damage after: " + BulletDamage);
         return BulletDamage;
     }
