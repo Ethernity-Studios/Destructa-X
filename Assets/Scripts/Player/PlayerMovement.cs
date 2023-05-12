@@ -82,7 +82,7 @@ public class PlayerMovement : NetworkBehaviour
     private static readonly int IsGrounded = Animator.StringToHash("isGrounded");
     private static readonly int IsCrouching = Animator.StringToHash("isCrouching");
     private static readonly int Crouch = Animator.StringToHash("Crouch");
- 
+
     private CameraRotate cameraRotate;
 
     private Vector3 currentBodyRotationY;
@@ -139,6 +139,8 @@ public class PlayerMovement : NetworkBehaviour
         rotatePlayer();
         crouch();
         checkRotation();
+        setPlayerKinematicRb();
+
 
         setAnimVelocity(verticalInput, horizontalInput);
 
@@ -224,10 +226,9 @@ public class PlayerMovement : NetworkBehaviour
 
         currentBodyRotationY.y = cameraRotate.transform.rotation.eulerAngles.y;
 
-        float smoothness = Mathf.Abs(cameraRotate.MouseLook.x) / bodyRotationSmoothFactor ;
-        body.transform.rotation = Quaternion.Lerp(body.transform.rotation, Quaternion.Euler(currentBodyRotationY),smoothness);
+        float smoothness = Mathf.Abs(cameraRotate.MouseLook.x) / bodyRotationSmoothFactor;
+        body.transform.rotation = Quaternion.Lerp(body.transform.rotation, Quaternion.Euler(currentBodyRotationY), smoothness);
     }
-
 
 
     void getInput()
@@ -254,6 +255,26 @@ public class PlayerMovement : NetworkBehaviour
         Vector3 limitedVel = flatVel.normalized * moveSpeed;
         rb.velocity = new Vector3(limitedVel.x, rb.velocity.y, limitedVel.z);
     }
+
+    private float t = 2;
+
+    void setPlayerKinematicRb()
+    {
+        rb.constraints = RigidbodyConstraints.FreezeRotation;
+        if (verticalInput == 0 && horizontalInput == 0)
+        {
+            if (t > 0) t -= Time.deltaTime;
+            if (t <= 0)
+            {
+                rb.constraints = (RigidbodyConstraints)122;
+            }
+        }
+        else
+        {
+            t = .25f;
+        }
+    }
+
 
     void crouch()
     {
