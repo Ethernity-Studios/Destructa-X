@@ -431,9 +431,10 @@ public class PlayerShootingManager : NetworkBehaviour
         Vector3 originPosition = cameraHolder.position;
         bool firstCheck = true;
 
+        Vector3 direction = Vector3.zero;
         while (true)
         {
-            Vector3 direction;
+            
             if (penIndex == 0) //First pen check
             {
                 bloomAmount = GunHeath * 3 + BloomModifier + bloom;
@@ -446,15 +447,21 @@ public class PlayerShootingManager : NetworkBehaviour
                 bloomDirection.Normalize();
                 direction = bloomDirection;
             }
-            else //Pen check
+            /*else //Pen check
             {
                 direction = cameraHolder.forward;
-            }
+            }*/
+
+            Debug.Log("TESTTTTTT");
+
+
 
             penIndex++;
             Ray ray = new(originPosition, direction);
             if (Physics.Raycast(originPosition, direction, out RaycastHit hit, Mathf.Infinity, layerMask: mask))
             {
+                Debug.Log("Penetration: " + hit.collider);
+                Debug.DrawRay(originPosition, direction, Color.red, 5f);
                 if (hit.collider.transform.parent != null)
                 {
                     if (hit.collider.TryGetComponent(out Hitbox entity))
@@ -485,22 +492,20 @@ public class PlayerShootingManager : NetworkBehaviour
                 }
 
                 impactPoint = hit.point;
-                hit.collider.TryGetComponent(out MaterialToughness toughness);
-                penetrationAmount -= toughness.ToughnessAmount;
+                //hit.collider.TryGetComponent(out MaterialToughness toughness);
+                //if(toughness != null) penetrationAmount -= toughness.ToughnessAmount;
                 Ray penRay = new(hit.point + ray.direction * penetrationAmount, -ray.direction);
                 if (hit.collider.Raycast(penRay, out RaycastHit penHit, penetrationAmount))
                 {
                     penetrationPoint = penHit.point;
-                    endPoint = transform.position + cameraHolder.forward * 1000;
+                    endPoint = transform.position + transform.forward * 1000;
                     if (hit.collider.transform.TryGetComponent(out MaterialToughness materialToughness))
                     {
                         CmdInstantiateImpactDecal(true, hit.point, -hit.normal); // first point
                         CmdInstantiateImpactDecal(true, penHit.point, -penHit.normal); //second point
-                        Debug.Log("Pen amount before: " + penetrationAmount);
                         penetrationAmount -= Vector3.Distance((Vector3)penetrationPoint, hit.point);
-                        //penetrationAmount -= materialToughness.ToughnessAmount;
-                        Debug.Log("Pen amount after: " + penetrationAmount);
-                        originPosition = hit.point;
+                        penetrationAmount -= materialToughness.ToughnessAmount;
+                        originPosition = penHit.point;
                         firstCheck = false;
                         continue;
                     }
@@ -512,11 +517,13 @@ public class PlayerShootingManager : NetworkBehaviour
                     if(firstCheck) CmdInstantiateImpactDecal(false, hit.point, -hit.normal);
                     endPoint = impactPoint.Value + ray.direction * penetrationAmount;
                     penetrationPoint = endPoint;
+                    Debug.Log("No more pen");
+
                 }
             }
             else
             {
-                endPoint = transform.position + cameraHolder.forward * 1000;
+                endPoint = transform.position + transform.forward * 1000;
                 penetrationPoint = null;
                 impactPoint = null;
             }
@@ -624,17 +631,15 @@ public class PlayerShootingManager : NetworkBehaviour
                 break;
         }
 
-        //Debug.Log("Bullet damage before: " + BulletDamage);
-        //BulletDamage -= (int)penetrationAmount*2; //TODO need better damage calculation
-        //Debug.Log("Bullet damage after: " + BulletDamage);
+        Debug.Log("Bullet damage before: " + BulletDamage);
+        if(penetrationAmount > 0) BulletDamage -= (int)penetrationAmount*2; //TODO need better damage calculation
+        Debug.Log("Bullet damage after: " + BulletDamage);
         return BulletDamage;
     }
 
     [Command]
     void CmdInstantiateImpactDecal(bool canPenetrate, Vector3 position, Vector3 rotation)
     {
-        Debug.Log("Can penetrate: " + canPenetrate);
-
         GameObject bulletImpact = Instantiate(canPenetrate ? BulletImpactDecalPenetrable : BulletImpactDecalNotPenetrable);
         NetworkServer.Spawn(bulletImpact);
         RpcInstantiateImpactDecal(bulletImpact, position, rotation);

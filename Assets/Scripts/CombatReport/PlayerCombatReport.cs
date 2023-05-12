@@ -35,7 +35,6 @@ public class PlayerCombatReport : NetworkBehaviour
                 if (rep.OwnerPlayerId == report.OwnerPlayerId && rep.TargetPlayerId == report.TargetPlayerId &&
                     rep.TargetState != ReportState.Killed && rep.TargetState != ReportState.Assisted)
                 {
-                    Debug.Log("Updating existing report");
                     addNew = false;
                     
                     rep.GunId = report.GunId;
@@ -70,7 +69,6 @@ public class PlayerCombatReport : NetworkBehaviour
         else addNew = true;
 
         if (!addNew) return;
-        Debug.Log("Creating new report");
 
         GameObject re = Instantiate(CombatReport, uiManager.CombatReport.transform);
         CombatReports.Add(re);
@@ -153,7 +151,6 @@ public class PlayerCombatReport : NetworkBehaviour
     [TargetRpc]
     public void RpcHandleEnemyReport(NetworkConnection conn,  CombatReport report)
     {
-        Debug.Log($"Handling enemy report!! owner: {report.OwnerPlayerId} target: {report.TargetPlayerId}");
         int index = 0;
         bool addNew = false;
         if (Reports.Count > 0)
@@ -163,7 +160,6 @@ public class PlayerCombatReport : NetworkBehaviour
                 if (report.TargetPlayerId == combatReport.OwnerPlayerId && report.OwnerPlayerId == combatReport.TargetPlayerId)
                 {
                     addNew = false;
-                    Debug.Log("Updating target report");
                     combatReport.GunId = report.GunId;
 
                     combatReport.IncomingDamage = report.OutComingDamage;
@@ -197,7 +193,6 @@ public class PlayerCombatReport : NetworkBehaviour
         else addNew = true;
 
         if (!addNew) return;
-        Debug.Log($"Creating new target report");
         CombatReport rep = createEnemyReport(report);
         GameObject re = Instantiate(CombatReport, uiManager.CombatReport.transform);
         CombatReports.Add(re);
@@ -207,15 +202,13 @@ public class PlayerCombatReport : NetworkBehaviour
 
     CombatReport createEnemyReport(CombatReport report)
     {
-        CombatReport rep = new();
-        
-        Debug.Log("Creating enemy report");
-        rep.GunId = report.GunId;
-
-        rep.OwnerPlayerId = report.TargetPlayerId;
-        rep.TargetPlayerId = report.OwnerPlayerId;
-
-        rep.IncomingDamage = report.OutComingDamage;
+        CombatReport rep = new()
+        {
+            GunId = report.GunId,
+            OwnerPlayerId = report.TargetPlayerId,
+            TargetPlayerId = report.OwnerPlayerId,
+            IncomingDamage = report.OutComingDamage
+        };
 
         if (report.OwnerBody.Count > 0)
             foreach (Body body in report.OwnerBody)

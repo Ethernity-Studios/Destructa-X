@@ -4578,7 +4578,7 @@ MonoBehaviour:
   IsDead: 0
   PlayerState: 0
   playerBody: {fileID: 1219471668820504962}
-  Health: 100
+  Health: 1000
   Shield: 0
   PreviousRoundShield: 0
   RoundKills: 0
