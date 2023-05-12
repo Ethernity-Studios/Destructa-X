@@ -11,13 +11,13 @@ public class MaterialToughness : MonoBehaviour
     {
         ToughnessAmount = Toughness switch
         {
-            Toughness.ExtraSoft => 1,
-            Toughness.Soft => 2,
-            Toughness.Medium => 3,
-            Toughness.MediumSoft => 4,
-            Toughness.MediumHard => 5,
-            Toughness.Hard => 6,
-            Toughness.ExtraHard => 7,
+            Toughness.ExtraSoft => 3,
+            Toughness.Soft => 4,
+            Toughness.Medium => 5,
+            Toughness.MediumSoft => 6,
+            Toughness.MediumHard => 7,
+            Toughness.Hard => 8,
+            Toughness.ExtraHard => 9,
             _ => ToughnessAmount
         };
     }

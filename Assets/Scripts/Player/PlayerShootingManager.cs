@@ -451,14 +451,10 @@ public class PlayerShootingManager : NetworkBehaviour
                 direction = cameraHolder.forward;
             }
 
-            Debug.Log("Penetration amount: " + penetrationAmount);
-
             penIndex++;
             Ray ray = new(originPosition, direction);
             if (Physics.Raycast(originPosition, direction, out RaycastHit hit, Mathf.Infinity, layerMask: mask))
             {
-                Debug.Log(hit.point);
-
                 if (hit.collider.transform.parent != null)
                 {
                     if (hit.collider.TryGetComponent(out Hitbox entity))
@@ -489,6 +485,8 @@ public class PlayerShootingManager : NetworkBehaviour
                 }
 
                 impactPoint = hit.point;
+                hit.collider.TryGetComponent(out MaterialToughness toughness);
+                penetrationAmount -= toughness.ToughnessAmount;
                 Ray penRay = new(hit.point + ray.direction * penetrationAmount, -ray.direction);
                 if (hit.collider.Raycast(penRay, out RaycastHit penHit, penetrationAmount))
                 {
@@ -498,9 +496,10 @@ public class PlayerShootingManager : NetworkBehaviour
                     {
                         CmdInstantiateImpactDecal(true, hit.point, -hit.normal); // first point
                         CmdInstantiateImpactDecal(true, penHit.point, -penHit.normal); //second point
-
+                        Debug.Log("Pen amount before: " + penetrationAmount);
                         penetrationAmount -= Vector3.Distance((Vector3)penetrationPoint, hit.point);
-                        penetrationAmount -= materialToughness.ToughnessAmount;
+                        //penetrationAmount -= materialToughness.ToughnessAmount;
+                        Debug.Log("Pen amount after: " + penetrationAmount);
                         originPosition = hit.point;
                         firstCheck = false;
                         continue;
