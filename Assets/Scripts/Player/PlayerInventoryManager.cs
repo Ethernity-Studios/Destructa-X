@@ -59,7 +59,7 @@ public class PlayerInventoryManager : NetworkBehaviour
     [SerializeField] private Vector3 KnifeLeftHandHintPosition;
     [SerializeField] private Vector3 KnifeRightHandTargetPosition;
     [SerializeField] private Vector3 KnifeRightHandTargetRotation;
-    [SerializeField] private Vector3 KnifeRightHandHintPositon;
+    [SerializeField] private Vector3 KnifeRightHandHintPosition;
 
     private void Awake()
     {
@@ -510,7 +510,7 @@ public class PlayerInventoryManager : NetworkBehaviour
     {
         RightHandTarget.localPosition = KnifeRightHandTargetPosition;
         RightHandTarget.localEulerAngles = KnifeRightHandTargetRotation;
-        RightHandHint.localPosition = KnifeRightHandHintPositon;
+        RightHandHint.localPosition = KnifeRightHandHintPosition;
 
         LeftHandTarget.localPosition = KnifeLeftHandTargetPosition;
         LeftHandTarget.localEulerAngles = KnifeLeftHandTargetRotation;

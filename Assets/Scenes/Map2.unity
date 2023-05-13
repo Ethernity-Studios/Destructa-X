@@ -14970,13 +14970,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   syncMode: 0
   syncInterval: 0.1
-  Round: 0
+  Round: 1
   RoundsPerHalf: 12
   StartGameLenght: 20
   EndgameLenght: 5
   PreRoundLenght: 20
   RoundLenght: 500
-  PostRoundLength: 20
+  PostRoundLength: 200
   BombPlantTime: 5
   BombHalfDefuseTime: 5
   BombDefuseTime: 10

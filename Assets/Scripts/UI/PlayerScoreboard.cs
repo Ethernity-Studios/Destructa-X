@@ -1,5 +1,4 @@
 using System;
-using Mirror;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -20,7 +19,8 @@ public class PlayerScoreboard : MonoBehaviour
 
     private void Update()
     {
-        if (Owner != null)
-            Ping.text = Math.Round(Owner.Ping, 2) + " ms";
+        if (Owner == null) return;
+        Ping.text = Math.Round(Owner.Ping, 2) + " ms";
+        KDA.text = $"{Owner.PlayerKills} {Owner.PlayerDeaths} {Owner.PlayerAssists}";
     }
 }

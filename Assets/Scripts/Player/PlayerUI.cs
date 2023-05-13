@@ -367,12 +367,7 @@ namespace player
         {
             //TODO 
         }
-
-        [ClientRpc]
-        public void RpcUpdatePlayerScore()
-        {
-            ScoreboardPlayer.KDA.text = $"{player.PlayerKills} {player.PlayerDeaths} {player.PlayerAssists}";
-        }
+        
         
         public void ToggleAmmoUI(bool state)
         {

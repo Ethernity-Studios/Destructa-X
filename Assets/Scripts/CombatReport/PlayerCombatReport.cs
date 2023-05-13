@@ -58,7 +58,7 @@ public class PlayerCombatReport : NetworkBehaviour
                     
                     CmdGetTargetPlayer(rep.TargetPlayerId);
                     StartCoroutine(handleReport(CombatReports[index], rep, false, true));
-                    if(rep.TargetState == ReportState.Killed) CmdNotifyPlayerDeath(rep.TargetPlayerId);
+                    if(rep.TargetState == ReportState.Killed) CmdNotifyPlayerDeath(rep.TargetPlayerId, rep.OwnerPlayerId);
                     break;
                 }
 
@@ -77,24 +77,33 @@ public class PlayerCombatReport : NetworkBehaviour
     }
 
     [Command]
-    void CmdNotifyPlayerDeath(uint targetPlayerId)
+    void CmdNotifyPlayerDeath(uint targetPlayerId, uint ownerPlayerId)
     {
         foreach (Player p in gameManager.PlayersID.Select(gameManager.GetPlayer))
         {
-            p.GetComponent<PlayerCombatReport>().RpcNotifyPlayerDeath(targetPlayerId);
+            p.GetComponent<PlayerCombatReport>().RpcNotifyPlayerDeath(targetPlayerId, ownerPlayerId);
         }
     }
 
     [ClientRpc]
-    void RpcNotifyPlayerDeath(uint targetPlayerId)
+    void RpcNotifyPlayerDeath(uint targetPlayerId, uint ownerPlayerId)
     {
         if (!isLocalPlayer) return;
         int index = 0;
         foreach (var rep in Reports)
         {
-            if (rep.TargetPlayerId == targetPlayerId && rep.OwnerPlayerId != targetPlayerId)
+            if (rep.TargetPlayerId == targetPlayerId && rep.OwnerPlayerId != ownerPlayerId)
             {
+                Debug.Log("owner player id" + ownerPlayerId);
+                Debug.Log("rep target id" + rep.TargetPlayerId);
+                Debug.Log("rep owner id"+rep.OwnerPlayerId);
+                Debug.Log("target player id"+targetPlayerId);
+
+
                 CombatReports[index].GetComponent<Report>().UpdateAssist();
+                GetComponent<Player>().CmdAddAssist();
+                Debug.Log("Toggling assist");
+
             }
             index++;
         }

@@ -62,6 +62,8 @@ public class Report : MonoBehaviour
 
     public void UpdateAssist()
     {
+        Debug.Log("Toggling assist text");
+
         KillAssist.SetActive(true);
         KillAssistText.text = "Assist";
     }

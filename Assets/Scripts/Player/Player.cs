@@ -23,8 +23,8 @@ public class Player : NetworkBehaviour, IDamageable
 
     [SyncVar(hook = nameof(updateMoneyText))]
     public int PlayerMoney = 800;
-    [SyncVar] 
-    public int EnemyPlayerMoney = 800;
+
+    [SyncVar] public int EnemyPlayerMoney = 800;
 
     [SyncVar] public double Ping;
 
@@ -144,7 +144,7 @@ public class Player : NetworkBehaviour, IDamageable
         }
     }
 
-    [Command(requiresAuthority =  false)]
+    [Command(requiresAuthority = false)]
     public void CmdResetMoney()
     {
         PlayerMoney = 800;
@@ -177,6 +177,12 @@ public class Player : NetworkBehaviour, IDamageable
     [Command]
     public void CmdAddKill() => PlayerKills++;
 
+    [Command]
+    public void CmdAddAssist() => PlayerAssists++;
+
+    [Command]
+    public void CmdAddDeath() => PlayerDeaths++;
+
     [ClientRpc]
     public void RpcRespawnPlayer(Vector3 position, Vector3 rotation)
     {
@@ -201,6 +207,7 @@ public class Player : NetworkBehaviour, IDamageable
                 gameManager.AliveRedPlayers--;
                 break;
         }
+
         RpcKillPlayer();
         TargetRpcKillPlayer(connectionToClient);
     }
@@ -209,6 +216,7 @@ public class Player : NetworkBehaviour, IDamageable
     void RpcKillPlayer()
     {
         playerSpectateManager.PlayerDeath();
+        if (isLocalPlayer) CmdAddDeath();
     }
 
     [TargetRpc]

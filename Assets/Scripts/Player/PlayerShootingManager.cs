@@ -635,14 +635,10 @@ public class PlayerShootingManager : NetworkBehaviour
 
                 break;
         }
-
-
-        Debug.Log("Bullet damage before: " + BulletDamage);
-        Debug.Log("pen dist: " + penDistance + "   mat tough: " + matToughness);
+        
 
         BulletDamage = Mathf.FloorToInt(BulletDamage - (penDistance * 3) - matToughness);
         if (BulletDamage <= 0) BulletDamage = 1;
-        Debug.Log("Bullet damage after: " + BulletDamage);
         return BulletDamage;
     }
 

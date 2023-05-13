@@ -4578,7 +4578,7 @@ MonoBehaviour:
   IsDead: 0
   PlayerState: 0
   playerBody: {fileID: 1219471668820504962}
-  Health: 1000
+  Health: 100
   Shield: 0
   PreviousRoundShield: 0
   RoundKills: 0
@@ -4622,7 +4622,7 @@ MonoBehaviour:
   KnifeLeftHandHintPosition: {x: 0.183, y: 0.076, z: 0.493}
   KnifeRightHandTargetPosition: {x: 0, y: 0, z: 0}
   KnifeRightHandTargetRotation: {x: 0, y: 0, z: 0}
-  KnifeRightHandHintPositon: {x: 0, y: 0, z: 0}
+  KnifeRightHandHintPosition: {x: 0, y: 0, z: 0}
 --- !u!114 &4148336677826501266
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4772,6 +4772,7 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0.1
   IsShopOpen: 0
+  SettingsMenu: {fileID: 0}
 --- !u!114 &1805058751750204041
 MonoBehaviour:
   m_ObjectHideFlags: 0
