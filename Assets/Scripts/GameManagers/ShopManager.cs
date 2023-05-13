@@ -250,14 +250,15 @@ public class ShopManager : NetworkBehaviour
         {
             case "light":
             {
-                if (localPlayer.Shield != 25 && localPlayer.PreviousRoundShield > 25 && localPlayer.ShieldType != ShieldType.Light)
+                if (localPlayer.Shield != 25)
                 {
                     if (localPlayer.ShieldType == ShieldType.Heavy) SellShield("heavy");
-                    if (localPlayer.PlayerMoney > 400)
+                    if (localPlayer.PlayerMoney >= 400)
                     {
-                        Debug.Log("Buying light");
+                        localPlayer.CmdSetPreviousShield(localPlayer.Shield);
                         localPlayer.CmdSetShield(25);
                         localPlayer.CmdSetShieldType(ShieldType.Light);
+                        localPlayer.CmdChangeMoney(-400);
                     }
                 }
 
@@ -265,14 +266,15 @@ public class ShopManager : NetworkBehaviour
             }
             case "heavy":
             {
-                if (localPlayer.Shield != 50 && localPlayer.PreviousRoundShield != 50 && localPlayer.ShieldType != ShieldType.Heavy)
+                if (localPlayer.Shield != 50)
                 {
                     if (localPlayer.ShieldType == ShieldType.Light) SellShield("light");
-                    if (localPlayer.PlayerMoney > 1000)
+                    if (localPlayer.PlayerMoney >= 1000)
                     {
-                        Debug.Log("Buying heavy");
+                        localPlayer.CmdSetPreviousShield(localPlayer.Shield);
                         localPlayer.CmdSetShield(50);
                         localPlayer.CmdSetShieldType(ShieldType.Heavy);
+                        localPlayer.CmdChangeMoney(-1000);
                     }
                 }
 
@@ -284,16 +286,17 @@ public class ShopManager : NetworkBehaviour
     public void SellShield(string shieldType)
     {
         Player localPlayer = playerInventory.GetComponent<Player>();
-        localPlayer.CmdSetShield(localPlayer.PreviousRoundShield);
-        localPlayer.CmdSetShieldType(ShieldType.None);
-        Debug.Log("Selling shield: " + shieldType);
         switch (shieldType)
         {
-            case "light":
+            case "light" when localPlayer.ShieldType == ShieldType.Light:
                 localPlayer.CmdChangeMoney(400);
+                localPlayer.CmdSetShield(localPlayer.PreviousShield);
+                localPlayer.CmdSetShieldType(ShieldType.None);
                 break;
-            case "heavy":
+            case "heavy" when localPlayer.ShieldType == ShieldType.Heavy:
                 localPlayer.CmdChangeMoney(1000);
+                localPlayer.CmdSetShield(localPlayer.PreviousShield);
+                localPlayer.CmdSetShieldType(ShieldType.None);
                 break;
         }
     }

@@ -48,7 +48,7 @@ public class PlayerMovement : NetworkBehaviour
     [SerializeField] float moveSpeed;
 
     [Header("Jump")] [SerializeField] float groundDrag;
-    [SerializeField] bool grounded;
+    [SerializeField] bool grounded = true;
     [SerializeField] private bool crouching;
 
     [SerializeField] float jumpForce;

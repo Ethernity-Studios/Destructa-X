@@ -14972,11 +14972,11 @@ MonoBehaviour:
   syncInterval: 0.1
   Round: 1
   RoundsPerHalf: 12
-  StartGameLenght: 20
+  StartGameLenght: 100
   EndgameLenght: 5
-  PreRoundLenght: 20
-  RoundLenght: 500
-  PostRoundLength: 200
+  PreRoundLenght: 100
+  RoundLenght: 10
+  PostRoundLength: 5
   BombPlantTime: 5
   BombHalfDefuseTime: 5
   BombDefuseTime: 10

@@ -15,7 +15,7 @@ MonoBehaviour:
   GunID: 9
   Name: Bulldog
   GunModel: {fileID: 4105488676187192654, guid: 13c043ae6a33bb04bbc4b7befc69f2cd, type: 3}
-  Icon: {fileID: 21300000, guid: 97502c9661f1f3145b7f11068dc00731, type: 3}
+  Icon: {fileID: 21300000, guid: d7b7ac933c67666419c617b241a56d66, type: 3}
   Price: 500
   MagazineAmmo: 2400
   Ammo: 5000

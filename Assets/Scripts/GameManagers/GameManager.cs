@@ -352,7 +352,8 @@ public class GameManager : NetworkBehaviour
             PlayerUI playerUI = player.GetComponent<PlayerUI>();
             playerUI.RpcUpdatePlayerMoney();
             
-            player.PreviousRoundShield = player.Shield;
+            //player.PreviousShield = player.Shield;
+            player.CmdSetShieldType(ShieldType.None);
             PlayerInventoryManager playerInventory = player.GetComponent<PlayerInventoryManager>();
             playerStateManger.RpcSetDefaultPlayerSettings(player);
             player.GetComponent<PlayerCombatReport>().RpcClearReports();

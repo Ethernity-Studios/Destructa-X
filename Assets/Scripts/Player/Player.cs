@@ -44,7 +44,6 @@ public class Player : NetworkBehaviour, IDamageable
     UIManager uiManager;
     CharacterController characterController;
     private PlayerUI playerUI;
-    private PlayerCombatReport playerCombatReport;
 
     // TODO maybe syncVar
     public PlayerState PlayerState;
@@ -54,7 +53,7 @@ public class Player : NetworkBehaviour, IDamageable
     [SyncVar(hook = nameof(updateHealth))] public int Health = 100;
 
     [SyncVar(hook = nameof(updateShield))] public int Shield = 0;
-    [SyncVar] public int PreviousRoundShield = 0;
+    [SyncVar] public int PreviousShield = 0;
 
     [SyncVar] public int RoundKills = 0;
 
@@ -89,7 +88,7 @@ public class Player : NetworkBehaviour, IDamageable
         playerShootingManager = GetComponent<PlayerShootingManager>();
         playerBombManager = GetComponent<PlayerBombManager>();
         playerUI = GetComponent<PlayerUI>();
-        playerCombatReport = GetComponent<PlayerCombatReport>();
+        GetComponent<PlayerCombatReport>();
         uiManager = FindObjectOfType<UIManager>();
 
         setPlayerBody();
@@ -170,6 +169,9 @@ public class Player : NetworkBehaviour, IDamageable
 
     [Command]
     public void CmdSetShield(int shield) => Shield = shield;
+
+    [Command]
+    public void CmdSetPreviousShield(int shield) => PreviousShield = shield;
 
     [Command]
     public void CmdSetShieldType(ShieldType shieldType) => ShieldType = shieldType;
