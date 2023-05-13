@@ -139,7 +139,7 @@ public class PlayerMovement : NetworkBehaviour
         rotatePlayer();
         crouch();
         checkRotation();
-        setPlayerKinematicRb();
+        freezePlayer();
 
 
         setAnimVelocity(verticalInput, horizontalInput);
@@ -258,7 +258,7 @@ public class PlayerMovement : NetworkBehaviour
 
     private float t = 2;
 
-    void setPlayerKinematicRb()
+    void freezePlayer()
     {
         rb.constraints = RigidbodyConstraints.FreezeRotation;
         if (verticalInput == 0 && horizontalInput == 0)
@@ -292,7 +292,6 @@ public class PlayerMovement : NetworkBehaviour
             targetHeight = 2f;
             targetCrouch = 0;
         }
-
 
         anim.SetFloat(Crouch, Mathf.Lerp(anim.GetFloat(Crouch), targetCrouch, crouchSmoothFactor));
         capsuleCollider.height = Mathf.Lerp(capsuleCollider.height, targetHeight, capsuleSmoothFactor);

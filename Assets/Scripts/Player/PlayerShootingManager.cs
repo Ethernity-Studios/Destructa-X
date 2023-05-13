@@ -114,6 +114,7 @@ public class PlayerShootingManager : NetworkBehaviour
         if (gun == null) return;
         handleZoom(gun);
         if (playerEconomyManager.IsShopOpen) return;
+        if (playerEconomyManager.SettingsMenu.IsOpened) return;
 
 
         if (gun != null && playerInventory.GunEquipped && CanShoot && GunInstance.Magazine > 0 && !Reloading)

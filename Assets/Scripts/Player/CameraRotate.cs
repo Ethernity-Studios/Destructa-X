@@ -12,6 +12,7 @@ public class CameraRotate : MonoBehaviour
     private float yRotation;
 
     private bool isShopOpen;
+    private bool isMenuOpen;
 
     public PlayerEconomyManager PlayerEconomyManager;
 
@@ -37,7 +38,9 @@ public class CameraRotate : MonoBehaviour
         if (PlayerEconomyManager == null) return;
         if (orientation == null) return;
         isShopOpen = PlayerEconomyManager.IsShopOpen;
+        isMenuOpen = PlayerEconomyManager.SettingsMenu.IsOpened;
         if (isShopOpen) return;
+        if (isMenuOpen) return;
         if (!CanRotate) return;
 
         MouseLook = playerInput.PlayerMovement.Look.ReadValue<Vector2>();

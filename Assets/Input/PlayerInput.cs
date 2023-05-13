@@ -442,6 +442,24 @@ public partial class @PlayerInput: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Menu"",
+                    ""type"": ""Button"",
+                    ""id"": ""87afbde0-b5ba-405e-919a-a68a771a5571"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Shop"",
+                    ""type"": ""Button"",
+                    ""id"": ""3392f48a-829f-4652-bef3-b061391ff863"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -453,6 +471,28 @@ public partial class @PlayerInput: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""groups"": """",
                     ""action"": ""Scoreboard"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""c514195c-fcc3-4b88-8622-af88394d4ef9"",
+                    ""path"": ""<Keyboard>/escape"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Menu"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""77c0e1f0-f880-4338-a3be-4752f9e17d97"",
+                    ""path"": ""<Keyboard>/b"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Shop"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -528,6 +568,8 @@ public partial class @PlayerInput: IInputActionCollection2, IDisposable
         // PlayerUI
         m_PlayerUI = asset.FindActionMap("PlayerUI", throwIfNotFound: true);
         m_PlayerUI_Scoreboard = m_PlayerUI.FindAction("Scoreboard", throwIfNotFound: true);
+        m_PlayerUI_Menu = m_PlayerUI.FindAction("Menu", throwIfNotFound: true);
+        m_PlayerUI_Shop = m_PlayerUI.FindAction("Shop", throwIfNotFound: true);
         // Console
         m_Console = asset.FindActionMap("Console", throwIfNotFound: true);
         m_Console_Open = m_Console.FindAction("Open", throwIfNotFound: true);
@@ -873,11 +915,15 @@ public partial class @PlayerInput: IInputActionCollection2, IDisposable
     private readonly InputActionMap m_PlayerUI;
     private List<IPlayerUIActions> m_PlayerUIActionsCallbackInterfaces = new List<IPlayerUIActions>();
     private readonly InputAction m_PlayerUI_Scoreboard;
+    private readonly InputAction m_PlayerUI_Menu;
+    private readonly InputAction m_PlayerUI_Shop;
     public struct PlayerUIActions
     {
         private @PlayerInput m_Wrapper;
         public PlayerUIActions(@PlayerInput wrapper) { m_Wrapper = wrapper; }
         public InputAction @Scoreboard => m_Wrapper.m_PlayerUI_Scoreboard;
+        public InputAction @Menu => m_Wrapper.m_PlayerUI_Menu;
+        public InputAction @Shop => m_Wrapper.m_PlayerUI_Shop;
         public InputActionMap Get() { return m_Wrapper.m_PlayerUI; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -890,6 +936,12 @@ public partial class @PlayerInput: IInputActionCollection2, IDisposable
             @Scoreboard.started += instance.OnScoreboard;
             @Scoreboard.performed += instance.OnScoreboard;
             @Scoreboard.canceled += instance.OnScoreboard;
+            @Menu.started += instance.OnMenu;
+            @Menu.performed += instance.OnMenu;
+            @Menu.canceled += instance.OnMenu;
+            @Shop.started += instance.OnShop;
+            @Shop.performed += instance.OnShop;
+            @Shop.canceled += instance.OnShop;
         }
 
         private void UnregisterCallbacks(IPlayerUIActions instance)
@@ -897,6 +949,12 @@ public partial class @PlayerInput: IInputActionCollection2, IDisposable
             @Scoreboard.started -= instance.OnScoreboard;
             @Scoreboard.performed -= instance.OnScoreboard;
             @Scoreboard.canceled -= instance.OnScoreboard;
+            @Menu.started -= instance.OnMenu;
+            @Menu.performed -= instance.OnMenu;
+            @Menu.canceled -= instance.OnMenu;
+            @Shop.started -= instance.OnShop;
+            @Shop.performed -= instance.OnShop;
+            @Shop.canceled -= instance.OnShop;
         }
 
         public void RemoveCallbacks(IPlayerUIActions instance)
@@ -1000,6 +1058,8 @@ public partial class @PlayerInput: IInputActionCollection2, IDisposable
     public interface IPlayerUIActions
     {
         void OnScoreboard(InputAction.CallbackContext context);
+        void OnMenu(InputAction.CallbackContext context);
+        void OnShop(InputAction.CallbackContext context);
     }
     public interface IConsoleActions
     {

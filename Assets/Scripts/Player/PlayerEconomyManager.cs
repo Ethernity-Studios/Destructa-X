@@ -7,24 +7,45 @@ public class PlayerEconomyManager : NetworkBehaviour
     [SyncVar] 
     bool CanBeOpen;
     [HideInInspector]public bool IsShopOpen;
+
+    public SettingsMenu SettingsMenu;
+    private PlayerInput input;
+
+    private void Awake()
+    {
+        input = new PlayerInput();
+    }
+
     private void Start()
     {
         gameManager = FindObjectOfType<GameManager>();
+        SettingsMenu = FindObjectOfType<SettingsMenu>();
+        SettingsMenu.playerEconomyManager = this;
+    }
+
+    private void OnEnable()
+    {
+        input.PlayerUI.Enable();
+    }
+
+    private void OnDisable()
+    {
+        input.PlayerUI.Disable();
     }
 
     [Server]
     void ServerUpdate()
     {
-        CanBeOpen = gameManager.GameState == GameState.PreRound || gameManager.GameState == GameState.StartGame;
+        CanBeOpen = gameManager.GameState is GameState.PreRound or GameState.StartGame;
     }
 
     private void Update()
     {
         if (isServer) ServerUpdate();
         if (!isLocalPlayer) return;
-        if (CanBeOpen)
+        if (CanBeOpen && !SettingsMenu.IsOpened)
         {
-            if (!Input.GetKeyDown(KeyCode.B)) return;
+            if (!input.PlayerUI.Shop.triggered) return;
             if (IsShopOpen)
             {
                 CloseShopUI();
