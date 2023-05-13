@@ -1,5 +1,7 @@
+using System;
 using Mirror;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using player;
 using TMPro;
@@ -18,9 +20,9 @@ public enum BombState
 public class GameManager : NetworkBehaviour
 {
     // [SyncVar]
-    public int Round = 0;
+    public int Round = 1;
 
-    public int RoundsPerHalf = 13;
+    public int RoundsPerHalf = 12;
 
     public float StartGameLenght = 10; //45s
     public float EndgameLenght = 5; //10s
@@ -233,69 +235,66 @@ public class GameManager : NetworkBehaviour
 
 
     [Server]
+    [SuppressMessage("ReSharper", "ConvertIfStatementToSwitchStatement")]
     void updateGameState()
     {
-        switch (GameState)
+        if (GameState == GameState.StartGame && GameTime <= 0)
         {
-            case GameState.StartGame when GameTime <= 0:
-                //Buy phase - Start
-                mapController.DropWalls();
-                // closePlayerShopUI();
-                GameTime = RoundLenght;
-                GameState = GameState.Round;
-                playerStateManger.RpcToggleMOTD(false, "", "");
-                break;
-            case GameState.PreRound when GameTime <= 0:
-                //Buy phase
-                mapController.DropWalls();
-                // closePlayerShopUI();
-                GameState = GameState.Round;
-                GameTime = RoundLenght;
-                playerStateManger.RpcToggleMOTD(false, "", "");
-                break;
-            default:
+            //Buy phase - Start
+            mapController.DropWalls();
+            // closePlayerShopUI();
+            GameTime = RoundLenght;
+            GameState = GameState.Round;
+            playerStateManger.RpcToggleMOTD(false, "", "");
+        }
+        else if (GameState == GameState.PreRound && GameTime <= 0)
+        {
+            //Buy phase
+            mapController.DropWalls();
+            // closePlayerShopUI();
+            GameState = GameState.Round;
+            GameTime = RoundLenght;
+            playerStateManger.RpcToggleMOTD(false, "", "");
+        }
+        else
+        {
+            if (BombState == BombState.Planted && GameTime <= 0)
             {
-                switch (BombState)
+                //Bomb explosion
+                //BombManager bombManager = FindObjectOfType<BombManager>();
+                //bombManager.CmdDetonateBomb();
+                BombState = BombState.Exploded;
+                GameTime = PostRoundLength;
+                GameState = GameState.PostRound;
+            }
+            else
+            {
+                if (GameState == GameState.Round && GameTime <= 0)
                 {
-                    case BombState.Planted when GameTime <= 0:
-                        //Bomb explosion
-                        //BombManager bombManager = FindObjectOfType<BombManager>();
-                        //bombManager.CmdDetonateBomb();
-                        BombState = BombState.Exploded;
-                        GameTime = PostRoundLength;
-                        GameState = GameState.PostRound;
-                        break;
-                    default:
-                        switch (GameState)
-                        {
-                            case GameState.Round when GameTime <= 0:
-                                //end round
-                                GameTime = PostRoundLength;
-                                GameState = GameState.PostRound;
-                                break;
-                            case GameState.Round when AliveBluePlayers <= 0 && BlueTeamPlayersIDs.Count > 0:
-                                //All blue players dead
-                                Debug.Log("All blue players dead");
-                                GameTime = PostRoundLength;
-                                GameState = GameState.PostRound;
-                                break;
-                            case GameState.Round when BombState == BombState.NotPlanted && AliveRedPlayers <= 0 && RedTeamPlayersIDs.Count > 0:
-                                //Bomb not planted and all red players dead
-                                Debug.Log("Bomb not planted and all red players dead");
-                                GameTime = PostRoundLength;
-                                GameState = GameState.PostRound;
-                                break;
-                            case GameState.PostRound when GameTime <= 0:
-                                //time's up
-                                Debug.Log("Time's up");
-                                startNewRound();
-                                break;
-                        }
-
-                        break;
+                    //end round
+                    GameTime = PostRoundLength;
+                    GameState = GameState.PostRound;
                 }
-
-                break;
+                else if (GameState == GameState.Round && (AliveBluePlayers <= 0 && BlueTeamPlayersIDs.Count > 0))
+                {
+                    //All blue players dead
+                    Debug.Log("All blue players dead");
+                    GameTime = PostRoundLength;
+                    GameState = GameState.PostRound;
+                }
+                else if (GameState == GameState.Round && (BombState == BombState.NotPlanted && AliveRedPlayers <= 0 && RedTeamPlayersIDs.Count > 0))
+                {
+                    //Bomb not planted and all red players dead
+                    Debug.Log("Bomb not planted and all red players dead");
+                    GameTime = PostRoundLength;
+                    GameState = GameState.PostRound;
+                }
+                else if (GameState == GameState.PostRound && GameTime <= 0)
+                {
+                    //time's up
+                    Debug.Log("Time's up");
+                    startNewRound();
+                }
             }
         }
     }
@@ -316,9 +315,10 @@ public class GameManager : NetworkBehaviour
     void startNewRound()
     {
         addScore();
+        giveMoney();
+        if(Round == RoundsPerHalf) switchPlayerSides();
         AliveBluePlayers = BlueTeamPlayersIDs.Count;
         AliveRedPlayers = RedTeamPlayersIDs.Count;
-        giveMoney();
 
         if (BombState is BombState.Exploded or BombState.Defused)
         {
@@ -388,6 +388,45 @@ public class GameManager : NetworkBehaviour
         spawnPlayers();
 
         BombPlanted = false;
+    }
+
+    void switchPlayerSides()
+    {
+        BlueTeamPlayersIDs.Clear();
+        RedTeamPlayersIDs.Clear();
+
+        var tmpBlueScore = BlueTeamScore;
+        var tmpRedScore = RedTeamScore;
+
+        BlueTeamScore = tmpRedScore;
+        RedTeamScore = tmpBlueScore;
+        
+        foreach (var player in PlayersID.Select(GetPlayer))
+        {
+            PlayerInventoryManager playerInventory = player.GetComponent<PlayerInventoryManager>();
+            
+            if(playerInventory.PrimaryGun != null) playerInventory.CmdDestroyGun(GunType.Primary);
+            if(playerInventory.SecondaryGun != null) playerInventory.CmdDestroyGun(GunType.Secondary);
+            
+            playerInventory.CmdSwitchItem(Item.Knife);
+            playerInventory.CmdSwitchItem(Item.Secondary);
+
+            player.CmdResetMoney();
+            switch (player.PlayerTeam)
+            {
+                case Team.Blue:
+                    player.CmdSwitchPlayerTeam(Team.Red);
+                    RedTeamPlayersIDs.Add(player.connectionToClient.connectionId);
+                    break;
+                case Team.Red:
+                    player.CmdSwitchPlayerTeam(Team.Blue);
+                    BlueTeamPlayersIDs.Add(player.connectionToClient.connectionId);
+                    break;
+            }
+        }
+
+        LossStreak = 0;
+        LosingTeam = Team.None;
     }
     
     [Server]

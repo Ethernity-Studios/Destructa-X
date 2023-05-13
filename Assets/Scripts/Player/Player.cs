@@ -144,6 +144,17 @@ public class Player : NetworkBehaviour, IDamageable
         }
     }
 
+    [Command(requiresAuthority =  false)]
+    public void CmdResetMoney()
+    {
+        PlayerMoney = 800;
+        uiManager.ShopPlayerMoney.text = PlayerMoney.ToString();
+        foreach (var p in gameManager.PlayersID.Select(gameManager.GetPlayer))
+        {
+            playerUI.RpcUpdatePlayerTeamMoney(p.netIdentity.connectionToClient, PlayerMoney);
+        }
+    }
+
     [Command(requiresAuthority = false)]
     private void CmdTakeDamage(int damage)
     {

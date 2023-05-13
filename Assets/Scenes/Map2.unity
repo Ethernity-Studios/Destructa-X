@@ -14971,7 +14971,7 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0.1
   Round: 0
-  RoundsPerHalf: 13
+  RoundsPerHalf: 12
   StartGameLenght: 20
   EndgameLenght: 5
   PreRoundLenght: 20
