@@ -351,6 +351,7 @@ public class GameManager : NetworkBehaviour
             player.EnemyPlayerMoney = player.PlayerMoney;
             PlayerUI playerUI = player.GetComponent<PlayerUI>();
             playerUI.RpcUpdatePlayerMoney();
+            player.KillsThisRound = 0;
             
             //player.PreviousShield = player.Shield;
             player.CmdSetShieldType(ShieldType.None);

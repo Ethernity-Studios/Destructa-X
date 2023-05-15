@@ -4576,11 +4576,12 @@ MonoBehaviour:
   PlayerDeaths: 0
   PlayerAssists: 0
   IsDead: 0
+  KillsThisRound: 0
   PlayerState: 0
   playerBody: {fileID: 1219471668820504962}
   Health: 100
   Shield: 0
-  PreviousRoundShield: 0
+  PreviousShield: 0
   RoundKills: 0
   ShieldType: 0
 --- !u!114 &1850405224234988842
@@ -4808,6 +4809,7 @@ MonoBehaviour:
   CombatReport: {fileID: 3622835321398936820, guid: 4e8066dd6a4a49c4dbfddcd8a359c8ae, type: 3}
   CombatReports: []
   targetPlayer: {fileID: 0}
+  killFeed: {fileID: 2972884286118815611, guid: 75241e460d842494f9a018a865b06d9a, type: 3}
 --- !u!54 &6336609987163348861
 Rigidbody:
   m_ObjectHideFlags: 0

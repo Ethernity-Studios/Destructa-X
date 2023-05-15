@@ -82,6 +82,12 @@ public class UIManager : MonoBehaviour
 
     [Header("CombatReport")] 
     public GameObject CombatReport;
+    public Sprite EnemyTeamKillStreakBackground;
+    public Sprite EnemyTeamAgentBorder;
+    public Sprite FriendlyTeamAgentBorder;
+
+    [Header("KillFeed")] 
+    public GameObject KillFeed;
 
     [Header("Items")] 
     public Sprite Knife;

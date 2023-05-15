@@ -38227,6 +38227,10 @@ MonoBehaviour:
   BlueScoreboardScore: {fileID: 1016453085}
   RedScoreboardScore: {fileID: 1827124998}
   CombatReport: {fileID: 231912847}
+  EnemyTeamKillStreakBackground: {fileID: 21300000, guid: 738538c6c554a4349af6a4c503c7aaa4, type: 3}
+  EnemyTeamAgentBorder: {fileID: 21300000, guid: a94bd62fcf60b794c8a7d430f3a74997, type: 3}
+  FriendlyTeamAgentBorder: {fileID: 21300000, guid: a917043e729c9a24b877fa1252ba23b2, type: 3}
+  KillFeed: {fileID: 2026002514}
   Knife: {fileID: 21300000, guid: 2da9aa027cdfea4468299c070bf152cc, type: 3}
   Latency: {fileID: 1970197834}
   TransparentImage: {fileID: 21300000, guid: 9eaf82342004f7949b0826a00921a76d, type: 3}
@@ -48090,7 +48094,7 @@ MonoBehaviour:
     m_Top: 0
     m_Bottom: 0
   m_ChildAlignment: 0
-  m_Spacing: 22
+  m_Spacing: 0
   m_ChildForceExpandWidth: 0
   m_ChildForceExpandHeight: 0
   m_ChildControlWidth: 0

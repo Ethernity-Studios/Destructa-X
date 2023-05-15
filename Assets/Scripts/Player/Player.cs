@@ -34,6 +34,7 @@ public class Player : NetworkBehaviour, IDamageable
     [SyncVar] public int PlayerAssists;
     [SyncVar] public bool IsDead;
 
+    [SyncVar] public int KillsThisRound = 0;
     //[SerializeField] GameObject UIAgent;
 
     GameManager gameManager;
@@ -178,6 +179,9 @@ public class Player : NetworkBehaviour, IDamageable
 
     [Command]
     public void CmdAddKill() => PlayerKills++;
+    
+    [Command]
+    public void CmdAddKillThisRound() => KillsThisRound++;
 
     [Command]
     public void CmdAddAssist() => PlayerAssists++;

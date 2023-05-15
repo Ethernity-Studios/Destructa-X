@@ -9,7 +9,7 @@ public class GunManager : MonoBehaviour
 
     private void Start()
     {
-addGuns();
+        addGuns();
     }
     public Gun GetGunByID(int id)
     {

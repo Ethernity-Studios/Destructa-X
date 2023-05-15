@@ -375,6 +375,7 @@ GameObject:
   - component: {fileID: 2972884286118815612}
   - component: {fileID: 6921881312507012726}
   - component: {fileID: 7063038570243957284}
+  - component: {fileID: 4001176613237846497}
   m_Layer: 5
   m_Name: Killfeed
   m_TagString: Untagged
@@ -440,6 +441,32 @@ CanvasGroup:
   m_Interactable: 1
   m_BlocksRaycasts: 1
   m_IgnoreParentGroups: 0
+--- !u!114 &4001176613237846497
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2972884286118815611}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 736821cf3b9973442828e3e67c0d8464, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Background: {fileID: 4953459983444892124}
+  KillStreakBackground: {fileID: 4953459983842869103}
+  KillStreak: {fileID: 4953459984287152383}
+  SourcePlayerAgentBackground: {fileID: 2972884285225947338}
+  SourcePlayerAgent: {fileID: 4953459983823387572}
+  SourcePlayerName: {fileID: 2972884285583727211}
+  Gun: {fileID: 2972884284809867636}
+  Penetration: {fileID: 4953459983134845099}
+  Headshot: {fileID: 2972884284915225948}
+  TargetPlayerName: {fileID: 4953459982659763935}
+  TargetPlayerBackground: {fileID: 4953459982455470653}
+  TargetPlayerAgent: {fileID: 4953459982679406148}
+  fadeSmoothness: 0.1
+  group: {fileID: 7063038570243957284}
 --- !u!1 &4953459982455470655
 GameObject:
   m_ObjectHideFlags: 0
@@ -1099,7 +1126,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: II
+  m_text: III
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 5ed251ae614676840a2e608f7bce38d3, type: 2}
   m_sharedMaterial: {fileID: 2668923041365894296, guid: 5ed251ae614676840a2e608f7bce38d3, type: 2}

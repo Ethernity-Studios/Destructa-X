@@ -275,7 +275,7 @@ public class PlayerShootingManager : NetworkBehaviour
     {
         CanShoot = false;
         isShooting = true;
-        if(SetIsShootingCoroutine != null) StopCoroutine(SetIsShootingCoroutine);
+        if (SetIsShootingCoroutine != null) StopCoroutine(SetIsShootingCoroutine);
         SetIsShootingCoroutine = setIsShooting();
         StartCoroutine(SetIsShootingCoroutine);
         penetrationAmount = playerInventory.EquippedGun.BulletPenetration;
@@ -450,7 +450,6 @@ public class PlayerShootingManager : NetworkBehaviour
             {
                 bloomAmount = GunHeath * 3 + BloomModifier + bloom;
                 if (bloomAmount < 0) bloomAmount = 0;
-                penIndex++;
                 Vector3 bloomDirection = cameraHolder.position + cameraHolder.forward * 1000f;
                 bloomDirection += Random.Range(-bloomAmount, bloomAmount) * cameraHolder.up; //Y
                 bloomDirection += Random.Range(-bloomAmount, bloomAmount) * cameraHolder.right; //X
@@ -459,7 +458,6 @@ public class PlayerShootingManager : NetworkBehaviour
                 direction = bloomDirection;
             }
 
-            penIndex++;
             Ray ray = new(originPosition, direction);
             if (Physics.Raycast(originPosition, direction, out RaycastHit hit, Mathf.Infinity, layerMask: mask))
             {
@@ -482,13 +480,17 @@ public class PlayerShootingManager : NetworkBehaviour
                                 GunId = playerInventory.EquippedGun.GunID,
                             };
                             if (body != Body.None) report.TargetBody.Add(body);
+
+                            bool penetrated = penIndex != 0;
+                            bool headshot = hitbox.BodyType == BodyType.Head;
+                            
                             if (entity.TakeDamage(damage))
                             {
                                 report.TargetState = ReportState.Killed;
                                 player.CmdAddKill();
                             }
-
-                            playerCombatReport.AddReport(report);
+                            
+                            playerCombatReport.AddReport(report, penetrated, headshot, player.KillsThisRound+1);
                         }
                     }
                 }
@@ -515,7 +517,7 @@ public class PlayerShootingManager : NetworkBehaviour
 
                         penDistance = Vector3.Distance(hit.point, penHit.point);
 
-
+                        penIndex++;
                         continue;
                     }
 
@@ -635,7 +637,7 @@ public class PlayerShootingManager : NetworkBehaviour
 
                 break;
         }
-        
+
 
         BulletDamage = Mathf.FloorToInt(BulletDamage - (penDistance * 3) - matToughness);
         if (BulletDamage <= 0) BulletDamage = 1;
