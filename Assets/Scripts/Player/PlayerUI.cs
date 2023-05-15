@@ -65,7 +65,8 @@ namespace player
             if (isLocalPlayer)
             {
                 string ping = Math.Round(NetworkTime.rtt, 2) + " ms";
-                uiManager.Latency.text = ping;     
+                uiManager.Latency.text = ping;
+                updateScore();
             }
             
             if (!isServer) return;
@@ -78,6 +79,21 @@ namespace player
                 case Team.Blue:
                     DefuseTimeLeft = (gameManager.DefuseTimeLeft / gameManager.BombDefuseTime) * 100;
                     ShowDefuseSlider = gameManager.isDefusing;
+                    break;
+            }
+        }
+
+        void updateScore()
+        {
+            switch (player.PlayerTeam)
+            {
+                case Team.Blue:
+                    uiManager.FriendlyScore.text = gameManager.BlueTeamScore.ToString();
+                    uiManager.EnemyScore.text = gameManager.RedTeamScore.ToString();
+                    break;
+                case Team.Red:
+                    uiManager.FriendlyScore.text = gameManager.RedTeamScore.ToString();
+                    uiManager.EnemyScore.text = gameManager.BlueTeamScore.ToString();
                     break;
             }
         }
@@ -187,8 +203,8 @@ namespace player
             playerShop.SetActive(false);
         }
 
-        [Command]
-        void CmdSpawnPlayerHeader()
+        [Command (requiresAuthority =  false)]
+        public void CmdSpawnPlayerHeader()
         {
             GameObject playerHeader = Instantiate(uiManager.HeaderPlayer);
             NetworkServer.Spawn(playerHeader);
@@ -221,10 +237,10 @@ namespace player
             playerHeader.transform.localScale = Vector3.one/10;
         }
 
-        [Command]
+        [Command(requiresAuthority =  false)]
         public void CmdDestroyPlayerHeader()
         {
-            NetworkServer.Destroy(HeaderPlayer.gameObject);
+            if(HeaderPlayer != null) NetworkServer.Destroy(HeaderPlayer.gameObject);
         }
 
         [Command]

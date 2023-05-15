@@ -14972,9 +14972,9 @@ MonoBehaviour:
   syncInterval: 0.1
   Round: 1
   RoundsPerHalf: 12
-  StartGameLenght: 100
+  StartGameLenght: 5
   EndgameLenght: 5
-  PreRoundLenght: 100
+  PreRoundLenght: 5
   RoundLenght: 10
   PostRoundLength: 5
   BombPlantTime: 5
@@ -14984,13 +14984,11 @@ MonoBehaviour:
   GameTime: 5
   GameState: 0
   BombState: 0
-  roundTimer: {fileID: 328981049}
   BlueUIAgents: {fileID: 356150727}
   RedUIAgents: {fileID: 1726851226}
   AliveBluePlayers: 0
   AliveRedPlayers: 0
   ShopUI: {fileID: 507583870}
-  MOTD: {fileID: 466860640}
   blueSpawnPositions:
   - {fileID: 55807916}
   - {fileID: 1597686376}
@@ -15021,7 +15019,6 @@ MonoBehaviour:
   BlueTeamPlayersIDs: 
   RedTeamPlayersIDs: 
   isEveryoneFuckingReady: 0
-  loadingScreen: {fileID: 1101984791}
   PlantTimeLeft: 0
   DefuseTimeLeft: 0
   isPlanting: 0
@@ -38211,6 +38208,8 @@ MonoBehaviour:
   RedTeamBackgroundHeader: {fileID: 21300000, guid: a94bd62fcf60b794c8a7d430f3a74997, type: 3}
   FriendlyTeamHeader: {fileID: 356150726}
   EnemyTeamHeader: {fileID: 1726851225}
+  FriendlyScore: {fileID: 155318726}
+  EnemyScore: {fileID: 733019537}
   ShopTeam: {fileID: 482002606}
   ShopPlayerAgentIcon: {fileID: 2112336328}
   ShopPlayerShieldIcon: {fileID: 843107797}

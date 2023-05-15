@@ -90,14 +90,14 @@ public class PlayerCombatReport : NetworkBehaviour
     [Command]
     void CmdSpawnKillFeed(CombatReport report, bool penetrated, bool headshot, int kills)
     {
-        GameObject killFeed = Instantiate(this.killFeed); 
+        GameObject killFeed = Instantiate(this.killFeed);
         NetworkServer.Spawn(killFeed);
-        
+
         Player sourcePlayer = NetworkServer.spawned[report.OwnerPlayerId].GetComponent<Player>();
         Player targetPlayer = NetworkServer.spawned[report.TargetPlayerId].GetComponent<Player>();
-        
+
         Player.CmdAddKillThisRound();
-        
+
         foreach (Player p in gameManager.PlayersID.Select(gameManager.GetPlayer))
         {
             if (p.PlayerTeam == Player.PlayerTeam) RpcSpawnTeamKillFeed(p.netIdentity.connectionToClient, report, killFeed, Player, targetPlayer, penetrated, headshot, kills);
@@ -174,7 +174,7 @@ public class PlayerCombatReport : NetworkBehaviour
         NetworkServer.UnSpawn(uiManager.KillFeed.transform.GetChild(0).gameObject);
         Destroy(uiManager.KillFeed.transform.GetChild(0).gameObject);
     }
-    
+
 
     [Command]
     void CmdNotifyPlayerDeath(uint targetPlayerId, uint ownerPlayerId)

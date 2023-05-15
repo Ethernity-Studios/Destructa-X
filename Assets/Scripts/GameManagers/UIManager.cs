@@ -56,6 +56,9 @@ public class UIManager : MonoBehaviour
     public GameObject FriendlyTeamHeader;
     public GameObject EnemyTeamHeader;
 
+    public TMP_Text FriendlyScore;
+    public TMP_Text EnemyScore;
+
     [Header("Shop")] 
     public GameObject ShopTeam;
     

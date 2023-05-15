@@ -15,8 +15,8 @@ namespace GameManagers
         public TMP_Text BlueTeamScoreText;
         public TMP_Text RedTeamScoreText;
         [SyncVar(hook = nameof(DrawRoundTimer))] private float GameTime;
-        [SyncVar(hook = nameof(DrawRedScore))] private int redScore;
-        [SyncVar(hook = nameof(DrawBlueScore))] private int blueScore;
+        //[SyncVar(hook = nameof(DrawRedScore))] private int redScore;
+        //[SyncVar(hook = nameof(DrawBlueScore))] private int blueScore;
         
         public Slider PlantProgressSlider;
         public Slider DefuseProgressSlider;
@@ -39,11 +39,11 @@ namespace GameManagers
         void ServerUpdate()
         {
             GameTime = gameManager.GameTime;
-            blueScore = gameManager.BlueTeamScore;
-            redScore = gameManager.RedTeamScore;
+            //blueScore = gameManager.BlueTeamScore;
+            //redScore = gameManager.RedTeamScore;
         }
 
-        void DrawRedScore(int _, int newValue)
+        /*void DrawRedScore(int _, int newValue)
         {
             RedTeamScoreText.text = newValue.ToString();
         }
@@ -51,7 +51,7 @@ namespace GameManagers
         void DrawBlueScore(int _, int newValue)
         {
             BlueTeamScoreText.text = newValue.ToString();
-        }
+        }*/
         
         void DrawRoundTimer(float _, float newValue)
         {

@@ -174,7 +174,7 @@ public class Player : NetworkBehaviour, IDamageable
     [Command]
     public void CmdSetPreviousShield(int shield) => PreviousShield = shield;
 
-    [Command]
+    [Command(requiresAuthority = false)]
     public void CmdSetShieldType(ShieldType shieldType) => ShieldType = shieldType;
 
     [Command]
