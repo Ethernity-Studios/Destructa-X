@@ -57,13 +57,13 @@ public class PlayerSpectateManager : NetworkBehaviour
         itemHolder.SetActive(false);
         playerHead.transform.localPosition = new Vector3(0, 2, 0);
         playerHead.transform.localEulerAngles = new Vector3(90, 0, 0);
-        playerHands.GetComponent<Renderer>().enabled = false;
+        //playerHands.GetComponent<Renderer>().enabled = false;
     }
 
     public IEnumerator PlayerDeathCoroutine()
     {
         itemHolder.SetActive(false);
-        playerHands.SetActive(false);
+        //playerHands.SetActive(false);
         playerBody.transform.localEulerAngles = new Vector3(90, 0, 0);
         playerBody.transform.localPosition = new Vector3(0, -1.5f, 0);
         playerHead.transform.localPosition = new Vector3(0, 2, 0);
@@ -136,7 +136,7 @@ public class PlayerSpectateManager : NetworkBehaviour
         itemHolder.SetActive(true);
         playerHead.transform.localPosition = new Vector3(0, 1.6f, 0);
         playerHead.transform.localEulerAngles = new Vector3(0, 0, 0);
-        playerHands.GetComponent<Renderer>().enabled = true;
+        //playerHands.GetComponent<Renderer>().enabled = true;
     }
 }
 

@@ -21,6 +21,7 @@ public class PlayerShootingManager : NetworkBehaviour
 
     PlayerEconomyManager playerEconomyManager;
     private PlayerCombatReport playerCombatReport;
+    [SerializeField] private Animator fpAnim;
 
     public bool CanShoot = true;
     public bool Reloading;
@@ -248,7 +249,11 @@ public class PlayerShootingManager : NetworkBehaviour
     private IEnumerator Reload()
     {
         Reloading = true;
+        anim.speed = playerInventory.EquippedGun.ReloadTime;
+        anim.ResetTrigger(ReloadTrigger);
+        anim.SetTrigger(ReloadTrigger);
         yield return new WaitForSeconds(playerInventory.EquippedGun.ReloadTime);
+        anim.speed = 1;
         Reloading = false;
         if (GunInstance.Ammo >= playerInventory.EquippedGun.MagazineAmmo)
         {
@@ -432,6 +437,7 @@ public class PlayerShootingManager : NetworkBehaviour
     Vector3? impactPoint;
     bool canPenetrate;
     float penetrationAmount;
+    private static readonly int ReloadTrigger = Animator.StringToHash("Reload");
 
     private void CheckPenetration(float bloom)
     {
@@ -483,14 +489,14 @@ public class PlayerShootingManager : NetworkBehaviour
 
                             bool penetrated = penIndex != 0;
                             bool headshot = hitbox.BodyType == BodyType.Head;
-                            
+
                             if (entity.TakeDamage(damage))
                             {
                                 report.TargetState = ReportState.Killed;
                                 player.CmdAddKill();
                             }
-                            
-                            playerCombatReport.AddReport(report, penetrated, headshot, player.KillsThisRound+1);
+
+                            playerCombatReport.AddReport(report, penetrated, headshot, player.KillsThisRound + 1);
                         }
                     }
                 }

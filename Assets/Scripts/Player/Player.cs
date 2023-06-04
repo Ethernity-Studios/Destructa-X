@@ -61,7 +61,8 @@ public class Player : NetworkBehaviour, IDamageable
     [SyncVar] public ShieldType ShieldType = ShieldType.None;
 
     private Camera _camera;
-
+    [SerializeField] private Transform ItemHolder;
+    [SerializeField] private Transform Head;
 
     [TargetRpc]
     public void RpcSetState(PlayerState state)
@@ -114,6 +115,14 @@ public class Player : NetworkBehaviour, IDamageable
         if (!isLocalPlayer)
         {
             playerBody.layer = 10;
+        }
+        else
+        {
+            playerBody.SetActive(false);
+            ItemHolder.SetParent(Head);
+            ItemHolder.localScale = Vector3.one;
+            ItemHolder.localRotation = Quaternion.identity;
+            ItemHolder.localPosition = Vector3.zero;
         }
     }
 

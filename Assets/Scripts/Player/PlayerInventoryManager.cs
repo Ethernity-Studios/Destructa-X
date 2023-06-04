@@ -48,18 +48,32 @@ public class PlayerInventoryManager : NetworkBehaviour
     private PlayerInput playerInput;
 
     [SerializeField] private Animator anim;
-    
-    [SerializeField] private Transform RightHandHint;
-    [SerializeField] private Transform LeftHandTarget;
-    [SerializeField] private Transform RightHandTarget;
-    [SerializeField] private Transform LeftHandHint;
 
-    [SerializeField] private Vector3 KnifeLeftHandTargetPosition;
-    [SerializeField] private Vector3 KnifeLeftHandTargetRotation;
-    [SerializeField] private Vector3 KnifeLeftHandHintPosition;
-    [SerializeField] private Vector3 KnifeRightHandTargetPosition;
-    [SerializeField] private Vector3 KnifeRightHandTargetRotation;
-    [SerializeField] private Vector3 KnifeRightHandHintPosition;
+    [SerializeField] private Transform Knife;
+    
+    [SerializeField] private Transform ThirdPersonRightHandHint;
+    [SerializeField] private Transform ThirdPersonLeftHandTarget;
+    [SerializeField] private Transform ThirdPersonRightHandTarget;
+    [SerializeField] private Transform ThirdPersonLeftHandHint;
+    
+    [SerializeField] private Transform FirstPersonRightHandHint;
+    [SerializeField] private Transform FirstPersonLeftHandTarget;
+    [SerializeField] private Transform FirstPersonRightHandTarget;
+    [SerializeField] private Transform FirstPersonLeftHandHint;
+
+    [SerializeField] private Vector3 ThirdPersonKnifeLeftHandTargetPosition;
+    [SerializeField] private Vector3 ThirdPersonKnifeLeftHandTargetRotation;
+    [SerializeField] private Vector3 ThirdPersonKnifeLeftHandHintPosition;
+    [SerializeField] private Vector3 ThirdPersonKnifeRightHandTargetPosition;
+    [SerializeField] private Vector3 ThirdPersonKnifeRightHandTargetRotation;
+    [SerializeField] private Vector3 ThirdPersonKnifeRightHandHintPosition;
+    
+    [SerializeField] private Vector3 FirstPersonKnifeLeftHandTargetPosition;
+    [SerializeField] private Vector3 FirstPersonKnifeLeftHandTargetRotation;
+    [SerializeField] private Vector3 FirstPersonKnifeLeftHandHintPosition;
+    [SerializeField] private Vector3 FirstPersonKnifeRightHandTargetPosition;
+    [SerializeField] private Vector3 FirstPersonKnifeRightHandTargetRotation;
+    [SerializeField] private Vector3 FirstPersonKnifeRightHandHintPosition;
 
     private void Awake()
     {
@@ -486,35 +500,60 @@ public class PlayerInventoryManager : NetworkBehaviour
         gunInstance.transform.GetChild(0).GetComponent<BoxCollider>().enabled = false;
         gunInstance.transform.GetComponent<SphereCollider>().enabled = false;
         gunInstance.transform.localScale = new Vector3(1f, 1f, 1f);
-        //gunInstance.transform.localPosition = gun.GunTransform.FirstPersonGunPosition;
-        //gunInstance.transform.localEulerAngles = gun.GunTransform.FirstPersonGunRotation;
-        //if (isLocalPlayer) return;
-        gunInstance.transform.localPosition = gun.GunTransform.ThirdPersonGunPosition;
-        gunInstance.transform.localEulerAngles = gun.GunTransform.ThirdPersonGunRotation;
+        
+        if (isLocalPlayer)
+        {
+            gunInstance.transform.localPosition = gun.GunTransform.FirstPersonGunPosition;
+            gunInstance.transform.localEulerAngles = gun.GunTransform.FirstPersonGunRotation; 
+        }
+        else
+        {
+            gunInstance.transform.localPosition = gun.GunTransform.ThirdPersonGunPosition;
+            gunInstance.transform.localEulerAngles = gun.GunTransform.ThirdPersonGunRotation;   
+        }
+
     }
 
     private void setHandTransform(Gun gun)
     {
-        RightHandTarget.localPosition = gun.GunTransform.RightHandTargetPosition;
-        RightHandTarget.localEulerAngles = gun.GunTransform.RightHandTargetRotation;
-        RightHandHint.localPosition = gun.GunTransform.RightHandHintPosition;
-        RightHandHint.localEulerAngles = gun.GunTransform.RightHandHintRotation;
+        ThirdPersonRightHandTarget.localPosition = gun.GunTransform.RightHandTargetPosition;
+        ThirdPersonRightHandTarget.localEulerAngles = gun.GunTransform.RightHandTargetRotation;
+        ThirdPersonRightHandHint.localPosition = gun.GunTransform.RightHandHintPosition;
+        ThirdPersonRightHandHint.localEulerAngles = gun.GunTransform.RightHandHintRotation;
 
-        LeftHandTarget.localPosition = gun.GunTransform.LeftHandTargetPosition;
-        LeftHandTarget.localEulerAngles = gun.GunTransform.LeftHandTargetRotation;
-        LeftHandHint.localPosition = gun.GunTransform.LeftHandHintPosition;
-        LeftHandHint.localEulerAngles = gun.GunTransform.LeftHandHintRotation;
+        ThirdPersonLeftHandTarget.localPosition = gun.GunTransform.LeftHandTargetPosition;
+        ThirdPersonLeftHandTarget.localEulerAngles = gun.GunTransform.LeftHandTargetRotation;
+        ThirdPersonLeftHandHint.localPosition = gun.GunTransform.LeftHandHintPosition;
+        ThirdPersonLeftHandHint.localEulerAngles = gun.GunTransform.LeftHandHintRotation;
     }
 
     private void setKnifeHandTransform()
     {
-        RightHandTarget.localPosition = KnifeRightHandTargetPosition;
-        RightHandTarget.localEulerAngles = KnifeRightHandTargetRotation;
-        RightHandHint.localPosition = KnifeRightHandHintPosition;
+        if (isLocalPlayer)
+        {
+            Knife.localScale = Vector3.one;
+            Knife.localRotation = Quaternion.Euler(new Vector3(30, 75, 75));
+            Knife.localPosition = new Vector3(.45f, -.25f, .48f); 
+            
+            FirstPersonRightHandTarget.localPosition = FirstPersonKnifeRightHandTargetPosition;
+            FirstPersonRightHandTarget.localEulerAngles = FirstPersonKnifeRightHandTargetRotation;
+            FirstPersonRightHandHint.localPosition = FirstPersonKnifeRightHandHintPosition;
+            
+            FirstPersonLeftHandTarget.localPosition = FirstPersonKnifeLeftHandTargetPosition;
+            FirstPersonLeftHandTarget.localEulerAngles = FirstPersonKnifeLeftHandTargetRotation;
+            FirstPersonLeftHandHint.localPosition = FirstPersonKnifeLeftHandHintPosition;
+        }
+        else
+        {
+            ThirdPersonRightHandTarget.localPosition = ThirdPersonKnifeRightHandTargetPosition;
+            ThirdPersonRightHandTarget.localEulerAngles = ThirdPersonKnifeRightHandTargetRotation;
+            ThirdPersonRightHandHint.localPosition = ThirdPersonKnifeRightHandHintPosition;
 
-        LeftHandTarget.localPosition = KnifeLeftHandTargetPosition;
-        LeftHandTarget.localEulerAngles = KnifeLeftHandTargetRotation;
-        LeftHandHint.localPosition = KnifeLeftHandHintPosition;
+            ThirdPersonLeftHandTarget.localPosition = ThirdPersonKnifeLeftHandTargetPosition;
+            ThirdPersonLeftHandTarget.localEulerAngles = ThirdPersonKnifeLeftHandTargetRotation;
+            ThirdPersonLeftHandHint.localPosition = ThirdPersonKnifeLeftHandHintPosition;  
+        }
+
 
     }
 
