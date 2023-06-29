@@ -2,7 +2,6 @@ using System.Collections;
 using UnityEngine;
 using Mirror;
 using System.Collections.Generic;
-using System.Linq;
 
 public class PlayerSpectateManager : NetworkBehaviour
 {
@@ -22,15 +21,17 @@ public class PlayerSpectateManager : NetworkBehaviour
 
     [SerializeField] Player currentlySpectating = null;
 
-    bool isSpectating;
+    public bool IsSpectating = false;
 
     GameObject mainCamera;
+
     private void Start()
     {
         player = GetComponent<Player>();
         gameManager = FindObjectOfType<GameManager>();
         uiManager = FindObjectOfType<UIManager>();
         if (!isLocalPlayer) return;
+        CmdGetPlayers();
         mainCamera = Camera.main!.gameObject;
         //PlayerCamera.enabled = true;
         //ItemCamera.enabled = true;
@@ -39,10 +40,10 @@ public class PlayerSpectateManager : NetworkBehaviour
     private void Update()
     {
         if (!player.IsDead) return;
-        if (!isSpectating) return;
+        if (!IsSpectating) return;
         if (Input.GetMouseButtonDown(0))
         {
-            spectate();
+            Spectate();
         }
     }
 
@@ -52,8 +53,8 @@ public class PlayerSpectateManager : NetworkBehaviour
         mainCamera = Camera.main!.gameObject;
         mainCamera.GetComponent<CameraRotate>().CanRotate = false;
         mainCamera.transform.parent.GetComponent<CameraMove>().CanMove = false;
-        playerBody.transform.localEulerAngles = new Vector3(90, 0, 0);
-        playerBody.transform.localPosition = new Vector3(0, -1.5f, 0);
+        //playerBody.transform.localEulerAngles = new Vector3(90, 0, 0);
+        //playerBody.transform.localPosition = new Vector3(0, -1.5f, 0);
         itemHolder.SetActive(false);
         playerHead.transform.localPosition = new Vector3(0, 2, 0);
         playerHead.transform.localEulerAngles = new Vector3(90, 0, 0);
@@ -63,23 +64,35 @@ public class PlayerSpectateManager : NetworkBehaviour
     public IEnumerator PlayerDeathCoroutine()
     {
         itemHolder.SetActive(false);
+        //TODO SET ANIMATIONS
+
         //playerHands.SetActive(false);
-        playerBody.transform.localEulerAngles = new Vector3(90, 0, 0);
-        playerBody.transform.localPosition = new Vector3(0, -1.5f, 0);
-        playerHead.transform.localPosition = new Vector3(0, 2, 0);
-        playerHead.transform.localEulerAngles = new Vector3(90, 0, 0);
+        //playerBody.transform.localEulerAngles = new Vector3(90, 0, 0);
+        //playerBody.transform.localPosition = new Vector3(0, -1.5f, 0);
+        //playerHead.transform.localPosition = new Vector3(0, 2, 0);
+        //playerHead.transform.localEulerAngles = new Vector3(90, 0, 0);
         yield return new WaitForSeconds(deathScreenTime);
+        Spectate();
+    }
+
+    public void Spectate()
+    {
         switch (player.PlayerTeam)
         {
             case Team.Blue:
             {
-                if (gameManager.AliveBluePlayers > 1) spectate();
+                if (gameManager.AliveBluePlayers >= 1)
+                {
+                    spec();
+                }
+                else if(gameManager.AliveBluePlayers == 0 && gameManager.BombPlanted) spectateBomb();
+
                 break;
             }
             case Team.Red:
             {
-                if(gameManager.AliveRedPlayers > 1) spectate();
-                //else if(gameManager.AliveRedPlayers == 0 && gameManager.BombPlanted) spectateBomb(); /// REWORK SPECTATE BOMB
+                if (gameManager.AliveRedPlayers >= 1) spec();
+                else if (gameManager.AliveRedPlayers == 0 && gameManager.BombPlanted) spectateBomb();
                 break;
             }
             default:
@@ -88,24 +101,31 @@ public class PlayerSpectateManager : NetworkBehaviour
         }
     }
 
-    void spectate()
+    void spec()
     {
-        isSpectating = true;
-        //PlayerCamera.enabled = false;
-        //ItemCamera.enabled = false;
-        CmdGetPlayers();
-        foreach (Player player in from player in players where !player.isLocalPlayer where player.PlayerTeam == this.player.PlayerTeam where player != currentlySpectating let playerSpectateManager = player.GetComponent<PlayerSpectateManager>() select player)
+        IsSpectating = true;
+
+        foreach (var p in players)
         {
-            //playerSpectateManager.PlayerCamera.enabled = true;
-            //playerSpectateManager.ItemCamera.enabled = true;
-            currentlySpectating = player;
-            uiManager.SpectatingUI.SetActive(true);
-            uiManager.SpectatingPlayerName.text = player.PlayerName;
-            Debug.Log("Currently spectating: " + currentlySpectating);
+            if (p.PlayerTeam == player.PlayerTeam && !p.IsDead && currentlySpectating != p)
+            {
+                currentlySpectating = p;
+                uiManager.SpectatingUI.SetActive(true);
+                uiManager.SpectatingPlayerName.text = player.PlayerName;
+                mainCamera.transform.parent.GetComponent<CameraMove>().cameraPosition = p.GetComponent<PlayerSpectateManager>().playerHead.transform;
+                Debug.Log("Currently spectating: " + currentlySpectating);
+            }
         }
     }
 
+    public void ResetSpectate()
+    {
+        uiManager.SpectatingUI.SetActive(false);
+        IsSpectating = false;
+    }
+
     readonly List<Player> players = new();
+
     [Command]
     void CmdGetPlayers()
     {
@@ -114,6 +134,7 @@ public class PlayerSpectateManager : NetworkBehaviour
             RpcGetPlayers(gameManager.GetPlayer(playerID));
         }
     }
+
     [ClientRpc]
     void RpcGetPlayers(Player player)
     {
@@ -122,8 +143,10 @@ public class PlayerSpectateManager : NetworkBehaviour
 
     void spectateBomb()
     {
-        isSpectating = true;
-       //PlayerCamera.enabled = false;
+        mainCamera.transform.parent.GetComponent<CameraMove>().cameraPosition = gameManager.Bomb.transform;
+        mainCamera.transform.parent.GetComponent<CameraMove>().cameraPosition.position += new Vector3(0, 2, 0);
+        IsSpectating = true;
+        //PlayerCamera.enabled = false;
         //ItemCamera.enabled = false;
         Debug.Log("Currently spectating bomb");
     }
@@ -131,6 +154,7 @@ public class PlayerSpectateManager : NetworkBehaviour
     [ClientRpc]
     public void SetPlayerTransform()
     {
+        FindObjectOfType<CameraMove>().cameraPosition = GetComponent<PlayerMovement>().playerHead;
         playerBody.transform.localEulerAngles = new Vector3(0, 0, 0);
         playerBody.transform.localPosition = new Vector3(0, 0, 0);
         itemHolder.SetActive(true);
@@ -139,5 +163,3 @@ public class PlayerSpectateManager : NetworkBehaviour
         //playerHands.GetComponent<Renderer>().enabled = true;
     }
 }
-
-

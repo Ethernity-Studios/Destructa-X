@@ -118,7 +118,7 @@ public class Player : NetworkBehaviour, IDamageable
         }
         else
         {
-            playerBody.SetActive(false);
+            //playerBody.SetActive(false);
             ItemHolder.SetParent(Head);
             ItemHolder.localScale = Vector3.one;
             ItemHolder.localRotation = Quaternion.identity;
@@ -189,7 +189,7 @@ public class Player : NetworkBehaviour, IDamageable
     [Command]
     public void CmdAddKill() => PlayerKills++;
     
-    [Command]
+    [Command(requiresAuthority = false)]
     public void CmdAddKillThisRound() => KillsThisRound++;
 
     [Command]

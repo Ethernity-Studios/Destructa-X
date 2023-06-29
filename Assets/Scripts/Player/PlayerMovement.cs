@@ -1,3 +1,4 @@
+using System;
 using Mirror;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -20,7 +21,7 @@ public enum MovementState
 
 public class PlayerMovement : NetworkBehaviour
 {
-    [SerializeField] Transform playerHead;
+    public Transform playerHead;
 
     Player playerManager;
     private PlayerShootingManager playerShootingManager;
@@ -89,6 +90,8 @@ public class PlayerMovement : NetworkBehaviour
     [SerializeField] private float bodyRotationSmoothFactor;
     private bool canRotateBody = false;
 
+    private GameManager gameManager;
+
     public override void OnStartLocalPlayer()
     {
         playerInput = new PlayerInput();
@@ -100,6 +103,7 @@ public class PlayerMovement : NetworkBehaviour
     {
         rb = GetComponent<Rigidbody>();
         playerShootingManager = GetComponent<PlayerShootingManager>();
+        gameManager = FindObjectOfType<GameManager>();
         if (!isLocalPlayer) return;
         mainCamera = Camera.main!.gameObject;
         mainCamera.transform.parent.position = transform.position + new Vector3(0, .6f, 0);
@@ -346,4 +350,20 @@ public class PlayerMovement : NetworkBehaviour
     }
 
     #endregion
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.CompareTag("ATeleport"))
+        {
+            transform.position = gameManager.ATeleportExit.position;
+            transform.rotation = gameManager.ATeleportExit.rotation;
+        }
+        else if (other.CompareTag("BTeleport"))
+        {
+            {
+                transform.position = gameManager.BTeleportExit.position;
+                transform.rotation = gameManager.BTeleportExit.rotation;
+            }
+        }
+    }
 }

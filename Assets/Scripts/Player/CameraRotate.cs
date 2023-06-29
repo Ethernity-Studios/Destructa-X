@@ -22,6 +22,9 @@ public class CameraRotate : MonoBehaviour
     public bool CanRotate = true;
     public bool CanRotateBody = true;
 
+    public bool Spectating;
+    public Transform SpectatingTransform;
+
     private void Awake()
     {
         playerInput = new PlayerInput();
@@ -35,27 +38,35 @@ public class CameraRotate : MonoBehaviour
 
     void Update()
     {
-        if (PlayerEconomyManager == null) return;
-        if (orientation == null) return;
-        isShopOpen = PlayerEconomyManager.IsShopOpen;
-        isMenuOpen = PlayerEconomyManager.SettingsMenu.IsOpened;
-        if (isShopOpen) return;
-        if (isMenuOpen) return;
-        if (!CanRotate) return;
+        if (!Spectating)
+        {
+            if (PlayerEconomyManager == null) return;
+            if (orientation == null) return;
+            isShopOpen = PlayerEconomyManager.IsShopOpen;
+            isMenuOpen = PlayerEconomyManager.SettingsMenu.IsOpened;
+            if (isShopOpen) return;
+            if (isMenuOpen) return;
+            if (!CanRotate) return;
 
-        MouseLook = playerInput.PlayerMovement.Look.ReadValue<Vector2>();
-        float mouseX = MouseLook.x * MouseSensitivity * Time.deltaTime;
-        float mouseY = MouseLook.y * MouseSensitivity * Time.deltaTime;
+            MouseLook = playerInput.PlayerMovement.Look.ReadValue<Vector2>();
+            float mouseX = MouseLook.x * MouseSensitivity * Time.deltaTime;
+            float mouseY = MouseLook.y * MouseSensitivity * Time.deltaTime;
 
-        yRotation += mouseX;
+            yRotation += mouseX;
 
-        xRotation -= mouseY;
-        xRotation = Mathf.Clamp(xRotation, -90f, 90f);
+            xRotation -= mouseY;
+            xRotation = Mathf.Clamp(xRotation, -90f, 90f);
 
-        transform.parent.rotation = Quaternion.Euler(xRotation, yRotation, 0);
-        orientation.rotation = Quaternion.Euler(0,yRotation,0);
-        if (!CanRotateBody) return;
-        body.rotation = Quaternion.Euler(0, yRotation, 0);
+            transform.parent.rotation = Quaternion.Euler(xRotation, yRotation, 0);
+            orientation.rotation = Quaternion.Euler(0,yRotation,0);
+            if (!CanRotateBody) return;
+            body.rotation = Quaternion.Euler(0, yRotation, 0);
+        }
+        else
+        {
+            transform.parent.rotation = Quaternion.Euler(xRotation, yRotation, 0);
+        }
+
     }
 
     public void RotateCamera(Vector3 rotation)

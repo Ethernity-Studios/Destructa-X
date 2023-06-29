@@ -87,6 +87,16 @@ public class GunTransform
     public Vector3 FirstPersonGunPosition;
     public Vector3 FirstPersonGunRotation;
     [Space(10)]
+    public Vector3 FirstPersonRightHandTargetPosition;
+    public Vector3 FirstPersonRightHandTargetRotation;
+    public Vector3 FirstPersonRightHandHintPosition;
+    public Vector3 FirstPersonRightHandHintRotation;
+    [Space(10)]
+    public Vector3 FirstPersonLeftHandTargetPosition;
+    public Vector3 FirstPersonLeftHandTargetRotation;
+    public Vector3 FirstPersonLeftHandHintPosition;
+    public Vector3 FirstPersonLeftHandHintRotation;
+    [Space(10)]
     public Vector3 ThirdPersonGunPosition;
     public Vector3 ThirdPersonGunRotation;
     [Space(10)]

@@ -5852,6 +5852,7 @@ GameObject:
   - component: {fileID: 354066564697787795}
   - component: {fileID: 8416366320411294943}
   - component: {fileID: 6003564377293883220}
+  - component: {fileID: 5044380796314886674}
   m_Layer: 7
   m_Name: Player
   m_TagString: Player
@@ -5911,7 +5912,7 @@ MonoBehaviour:
   RoundKills: 0
   ShieldType: 0
   ItemHolder: {fileID: 201601067962480622}
-  Head: {fileID: 2809714701104030514}
+  Head: {fileID: 6048443045810350629}
 --- !u!114 &1850405224234988842
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5960,9 +5961,10 @@ MonoBehaviour:
   FirstPersonKnifeLeftHandTargetPosition: {x: -0.006, y: 0.038, z: 0.292}
   FirstPersonKnifeLeftHandTargetRotation: {x: 44.599, y: -144.246, z: 17.035}
   FirstPersonKnifeLeftHandHintPosition: {x: 0, y: 0, z: 0.302}
-  FirstPersonKnifeRightHandTargetPosition: {x: -0.215, y: -0.21, z: -0.295}
-  FirstPersonKnifeRightHandTargetRotation: {x: -0.001, y: 10.23, z: 0}
+  FirstPersonKnifeRightHandTargetPosition: {x: -0.268, y: -0.289, z: -0.276}
+  FirstPersonKnifeRightHandTargetRotation: {x: 14.881, y: 9.087, z: -4.178}
   FirstPersonKnifeRightHandHintPosition: {x: -0.0285, y: -0.059, z: -0.21}
+  Hands: {fileID: 5873692220868446385}
 --- !u!114 &4148336677826501266
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6317,6 +6319,20 @@ MonoBehaviour:
   syncInterval: 0.01
   clientAuthority: 1
   animator: {fileID: 5568581631737819458}
+--- !u!136 &5044380796314886674
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6720852769967137176}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  m_Radius: 0.5
+  m_Height: 1
+  m_Direction: 1
+  m_Center: {x: 0, y: 0.5, z: 0}
 --- !u!1 &6739267187507278917
 GameObject:
   m_ObjectHideFlags: 0

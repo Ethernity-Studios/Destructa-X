@@ -67,8 +67,16 @@ MonoBehaviour:
     AimRecoilY: 2
     AimRecoilZ: 0.35
   GunTransform:
-    FirstPersonGunPosition: {x: 0.45, y: -0.25, z: 0.48}
-    FirstPersonGunRotation: {x: 0, y: 80, z: 0}
+    FirstPersonGunPosition: {x: -0.0249, y: 0.0856, z: 0.0198}
+    FirstPersonGunRotation: {x: -4.872, y: 188.265, z: -81.703}
+    FirstPersonRightHandTargetPosition: {x: -0.0488, y: -0.155, z: 0.0379}
+    FirstPersonRightHandTargetRotation: {x: 0, y: 0, z: 0}
+    FirstPersonRightHandHintPosition: {x: 0, y: 0, z: 0}
+    FirstPersonRightHandHintRotation: {x: 0, y: 0, z: 0}
+    FirstPersonLeftHandTargetPosition: {x: -0.0813, y: -0.0411, z: 0.1073}
+    FirstPersonLeftHandTargetRotation: {x: -10.007, y: -142.378, z: 47.197}
+    FirstPersonLeftHandHintPosition: {x: 0.785, y: -0.238, z: 0.278}
+    FirstPersonLeftHandHintRotation: {x: 0, y: 0, z: 0}
     ThirdPersonGunPosition: {x: -0.0262, y: 0.1067, z: 0.0307}
     ThirdPersonGunRotation: {x: 0, y: -180, z: -90}
     RightHandTargetPosition: {x: 0.021, y: 0.15, z: 0.07}

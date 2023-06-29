@@ -51,6 +51,7 @@ public class UIManager : MonoBehaviour
 
     [Header("Header")]
     public GameObject HeaderPlayer;
+    public Image PlantedSpike;
     public Sprite RedTeamBackgroundHeader;
 
     public GameObject FriendlyTeamHeader;

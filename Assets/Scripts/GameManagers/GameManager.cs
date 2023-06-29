@@ -109,6 +109,8 @@ public class GameManager : NetworkBehaviour
 
     [SerializeField] GameObject mainCamera;
 
+    public Transform ATeleportExit, BTeleportExit;
+
     private void Start()
     { 
         playerStateManger = FindObjectOfType<PlayerStateManger>();
@@ -379,6 +381,8 @@ public class GameManager : NetworkBehaviour
 
             PlayerSpectateManager playerSpectateManager = player.GetComponent<PlayerSpectateManager>();
             playerSpectateManager.SetPlayerTransform();
+            playerSpectateManager.StopAllCoroutines();
+            playerSpectateManager.ResetSpectate();
 
             player.IsDead = false;
             player.Health = 100;
